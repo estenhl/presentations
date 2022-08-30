@@ -2,6 +2,11 @@
 
 \usetheme{metropolis}
 
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikz}
+
 \author{Esten H{\o}yland Leonardsen}
 \date{31.08.22}
 \title{Detecting individual-level deviations in brain morphology in MCI patients}
@@ -1363,8 +1368,6 @@
 			\def\ymin{-3.5}
 			\def\ymax{-0.5}
 			\def\xstep{0.492}
-			\node[draw=none,anchor=north west] at (0, 0) {};
-			\node[draw=none,anchor=south east] at (12.14, -5){};
 
 			\draw[] (\xmin, \ymax) -- (\xmax, \ymax) -- (\xmax, \ymin) -- (\xmin, \ymin) -- (\xmin, \ymax);
 			\node[anchor=east] at (\xmin, -0.5) {\footnotesize{1.0}};
@@ -1401,7 +1404,7 @@
 			\draw[fill=black] (\xmin, \ymin) -- (\xmax, \ymin) -- (\xmax, \ymin - 5.1) -- (\xmin, \ymin - 5.1) -- (\xmin, \ymin);
 
 			\node[anchor=north, inner sep=0pt, outer sep=0pt] at (\xmin + 10*\xstep+0.001, \ymin - 0.2) {
-				\includegraphics[width=0.82\textwidth]{data/history.png}
+				\includegraphics[width=0.82\textwidth]{data/MCI_to_AD.png}
 			};
 
 			\newcommand{\datenode}[2]{
@@ -1420,6 +1423,456 @@
 			\datenode{16.08.13}{19}
 
 		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}[scale=0.9]
+			\definecolor{controls-default}{HTML}{3594d6}
+			\definecolor{cases-default}{HTML}{c71555}
+
+			\colorlet{}{cb-red-purple}
+			\colorlet{}{cb-blue}
+			\def\xmin{1.15}
+			\def\xmax{7.05}
+			\def\ymin{-3.5}
+			\def\ymax{-0.5}
+			\def\xstep{0.492}
+
+			\draw[] (\xmin, \ymax) -- (\xmax, \ymax) -- (\xmax, \ymin) -- (\xmin, \ymin) -- (\xmin, \ymax);
+			\node[anchor=east] at (\xmin, -0.5) {\footnotesize{1.0}};
+			\node[anchor=east] at (\xmin, -1.1) {\footnotesize{0.8}};
+			\node[anchor=east] at (\xmin, -1.7) {\footnotesize{0.6}};
+			\node[anchor=east] at (\xmin, -2.3) {\footnotesize{0.4}};
+			\node[anchor=east] at (\xmin, -2.9) {\footnotesize{0.2}};
+			\node[anchor=east] at (\xmin, -3.5) {\footnotesize{0.0}};
+			\node[rotate=90,anchor=south] at ($ (\xmin, -2) - (0.7, 0) $) {\footnotesize{Prediction}};
+
+			\draw[gray!50, thin] (\xmin, -1.1) -- (\xmax, -1.1);
+			\draw[gray!50, thin] (\xmin, -1.7) -- (\xmax, -1.7);
+			\draw[gray!50, thin] (\xmin, -2.3) -- (\xmax, -2.3);
+			\draw[gray!50, thin] (\xmin, -2.9) -- (\xmax, -2.9);
+
+			\newcommand{\prediction}[4]{
+				\node[circle, inner sep=0pt, outer sep=0pt, minimum size=6pt, draw=black, fill=####3] (####4) at (\xmin + ####1 * \xstep, \ymin+3*####2) {};
+			}
+
+			\prediction{1}{0.8506671}{controls-default}{p1}
+			\prediction{3}{0.73082274}{controls-default}{p2}
+			\prediction{5}{0.757359946}{controls-default}{p3}
+			\prediction{7}{0.83361979}{controls-default}{p4}
+			\prediction{9}{0.890486}{controls-default}{p5}
+			\prediction{11}{0.894983}{controls-default}{p6}
+
+			\draw[controls-default, thick] (p1) -- (p2) -- (p3) -- (p4) -- (p5) -- (p6);
+
+			\draw[fill=black] (\xmin, \ymin) -- (\xmax, \ymin) -- (\xmax, \ymin - 5.1) -- (\xmin, \ymin - 5.1) -- (\xmin, \ymin);
+
+			\node[anchor=north, inner sep=0pt, outer sep=0pt] at (\xmin + 6*\xstep+0.001, \ymin - 0.2) {
+				\includegraphics[width=0.49\textwidth]{data/MCI.png}
+			};
+
+			\newcommand{\datenode}[2]{
+				\node[fill=black,inner sep=0pt,anchor=north,font=\tiny\selectfont] at ($ (\xmin, \ymin) + (####2 * \xstep, -0.1) $) {\textcolor{white}{####1}};
+			}
+
+			\datenode{14.08.06}{1}
+			\datenode{11.04.07}{3}
+			\datenode{19.09.07}{5}
+			\datenode{18.06.08}{7}
+			\datenode{17.10.08}{9}
+			\datenode{04.09.09}{11}
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}[scale=0.9]
+			\definecolor{controls-default}{HTML}{3594d6}
+			\definecolor{cases-default}{HTML}{c71555}
+			\definecolor{healthy-default}{HTML}{4dac93}
+			\def\xmin{1.15}
+			\def\xmax{8.03}
+			\def\ymin{-3.5}
+			\def\ymax{-0.5}
+			\def\xstep{0.492}
+
+			\draw[] (\xmin, \ymax) -- (\xmax, \ymax) -- (\xmax, \ymin) -- (\xmin, \ymin) -- (\xmin, \ymax);
+			\node[anchor=east] at (\xmin, -0.5) {\footnotesize{1.0}};
+			\node[anchor=east] at (\xmin, -1.1) {\footnotesize{0.8}};
+			\node[anchor=east] at (\xmin, -1.7) {\footnotesize{0.6}};
+			\node[anchor=east] at (\xmin, -2.3) {\footnotesize{0.4}};
+			\node[anchor=east] at (\xmin, -2.9) {\footnotesize{0.2}};
+			\node[anchor=east] at (\xmin, -3.5) {\footnotesize{0.0}};
+			\node[rotate=90,anchor=south] at ($ (\xmin, -2) - (0.7, 0) $) {\footnotesize{Prediction}};
+
+			\draw[gray!50, thin] (\xmin, -1.1) -- (\xmax, -1.1);
+			\draw[gray!50, thin] (\xmin, -1.7) -- (\xmax, -1.7);
+			\draw[gray!50, thin] (\xmin, -2.3) -- (\xmax, -2.3);
+			\draw[gray!50, thin] (\xmin, -2.9) -- (\xmax, -2.9);
+
+			\newcommand{\prediction}[4]{
+				\node[circle, inner sep=0pt, outer sep=0pt, minimum size=6pt, draw=black, fill=####3] (####4) at (\xmin + ####1 * \xstep, \ymin+3*####2) {};
+			}
+
+
+
+			\draw[fill=black] (\xmin, \ymin) -- (\xmax, \ymin) -- (\xmax, \ymin - 5.1) -- (\xmin, \ymin - 5.1) -- (\xmin, \ymin);
+
+			\node[anchor=north, inner sep=0pt, outer sep=0pt] at (\xmin + 7*\xstep+0.001, \ymin - 0.2) {
+				\includegraphics[width=0.57\textwidth]{data/MCI_to_CN.png}
+			};
+
+			\newcommand{\datenode}[2]{
+				\node[fill=black,inner sep=0pt,anchor=north,font=\tiny\selectfont] at ($ (\xmin, \ymin) + (####2 * \xstep, -0.1) $) {\textcolor{white}{####1}};
+			}
+
+			\datenode{24.06.10}{1}
+			\datenode{22.10.10}{3}
+			\datenode{22.01.11}{5}
+			\datenode{07.07.11}{7}
+			\datenode{11.07.12}{9}
+			\datenode{18.07.13}{11}
+			\datenode{13.08.15}{13}
+
+			\prediction{1}{0.040251}{controls-default}{p1}
+			\prediction{3}{0.032405}{controls-default}{p2}
+			\prediction{5}{0.036456}{healthy-default}{p3}
+			\prediction{7}{0.0369694}{healthy-default}{p4}
+			\prediction{9}{0.03886}{healthy-default}{p5}
+			\prediction{11}{0.0409125}{healthy-default}{p6}
+			\prediction{13}{0.036031}{healthy-default}{p7}
+
+			\draw[controls-default, thick] (p1) -- (p2) -- (p3);
+			\draw[healthy-default, thick] (p3) -- (p4) -- (p5) -- (p6) -- (p7);
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+			\definecolor{cases-default}{HTML}{c71555}
+			\definecolor{healthy-default}{HTML}{4dac93}
+
+			\begin{axis}[
+				width=0.84\textwidth,
+				height=0.7\textwidth,
+				xmin=-12,
+				xmax=0,
+				ymin=-0.05,
+				ymax=1.05,
+				ylabel=Prediction,
+				every tick label/.append style={font=\footnotesize},
+				xlabel={Years to diagnosis},
+				clip=false,
+				grid,
+				grid style={line width=0.05mm, gray!50},
+				xtick style={draw=none},
+				ytick style={draw=none}
+			]
+				\addplot[mark=*,mark options={fill=cases-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/patient_histories.csv};
+				\addplot[mark=*,mark options={fill=controls-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/control_histories.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+			\definecolor{cases-default}{HTML}{c71555}
+			\definecolor{healthy-default}{HTML}{4dac93}
+
+			\begin{axis}[
+				width=0.84\textwidth,
+				height=0.7\textwidth,
+				xmin=-12,
+				xmax=0,
+				ymin=-0.05,
+				ymax=1.05,
+				ylabel=Prediction,
+				every tick label/.append style={font=\footnotesize},
+				xlabel={Years to diagnosis},
+				clip=false,
+				grid,
+				grid style={line width=0.05mm, gray!50},
+				xtick style={draw=none},
+				ytick style={draw=none}
+			]
+				\addplot[mark=*,mark options={fill=cases-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/patient_histories.csv};
+				\addplot[mark=*,mark options={fill=controls-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/control_histories.csv};
+				\addplot[cases-default, dashed] coordinates {
+					(-12, 0.677)
+					(0, 0.677)
+				} node[anchor=west] at (axis cs: 0, 0.677) {\scriptsize{0.677}};
+				\addplot[controls-default, dashed] coordinates {
+					(-12, 0.304)
+					(0, 0.304)
+				} node[anchor=west] at (axis cs: 0, 0.304) {\scriptsize{0.304}};
+				\draw[Latex-Latex, thick, densely dotted] (axis cs: -0.2, 0.304) -- (axis cs: -0.2, 0.677);
+				\coordinate (coef) at (axis cs: 0, 0.490);
+			\end{axis}
+			\node[anchor=west,align=left,font=\scriptsize\linespread{0.8}\selectfont] at (coef) {$\beta\mathrm{=}0.441$\\$p\mathrm{=}4.87 * 10^{-60}$};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+			\definecolor{cases-default}{HTML}{c71555}
+			\definecolor{healthy-default}{HTML}{4dac93}
+
+			\begin{axis}[
+				width=0.84\textwidth,
+				height=0.7\textwidth,
+				xmin=-12,
+				xmax=0,
+				ymin=-0.05,
+				ymax=1.05,
+				ylabel=Prediction,
+				every tick label/.append style={font=\footnotesize},
+				xlabel={Years to diagnosis},
+				clip=false,
+				grid,
+				grid style={line width=0.05mm, gray!50},
+				xtick style={draw=none},
+				ytick style={draw=none}
+			]
+				\addplot[mark=*,mark options={fill=cases-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/patient_histories.csv};
+				\addplot[mark=*,mark options={fill=controls-default}] table [
+					x expr=\thisrow{bucket} * -3 / 12,
+					y=mean,
+					col sep=comma
+				] {data/control_histories.csv};
+				\addplot[dashed] coordinates {
+					(-12, 0.677)
+					(0, 0.677)
+				};
+				\addplot[dashed] coordinates {
+					(-12, 0.304)
+					(0, 0.304)
+				};
+				\addplot[cases-default, dashed] coordinates {
+					(-12, 0.42)
+					(0, 0.73)
+				};
+				\addplot[controls-default, dashed] coordinates {
+					(-10, 0.10)
+					(0, 0.34)
+				};
+				\draw[Latex-Latex, thick, densely dotted] (axis cs: -0.2, 0.337) -- (axis cs: -0.2, 0.727);
+				\coordinate (coef) at (axis cs: 0, 0.532);
+			\end{axis}
+			\node[anchor=west,align=left,font=\scriptsize\linespread{0.8}\selectfont] at (coef) {$\beta\mathrm{=}0.047$\\$p\mathrm{=}6.12 * 10^{-15}$};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\includegraphics[width=2.5cm]{data/component_0.png}
+			};
+			\node[] at (2.55, 0) {
+				\includegraphics[width=2.5cm]{data/component_1.png}
+			};
+			\node[] at (5.1, 0) {
+				\includegraphics[width=2.5cm]{data/component_2.png}
+			};
+			\node[] at (7.65, 0) {
+				\includegraphics[width=2.5cm]{data/component_3.png}
+			};
+			\node[] at (0, -4) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+
+			\node[] at (0, 0) {
+				\includegraphics[width=2.5cm]{data/component_0.png}
+			};
+			\node[] at (2.55, 0) {
+				\includegraphics[width=2.5cm]{data/component_1.png}
+			};
+			\node[] at (5.1, 0) {
+				\includegraphics[width=2.5cm]{data/component_2.png}
+			};
+			\node[] at (7.65, 0) {
+				\includegraphics[width=2.5cm]{data/component_3.png}
+			};
+			\node[] at (0, -4) {};
+
+			\draw[Latex-Latex, very thick] (0, -3.5) -- (7.65, -3.5);
+			\draw[very thick] (3.825,-3.575) -- (3.825,-3.425);
+			\node[anchor=north] at (3.825,-3.55) {\footnotesize{0}};
+			\node[anchor=west] at (7.65,-3.5) {\footnotesize{\textbf{+}}};
+			\node[anchor=east] at (0,-3.5) {\footnotesize{\textbf{-}}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+
+			\node[] at (0, 0) {
+				\includegraphics[width=2.5cm]{data/component_0.png}
+			};
+			\node[] at (2.55, 0) {
+				\includegraphics[width=2.5cm]{data/component_1.png}
+			};
+			\node[] at (5.1, 0) {
+				\includegraphics[width=2.5cm]{data/component_2.png}
+			};
+			\node[] at (7.65, 0) {
+				\includegraphics[width=2.5cm]{data/component_3.png}
+			};
+			\node[] at (0, -4) {};
+
+			\draw[Latex-Latex, very thick] (0, -3.5) -- (7.65, -3.5);
+			\draw[very thick] (3.825,-3.575) -- (3.825,-3.425);
+			\node[anchor=north] at (3.825,-3.55) {\footnotesize{0}};
+			\node[anchor=west] at (7.65,-3.5) {\footnotesize{\textbf{+}}};
+			\node[anchor=east] at (0,-3.5) {\footnotesize{\textbf{-}}};
+			\node[circle,draw=black,fill=controls-default,inner sep=2pt] (pos) at (6.5,-3.5) {};
+			\node[anchor=south] at (pos.north) {
+				\includegraphics[
+					width=1.2cm,
+					clip=true,
+					trim = 319mm 150mm 0mm 75mm
+				]{data/MCI.png}
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+
+			\node[] at (0, 0) {
+				\includegraphics[width=2.5cm]{data/component_0.png}
+			};
+			\node[] at (2.55, 0) {
+				\includegraphics[width=2.5cm]{data/component_1.png}
+			};
+			\node[] at (5.1, 0) {
+				\includegraphics[width=2.5cm]{data/component_2.png}
+			};
+			\node[] at (7.65, 0) {
+				\includegraphics[width=2.5cm]{data/component_3.png}
+			};
+			\node[] at (0, -4) {};
+
+			\draw[Latex-Latex, very thick] (0, -3.5) -- (7.65, -3.5);
+			\draw[very thick] (3.825,-3.575) -- (3.825,-3.425);
+			\node[anchor=north] at (3.825,-3.55) {\footnotesize{0}};
+			\node[anchor=west] at (7.65,-3.5) {\footnotesize{\textbf{+}}};
+			\node[anchor=east] at (0,-3.5) {\footnotesize{\textbf{-}}};
+			\node[circle,draw=black,fill=controls-default,inner sep=2pt] (pos) at (6.5,-3.5) {};
+			\node[anchor=south] at (pos.north) {
+				\includegraphics[
+					width=1.2cm,
+					clip=true,
+					trim = 319mm 150mm 0mm 75mm
+				]{data/MCI.png}
+			};
+			\node[circle,draw=black,fill=controls-default,inner sep=2pt] (neg) at (1.15,-3.5) {};
+			\node[anchor=south] at (neg.north) {
+				\scalebox{-1}[1]{
+					\includegraphics[
+						width=1.2cm,
+						clip=true,
+						trim = 319mm 150mm 0mm 75mm
+					]{data/MCI.png}
+				}
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Relevance maps in MCI patients}
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\definecolor{controls-default}{HTML}{3594d6}
+
+			\node[] at (0, 0) {
+				\includegraphics[width=2.5cm]{data/component_0.png}
+			};
+			\node[] at (2.55, 0) {
+				\includegraphics[width=2.5cm]{data/component_1.png}
+			};
+			\node[] at (5.1, 0) {
+				\includegraphics[width=2.5cm]{data/component_2.png}
+			};
+			\node[] at (7.65, 0) {
+				\includegraphics[width=2.5cm]{data/component_3.png}
+			};
+			\node[] at (0, -4) {};
+			\node[] at (0, -1.9) {\scriptsize{$p\mathrm{=}1.19*10^{-15}$}};
+			\node[] at (5.1, -1.9) {\scriptsize{$p\mathrm{=}6.62*10^{-4}$}};
+			\node[] at (7.65, -1.9) {\scriptsize{$p\mathrm{=}1.06*10^{-5}$}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+	\begin{frame}{Summary}
+		\vfill
+		\centering
+		\begin{itemize}
+			\item A pipeline for describing individual-level deviations in brain morphology related to dementia using deep learning and explainable AI
+			\begin{itemize}
+				\item Corroborates existing knowledge
+				\item Is predictive of future outcomes
+			\end{itemize}
+			\item Use cases?
+			\begin{itemize}
+				\item Fully data-driven characterization of the brain which can be used for e.g. subtyping
+				\item Clinical tool?
+			\end{itemize}
+		\end{itemize}
 		\vfill
 	\end{frame}
 \end{document}
