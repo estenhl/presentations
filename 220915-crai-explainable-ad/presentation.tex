@@ -150,7 +150,7 @@
 
 					\node[circle, minimum size=\nodesize, inner sep=0pt, fill=train-fill!80, outer sep=0pt, line width=0pt, draw=train-fill!65] (n60) at \modellocation{(3 * \hsep, 0)} {};
 
-					\node[] (loss) at (1+2*4.85, -2.2) {\scriptsize{$\mathrm{logloss}(y, \hat{y})$}};
+					\node[] (loss) at (1+2*4.85, -2.2) {\scriptsize{$logloss(y, \hat{y})$}};
 
 					\draw[
 						color=train-fill!35,
@@ -1399,42 +1399,42 @@
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
@@ -1537,42 +1537,42 @@
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							height=0.485cm,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
 						]{data/averages/dementia.png}
@@ -1740,7 +1740,7 @@
 
 					\node[circle, minimum size=\nodesize, inner sep=0pt, fill=train-fill!80, outer sep=0pt, line width=0pt, draw=train-fill!65] (n60) at \modellocation{(3 * \hsep, 0)} {};
 
-					\node[] (loss) at (1+2*4.85, -2.2) {\scriptsize{$\mathrm{logloss}(y, \hat{y})$}};
+					\node[] (loss) at (1+2*4.85, -2.2) {\scriptsize{$logloss(y, \hat{y})$}};
 
 					\draw[
 						color=train-fill!35,
@@ -4830,7 +4830,17 @@
 						trim = 192mm 232mm 0mm 0mm
 					]{data/overlap/test_90.png}
 				};
+				\coordinate (center) at (axis cs: 0.5, -0.3);
 			\end{axis}
+			\node[anchor=west] (weights) at ($ (center.east) + (0.15, 0) $) {\scriptsize{Random weights}};
+			\node[anchor=east] (sex) at ($ (center.west) + (-0.15, 0) $) {\scriptsize{Sex classifier}};
+			\node[anchor=east] (dementia) at ($ (sex.west) + (-0.3, 0) $) {\scriptsize{Dementia classifier}};
+			\node[anchor=west] (images) at ($ (weights.east) + (0.3, 0) $) {\scriptsize{Random images}};
+
+			\draw[very thick,draw=cb-blue-purple] ($ (dementia.west) + (-0.25, 0) $) -- ($ (dementia.west) + (-0.0, 0) $);
+			\draw[very thick,draw=cb-green] ($ (sex.west) + (-0.25, 0) $) -- ($ (sex.west) + (-0.0, 0) $);
+			\draw[very thick,draw=cb-gray] ($ (weights.west) + (-0.25, 0) $) -- ($ (weights.west) + (-0.0, 0) $);
+			\draw[very thick,draw=cb-orange] ($ (images.west) + (-0.25, 0) $) -- ($ (images.west) + (-0.0, 0) $);
         \end{tikzpicture}
 		\vfill
 	\end{frame}
@@ -8103,11 +8113,11 @@
 			\hline
 			\textbf{Covariates}&\textbf{AUC}&\textbf{Balanced accuracy}\\
 			\hline
-			age+sex+age:sex&-&50\%\\
+			age+sex+age:sex&0.515&50.40\%\\
 			\hline
-			age+sex+age:sex+$y_{n}$&-&59\%\\
+			age+sex+age:sex+$y_{n}$&0.719&59.12\%\\
 			\hline
-			age+sex+age:sex+$\hat{y}_{n+1}$+$\hat{c}_{n+1}$&0.80&76\%\\
+			age+sex+age:sex+$\hat{y}_{n+1}$+$\hat{c}_{n+1}$&0.822&75.06\%\\
 			\hline
 		\end{tabular}\\
 		\vspace{0.4cm}
@@ -8120,7 +8130,7 @@
 		\vfill
 		\noindent
 		\begin{quotation}
-			There is an X\% chance the patient will progress into dementia by date XX.YY.ZZZZ based on existing pathology in brain regions A, B and C, and an expected increase/decrease of pathology in regions D and E.
+			"There is an X\% chance the patient will progress into dementia by date XX.YY.ZZZZ based on existing pathology in brain regions A, B and C, and an expected increase/decrease of pathology in regions D and E."
 		\end{quotation}
 		\vfill
 	\end{frame}
