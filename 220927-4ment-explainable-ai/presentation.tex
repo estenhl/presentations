@@ -56,9 +56,6 @@
 
 	\def\plotwidth{11.68}
 
-	\newcommand{\mrivsep}{0.52}
-	\newcommand{\mrihsep}{0.44}
-
 	\definecolor{outercolor}{RGB}{128, 128, 128}
 	\colorlet{train-fill}{cb-green}
 
@@ -66,62 +63,1293 @@
 		\maketitle
 	\end{frame}
 
-	\begin{frame}{Overview}
+	\begin{frame}{Layerwise Relevance Propagation} % Forward pass
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
+			\newcommand{\modellocation}[1]{($ (4.5, -2.2) + ####1 $)}
+
+			\colorlet{predict-fill}{cb-blue}
+
+			\node[inner sep=0pt, outer sep=0pt,draw=black] (input) at \mrilocation{(0, 0)} {
+				\includegraphics[width=1.2cm]{data/slice.png}
+			};
+
+			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!85, outer sep=0pt, line width=0pt, draw=predict-fill!85] (n10) at \modellocation{(-2 * \hsep, 2 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill, outer sep=0pt, line width=0pt, draw=predict-fill] (n11) at \modellocation{(-2 * \hsep, 1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n12) at \modellocation{(-2 * \hsep, 0)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n13) at \modellocation{(-2 * \hsep, -1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!50, outer sep=0pt, line width=0pt, draw=predict-fill!50] (n14) at \modellocation{(-2 * \hsep, -2 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n20) at \modellocation{(-1 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!65, outer sep=0pt, line width=0pt, draw=predict-fill!65] (n21) at \modellocation{(-1 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!90, outer sep=0pt, line width=0pt, draw=predict-fill!90] (n22) at \modellocation{(-1 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!40, outer sep=0pt, line width=0pt, draw=predict-fill!40] (n23) at \modellocation{(-1 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!80, outer sep=0pt, line width=0pt, draw=predict-fill!80] (n30) at \modellocation{(0 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!55, outer sep=0pt, line width=0pt, draw=predict-fill!55] (n31) at \modellocation{(0 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n32) at \modellocation{(0 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n33) at \modellocation{(0 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill, outer sep=0pt, line width=0pt, draw=predict-fill] (n40) at \modellocation{(1 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!20, outer sep=0pt, line width=0pt, draw=predict-fill!20] (n41) at \modellocation{(1 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n42) at \modellocation{(1 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n50) at \modellocation{(2 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!35, outer sep=0pt, line width=0pt, draw=predict-fill!35] (n51) at \modellocation{(2 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!65, outer sep=0pt, line width=0pt, draw=predict-fill!65] (n52) at \modellocation{(2 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!85, outer sep=0pt, line width=0pt, draw=predict-fill!85] (output) at \modellocation{(3 * \hsep, 0)} {};
+
+			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
+
+			\draw[
+				color=predict-fill!85,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n00) to [out=20,in=200] (n10) {};
+			\draw[
+				color=predict-fill,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n00) to [out=10,in=190] (n11) {};
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n00) to [out=0,in=180] (n12) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n00) to [out=-10,in=170] (n13) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n00) to [out=-20,in=160] (n14) {};
+
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n10) to [out=-5,in=175] (n20) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n10) to [out=-15,in=165] (n21) {};
+			\draw[
+				color=predict-fill!55,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n10) to [out=-25,in=155] (n22) {};
+			\draw[
+				color=predict-fill!85,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n10) to [out=-35,in=145] (n23) {};
+
+			\draw[
+				color=predict-fill!45,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n11) to [out=5,in=185] (n20) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n11) to [out=-5,in=175] (n21) {};
+			\draw[
+				color=predict-fill,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n11) to [out=-15,in=165] (n22) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n11) to [out=-25,in=155] (n23) {};
+
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n12) to [out=15,in=195] (n20) {};
+			\draw[
+				color=predict-fill!90,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n12) to [out=5,in=185] (n21) {};
+			\draw[
+				color=predict-fill!80,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n12) to [out=-5,in=175] (n22) {};
+			\draw[
+				color=predict-fill!20,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n12) to [out=-15,in=165] (n23) {};
+
+			\draw[
+				color=predict-fill!55,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n13) to [out=25,in=205] (n20) {};
+			\draw[
+				color=predict-fill!65,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n13) to [out=15,in=195] (n21) {};
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n13) to [out=5,in=185] (n22) {};
+			\draw[
+				color=predict-fill!45,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n13) to [out=-5,in=175] (n23) {};
+
+			\draw[
+				color=predict-fill!10,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n14) to [out=35,in=215] (n20) {};
+			\draw[
+				color=predict-fill!90,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n14) to [out=25,in=205] (n21) {};
+			\draw[
+				color=predict-fill!80,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n14) to [out=15,in=195] (n22) {};
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n14) to [out=5,in=185] (n23) {};
+
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n20) to [out=0,in=180] (n30) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n20) to [out=-10,in=170] (n31) {};
+			\draw[
+				color=predict-fill!85,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n20) to [out=-20,in=160] (n32) {};
+			\draw[
+				color=predict-fill!45,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n20) to [out=-30,in=150] (n33) {};
+
+			\draw[
+				color=predict-fill!20,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n21) to [out=10,in=190] (n30) {};
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n21) to [out=0,in=180] (n31) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n21) to [out=-10,in=170] (n32) {};
+			\draw[
+				color=predict-fill!90,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n21) to [out=-20,in=160] (n33) {};
+
+			\draw[
+				color=predict-fill!65,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n22) to [out=20,in=200] (n30) {};
+			\draw[
+				color=predict-fill!20,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n22) to [out=10,in=190] (n31) {};
+			\draw[
+				color=predict-fill!30,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n22) to [out=0,in=180] (n32) {};
+			\draw[
+				color=predict-fill!40,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n22) to [out=-10,in=170] (n33) {};
+
+			\draw[
+				color=predict-fill,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n23) to [out=30,in=210] (n30) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n23) to [out=20,in=200] (n31) {};
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n23) to [out=10,in=190] (n32) {};
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n23) to [out=0,in=180] (n33) {};
+
+			\draw[
+				color=predict-fill!70,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n30) to [out=-5,in=175] (n40) {};
+			\draw[
+				color=predict-fill!80,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n30) to [out=-15,in=165] (n41) {};
+			\draw[
+				color=predict-fill!20,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n30) to [out=-25,in=155] (n42) {};
+
+			\draw[
+				color=predict-fill!60,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n31) to [out=5,in=185] (n40) {};
+			\draw[
+				color=predict-fill!95,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n31) to [out=-5,in=175] (n41) {};
+			\draw[
+				color=predict-fill!35,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n31) to [out=-15,in=165] (n42) {};
+
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n32) to [out=15,in=195] (n40) {};
+			\draw[
+				color=predict-fill!20,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n32) to [out=5,in=185] (n41) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n32) to [out=-5,in=175] (n42) {};
+
+			\draw[
+				color=predict-fill!40,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n33) to [out=25,in=205] (n40) {};
+			\draw[
+				color=predict-fill!80,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n33) to [out=15,in=195] (n41) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n33) to [out=5,in=185] (n42) {};
+
+			\draw[
+				color=predict-fill!25,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n40) to [out=0,in=180] (n50) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n40) to [out=-10,in=170] (n51) {};
+			\draw[
+				color=predict-fill!45,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n40) to [out=-20,in=160] (n52) {};
+
+			\draw[
+				color=predict-fill!90,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n41) to [out=10,in=190] (n50) {};
+			\draw[
+				color=predict-fill!10,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n41) to [out=0,in=180] (n51) {};
+			\draw[
+				color=predict-fill!75,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n41) to [out=-10,in=170] (n52) {};
+
+			\draw[
+				color=predict-fill!60,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n42) to [out=20,in=200] (n50) {};
+			\draw[
+				color=predict-fill!25,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n42) to [out=10,in=190] (n51) {};
+			\draw[
+				color=predict-fill!15,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n42) to [out=0,in=180] (n52) {};
+
+			\draw[
+				color=predict-fill!95,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n50) to [out=-10,in=170] (output) {};
+			\draw[
+				color=predict-fill!25,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n51) to [out=0,in=180] (output) {};
+			\draw[
+				color=predict-fill!50,
+				-\innerarrow,
+				line width=\arrowwidth
+			] (n52) to [out=10,in=190] (output) {};
+
+			\draw[black] (n00.center) --
+						 ($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
+						 ($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
+						 ($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
+						 ($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
+
+			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Prediction model}};
+
+			\draw[
+				color=outercolor,
+				-\outerarrow,
+				line width=0.1cm
+			] (input) to [out=0,in=180] (n00) {};
+			\draw[
+				color=outercolor,
+				-\outerarrow,
+				line width=0.1cm
+			] (output) to [out=0,in=180] (diagnosis) {};
+
+			\node[] at (2.8, -4.3) {\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Layerwise Relevance Propagation} % Backward pass
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
+			\newcommand{\lrplocation}[1]{($ (4.5, -2.2) + ####1 $)}
+
+			\node[inner sep=0pt, outer sep=0pt, minimum width=1.2cm] (input) at \mrilocation{(0, 0)} {};
+
+			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \lrplocation{(-3 * \hsep, 0)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;orange,1}] (n10) at \lrplocation{(-2 * \hsep, 2 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,3;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,3;red,1}] (n11) at \lrplocation{(-2 * \hsep, 1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=yellow, outer sep=0pt, line width=0pt, draw=yellow] (n12) at \lrplocation{(-2 * \hsep, 0)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=black, outer sep=0pt, line width=0pt, draw=black] (n13) at \lrplocation{(-2 * \hsep, -1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=red, outer sep=0pt, line width=0pt, draw=red] (n14) at \lrplocation{(-2 * \hsep, -2 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;white,2;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;white,2;orange,1}] (n20) at \lrplocation{(-1 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,6}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,4}] (n21) at \lrplocation{(-1 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,1}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,1}] (n22) at \lrplocation{(-1 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;red,2}] (n23) at \lrplocation{(-1 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,3;orange,2}, outer sep=0pt, line width=0pt, draw={rgb:red,3;orange,1}] (n30) at \lrplocation{(0 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,3;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,3;orange,1}] (n31) at \lrplocation{(0 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,5;red,1}] (n32) at \lrplocation{(0 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n33) at \lrplocation{(0 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,10;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,10;orange,1}] (n40) at \lrplocation{(1 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,1}, outer sep=0pt, line width=0pt, draw={rgb:red,1}] (n41) at \lrplocation{(1 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,15;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,15;red,2}] (n42) at \lrplocation{(1 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,5;black,1;yellow,2}, outer sep=0pt, line width=0pt, draw={rgb:red,5;black,1;yellow,2}] (n50) at \lrplocation{(2 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n51) at \lrplocation{(2 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,5;orange,1}] (n52) at \lrplocation{(2 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:orange,7;yellow,4;black,1}, outer sep=0pt, line width=0pt, draw={rgb:orange,7;yellow,4;black,1}] (n60) at \lrplocation{(3 * \hsep, 0)} {};
+
+			\draw[
+				color={rgb:black,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=20,in=200] (n10) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=10,in=190] (n11) {};
+			\draw[
+				color=yellow,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=0,in=180] (n12) {};
+			\draw[
+				color=black,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=-10,in=170] (n13) {};
+			\draw[
+				color=red,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=-20,in=160] (n14) {};
+
+			\draw[
+				color={rgb:black,5;white,1;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-5,in=175] (n20) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-15,in=165] (n21) {};
+			\draw[
+				color={rgb:black,4;red,2;yellow,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-25,in=155] (n22) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-35,in=145] (n23) {};
+
+			\draw[
+				color={rgb:black,10;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=5,in=185] (n20) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-5,in=175] (n21) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-15,in=165] (n22) {};
+			\draw[
+				color={rgb:black,10;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-25,in=155] (n23) {};
+
+			\draw[
+				color={rgb:black,5;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=15,in=195] (n20) {};
+			\draw[
+				color={rgb:red,3;yellow,5},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=5,in=185] (n21) {};
+			\draw[
+				color={rgb:red,5;yellow,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=-5,in=175] (n22) {};
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=-15,in=165] (n23) {};
+
+			\draw[
+				color={rgb:black,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=25,in=205] (n20) {};
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=15,in=195] (n21) {};
+			\draw[
+				color={rgb:black,5;red,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=5,in=185] (n22) {};
+			\draw[
+				color=black,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=-5,in=175] (n23) {};
+
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=35,in=215] (n20) {};
+			\draw[
+				color={rgb:red,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=25,in=205] (n21) {};
+			\draw[
+				color={rgb:red,5;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=15,in=195] (n22) {};
+			\draw[
+				color={rgb:black,5;red,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=5,in=185] (n23) {};
+
+			\draw[
+				color={rgb:black,1;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=0,in=180] (n30) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-10,in=170] (n31) {};
+			\draw[
+				color={rgb:black,10;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-20,in=160] (n32) {};
+			\draw[
+				color={rgb:black,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-30,in=150] (n33) {};
+
+			\draw[
+				color={rgb:orange,5;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=10,in=190] (n30) {};
+			\draw[
+				color={rgb:yellow,10;orange,4},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=0,in=180] (n31) {};
+			\draw[
+				color={rgb:black,2;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=-10,in=170] (n32) {};
+			\draw[
+				color={rgb:black,1;orange,2;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=-20,in=160] (n33) {};
+
+			\draw[
+				color={rgb:red,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=20,in=200] (n30) {};
+			\draw[
+				color={rgb:yellow,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=10,in=190] (n31) {};
+			\draw[
+				color={rgb:black,2;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=0,in=180] (n32) {};
+			\draw[
+				color={rgb:black,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=-10,in=170] (n33) {};
+
+			\draw[
+				color={rgb:black,4;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=30,in=210] (n30) {};
+			\draw[
+				color={rgb:orange,2;black,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=20,in=200] (n31) {};
+			\draw[
+				color={rgb:black,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=10,in=190] (n32) {};
+			\draw[
+				color={rgb:black,5;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=0,in=180] (n33) {};
+
+			\draw[
+				color={rgb:orange,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-5,in=175] (n40) {};
+			\draw[
+				color={rgb:gray,1;orange,1;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-15,in=165] (n41) {};
+			\draw[
+				color={rgb:orange,2;black,2;white,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-25,in=155] (n42) {};
+
+			\draw[
+				color={rgb:yellow,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=5,in=185] (n40) {};
+			\draw[
+				color={rgb:red,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=-5,in=175] (n41) {};
+			\draw[
+				color={rgb:gray,1;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=-15,in=165] (n42) {};
+
+			\draw[
+				color={rgb:gray,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=15,in=195] (n40) {};
+			\draw[
+				color={rgb:gray,1;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=5,in=185] (n41) {};
+			\draw[
+				color={rgb:gray,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=-5,in=175] (n42) {};
+
+			\draw[
+				color={rgb:gray,2;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=25,in=205] (n40) {};
+			\draw[
+				color={rgb:gray,1;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=15,in=195] (n41) {};
+			\draw[
+				color={rgb:gray,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=5,in=185] (n42) {};
+
+			\draw[
+				color={rgb:red,3;yellow,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=0,in=180] (n50) {};
+			\draw[
+				color={rgb:gray,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=-10,in=170] (n51) {};
+			\draw[
+				color={rgb:yellow,10;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=-20,in=160] (n52) {};
+
+			\draw[
+				color={rgb:red,5;black,1;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=10,in=190] (n50) {};
+			\draw[
+				color={rgb:gray,7;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=0,in=180] (n51) {};
+			\draw[
+				color={rgb:yellow,1;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=-10,in=170] (n52) {};
+
+			\draw[
+				color={rgb:gray,7;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=20,in=200] (n50) {};
+			\draw[
+				color={rgb:gray,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=10,in=190] (n51) {};
+			\draw[
+				color={rgb:gray,5;red,1;black,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=0,in=180] (n52) {};
+
+			\draw[
+				color={rgb:red,5;black,1;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n50) to [out=-10,in=170] (n60) {};
+			\draw[
+				color={rgb:gray,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n51) to [out=0,in=180] (n60) {};
+			\draw[
+				color={rgb:yellow,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n52) to [out=10,in=190] (n60) {};
+
+			\draw[black] (n00.center) --
+						($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
+						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
+						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
+						($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
+
+			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Layerwise Relevance Propagation}};
+
+			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
+
+
+			\draw[
+				color=outercolor,
+				\outerarrow-,
+				line width=0.1cm
+			] (output) to [out=0,in=180] (diagnosis) {};
+
+			\node[] at (2.8, -4.3) {\textcolor{black!30}{\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}}};
+			\node[] at (6.2, -4.3) {\footnotesize{$R_{i,j}=\sum\limits_k \frac{a_jw_{j,k}}{\sum\limits_l a_lw_{l,k}}R_{i+1,k}$}};
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Layerwise Relevance Propagation} % Heatmap
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
+			\newcommand{\lrplocation}[1]{($ (4.5, -2.2) + ####1 $)}
+
+			\node[inner sep=0pt, outer sep=0pt, minimum width=1.2cm] (input) at \mrilocation{(0, 0)} {
+				\includegraphics[
+					width=1.2cm,
+					clip=true,
+					trim = 192mm 232mm 0mm 0mm
+				]{data/dementia_average.png}
+			};
+
+			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \lrplocation{(-3 * \hsep, 0)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;orange,1}] (n10) at \lrplocation{(-2 * \hsep, 2 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,3;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,3;red,1}] (n11) at \lrplocation{(-2 * \hsep, 1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=yellow, outer sep=0pt, line width=0pt, draw=yellow] (n12) at \lrplocation{(-2 * \hsep, 0)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=black, outer sep=0pt, line width=0pt, draw=black] (n13) at \lrplocation{(-2 * \hsep, -1 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=red, outer sep=0pt, line width=0pt, draw=red] (n14) at \lrplocation{(-2 * \hsep, -2 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;white,2;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;white,2;orange,1}] (n20) at \lrplocation{(-1 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,6}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,4}] (n21) at \lrplocation{(-1 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,1}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,1}] (n22) at \lrplocation{(-1 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;red,2}] (n23) at \lrplocation{(-1 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,3;orange,2}, outer sep=0pt, line width=0pt, draw={rgb:red,3;orange,1}] (n30) at \lrplocation{(0 * \hsep, 1.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,3;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,3;orange,1}] (n31) at \lrplocation{(0 * \hsep, 0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,5;red,1}] (n32) at \lrplocation{(0 * \hsep, -0.5 * \vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n33) at \lrplocation{(0 * \hsep, -1.5 * \vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,10;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,10;orange,1}] (n40) at \lrplocation{(1 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,1}, outer sep=0pt, line width=0pt, draw={rgb:red,1}] (n41) at \lrplocation{(1 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,15;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,15;red,2}] (n42) at \lrplocation{(1 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,5;black,1;yellow,2}, outer sep=0pt, line width=0pt, draw={rgb:red,5;black,1;yellow,2}] (n50) at \lrplocation{(2 * \hsep, 1*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n51) at \lrplocation{(2 * \hsep, 0*\vsep)} {};
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,5;orange,1}] (n52) at \lrplocation{(2 * \hsep, -1*\vsep)} {};
+
+			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:orange,7;yellow,4;black,1}, outer sep=0pt, line width=0pt, draw={rgb:orange,7;yellow,4;black,1}] (n60) at \lrplocation{(3 * \hsep, 0)} {};
+
+			\draw[
+				color={rgb:black,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=20,in=200] (n10) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=10,in=190] (n11) {};
+			\draw[
+				color=yellow,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=0,in=180] (n12) {};
+			\draw[
+				color=black,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=-10,in=170] (n13) {};
+			\draw[
+				color=red,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n00) to [out=-20,in=160] (n14) {};
+
+			\draw[
+				color={rgb:black,5;white,1;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-5,in=175] (n20) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-15,in=165] (n21) {};
+			\draw[
+				color={rgb:black,4;red,2;yellow,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-25,in=155] (n22) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n10) to [out=-35,in=145] (n23) {};
+
+			\draw[
+				color={rgb:black,10;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=5,in=185] (n20) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-5,in=175] (n21) {};
+			\draw[
+				color={rgb:black,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-15,in=165] (n22) {};
+			\draw[
+				color={rgb:black,10;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n11) to [out=-25,in=155] (n23) {};
+
+			\draw[
+				color={rgb:black,5;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=15,in=195] (n20) {};
+			\draw[
+				color={rgb:red,3;yellow,5},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=5,in=185] (n21) {};
+			\draw[
+				color={rgb:red,5;yellow,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=-5,in=175] (n22) {};
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n12) to [out=-15,in=165] (n23) {};
+
+			\draw[
+				color={rgb:black,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=25,in=205] (n20) {};
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=15,in=195] (n21) {};
+			\draw[
+				color={rgb:black,5;red,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=5,in=185] (n22) {};
+			\draw[
+				color=black,
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n13) to [out=-5,in=175] (n23) {};
+
+			\draw[
+				color={rgb:black,5;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=35,in=215] (n20) {};
+			\draw[
+				color={rgb:red,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=25,in=205] (n21) {};
+			\draw[
+				color={rgb:red,5;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=15,in=195] (n22) {};
+			\draw[
+				color={rgb:black,5;red,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n14) to [out=5,in=185] (n23) {};
+
+			\draw[
+				color={rgb:black,1;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=0,in=180] (n30) {};
+			\draw[
+				color={rgb:black,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-10,in=170] (n31) {};
+			\draw[
+				color={rgb:black,10;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-20,in=160] (n32) {};
+			\draw[
+				color={rgb:black,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n20) to [out=-30,in=150] (n33) {};
+
+			\draw[
+				color={rgb:orange,5;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=10,in=190] (n30) {};
+			\draw[
+				color={rgb:yellow,10;orange,4},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=0,in=180] (n31) {};
+			\draw[
+				color={rgb:black,2;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=-10,in=170] (n32) {};
+			\draw[
+				color={rgb:black,1;orange,2;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n21) to [out=-20,in=160] (n33) {};
+
+			\draw[
+				color={rgb:red,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=20,in=200] (n30) {};
+			\draw[
+				color={rgb:yellow,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=10,in=190] (n31) {};
+			\draw[
+				color={rgb:black,2;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=0,in=180] (n32) {};
+			\draw[
+				color={rgb:black,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n22) to [out=-10,in=170] (n33) {};
+
+			\draw[
+				color={rgb:black,4;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=30,in=210] (n30) {};
+			\draw[
+				color={rgb:orange,2;black,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=20,in=200] (n31) {};
+			\draw[
+				color={rgb:black,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=10,in=190] (n32) {};
+			\draw[
+				color={rgb:black,5;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n23) to [out=0,in=180] (n33) {};
+
+			\draw[
+				color={rgb:orange,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-5,in=175] (n40) {};
+			\draw[
+				color={rgb:gray,1;orange,1;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-15,in=165] (n41) {};
+			\draw[
+				color={rgb:orange,2;black,2;white,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n30) to [out=-25,in=155] (n42) {};
+
+			\draw[
+				color={rgb:yellow,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=5,in=185] (n40) {};
+			\draw[
+				color={rgb:red,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=-5,in=175] (n41) {};
+			\draw[
+				color={rgb:gray,1;red,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n31) to [out=-15,in=165] (n42) {};
+
+			\draw[
+				color={rgb:gray,3;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=15,in=195] (n40) {};
+			\draw[
+				color={rgb:gray,1;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=5,in=185] (n41) {};
+			\draw[
+				color={rgb:gray,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n32) to [out=-5,in=175] (n42) {};
+
+			\draw[
+				color={rgb:gray,2;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=25,in=205] (n40) {};
+			\draw[
+				color={rgb:gray,1;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=15,in=195] (n41) {};
+			\draw[
+				color={rgb:gray,3;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n33) to [out=5,in=185] (n42) {};
+
+			\draw[
+				color={rgb:red,3;yellow,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=0,in=180] (n50) {};
+			\draw[
+				color={rgb:gray,2;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=-10,in=170] (n51) {};
+			\draw[
+				color={rgb:yellow,10;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n40) to [out=-20,in=160] (n52) {};
+
+			\draw[
+				color={rgb:red,5;black,1;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=10,in=190] (n50) {};
+			\draw[
+				color={rgb:gray,7;orange,3},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=0,in=180] (n51) {};
+			\draw[
+				color={rgb:yellow,1;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n41) to [out=-10,in=170] (n52) {};
+
+			\draw[
+				color={rgb:gray,7;orange,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=20,in=200] (n50) {};
+			\draw[
+				color={rgb:gray,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=10,in=190] (n51) {};
+			\draw[
+				color={rgb:gray,5;red,1;black,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n42) to [out=0,in=180] (n52) {};
+
+			\draw[
+				color={rgb:red,5;black,1;yellow,2},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n50) to [out=-10,in=170] (n60) {};
+			\draw[
+				color={rgb:gray,5;red,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n51) to [out=0,in=180] (n60) {};
+			\draw[
+				color={rgb:yellow,5;orange,1},
+				\innerarrow-,
+				line width=\arrowwidth
+			] (n52) to [out=10,in=190] (n60) {};
+
+			\draw[black] (n00.center) --
+						($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
+						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
+						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
+						($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
+
+			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Layerwise Relevance Propagation}};
+
+			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
+
+
+			\draw[
+				color=outercolor,
+				\outerarrow-,
+				line width=0.1cm
+			] (output) to [out=0,in=180] (diagnosis) {};
+
+			\draw[
+				color=outercolor,
+				\outerarrow-,
+				line width=0.1cm
+			] (input) to [out=0,in=180] (n00) {};
+
+			\node[] at (2.8, -4.3) {\textcolor{black!30}{\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}}};
+			\node[] at (6.2, -4.3) {\footnotesize{$R_{i,j}=\sum\limits_k \frac{a_jw_{j,k}}{\sum\limits_l a_lw_{l,k}}R_{i+1,k}$}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Overview} % Overview
 		\centering
 
 		\scalebox{0.4}{
 			\hspace{3cm}
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{1. Train binary classification CNNs to detect signs of dementia in structural MRIs}};
+					\newcommand{\mrivsep}{0.52}
+					\newcommand{\mrihsep}{0.44}
+
+					\node[anchor=north west] at (0, 0.1) {\footnotesize{1. Train binary classification CNNs to detect signs of dementia in structural MRIs}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
-					\newcommand{\patientlocation}[1]{($ (1, -1.5) + ####1 $)}
-					\newcommand{\controllocation}[1]{($ (1, -2.9) + ####1 $)}
+					\newcommand{\patientlocation}[1]{($ (1, -1.6) + ####1 $)}
+					\newcommand{\controllocation}[1]{($ (1, -2.8) + ####1 $)}
 					\newcommand{\modellocation}[1]{($ (0.5 * \plotwidth, -2.2) + ####1 $)}
 
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{Patients}};
-					\node[] at \controllocation{(0, -0.7)} {\scriptsize{Controls}};
+					\node[anchor=south, align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 0.38)} {Dementia\\patients};
+					\node[anchor=north] at \controllocation{(0, -0.40)} {\scriptsize{Controls}};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+                    	\includegraphics[height=0.5cm]{data/mris/slice_0.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_1.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_9.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_5.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_3.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_5.png}
 					};
 
 					\node[] at \controllocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_6.png}
 					};
 					\node[] at \controllocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[height=0.5cm]{data/mris/slice_7.png}
 					};
 					\node[] at \controllocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_1.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
 					};
 					\node[] at \controllocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_6.png}
-					};
-					\node[] at \controllocation{(0, 0.5*\mrivsep)} {
 						\includegraphics[height=0.5cm]{data/mris/slice_9.png}
 					};
-					\node[] at \controllocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+					\node[] at \controllocation{(0, 0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_10.png}
 					};
-
+					\node[] at \controllocation{(1 * \mrihsep, 0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_11.png}
+					};
 					\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
 
 					\node[circle, minimum size=\nodesize, inner sep=0pt, fill=train-fill!35, outer sep=0pt, line width=0pt, draw=train-fill!35] (n10) at \modellocation{(-2 * \hsep, 2 * \vsep)} {};
@@ -508,12 +1736,12 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.7, 0)} to [out=0,in=180] (n00) {};
+					] \patientlocation{(0.65, 0)} to [out=0,in=180] (n00) {};
 					\draw[
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \controllocation{(0.7, 0)} to [out=0,in=180] (n00) {};
+					] \controllocation{(0.65, 0)} to [out=0,in=180] (n00) {};
 					\draw[
 						color=outercolor,
 						\outerarrow-\outerarrow,
@@ -528,54 +1756,58 @@
 			\hspace{3cm}
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{2. Apply model and LRP for individual-level predictions and relevance maps}};
-					\node[anchor=north east] at (\plotwidth, 0) {};
+					\newcommand{\mrivsep}{0.52}
+					\newcommand{\mrihsep}{0.44}
 
+					\node[anchor=north west] at (0, 0.1) {\footnotesize{2. Apply model and LRP for individual-level predictions and relevance maps}};
+					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\mrilocation}[1]{($ (1, -2.2) + ####1 $)}
 					\newcommand{\modellocation}[1]{($ (0.5 * \plotwidth, -2.2) + ####1 $)}
 					\newcommand{\lrplocation}[1]{($ (0.5 * \plotwidth, -5.2) + ####1 $)}
 					\def\maplocation{(1, -5.2)}
 
+					\node[anchor=south, align=center, font=\scriptsize\linespread{0.85}\selectfont] at \mrilocation{(0, 0.92)} {All\\subjects};
+
 					\newcommand{\mrialpha}{0.2}
 					\colorlet{predict-fill}{cb-blue}
 					\colorlet{lrp-fill}{red}
 
 					\node[] at \mrilocation{(-1 * \mrihsep, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_5.png}}
 					};
 					\node[] at \mrilocation{(0, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_7.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_11.png}}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_1.png}}
 					};
-					\node[inner sep=0pt, outer sep=0pt] (input) at \mrilocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+					\node[] at \mrilocation{(0, -0.5*\mrivsep)} {
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_3.png}}
 					};
-					\node[] at \mrilocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+					\node[inner sep=0pt, outer sep=0pt] (input) at \mrilocation{(1 * \mrihsep, -0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_2.png}}
 					};
 					\node[] at \mrilocation{(0, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_0.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_10.png}}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, 1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_9.png}}
 					};
 					\node[] at \mrilocation{(0, 1.5*\mrivsep)} {
 						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, 1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_6.png}}
 					};
 
 					\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
@@ -1362,16 +2594,13 @@
 						\includegraphics[width=1cm]{data/averages/dementia.png}
 					};
 
-					\node[inner sep=0pt, outer sep=0pt] (map) at \maplocation {
+					\node[inner sep=0pt, outer sep=0pt,label={[align=center,font=\scriptsize\linespread{0.85}\selectfont]below:\textit{Relevance}\\ \textit{map}}] (map) at \maplocation {
 						\includegraphics[
 							width=1cm,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
+							trim = 128mm 232mm 64mm 0mm
 						]{data/averages/dementia.png}
 					};
-
-					\node[] at ($ (map.south) - (0, 0.2) $) {\scriptsize{Relevance}};
-					\node[] at ($ (map.south) - (0, 0.55) $) {\scriptsize{map}};
 
 					\draw[
 						color=outercolor,
@@ -1387,7 +2616,12 @@
 			\hspace{3cm}
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{3. Validate relevance maps for diagnosed patients against the literature}};
+					\newcommand{\mrivsep}{0.75}
+					\newcommand{\mrihsep}{0.6}
+					\newcommand{\mriwidth}{0.55cm}
+					\newcommand{\mriheight}{0.7cm}
+
+					\node[anchor=north west] at (0, 0.25) {\footnotesize{3. Validate relevance maps for diagnosed patients against the literature}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\patientlocation}[1]{($ (0.5 * \plotwidth - 4, -1.7) + ####1 $)}
@@ -1395,49 +2629,61 @@
 					\newcommand{\resultslocation}[1]{($ (0.5 * \plotwidth + 4, -1.7) + ####1 $)}
 
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{Patients}};
+					\node[align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 1)} {Dementia\\patients};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.485cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
+							trim = 0mm 154mm 192mm 78mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.485cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
+							trim = 128mm 232mm 64mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.485cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+							trim = 64mm 154mm 128mm 78mm
+						]{data/samples/subject2.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 128mm 232mm 64mm 0mm
+							]{data/samples/subject1.png}
+						}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/averages/dementia.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/samples/subject3.png}
+						}
 					};
 
 					\node[inner sep=0pt, outer sep=0pt] (literature) at \comparisonlocation{(0.6, -1.75)} {
@@ -1477,7 +2723,7 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.65, 0)} to (mean);
+					] \patientlocation{(0.87, 0)} to (mean);
 
 					\node[inner sep=0pt, outer sep=0pt] (results) at \resultslocation{(0, 0)} {
 						\includegraphics[
@@ -1524,7 +2770,12 @@
 			\hspace{3cm}
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{4. Stratify participants with MCI using predictions and relevance maps}};
+					\newcommand{\mrivsep}{0.75}
+					\newcommand{\mrihsep}{0.6}
+					\newcommand{\mriwidth}{0.55cm}
+					\newcommand{\mriheight}{0.7cm}
+
+					\node[anchor=north west] at (0, 0.25) {\footnotesize{4. Stratify participants with MCI using predictions and relevance maps}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\patientlocation}[1]{($ (0.5 * \plotwidth - 4, -1.7) + ####1 $)}
@@ -1533,50 +2784,65 @@
 
 					\def\edaheight{1.5}
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{MCI}};
+					\node[align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 1)} {MCI\\patients};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.485cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+							trim = 128mm 232mm 64mm 0mm
+						]{data/samples/subject3.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/samples/subject2.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 0mm 154mm 192mm 78mm
+							]{data/samples/subject3.png}
+						}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.485cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						]{data/samples/subject3.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 64mm 232mm 128mm 0mm
+							]{data/samples/subject1.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.485cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 154mm 0mm 78mm
+							]{data/samples/subject1.png}
+						}
 					};
+
 
 					\newcommand{\edapoint}[4]{
 						\node[circle, minimum size=####4, draw=black, fill=####3, inner sep=0pt, outer sep=0pt] at \edalocation{(####1, ####2)} {};
@@ -1643,7 +2909,7 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.65, 0)} to (0.5 * \plotwidth - 1, -1.7);
+					] \patientlocation{(0.87, 0)} to (0.5 * \plotwidth - 1, -1.7);
 
 					\draw[
 						color=outercolor,
@@ -1663,55 +2929,57 @@
 		\scalebox{0.8}{
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{1. Train binary classification CNNs to detect signs of dementia in structural MRIs}};
+					\newcommand{\mrivsep}{0.52}
+					\newcommand{\mrihsep}{0.44}
+
+					\node[anchor=north west] at (0, 0.1) {\footnotesize{1. Train binary classification CNNs to detect signs of dementia in structural MRIs}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
-					\newcommand{\patientlocation}[1]{($ (1, -1.5) + ####1 $)}
-					\newcommand{\controllocation}[1]{($ (1, -2.9) + ####1 $)}
+					\newcommand{\patientlocation}[1]{($ (1, -1.6) + ####1 $)}
+					\newcommand{\controllocation}[1]{($ (1, -2.8) + ####1 $)}
 					\newcommand{\modellocation}[1]{($ (0.5 * \plotwidth, -2.2) + ####1 $)}
 
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{Patients}};
-					\node[] at \controllocation{(0, -0.7)} {\scriptsize{Controls}};
+					\node[anchor=south, align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 0.38)} {Dementia\\patients};
+					\node[anchor=north] at \controllocation{(0, -0.40)} {\scriptsize{Controls}};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+                    	\includegraphics[height=0.5cm]{data/mris/slice_0.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_1.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_9.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_5.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_3.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_5.png}
 					};
 
 					\node[] at \controllocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_6.png}
 					};
 					\node[] at \controllocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[height=0.5cm]{data/mris/slice_7.png}
 					};
 					\node[] at \controllocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_1.png}
+						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
 					};
 					\node[] at \controllocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_6.png}
-					};
-					\node[] at \controllocation{(0, 0.5*\mrivsep)} {
 						\includegraphics[height=0.5cm]{data/mris/slice_9.png}
 					};
-					\node[] at \controllocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_2.png}
+					\node[] at \controllocation{(0, 0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_10.png}
 					};
-
+					\node[] at \controllocation{(1 * \mrihsep, 0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_11.png}
+					};
 					\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
 
 					\node[circle, minimum size=\nodesize, inner sep=0pt, fill=train-fill!35, outer sep=0pt, line width=0pt, draw=train-fill!35] (n10) at \modellocation{(-2 * \hsep, 2 * \vsep)} {};
@@ -2098,12 +3366,12 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.7, 0)} to [out=0,in=180] (n00) {};
+					] \patientlocation{(0.65, 0)} to [out=0,in=180] (n00) {};
 					\draw[
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \controllocation{(0.7, 0)} to [out=0,in=180] (n00) {};
+					] \controllocation{(0.65, 0)} to [out=0,in=180] (n00) {};
 					\draw[
 						color=outercolor,
 						\outerarrow-\outerarrow,
@@ -2112,145 +3380,6 @@
 				\end{tikzpicture}
 			}
 		}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Case-control predictions} % Full dataset
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_full.csv}\dementiafull
-
-		\colorlet{timepoints}{cb-green}
-
-		\def\xmin{46}
-		\def\xmax{99}
-		\def\ymin{-1.4}
-		\def\ymax{1.2}
-
-		\centering
-		\vfill
-		\begin{tikzpicture}
-            \begin{axis}[
-                width=1.125\textwidth,
-                height=0.75\textwidth,
-                xmin=\xmin,
-                xmax=\xmax,
-                ymin=\ymin,
-                ymax=\ymax,
-                xtick={55,60,65,70,75,80,85,90,95},
-				axis lines=center,
-				axis y line=none,
-            ]
-                \addplot[name path=zero, draw=none] coordinates {(47,0) (97,0)};
-                \addplot[name path=fcases, draw=cases-default, very thick] table [x=x, y=F-cases]{\dementiafull};\label{trace:cases}
-                \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and fcases];
-                \addplot[name path=fcontrols, draw=controls-default, very thick] table [x=x, y=F-controls]{\dementiafull};\label{trace:controls}
-                \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and fcontrols];
-                \addplot[name path=mcases, draw=cases-default, very thick] table [x=x,y expr=\thisrow{M-cases} * -1]{\dementiafull};
-                \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and mcases];
-                \addplot[name path=mcontrols, draw=controls-default, very thick] table [x=x,y expr=\thisrow{M-controls} * -1]{\dementiafull};
-                \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and mcontrols];
-                \node[anchor=south west] at (axis cs: 46, 0.07) {\textbf{FEMALE}};
-                \node[anchor=north west] at (axis cs: 46, -0.07) {\textbf{MALE}};
-                \node[anchor=south, align=center] (n) at (axis cs: 72.5,-1.2) {n=1708};
-                \node[anchor=north,font=\footnotesize] at ($(n.south) + (0,-2.5) $) {\ref{trace:controls} Controls\hspace{0.3cm}\ref{trace:cases} Cases};
-            \end{axis}
-        \end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Case-control predictions} % Sites
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_addneuromed_GE_MEDICAL_SYSTEMS.csv}\dementiage
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_addneuromed_PICKER_International_Inc.csv}\dementiapicker
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_ADNI_15T.csv}\dementiaadnione
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_ADNI_30T.csv}\dementiaadnithree
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_AIBL_10.csv}\dementiaaiblone
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_AIBL_20.csv}\dementiaaibltwo
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_miriad_15_T_Signa.csv}\dementiamiriad
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_oasis3_15T.csv}\dementiaoasisone
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_oasis3_30T.csv}\dementiaoasisthree
-		\pgfplotstableread[col sep=comma]{data/dementia_dataset/dementia_Oslo_GE750.csv}\dementiaoslo
-
-		\def\xmin{46}
-		\def\xmax{99}
-		\def\ymin{-1.3}
-		\def\ymax{1.3}
-
-		\centering
-		\vfill
-	    \begin{figure}
-        \newcommand{\scannersubplot}[3]{
-            \nextgroupplot[
-				    axis lines=center,
-				    axis y line=none,
-                    xmin=\xmin,
-                    xmax=\xmax,
-                    ymin=\ymin - 0.25,
-                    ymax=\ymax + 0.25,
-                    xmajorticks=false,
-                    axis line style={-}
-			    ]
-
-                    \addplot[name path=zero, draw=none] coordinates {(\xmin,0) (\xmax,0)};
-                    \addplot[name path=fcases, draw=cases-default, very thick] table [x=x, y=F-cases]{####1};
-                    \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and fcases];
-                    \addplot[name path=fcontrols, draw=controls-default, very thick] table [x=x, y=F-controls]{####1};
-                    \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and fcontrols];
-                    \addplot[name path=mcases, draw=cases-default, very thick] table [x=x,y expr=\thisrow{M-cases} * -1]{####1};
-                    \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and mcases];
-                    \addplot[name path=mcontrols, draw=controls-default, very thick] table [x=x,y expr=\thisrow{M-controls} * -1]{####1};
-                    \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and mcontrols];
-                    \node[anchor=south] at (axis cs: 72.5,1) {\tiny{####2}};
-                    \node[anchor=north] at (axis cs: 72.5,-1) {\tiny{\textbf{n=####3}}};
-        }
-        	\begin{tikzpicture}
-				\begin{groupplot}[
-					group style={
-						group size=5 by 2,
-						horizontal sep=0.25cm,
-						vertical sep=0.25cm
-					},
-					height=0.314\textwidth,
-					width=0.314\textwidth
-				]
-					\scannersubplot{\dementiaadnithree}{ADNI 3.0T}{506}
-					\scannersubplot{\dementiaoasisthree}{OASIS3 3.0T}{438}
-					\scannersubplot{\dementiaadnione}{ADNI 1.5T}{290}
-					\scannersubplot{\dementiaoslo}{Oslo GE750}{226}
-					\scannersubplot{\dementiaaiblone}{AIBL Site 1}{92}
-					\scannersubplot{\dementiage}{ANM GE}{74}
-					\scannersubplot{\dementiamiriad}{MIRIAD}{38}
-					\scannersubplot{\dementiaaibltwo}{AIBL Site 2}{22}
-					\scannersubplot{\dementiapicker}{ANM Picker}{12}
-					\scannersubplot{\dementiaoasisone}{OASIS3 1.5T}{10}
-				\end{groupplot}
-        	\end{tikzpicture}
-        \end{figure}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Case-control predictions} % Diagnostic criteria
-		\centering
-		\vfill
-	    \begin{tabular}{|c|c|c|}
-            \hline
-             \textbf{\scriptsize{Dataset}}&\textbf{\scriptsize{Controls}}&\textbf{\scriptsize{Patients}}\\
-            \hline
-            \scriptsize{AddNeuroMed}&\scriptsize{MMSE $\geq$ 24}&\scriptsize{MMSE $<$ 19}\\
-            \hline
-            \scriptsize{ADNI}&\scriptsize{Group = CN}&\scriptsize{Group = AD}\\
-            \hline
-            \scriptsize{AIBL}&\scriptsize{Group = DXNORM}&\scriptsize{Group $\in$ \{DXAD, DXOTHDEM\}}\\
-            \hline
-            \scriptsize{Demgen}&\scriptsize{-}&\scriptsize{DX $\in$ \{AD, OtherDem, UnspecDem, VaD\}}\\
-            \hline
-            \scriptsize{MIRIAD}&\scriptsize{Group = Control}&\scriptsize{Group = AD}\\
-            \hline
-            \scriptsize{OASIS3}&\scriptsize{NORMCOG = 1}&\scriptsize{NORMCOG = 0 \& DEMENTED = 1}\\
-            \hline
-            \scriptsize{StrokeMRI}&\scriptsize{Group = Control}&\scriptsize{-}\\
-            \hline
-            \scriptsize{TOP}&\scriptsize{diagnosis = CTRL}&\scriptsize{-}\\
-            \hline
-        \end{tabular}
 		\vfill
 	\end{frame}
 
@@ -2374,98 +3503,64 @@
 		\end{figure}\label{fig:test_predictions}
 	\end{frame}
 
-	\begin{frame}{Case-control predictions} % Site results
-		\newcommand{\splitline}[8]{
-			\multirow{2}*{\tiny{####1}}&
-			\multirow{2}*{\tiny{####2}}&
-			\multirow{2}*{\tiny{####3}}&
-			\multirow{2}*{\tiny{####4}}&
-			\tiny{####5}&\tiny{####6}\\
-			\cline{5-6}
-			&&&&\tiny{####7}&\tiny{####8}\\
-			\hline
-		}
-
-		\centering
-		\vfill
-		\bgroup
-			\def\arraystretch{0.65}%
-		\begin{table}[h]
-			\centering
-			\begin{tabular}{|c|c|c|c|>{\centering}p{1.4cm}|c|}
-				\hline
-				\textbf{\tiny{Sites}}&\textbf{\tiny{Size}}&\textbf{\tiny{AUC}}&\textbf{\tiny{Accuracy}}&\multicolumn{2}{c|}{\textbf{\tiny{Confusion Matrix}}}\\
-				\hline
-				\splitline{ADNI 3.0T}{506}{0.942}{90.11}{237}{16}{34}{219}
-				\splitline{OASIS 3.0T}{438}{0.850}{79.45}{185}{34}{56}{163}
-				\splitline{ADNI 1.5T}{290}{0.944}{87.93}{125}{20}{15}{130}
-				\splitline{Oslo GE750}{226}{0.900}{84.07}{102}{11}{25}{88}
-				\splitline{AIBL Site 1}{92}{0.906}{84.78}{43}{3}{11}{35}
-				\splitline{ANM GE}{74}{0.848}{72.97}{26}{11}{9}{28}
-				\splitline{Miriad 1.5T}{38}{0.997}{97.36}{19}{0}{1}{18}
-				\splitline{AIBL Site 2}{22}{0.950}{86.36}{11}{0}{3}{8}
-				\splitline{OASIS 1.5T}{12}{0.666}{58.33}{3}{3}{2}{4}
-				\splitline{ANM Picker}{10}{0.76}{70.00}{3}{2}{1}{4}
-			\end{tabular}
-		\end{table}
-		\egroup
-		\vfill
-	\end{frame}
-
 	\begin{frame}{Generating relevance maps} % Intro
 		\centering
 		\vfill
 		\scalebox{0.8}{
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{2. Apply model and LRP for individual-level predictions and relevance maps}};
-					\node[anchor=north east] at (\plotwidth, 0) {};
+					\newcommand{\mrivsep}{0.52}
+					\newcommand{\mrihsep}{0.44}
 
+					\node[anchor=north west] at (0, 0.1) {\footnotesize{2. Apply model and LRP for individual-level predictions and relevance maps}};
+					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\mrilocation}[1]{($ (1, -2.2) + ####1 $)}
 					\newcommand{\modellocation}[1]{($ (0.5 * \plotwidth, -2.2) + ####1 $)}
 					\newcommand{\lrplocation}[1]{($ (0.5 * \plotwidth, -5.2) + ####1 $)}
 					\def\maplocation{(1, -5.2)}
 
+					\node[anchor=south, align=center, font=\scriptsize\linespread{0.85}\selectfont] at \mrilocation{(0, 0.92)} {All\\subjects};
+
 					\newcommand{\mrialpha}{0.2}
 					\colorlet{predict-fill}{cb-blue}
 					\colorlet{lrp-fill}{red}
 
 					\node[] at \mrilocation{(-1 * \mrihsep, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_5.png}}
 					};
 					\node[] at \mrilocation{(0, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_7.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, -1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_11.png}}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_1.png}}
 					};
-					\node[inner sep=0pt, outer sep=0pt] (input) at \mrilocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[height=0.5cm]{data/mris/slice_8.png}
+					\node[] at \mrilocation{(0, -0.5*\mrivsep)} {
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_3.png}}
 					};
-					\node[] at \mrilocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+					\node[inner sep=0pt, outer sep=0pt] (input) at \mrilocation{(1 * \mrihsep, -0.5*\mrivsep)} {
+						\includegraphics[height=0.5cm]{data/mris/slice_4.png}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_2.png}}
 					};
 					\node[] at \mrilocation{(0, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_0.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_10.png}}
 					};
 					\node[] at \mrilocation{(-1 * \mrihsep, 1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_9.png}}
 					};
 					\node[] at \mrilocation{(0, 1.5*\mrivsep)} {
 						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
 					};
 					\node[] at \mrilocation{(1 * \mrihsep, 1.5*\mrivsep)} {
-						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_8.png}}
+						{\transparent{\mrialpha}\includegraphics[height=0.5cm]{data/mris/slice_6.png}}
 					};
 
 					\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
@@ -3249,15 +4344,16 @@
 					] (output) to [out=270,in=90] (n60) {};
 
 					\node[inner sep=0pt, outer sep=0pt] (map) at \maplocation {
-						\includegraphics[
-							height=1cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\includegraphics[width=1cm]{data/averages/dementia.png}
 					};
 
-					\node[] at ($ (map.south) - (0, 0.2) $) {\scriptsize{Relevance}};
-					\node[] at ($ (map.south) - (0, 0.55) $) {\scriptsize{map}};
+					\node[inner sep=0pt, outer sep=0pt,label={[align=center,font=\scriptsize\linespread{0.85}\selectfont]below:\textit{Relevance}\\ \textit{map}}] (map) at \maplocation {
+						\includegraphics[
+							width=1cm,
+							clip=true,
+							trim = 128mm 232mm 64mm 0mm
+						]{data/averages/dementia.png}
+					};
 
 					\draw[
 						color=outercolor,
@@ -3270,1236 +4366,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Generating relevance maps}
-		\vfill
-		\centering
-		\begin{tikzpicture}
-			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
-			\newcommand{\modellocation}[1]{($ (4.5, -2.2) + ####1 $)}
-
-			\colorlet{predict-fill}{cb-blue}
-
-			\node[inner sep=0pt, outer sep=0pt,draw=black] (input) at \mrilocation{(0, 0)} {
-				\includegraphics[width=1.2cm]{data/slice.png}
-			};
-
-			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \modellocation{(-3 * \hsep, 0)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!85, outer sep=0pt, line width=0pt, draw=predict-fill!85] (n10) at \modellocation{(-2 * \hsep, 2 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill, outer sep=0pt, line width=0pt, draw=predict-fill] (n11) at \modellocation{(-2 * \hsep, 1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n12) at \modellocation{(-2 * \hsep, 0)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n13) at \modellocation{(-2 * \hsep, -1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!50, outer sep=0pt, line width=0pt, draw=predict-fill!50] (n14) at \modellocation{(-2 * \hsep, -2 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n20) at \modellocation{(-1 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!65, outer sep=0pt, line width=0pt, draw=predict-fill!65] (n21) at \modellocation{(-1 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!90, outer sep=0pt, line width=0pt, draw=predict-fill!90] (n22) at \modellocation{(-1 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!40, outer sep=0pt, line width=0pt, draw=predict-fill!40] (n23) at \modellocation{(-1 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!80, outer sep=0pt, line width=0pt, draw=predict-fill!80] (n30) at \modellocation{(0 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!55, outer sep=0pt, line width=0pt, draw=predict-fill!55] (n31) at \modellocation{(0 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n32) at \modellocation{(0 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n33) at \modellocation{(0 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill, outer sep=0pt, line width=0pt, draw=predict-fill] (n40) at \modellocation{(1 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!20, outer sep=0pt, line width=0pt, draw=predict-fill!20] (n41) at \modellocation{(1 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!15, outer sep=0pt, line width=0pt, draw=predict-fill!15] (n42) at \modellocation{(1 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!75, outer sep=0pt, line width=0pt, draw=predict-fill!75] (n50) at \modellocation{(2 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!35, outer sep=0pt, line width=0pt, draw=predict-fill!35] (n51) at \modellocation{(2 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!65, outer sep=0pt, line width=0pt, draw=predict-fill!65] (n52) at \modellocation{(2 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=predict-fill!85, outer sep=0pt, line width=0pt, draw=predict-fill!85] (output) at \modellocation{(3 * \hsep, 0)} {};
-
-			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
-
-			\draw[
-				color=predict-fill!85,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n00) to [out=20,in=200] (n10) {};
-			\draw[
-				color=predict-fill,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n00) to [out=10,in=190] (n11) {};
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n00) to [out=0,in=180] (n12) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n00) to [out=-10,in=170] (n13) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n00) to [out=-20,in=160] (n14) {};
-
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n10) to [out=-5,in=175] (n20) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n10) to [out=-15,in=165] (n21) {};
-			\draw[
-				color=predict-fill!55,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n10) to [out=-25,in=155] (n22) {};
-			\draw[
-				color=predict-fill!85,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n10) to [out=-35,in=145] (n23) {};
-
-			\draw[
-				color=predict-fill!45,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n11) to [out=5,in=185] (n20) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n11) to [out=-5,in=175] (n21) {};
-			\draw[
-				color=predict-fill,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n11) to [out=-15,in=165] (n22) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n11) to [out=-25,in=155] (n23) {};
-
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n12) to [out=15,in=195] (n20) {};
-			\draw[
-				color=predict-fill!90,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n12) to [out=5,in=185] (n21) {};
-			\draw[
-				color=predict-fill!80,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n12) to [out=-5,in=175] (n22) {};
-			\draw[
-				color=predict-fill!20,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n12) to [out=-15,in=165] (n23) {};
-
-			\draw[
-				color=predict-fill!55,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n13) to [out=25,in=205] (n20) {};
-			\draw[
-				color=predict-fill!65,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n13) to [out=15,in=195] (n21) {};
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n13) to [out=5,in=185] (n22) {};
-			\draw[
-				color=predict-fill!45,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n13) to [out=-5,in=175] (n23) {};
-
-			\draw[
-				color=predict-fill!10,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n14) to [out=35,in=215] (n20) {};
-			\draw[
-				color=predict-fill!90,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n14) to [out=25,in=205] (n21) {};
-			\draw[
-				color=predict-fill!80,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n14) to [out=15,in=195] (n22) {};
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n14) to [out=5,in=185] (n23) {};
-
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n20) to [out=0,in=180] (n30) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n20) to [out=-10,in=170] (n31) {};
-			\draw[
-				color=predict-fill!85,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n20) to [out=-20,in=160] (n32) {};
-			\draw[
-				color=predict-fill!45,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n20) to [out=-30,in=150] (n33) {};
-
-			\draw[
-				color=predict-fill!20,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n21) to [out=10,in=190] (n30) {};
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n21) to [out=0,in=180] (n31) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n21) to [out=-10,in=170] (n32) {};
-			\draw[
-				color=predict-fill!90,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n21) to [out=-20,in=160] (n33) {};
-
-			\draw[
-				color=predict-fill!65,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n22) to [out=20,in=200] (n30) {};
-			\draw[
-				color=predict-fill!20,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n22) to [out=10,in=190] (n31) {};
-			\draw[
-				color=predict-fill!30,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n22) to [out=0,in=180] (n32) {};
-			\draw[
-				color=predict-fill!40,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n22) to [out=-10,in=170] (n33) {};
-
-			\draw[
-				color=predict-fill,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n23) to [out=30,in=210] (n30) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n23) to [out=20,in=200] (n31) {};
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n23) to [out=10,in=190] (n32) {};
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n23) to [out=0,in=180] (n33) {};
-
-			\draw[
-				color=predict-fill!70,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n30) to [out=-5,in=175] (n40) {};
-			\draw[
-				color=predict-fill!80,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n30) to [out=-15,in=165] (n41) {};
-			\draw[
-				color=predict-fill!20,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n30) to [out=-25,in=155] (n42) {};
-
-			\draw[
-				color=predict-fill!60,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n31) to [out=5,in=185] (n40) {};
-			\draw[
-				color=predict-fill!95,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n31) to [out=-5,in=175] (n41) {};
-			\draw[
-				color=predict-fill!35,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n31) to [out=-15,in=165] (n42) {};
-
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n32) to [out=15,in=195] (n40) {};
-			\draw[
-				color=predict-fill!20,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n32) to [out=5,in=185] (n41) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n32) to [out=-5,in=175] (n42) {};
-
-			\draw[
-				color=predict-fill!40,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n33) to [out=25,in=205] (n40) {};
-			\draw[
-				color=predict-fill!80,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n33) to [out=15,in=195] (n41) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n33) to [out=5,in=185] (n42) {};
-
-			\draw[
-				color=predict-fill!25,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n40) to [out=0,in=180] (n50) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n40) to [out=-10,in=170] (n51) {};
-			\draw[
-				color=predict-fill!45,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n40) to [out=-20,in=160] (n52) {};
-
-			\draw[
-				color=predict-fill!90,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n41) to [out=10,in=190] (n50) {};
-			\draw[
-				color=predict-fill!10,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n41) to [out=0,in=180] (n51) {};
-			\draw[
-				color=predict-fill!75,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n41) to [out=-10,in=170] (n52) {};
-
-			\draw[
-				color=predict-fill!60,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n42) to [out=20,in=200] (n50) {};
-			\draw[
-				color=predict-fill!25,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n42) to [out=10,in=190] (n51) {};
-			\draw[
-				color=predict-fill!15,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n42) to [out=0,in=180] (n52) {};
-
-			\draw[
-				color=predict-fill!95,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n50) to [out=-10,in=170] (output) {};
-			\draw[
-				color=predict-fill!25,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n51) to [out=0,in=180] (output) {};
-			\draw[
-				color=predict-fill!50,
-				-\innerarrow,
-				line width=\arrowwidth
-			] (n52) to [out=10,in=190] (output) {};
-
-			\draw[black] (n00.center) --
-						 ($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
-						 ($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
-						 ($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
-						 ($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
-
-			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Prediction model}};
-
-			\draw[
-				color=outercolor,
-				-\outerarrow,
-				line width=0.1cm
-			] (input) to [out=0,in=180] (n00) {};
-			\draw[
-				color=outercolor,
-				-\outerarrow,
-				line width=0.1cm
-			] (output) to [out=0,in=180] (diagnosis) {};
-
-			\node[] at (2.8, -4.3) {\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Generating relevance maps}
-		\vfill
-		\centering
-		\begin{tikzpicture}
-			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
-			\newcommand{\lrplocation}[1]{($ (4.5, -2.2) + ####1 $)}
-
-			\node[inner sep=0pt, outer sep=0pt, minimum width=1.2cm] (input) at \mrilocation{(0, 0)} {};
-
-			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \lrplocation{(-3 * \hsep, 0)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;orange,1}] (n10) at \lrplocation{(-2 * \hsep, 2 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,3;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,3;red,1}] (n11) at \lrplocation{(-2 * \hsep, 1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=yellow, outer sep=0pt, line width=0pt, draw=yellow] (n12) at \lrplocation{(-2 * \hsep, 0)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=black, outer sep=0pt, line width=0pt, draw=black] (n13) at \lrplocation{(-2 * \hsep, -1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=red, outer sep=0pt, line width=0pt, draw=red] (n14) at \lrplocation{(-2 * \hsep, -2 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;white,2;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;white,2;orange,1}] (n20) at \lrplocation{(-1 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,6}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,4}] (n21) at \lrplocation{(-1 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,1}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,1}] (n22) at \lrplocation{(-1 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;red,2}] (n23) at \lrplocation{(-1 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,3;orange,2}, outer sep=0pt, line width=0pt, draw={rgb:red,3;orange,1}] (n30) at \lrplocation{(0 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,3;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,3;orange,1}] (n31) at \lrplocation{(0 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,5;red,1}] (n32) at \lrplocation{(0 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n33) at \lrplocation{(0 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,10;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,10;orange,1}] (n40) at \lrplocation{(1 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,1}, outer sep=0pt, line width=0pt, draw={rgb:red,1}] (n41) at \lrplocation{(1 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,15;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,15;red,2}] (n42) at \lrplocation{(1 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,5;black,1;yellow,2}, outer sep=0pt, line width=0pt, draw={rgb:red,5;black,1;yellow,2}] (n50) at \lrplocation{(2 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n51) at \lrplocation{(2 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,5;orange,1}] (n52) at \lrplocation{(2 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:orange,7;yellow,4;black,1}, outer sep=0pt, line width=0pt, draw={rgb:orange,7;yellow,4;black,1}] (n60) at \lrplocation{(3 * \hsep, 0)} {};
-
-			\draw[
-				color={rgb:black,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=20,in=200] (n10) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=10,in=190] (n11) {};
-			\draw[
-				color=yellow,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=0,in=180] (n12) {};
-			\draw[
-				color=black,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=-10,in=170] (n13) {};
-			\draw[
-				color=red,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=-20,in=160] (n14) {};
-
-			\draw[
-				color={rgb:black,5;white,1;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-5,in=175] (n20) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-15,in=165] (n21) {};
-			\draw[
-				color={rgb:black,4;red,2;yellow,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-25,in=155] (n22) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-35,in=145] (n23) {};
-
-			\draw[
-				color={rgb:black,10;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=5,in=185] (n20) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-5,in=175] (n21) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-15,in=165] (n22) {};
-			\draw[
-				color={rgb:black,10;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-25,in=155] (n23) {};
-
-			\draw[
-				color={rgb:black,5;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=15,in=195] (n20) {};
-			\draw[
-				color={rgb:red,3;yellow,5},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=5,in=185] (n21) {};
-			\draw[
-				color={rgb:red,5;yellow,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=-5,in=175] (n22) {};
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=-15,in=165] (n23) {};
-
-			\draw[
-				color={rgb:black,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=25,in=205] (n20) {};
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=15,in=195] (n21) {};
-			\draw[
-				color={rgb:black,5;red,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=5,in=185] (n22) {};
-			\draw[
-				color=black,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=-5,in=175] (n23) {};
-
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=35,in=215] (n20) {};
-			\draw[
-				color={rgb:red,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=25,in=205] (n21) {};
-			\draw[
-				color={rgb:red,5;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=15,in=195] (n22) {};
-			\draw[
-				color={rgb:black,5;red,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=5,in=185] (n23) {};
-
-			\draw[
-				color={rgb:black,1;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=0,in=180] (n30) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-10,in=170] (n31) {};
-			\draw[
-				color={rgb:black,10;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-20,in=160] (n32) {};
-			\draw[
-				color={rgb:black,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-30,in=150] (n33) {};
-
-			\draw[
-				color={rgb:orange,5;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=10,in=190] (n30) {};
-			\draw[
-				color={rgb:yellow,10;orange,4},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=0,in=180] (n31) {};
-			\draw[
-				color={rgb:black,2;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=-10,in=170] (n32) {};
-			\draw[
-				color={rgb:black,1;orange,2;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=-20,in=160] (n33) {};
-
-			\draw[
-				color={rgb:red,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=20,in=200] (n30) {};
-			\draw[
-				color={rgb:yellow,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=10,in=190] (n31) {};
-			\draw[
-				color={rgb:black,2;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=0,in=180] (n32) {};
-			\draw[
-				color={rgb:black,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=-10,in=170] (n33) {};
-
-			\draw[
-				color={rgb:black,4;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=30,in=210] (n30) {};
-			\draw[
-				color={rgb:orange,2;black,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=20,in=200] (n31) {};
-			\draw[
-				color={rgb:black,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=10,in=190] (n32) {};
-			\draw[
-				color={rgb:black,5;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=0,in=180] (n33) {};
-
-			\draw[
-				color={rgb:orange,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-5,in=175] (n40) {};
-			\draw[
-				color={rgb:gray,1;orange,1;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-15,in=165] (n41) {};
-			\draw[
-				color={rgb:orange,2;black,2;white,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-25,in=155] (n42) {};
-
-			\draw[
-				color={rgb:yellow,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=5,in=185] (n40) {};
-			\draw[
-				color={rgb:red,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=-5,in=175] (n41) {};
-			\draw[
-				color={rgb:gray,1;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=-15,in=165] (n42) {};
-
-			\draw[
-				color={rgb:gray,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=15,in=195] (n40) {};
-			\draw[
-				color={rgb:gray,1;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=5,in=185] (n41) {};
-			\draw[
-				color={rgb:gray,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=-5,in=175] (n42) {};
-
-			\draw[
-				color={rgb:gray,2;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=25,in=205] (n40) {};
-			\draw[
-				color={rgb:gray,1;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=15,in=195] (n41) {};
-			\draw[
-				color={rgb:gray,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=5,in=185] (n42) {};
-
-			\draw[
-				color={rgb:red,3;yellow,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=0,in=180] (n50) {};
-			\draw[
-				color={rgb:gray,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=-10,in=170] (n51) {};
-			\draw[
-				color={rgb:yellow,10;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=-20,in=160] (n52) {};
-
-			\draw[
-				color={rgb:red,5;black,1;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=10,in=190] (n50) {};
-			\draw[
-				color={rgb:gray,7;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=0,in=180] (n51) {};
-			\draw[
-				color={rgb:yellow,1;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=-10,in=170] (n52) {};
-
-			\draw[
-				color={rgb:gray,7;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=20,in=200] (n50) {};
-			\draw[
-				color={rgb:gray,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=10,in=190] (n51) {};
-			\draw[
-				color={rgb:gray,5;red,1;black,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=0,in=180] (n52) {};
-
-			\draw[
-				color={rgb:red,5;black,1;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n50) to [out=-10,in=170] (n60) {};
-			\draw[
-				color={rgb:gray,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n51) to [out=0,in=180] (n60) {};
-			\draw[
-				color={rgb:yellow,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n52) to [out=10,in=190] (n60) {};
-
-			\draw[black] (n00.center) --
-						($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
-						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
-						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
-						($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
-
-			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Layerwise Relevance Propagation}};
-
-			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
-
-
-			\draw[
-				color=outercolor,
-				\outerarrow-,
-				line width=0.1cm
-			] (output) to [out=0,in=180] (diagnosis) {};
-
-			\node[] at (2.8, -4.3) {\textcolor{black!30}{\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}}};
-			\node[] at (6.2, -4.3) {\footnotesize{$R_{i,j}=\sum\limits_k \frac{a_jw_{j,k}}{\sum\limits_l a_lw_{l,k}}R_{i+1,k}$}};
-
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Generating relevance maps}
-		\vfill
-		\centering
-		\begin{tikzpicture}
-			\newcommand{\mrilocation}[1]{($(0, -2.2)$)}
-			\newcommand{\lrplocation}[1]{($ (4.5, -2.2) + ####1 $)}
-
-			\node[inner sep=0pt, outer sep=0pt, minimum width=1.2cm] (input) at \mrilocation{(0, 0)} {
-				\includegraphics[
-					width=1.2cm,
-					clip=true,
-					trim = 192mm 232mm 0mm 0mm
-				]{data/dementia_average.png}
-			};
-
-			\node[circle, inner sep=0pt, fill=none, outer sep=0pt, line width=0pt, draw=none] (n00) at \lrplocation{(-3 * \hsep, 0)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;orange,1}] (n10) at \lrplocation{(-2 * \hsep, 2 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,3;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,3;red,1}] (n11) at \lrplocation{(-2 * \hsep, 1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=yellow, outer sep=0pt, line width=0pt, draw=yellow] (n12) at \lrplocation{(-2 * \hsep, 0)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=black, outer sep=0pt, line width=0pt, draw=black] (n13) at \lrplocation{(-2 * \hsep, -1 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill=red, outer sep=0pt, line width=0pt, draw=red] (n14) at \lrplocation{(-2 * \hsep, -2 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,5;white,2;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:black,5;white,2;orange,1}] (n20) at \lrplocation{(-1 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,6}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,4}] (n21) at \lrplocation{(-1 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,10;yellow,1}, outer sep=0pt, line width=0pt, draw={rgb:red,10;yellow,1}] (n22) at \lrplocation{(-1 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;red,2}] (n23) at \lrplocation{(-1 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,3;orange,2}, outer sep=0pt, line width=0pt, draw={rgb:red,3;orange,1}] (n30) at \lrplocation{(0 * \hsep, 1.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,3;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,3;orange,1}] (n31) at \lrplocation{(0 * \hsep, 0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,5;red,1}] (n32) at \lrplocation{(0 * \hsep, -0.5 * \vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n33) at \lrplocation{(0 * \hsep, -1.5 * \vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,10;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,10;orange,1}] (n40) at \lrplocation{(1 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,1}, outer sep=0pt, line width=0pt, draw={rgb:red,1}] (n41) at \lrplocation{(1 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:black,10;white,15;red,2}, outer sep=0pt, line width=0pt, draw={rgb:black,10;white,15;red,2}] (n42) at \lrplocation{(1 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:red,5;black,1;yellow,2}, outer sep=0pt, line width=0pt, draw={rgb:red,5;black,1;yellow,2}] (n50) at \lrplocation{(2 * \hsep, 1*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:gray,5;red,1}, outer sep=0pt, line width=0pt, draw={rgb:gray,5;red,1}] (n51) at \lrplocation{(2 * \hsep, 0*\vsep)} {};
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:yellow,5;orange,1}, outer sep=0pt, line width=0pt, draw={rgb:yellow,5;orange,1}] (n52) at \lrplocation{(2 * \hsep, -1*\vsep)} {};
-
-			\node[circle, minimum size=\nodesize, inner sep=0pt, fill={rgb:orange,7;yellow,4;black,1}, outer sep=0pt, line width=0pt, draw={rgb:orange,7;yellow,4;black,1}] (n60) at \lrplocation{(3 * \hsep, 0)} {};
-
-			\draw[
-				color={rgb:black,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=20,in=200] (n10) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=10,in=190] (n11) {};
-			\draw[
-				color=yellow,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=0,in=180] (n12) {};
-			\draw[
-				color=black,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=-10,in=170] (n13) {};
-			\draw[
-				color=red,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n00) to [out=-20,in=160] (n14) {};
-
-			\draw[
-				color={rgb:black,5;white,1;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-5,in=175] (n20) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-15,in=165] (n21) {};
-			\draw[
-				color={rgb:black,4;red,2;yellow,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-25,in=155] (n22) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n10) to [out=-35,in=145] (n23) {};
-
-			\draw[
-				color={rgb:black,10;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=5,in=185] (n20) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-5,in=175] (n21) {};
-			\draw[
-				color={rgb:black,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-15,in=165] (n22) {};
-			\draw[
-				color={rgb:black,10;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n11) to [out=-25,in=155] (n23) {};
-
-			\draw[
-				color={rgb:black,5;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=15,in=195] (n20) {};
-			\draw[
-				color={rgb:red,3;yellow,5},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=5,in=185] (n21) {};
-			\draw[
-				color={rgb:red,5;yellow,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=-5,in=175] (n22) {};
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n12) to [out=-15,in=165] (n23) {};
-
-			\draw[
-				color={rgb:black,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=25,in=205] (n20) {};
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=15,in=195] (n21) {};
-			\draw[
-				color={rgb:black,5;red,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=5,in=185] (n22) {};
-			\draw[
-				color=black,
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n13) to [out=-5,in=175] (n23) {};
-
-			\draw[
-				color={rgb:black,5;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=35,in=215] (n20) {};
-			\draw[
-				color={rgb:red,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=25,in=205] (n21) {};
-			\draw[
-				color={rgb:red,5;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=15,in=195] (n22) {};
-			\draw[
-				color={rgb:black,5;red,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n14) to [out=5,in=185] (n23) {};
-
-			\draw[
-				color={rgb:black,1;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=0,in=180] (n30) {};
-			\draw[
-				color={rgb:black,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-10,in=170] (n31) {};
-			\draw[
-				color={rgb:black,10;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-20,in=160] (n32) {};
-			\draw[
-				color={rgb:black,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n20) to [out=-30,in=150] (n33) {};
-
-			\draw[
-				color={rgb:orange,5;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=10,in=190] (n30) {};
-			\draw[
-				color={rgb:yellow,10;orange,4},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=0,in=180] (n31) {};
-			\draw[
-				color={rgb:black,2;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=-10,in=170] (n32) {};
-			\draw[
-				color={rgb:black,1;orange,2;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n21) to [out=-20,in=160] (n33) {};
-
-			\draw[
-				color={rgb:red,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=20,in=200] (n30) {};
-			\draw[
-				color={rgb:yellow,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=10,in=190] (n31) {};
-			\draw[
-				color={rgb:black,2;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=0,in=180] (n32) {};
-			\draw[
-				color={rgb:black,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n22) to [out=-10,in=170] (n33) {};
-
-			\draw[
-				color={rgb:black,4;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=30,in=210] (n30) {};
-			\draw[
-				color={rgb:orange,2;black,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=20,in=200] (n31) {};
-			\draw[
-				color={rgb:black,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=10,in=190] (n32) {};
-			\draw[
-				color={rgb:black,5;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n23) to [out=0,in=180] (n33) {};
-
-			\draw[
-				color={rgb:orange,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-5,in=175] (n40) {};
-			\draw[
-				color={rgb:gray,1;orange,1;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-15,in=165] (n41) {};
-			\draw[
-				color={rgb:orange,2;black,2;white,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n30) to [out=-25,in=155] (n42) {};
-
-			\draw[
-				color={rgb:yellow,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=5,in=185] (n40) {};
-			\draw[
-				color={rgb:red,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=-5,in=175] (n41) {};
-			\draw[
-				color={rgb:gray,1;red,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n31) to [out=-15,in=165] (n42) {};
-
-			\draw[
-				color={rgb:gray,3;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=15,in=195] (n40) {};
-			\draw[
-				color={rgb:gray,1;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=5,in=185] (n41) {};
-			\draw[
-				color={rgb:gray,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n32) to [out=-5,in=175] (n42) {};
-
-			\draw[
-				color={rgb:gray,2;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=25,in=205] (n40) {};
-			\draw[
-				color={rgb:gray,1;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=15,in=195] (n41) {};
-			\draw[
-				color={rgb:gray,3;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n33) to [out=5,in=185] (n42) {};
-
-			\draw[
-				color={rgb:red,3;yellow,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=0,in=180] (n50) {};
-			\draw[
-				color={rgb:gray,2;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=-10,in=170] (n51) {};
-			\draw[
-				color={rgb:yellow,10;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n40) to [out=-20,in=160] (n52) {};
-
-			\draw[
-				color={rgb:red,5;black,1;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=10,in=190] (n50) {};
-			\draw[
-				color={rgb:gray,7;orange,3},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=0,in=180] (n51) {};
-			\draw[
-				color={rgb:yellow,1;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n41) to [out=-10,in=170] (n52) {};
-
-			\draw[
-				color={rgb:gray,7;orange,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=20,in=200] (n50) {};
-			\draw[
-				color={rgb:gray,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=10,in=190] (n51) {};
-			\draw[
-				color={rgb:gray,5;red,1;black,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n42) to [out=0,in=180] (n52) {};
-
-			\draw[
-				color={rgb:red,5;black,1;yellow,2},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n50) to [out=-10,in=170] (n60) {};
-			\draw[
-				color={rgb:gray,5;red,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n51) to [out=0,in=180] (n60) {};
-			\draw[
-				color={rgb:yellow,5;orange,1},
-				\innerarrow-,
-				line width=\arrowwidth
-			] (n52) to [out=10,in=190] (n60) {};
-
-			\draw[black] (n00.center) --
-						($ (n00) + (0, 2*\vsep+0.5*\nodesize+2pt) $) --
-						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, 2*\vsep+0.5*\nodesize+2pt) $) --
-						($ (n00) + (6*\hsep+0.5*\nodesize+2pt, -2*\vsep-0.5*\nodesize-2pt) $) --
-						($ (n00) + (0, -2*\vsep-0.5*\nodesize-2pt) $) -- (n00.center);
-
-			\node[text depth=0] at ($ (n30) + (0, \vsep+0.5*\nodesize) $) {\footnotesize{Layerwise Relevance Propagation}};
-
-			\node[] (diagnosis) at (9.3, -2.2) {\scriptsize{prediction}};
-
-
-			\draw[
-				color=outercolor,
-				\outerarrow-,
-				line width=0.1cm
-			] (output) to [out=0,in=180] (diagnosis) {};
-
-			\draw[
-				color=outercolor,
-				\outerarrow-,
-				line width=0.1cm
-			] (input) to [out=0,in=180] (n00) {};
-
-			\node[] at (2.8, -4.3) {\textcolor{black!30}{\footnotesize{$n_{i,j}=\sum\limits_k n_{i-1,k}w_{k,j}$}}};
-			\node[] at (6.2, -4.3) {\footnotesize{$R_{i,j}=\sum\limits_k \frac{a_jw_{j,k}}{\sum\limits_l a_lw_{l,k}}R_{i+1,k}$}};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Generating relevance maps}
+	\begin{frame}{Generating relevance maps} % Examples
 		\vfill
 		\centering
 		\begin{tikzpicture}
@@ -4545,7 +4412,12 @@
 		\scalebox{0.8}{
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{3. Validate relevance maps for diagnosed patients against the literature}};
+					\newcommand{\mrivsep}{0.75}
+					\newcommand{\mrihsep}{0.6}
+					\newcommand{\mriwidth}{0.55cm}
+					\newcommand{\mriheight}{0.7cm}
+
+					\node[anchor=north west] at (0, 0.25) {\footnotesize{3. Validate relevance maps for diagnosed patients against the literature}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\patientlocation}[1]{($ (0.5 * \plotwidth - 4, -1.7) + ####1 $)}
@@ -4553,49 +4425,61 @@
 					\newcommand{\resultslocation}[1]{($ (0.5 * \plotwidth + 4, -1.7) + ####1 $)}
 
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{Patients}};
+					\node[align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 1)} {Dementia\\patients};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
+							trim = 0mm 154mm 192mm 78mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
+							trim = 128mm 232mm 64mm 0mm
 						]{data/averages/dementia.png}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+							trim = 64mm 154mm 128mm 78mm
+						]{data/samples/subject2.png}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 128mm 232mm 64mm 0mm
+							]{data/samples/subject1.png}
+						}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/averages/dementia.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/samples/subject3.png}
+						}
 					};
 
 					\node[inner sep=0pt, outer sep=0pt] (literature) at \comparisonlocation{(0.6, -1.75)} {
@@ -4635,7 +4519,7 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.65, 0)} to (mean);
+					] \patientlocation{(0.87, 0)} to (mean);
 
 					\node[inner sep=0pt, outer sep=0pt] (results) at \resultslocation{(0, 0)} {
 						\includegraphics[
@@ -4845,7 +4729,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Validating relevance maps in dementia patients}
+	\begin{frame}{Validating relevance maps in dementia patients} % Regions
 		\newcommand{\annotation}[4]{
             \node[anchor=####4,align=center,font=\tiny\linespread{0.8}\selectfont,inner sep=2.5pt] at (axis cs: ####2,####3) {####1};
         }
@@ -4886,7 +4770,12 @@
 		\scalebox{0.8}{
 			\fbox{
 				\begin{tikzpicture}
-					\node[anchor=north west] at (0, 0) {\footnotesize{4. Stratify participants with MCI using predictions and relevance maps}};
+					\newcommand{\mrivsep}{0.75}
+					\newcommand{\mrihsep}{0.6}
+					\newcommand{\mriwidth}{0.55cm}
+					\newcommand{\mriheight}{0.7cm}
+
+					\node[anchor=north west] at (0, 0.25) {\footnotesize{4. Stratify participants with MCI using predictions and relevance maps}};
 					\node[anchor=north east] at (\plotwidth, 0) {};
 
 					\newcommand{\patientlocation}[1]{($ (0.5 * \plotwidth - 4, -1.7) + ####1 $)}
@@ -4895,50 +4784,65 @@
 
 					\def\edaheight{1.5}
 
-					\node[] at \patientlocation{(0, 0.7)} {\scriptsize{MCI}};
+					\node[align=center, font=\scriptsize\linespread{0.85}\selectfont] at \patientlocation{(0, 1)} {MCI\\patients};
 
 					\node[] at \patientlocation{(-1 * \mrihsep, -0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+							trim = 128mm 232mm 64mm 0mm
+						]{data/samples/subject3.png}
 					};
 					\node[] at \patientlocation{(0, -0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 232mm 0mm 0mm
+							]{data/samples/subject2.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, -0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 0mm 154mm 192mm 78mm
+							]{data/samples/subject3.png}
+						}
 					};
 					\node[] at \patientlocation{(-1 * \mrihsep, 0.5*\mrivsep)} {
 						\includegraphics[
-							height=0.5cm,
+							width=\mriwidth,
+							height=\mriheight,
 							clip=true,
 							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						]{data/samples/subject3.png}
 					};
 					\node[] at \patientlocation{(0, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 64mm 232mm 128mm 0mm
+							]{data/samples/subject1.png}
+						}
 					};
 					\node[] at \patientlocation{(1 * \mrihsep, 0.5*\mrivsep)} {
-						\includegraphics[
-							height=0.5cm,
-							clip=true,
-							trim = 192mm 232mm 0mm 0mm
-						]{data/averages/dementia.png}
+						\scalebox{-1}[1]{
+							\includegraphics[
+								width=\mriwidth,
+								height=\mriheight,
+								clip=true,
+								trim = 192mm 154mm 0mm 78mm
+							]{data/samples/subject1.png}
+						}
 					};
+
 
 					\newcommand{\edapoint}[4]{
 						\node[circle, minimum size=####4, draw=black, fill=####3, inner sep=0pt, outer sep=0pt] at \edalocation{(####1, ####2)} {};
@@ -5005,7 +4909,7 @@
 						color=outercolor,
 						-\outerarrow,
 						line width=0.1cm
-					] \patientlocation{(0.65, 0)} to (0.5 * \plotwidth - 1, -1.7);
+					] \patientlocation{(0.87, 0)} to (0.5 * \plotwidth - 1, -1.7);
 
 					\draw[
 						color=outercolor,
@@ -5023,6 +4927,7 @@
 		\begin{tikzpicture}[scale=0.9]
 			\definecolor{controls-default}{HTML}{3594d6}
 			\definecolor{cases-default}{HTML}{c71555}
+			\definecolor{healthy-default}{HTML}{4dac93}
 
 			\colorlet{}{cb-red-purple}
 			\colorlet{}{cb-blue}
@@ -5084,6 +4989,28 @@
 			\datenode{16.08.11}{15}
 			\datenode{07.08.12}{17}
 			\datenode{16.08.13}{19}
+
+			\prediction{13.1}{0.33}{healthy-default}{p11}
+			\prediction{13.1}{0.21}{controls-default}{p12}
+			\prediction{13.1}{0.09}{cases-default}{p13}
+
+			\node[anchor=west, text depth=0] at (p11.east) {\footnotesize{No diagnosis}};
+			\node[anchor=west, text depth=0] at (p12.east) {\footnotesize{MCI diagnosis}};
+			\node[anchor=west, text depth=0] at (p13.east) {\footnotesize{Dementia diagnosis}};
+
+			\draw[draw=black, fill=white] ($ (p11.north west) + (-0.1, 0.1) $) --
+										  ($ (p11.north east) + (3.25, 0.1) $) --
+										  ($ (p13.south east) + (3.25, -0.13) $) --
+										  ($ (p13.south west) + (-0.1, -0.13) $) --
+										  ($ (p11.north west) + (-0.1, 0.1) $);
+
+			\prediction{13.1}{0.33}{healthy-default}{p11}
+			\prediction{13.1}{0.21}{controls-default}{p12}
+			\prediction{13.1}{0.09}{cases-default}{p13}
+
+			\node[anchor=west, text depth=0] at (p11.east) {\footnotesize{No diagnosis}};
+			\node[anchor=west, text depth=0] at (p12.east) {\footnotesize{MCI diagnosis}};
+			\node[anchor=west, text depth=0] at (p13.east) {\footnotesize{Dementia diagnosis}};
 
 		\end{tikzpicture}
 		\vfill
@@ -6616,54 +6543,6 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients} % Time to diagnosis
-		\vfill
-		\centering
-		\begin{tikzpicture}
-			\definecolor{controls-default}{HTML}{3594d6}
-
-			\node[label={[label distance=0.03cm,
-						  inner sep=0pt,
-						  outer sep=0pt
-			 			 ]
-						 above:\footnotesize{Component 0}
-			}] at (0, 0) {
-				\includegraphics[width=2.5cm]{data/component_0.png}
-			};
-			\node[label={[label distance=0.03cm,
-						  inner sep=0pt,
-						  outer sep=0pt
-			 			 ]
-						 above:\footnotesize{Component 1}
-			}] at (2.55, 0) {
-				\includegraphics[width=2.5cm]{data/component_1.png}
-			};
-			\node[label={[label distance=0.03cm,
-						  inner sep=0pt,
-						  outer sep=0pt
-			 			 ]
-						 above:\footnotesize{Component 2}
-			}] at (5.1, 0) {
-				\includegraphics[width=2.5cm]{data/component_2.png}
-			};
-			\node[label={[label distance=0.03cm,
-						  inner sep=0pt,
-						  outer sep=0pt
-			 			 ]
-						 above:\footnotesize{Component 3}
-			}] at (7.65, 0) {
-				\includegraphics[width=2.5cm]{data/component_3.png}
-			};
-			\node[] at (0, -1.9) {\scriptsize{$p\mathrm{=}1.19*10^{-15}$}};
-			\node[] at (5.1, -1.9) {\scriptsize{$p\mathrm{=}6.62*10^{-4}$}};
-			\node[] at (7.65, -1.9) {\scriptsize{$p\mathrm{=}1.06*10^{-5}$}};
-
-			\node[] at (-1.5, -4.6) {};
-			\node[] at (9.1, -4.6) {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
 	\begin{frame}{Exploring relevance maps in MCI patients} % Survival curves
 		\vfill
 		\centering
@@ -8113,7 +7992,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients}
+	\begin{frame}{Exploring relevance maps in MCI patients} % Prognosis
 		\centering
 		\vfill
 		\begin{tabular}{|c|c|c|}
@@ -8132,7 +8011,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients}
+	\begin{frame}{Exploring relevance maps in MCI patients} % Summary
 		\centering
 		\vfill
 		\noindent
@@ -8141,4 +8020,5 @@
 		\end{quotation}
 		\vfill
 	\end{frame}
+
 \end{document}
