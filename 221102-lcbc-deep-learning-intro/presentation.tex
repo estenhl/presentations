@@ -1,0 +1,116 @@
+\documentclass[t]{beamer}
+
+\usetheme{metropolis}
+
+\author{Esten H{\o}yland Leonardsen}
+\institute[Life Science, UiO]{UiO:Life Science, University of Oslo}
+\date{02.11.22}
+\title{Introduction to deep learning}
+
+\titlegraphic{
+	\vspace*{6.8cm}
+	\centering
+    \includegraphics[width=1.5cm]{data/uio.png}
+}
+
+\begin{document}
+
+	\def\nodesize{14pt}
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	\begin{frame}{Building a neural network: Linear regression}
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$y=ax+b$};
+
+			\draw[->] (x) -- (n) node [midway, above, fill=white] {$a$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+			\draw[very thick, blue!60] (-2, -3.5) -- (2, -1.75);
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network: Artificial neuron}
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$y=max(0, wx+b)$};
+
+			\draw[->] (x) -- (n) node [midway, above, fill=white] {$w$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+			\draw[very thick, blue!60] (-2, -3.5) -- (0, -3.5) -- (2, -1.75);
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network: Artificial neural network (ANN)}
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n0) at (0, 2) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n1) at (0, 1) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$y=max(0, w_0x+b_0)+max(0, w_1x+b_1)$};
+
+			\draw[->] (x) -- (n0) node [midway, above] {$w_0$};
+			\draw[->] (x) -- (n1) node [midway, below] {$w_1$};
+			\draw[->] (n0) -- (y);
+			\draw[->] (n1) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+			\draw[very thick, blue!60] (-2, -3.5) -- (-0.66, -3.5) -- (0.66, -2.25) -- (2, -3);
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+\end{document}
