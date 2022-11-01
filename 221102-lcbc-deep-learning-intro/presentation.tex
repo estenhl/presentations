@@ -497,7 +497,6 @@
 		\vfill
 	\end{frame}
 
-
 	\begin{frame}{Building a neural network}
 		\centering
 		\vfill
@@ -710,4 +709,644 @@
 		\end{itemize}
 		\vfill
 	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxseven}
+		\sbox{\boxseven}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxseven}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxsix}
+		\sbox{\boxsix}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.5)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxsix}
+			};
+			\node[anchor=north] at (0, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.4x + 0.1\\
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxfive}
+		\sbox{\boxfive}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.9)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxfive}
+			};
+			\node[anchor=north] at (0, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.9x + 0.1\\
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxfour}
+		\sbox{\boxfour}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.9)
+					};
+					\addplot[only marks, mark=o, draw=blue!60, mark size=3pt] coordinates {
+						(0.15, 0.1 + 0.15*0.8)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxfour}
+			};
+			\node[anchor=north] at (0, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.9x + 0.1\\
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxthree}
+		\sbox{\boxthree}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.9)
+					};
+					\addplot[only marks, mark=o, draw=blue!60, mark size=3pt] coordinates {
+						(0.15, 0.1 + 0.15*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.15, 0.3)
+						(0.15, 0.1 + 0.15*0.8)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxthree}
+			};
+			\node[anchor=north] at (0, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.9x + 0.1\\
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxtwo}
+		\sbox{\boxtwo}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.9)
+					};
+					\addplot[only marks, mark=o, draw=blue!60, mark size=3pt] coordinates {
+						(0.15, 0.1 + 0.15*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.15, 0.3)
+						(0.15, 0.1 + 0.15*0.8)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxtwo}
+			};
+			\node[anchor=north] at (-0.37, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.9x + 0.1\\
+						error_i &= |\hat{y}-y|\\
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Loss functions}
+		\newsavebox{\boxone}
+		\sbox{\boxone}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					xmin=0,
+					xmax=1,
+					ymin=0,
+					ymax=1,
+					ticks=none,
+					xlabel=Age,
+					ylabel=Height,
+					height=0.55\textwidth,
+					width=0.8\textwidth
+				]
+
+					\addplot[only marks, draw=black, fill=red!60, mark size=3pt] coordinates {
+						(0.15, 0.3)
+						(0.25, 0.2)
+						(0.3, 0.4)
+						(0.5, 0.4)
+						(0.75, 0.8)
+						(0.8, 0.6)
+					};
+					\addplot[blue!60, very thick] coordinates {
+						(0, 0.1)
+						(1, 0.9)
+					};
+					\addplot[only marks, mark=o, draw=blue!60, mark size=3pt] coordinates {
+						(0.15, 0.1 + 0.15*0.8)
+						(0.25, 0.1 + 0.25*0.8)
+						(0.3, 0.1 + 0.3*0.8)
+						(0.5, 0.1 + 0.5*0.8)
+						(0.75, 0.1 + 0.75*0.8)
+						(0.8, 0.1 + 0.8*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.15, 0.3)
+						(0.15, 0.1 + 0.15*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.25, 0.2)
+						(0.25, 0.1 + 0.25*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.3, 0.4)
+						(0.3, 0.1 + 0.3*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.5, 0.4)
+						(0.5, 0.1 + 0.5*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.75, 0.8)
+						(0.75, 0.1 + 0.75*0.8)
+					};
+
+					\addplot[densely dotted, thick] coordinates {
+						(0.8, 0.6)
+						(0.8, 0.1 + 0.8*0.8)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5.3, 2.5) {};
+			\node[] at (5.3, -5) {};
+			\node[] at (0, 0) {
+				\usebox{\boxone}
+			};
+			\node[anchor=north] at (0, -2.5) {
+				\begin{math}
+					\begin{alignedat}{2}
+						\hat{y} &= 0.9x + 0.1\\
+						error_i &= |\hat{y}-y|\\
+						mse &= \frac{1}{n}\sum\limits_{i<n} (\hat{y}_i-y_i)^2
+					\end{alignedat}
+				\end{math}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$y=0.4x+0.1$\hspace*{0.75cm}$loss=(y-\hat{y})^2$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.4$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$0.16=0.4*0.15+0.1$\hspace*{0.75cm}$0.019=(0.3-0.16)^2$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.4$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$(0.3 - (0.4*0.15+0.1))^2=0.019$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.4$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$(0.3 - (0.4*0.15+0.1))^2=0.019$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.4$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\node[] at (-2.4, -0.6) {\footnotesize{\textcolor{red}{$y$}}};
+			\draw[->, red] (-2.4, -0.4) -- (-2.4, -0.2);
+			\node[] at (-0.35, -0.6) {\footnotesize{\textcolor{red}{$\hat{y}$}}};
+			\draw[->, red] (-0.35, -0.4) -- (-0.35, -0.2);
+			\draw[red] (-1.55, -0.15) -- (0.95, -0.15);
+			\node[] at (-0.35, 0.6) {\footnotesize{\textcolor{red}{$x$}}};
+			\draw[->, red] (-0.35, 0.4) -- (-0.35, 0.2);
+			\node[] at (-1.27, 0.6) {\footnotesize{\textcolor{red}{$w$}}};
+			\draw[->, red] (-1.27, 0.4) -- (-1.27, 0.2);
+			\node[] at (0.75, 0.6) {\footnotesize{\textcolor{red}{$b$}}};
+			\draw[->, red] (0.75, 0.4) -- (0.75, 0.2);
+			\node[] at (2.4, 0.6) {\footnotesize{\textcolor{red}{$loss$}}};
+			\draw[->, red] (2.4, 0.4) -- (2.4, 0.2);
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\newsavebox{\lossboxtwo}
+		\sbox{\lossboxtwo}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					ticks=none,
+					ymin=0,
+					ymax=0.025,
+					xmin=0,
+					xmax=2,
+					height=4cm,
+					width=5cm,
+					ylabel=$loss$,
+					xlabel=$w$
+				]
+					\addplot[only marks, draw=black, fill=purple!60] coordinates {
+						(0.4, 0.019)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$(0.3 - (0.4*0.15+0.1))^2=0.019$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.4$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\node[] at (0, -2.5) {
+				\usebox{\lossboxtwo}
+			};
+
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\newsavebox{\lossboxone}
+		\sbox{\lossboxone}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					ticks=none,
+					ymin=0,
+					ymax=0.025,
+					xmin=0,
+					xmax=2,
+					height=4cm,
+					width=5cm,
+					ylabel=$loss$,
+					xlabel=$w$
+				]
+					\addplot[only marks, draw=black, fill=purple!60] coordinates {
+						(0.9, 0.004)
+						(0.4, 0.019)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$(0.3 - (0.9*0.15+0.1))^2=0.004$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.9$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\node[] at (0, -2.5) {
+				\usebox{\lossboxone}
+			};
+
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Training a neural network: Gradient descent}
+		\newsavebox{\lossbox}
+		\sbox{\lossbox}{%
+			\begin{tikzpicture}
+				\begin{axis}[
+					ticks=none,
+					ymin=0,
+					ymax=0.025,
+					xmin=0,
+					xmax=2,
+					height=4cm,
+					width=5cm,
+					ylabel=$loss$,
+					xlabel=$w$
+				]
+					\addplot[only marks, draw=black, fill=purple!60] coordinates {
+						(0.9, 0.004)
+						(0.4, 0.019)
+					};
+					\addplot[] table [x=x,y=y,col sep=comma]{notebooks/data.csv};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$0.1$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$(0.3 - (0.9*0.15+0.1))^2=0.004$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$0.9$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\node[] at (0, -2.5) {
+				\usebox{\lossbox}
+			};
+
+		\end{tikzpicture}
+	\end{frame}
+
+
 \end{document}
