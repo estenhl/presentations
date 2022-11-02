@@ -13,7 +13,7 @@
 \author{Esten H{\o}yland Leonardsen}
 \institute[Life Science, UiO]{UiO:Life Science, University of Oslo}
 \date{20.10.22}
-\title{Detecting individual-level deviations in brain morphology in MCI with explainable AI}
+\title{Detecting individual-level deviations in brain morphology among MCI patients with explainable AI}
 
 \titlegraphic{
 	\vspace*{6.8cm}
@@ -45,6 +45,7 @@
 
 \colorlet{cases-default}{cb-red-purple}
 \colorlet{controls-default}{cb-blue}
+\colorlet{healthy-default}{cb-green}
 
 \begin{document}
 
@@ -3675,44 +3676,6 @@
         \end{tikzpicture}
 	\end{frame}
 
-	\begin{frame}{Case-control predictions} % Site results
-		\newcommand{\splitline}[8]{
-			\multirow{2}*{\tiny{####1}}&
-			\multirow{2}*{\tiny{####2}}&
-			\multirow{2}*{\tiny{####3}}&
-			\multirow{2}*{\tiny{####4}}&
-			\tiny{####5}&\tiny{####6}\\
-			\cline{5-6}
-			&&&&\tiny{####7}&\tiny{####8}\\
-			\hline
-		}
-
-		\centering
-		\vfill
-		\bgroup
-			\def\arraystretch{0.65}%
-		\begin{table}[h]
-			\centering
-			\begin{tabular}{|c|c|c|c|>{\centering}p{1.4cm}|c|}
-				\hline
-				\textbf{\tiny{Sites}}&\textbf{\tiny{Size}}&\textbf{\tiny{AUC}}&\textbf{\tiny{Accuracy}}&\multicolumn{2}{c|}{\textbf{\tiny{Confusion Matrix}}}\\
-				\hline
-				\splitline{ADNI 3.0T}{506}{0.942}{90.11}{237}{16}{34}{219}
-				\splitline{OASIS 3.0T}{438}{0.850}{79.45}{185}{34}{56}{163}
-				\splitline{ADNI 1.5T}{290}{0.944}{87.93}{125}{20}{15}{130}
-				\splitline{Oslo GE750}{226}{0.900}{84.07}{102}{11}{25}{88}
-				\splitline{AIBL Site 1}{92}{0.906}{84.78}{43}{3}{11}{35}
-				\splitline{ANM GE}{74}{0.848}{72.97}{26}{11}{9}{28}
-				\splitline{Miriad 1.5T}{38}{0.997}{97.36}{19}{0}{1}{18}
-				\splitline{AIBL Site 2}{22}{0.950}{86.36}{11}{0}{3}{8}
-				\splitline{OASIS 1.5T}{12}{0.666}{58.33}{3}{3}{2}{4}
-				\splitline{ANM Picker}{10}{0.76}{70.00}{3}{2}{1}{4}
-			\end{tabular}
-		\end{table}
-		\egroup
-		\vfill
-	\end{frame}
-
 	\begin{frame}{Generating relevance maps} % Intro
 		\centering
 		\vfill
@@ -4979,7 +4942,7 @@
 		\vfill
 		\begin{tikzpicture}
             \begin{axis}[
-                height=0.4\textwidth,
+                height=0.6\textwidth,
                 width=0.95\textwidth,
                 ylabel=\footnotesize{Mean prediction},
                 xlabel=\footnotesize{Iteration},
@@ -5425,146 +5388,369 @@
 		\vfill
 	\end{frame}
 
+	\begin{frame}{Exploring relevance maps in MCI patients} % Groupwise predictions
+		\centering
+		\vfill
+		\begin{tikzpicture}
+            \begin{axis}[
+                height=0.7\textwidth,
+                width=\textwidth,
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1.05,
+                ymajorticks=false,
+                xtick pos=bottom,
+                xlabel=\footnotesize{Prediction},
+				every tick label/.append style={font=\footnotesize},
+				clip=false
+            ]
+                \addplot[draw=none, name path=zero] coordinates {(0, 0) (1, 0)};
+                \addplot[
+                    draw=healthy-default,
+                    very thick,
+                    name path=improved
+                ] table [
+                    col sep=comma,
+                    x=points,
+                    y=improved,
+                ] {data/trajectory_distributions/mci.csv};
+
+                \addplot[healthy-default, opacity=0.2] fill between [
+                    of=zero and improved
+                ];
+
+                \addplot[
+                    draw=controls-default,
+                    very thick,
+                    name path=stable
+                ] table [
+                    col sep=comma,
+                    x=points,
+                    y=stable
+                ] {data/trajectory_distributions/mci.csv};
+
+                \addplot[controls-default, opacity=0.2] fill between [
+                    of=zero and stable
+                ];
+
+                \addplot[
+                    draw=cases-default,
+                    very thick,
+                    name path=declined
+                ] table [
+                    col sep=comma,
+                    x=points,
+                    y=declined
+                ] {data/trajectory_distributions/mci.csv};
+
+                \addplot[cases-default, opacity=0.2] fill between [
+                    of=zero and declined
+                ];
+
+                \addplot[
+                    only marks,
+                    draw=healthy-default,
+                    fill=healthy-default,
+                    mark options={mark size=3pt},
+					draw=black
+                ] coordinates {(0.105, 4.418/7.838)};\label{trace:imci_dist}
+
+                \addplot[
+                    only marks,
+                    draw=controls-default,
+                    fill=controls-default,
+                    mark options={mark size=3pt},
+					draw=black
+                ] coordinates {(0.333, 0.592/7.838)};\label{trace:smci_dist}
+
+                \addplot[
+                    only marks,
+                    draw=cases-default,
+                    fill=cases-default,
+                    mark options={mark size=3pt},
+					draw=black
+                ] coordinates {(0.649, 0.829/7.838)};\label{trace:pmci_dist}
+
+				\node[anchor=north, font=\scriptsize] at (axis cs: 0.5, -0.225) {
+					\ref{trace:imci_dist} Improving MCI\hspace*{0.3cm}\ref{trace:smci_dist} Stable MCI\hspace*{0.3cm}\ref{trace:pmci_dist} Progressive MCI
+				};
+
+				\node[anchor=south] at (axis cs: 0.649, 0.95/7.838) {\scriptsize{\textcolor{cases-default}{0.649}}};
+				\node[anchor=south] at (axis cs: 0.333, 0.72/7.838) {\scriptsize{\textcolor{controls-default}{0.333}}};
+				\node[anchor=west] at (axis cs: 0.11, 4.418/7.838) {\scriptsize{\textcolor{healthy-default}{0.105}}};
+            \end{axis}
+        \end{tikzpicture}
+		\vfill
+	\end{frame}
+
 	\begin{frame}{Exploring relevance maps in MCI patients} % Group-level comparison
-		\vfill
-		\begin{tikzpicture}
-			\definecolor{controls-default}{HTML}{3594d6}
-			\definecolor{cases-default}{HTML}{c71555}
-			\definecolor{healthy-default}{HTML}{4dac93}
+		\newcommand{\linestyle}{densely dotted}
+		\newcommand{\diffx}{-7.05}
+		\newcommand{\legendy}{0.92}
 
+		\vfill
+
+		\begin{tikzpicture}
 			\begin{axis}[
-				width=0.84\textwidth,
-				height=0.7\textwidth,
-				xmin=-12,
+				height=0.65\textwidth,
+				width=0.85\textwidth,
+				xmin=-9,
 				xmax=0,
-				ymin=-0.05,
-				ymax=1.05,
-				ylabel=Prediction,
-				every tick label/.append style={font=\footnotesize},
-				xlabel={Years to diagnosis},
+				ymin=0,
+				ymax=1,
+				xlabel=\footnotesize{Years before diagnosis},
+				ylabel=\footnotesize{Group-wise mean prediction},
+				error bars/y dir=both,
+				error bars/y explicit,
 				clip=false,
-				grid,
-				grid style={line width=0.05mm, gray!50},
+				every tick label/.append style={font=\footnotesize},
+				xtick pos=bottom,
+				ytick pos=left,
 				xtick style={draw=none},
-				ytick style={draw=none}
+				ytick style={draw=none},
+				xmajorgrids=true,
+				ymajorgrids=true,
+				clip=false
 			]
-				\addplot[mark=*,mark options={fill=cases-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/patient_histories.csv};
-				\addplot[mark=*,mark options={fill=controls-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/control_histories.csv};
+				\addplot[
+					cases-default,
+					scatter,
+					scatter/use mapped color={
+						draw=cases-default,
+						fill=cases-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=declining_mean,
+				] {data/yearly_trajectories.csv};\label{trace:pmci}
+
+				\addplot[
+					controls-default,
+					scatter,
+					scatter/use mapped color={
+						draw=controls-default,
+						fill=controls-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=stable_mean,
+				] {data/yearly_trajectories.csv};\label{trace:smci}
+
+				\node[draw=black, circle, minimum size=5.4pt, fill=gray, inner sep=0pt, anchor=north west] (n25mark) at (axis cs: -8.75, 0.95) {};
+				\node[anchor=west, inner sep=0pt] (n25label) at ($ (n25mark.east) + (5, 0) $) {\footnotesize{n=25}};
+				\node[draw=black, anchor=west, circle, minimum size=8.5pt, fill=gray, inner sep=0pt] (n100mark) at ($ (n25label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n100label) at ($ (n100mark.east) + (5, 0) $) {\footnotesize{100}};
+				\node[draw=black, anchor=west, circle, minimum size=12pt, fill=gray, inner sep=0pt] (n250mark) at ($ (n100label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n250label) at ($ (n250mark.east) + (5, 0) $) {\footnotesize{250}};
+				\node[anchor=north, font=\scriptsize] at (axis cs: -4.5, -0.25) {
+					\ref{trace:smci} Stable MCI\hspace*{0.3cm}\ref{trace:pmci} Progressive MCI
+				};
 			\end{axis}
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients} % Level comparison
-		\vfill
-		\begin{tikzpicture}
-			\definecolor{controls-default}{HTML}{3594d6}
-			\definecolor{cases-default}{HTML}{c71555}
-			\definecolor{healthy-default}{HTML}{4dac93}
+	\begin{frame}{Exploring relevance maps in MCI patients} % Group-level comparison
+		\newcommand{\diffx}{-7.05}
+		\newcommand{\legendy}{0.92}
 
+		\vfill
+
+		\begin{tikzpicture}
 			\begin{axis}[
-				width=0.84\textwidth,
-				height=0.7\textwidth,
-				xmin=-12,
+				height=0.65\textwidth,
+				width=0.85\textwidth,
+				xmin=-9,
 				xmax=0,
-				ymin=-0.05,
-				ymax=1.05,
-				ylabel=Prediction,
-				every tick label/.append style={font=\footnotesize},
-				xlabel={Years to diagnosis},
+				ymin=0,
+				ymax=1,
+				xlabel=\footnotesize{Years before diagnosis},
+				ylabel=\footnotesize{Group-wise mean prediction},
+				error bars/y dir=both,
+				error bars/y explicit,
 				clip=false,
-				grid,
-				grid style={line width=0.05mm, gray!50},
+				every tick label/.append style={font=\footnotesize},
+				xtick pos=bottom,
+				ytick pos=left,
 				xtick style={draw=none},
-				ytick style={draw=none}
+				ytick style={draw=none},
+				xmajorgrids=true,
+				ymajorgrids=true
 			]
-				\addplot[mark=*,mark options={fill=cases-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/patient_histories.csv};
-				\addplot[mark=*,mark options={fill=controls-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/control_histories.csv};
-				\addplot[cases-default, dashed] coordinates {
-					(-12, 0.677)
-					(0, 0.677)
-				} node[anchor=west] at (axis cs: 0, 0.677) {\scriptsize{0.677}};
-				\addplot[controls-default, dashed] coordinates {
-					(-12, 0.304)
-					(0, 0.304)
-				} node[anchor=west] at (axis cs: 0, 0.304) {\scriptsize{0.304}};
-				\draw[Latex-Latex, thick, densely dotted] (axis cs: -0.2, 0.304) -- (axis cs: -0.2, 0.677);
-				\coordinate (coef) at (axis cs: 0, 0.490);
+				\addplot[densely dotted, thick] coordinates {
+					(-9, 0.309)
+					(0, 0.309)
+				};
+				\node[anchor=west, font=\scriptsize\selectfont] at (axis cs: 0, 0.309) {\textcolor{controls-default}{0.309}};
+
+				\addplot[densely dotted, thick] coordinates {
+					(-9, 0.656)
+					(0, 0.656)
+				};
+				\node[anchor=west, font=\scriptsize\selectfont] at (axis cs: 0, 0.656) {\textcolor{cases-default}{0.656}};
+
+				\addplot[
+					cases-default,
+					scatter,
+					scatter/use mapped color={
+						draw=cases-default,
+						fill=cases-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=declining_mean,
+				] {data/yearly_trajectories.csv};
+
+				\addplot[
+					controls-default,
+					scatter,
+					scatter/use mapped color={
+						draw=controls-default,
+						fill=controls-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=stable_mean,
+				] {data/yearly_trajectories.csv};
+
+				\draw[<->] (axis cs: -0.25, 0.309) -- (axis cs: -0.25, 0.656);
+				\node[anchor=west, align=left, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 0, 0.475) {
+					$\beta=0.441$\\
+					$p=4.87 \times 10^{-60}$
+				};
+
+				\node[draw=black, circle, minimum size=5.4pt, fill=gray, inner sep=0pt, anchor=north west] (n25mark) at (axis cs: -8.75, 0.95) {};
+				\node[anchor=west, inner sep=0pt] (n25label) at ($ (n25mark.east) + (5, 0) $) {\footnotesize{n=25}};
+				\node[draw=black, anchor=west, circle, minimum size=8.5pt, fill=gray, inner sep=0pt] (n100mark) at ($ (n25label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n100label) at ($ (n100mark.east) + (5, 0) $) {\footnotesize{100}};
+				\node[draw=black, anchor=west, circle, minimum size=12pt, fill=gray, inner sep=0pt] (n250mark) at ($ (n100label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n250label) at ($ (n250mark.east) + (5, 0) $) {\footnotesize{250}};
+
+				\node[anchor=north, font=\scriptsize] at (axis cs: -4.5, -0.25) {
+					\ref{trace:smci} Stable MCI\hspace*{0.3cm}\ref{trace:pmci} Progressive MCI
+				};
 			\end{axis}
-			\node[anchor=west,align=left,font=\scriptsize\linespread{0.8}\selectfont] at (coef) {$\beta\mathrm{=}0.441$\\$p\mathrm{=}4.87 * 10^{-60}$};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients} % Slope comparison
-		\vfill
-		\begin{tikzpicture}
-			\definecolor{controls-default}{HTML}{3594d6}
-			\definecolor{cases-default}{HTML}{c71555}
-			\definecolor{healthy-default}{HTML}{4dac93}
+	\begin{frame}{Exploring relevance maps in MCI patients} % Group-level comparison
+		\newcommand{\diffx}{-7.05}
+		\newcommand{\legendy}{0.92}
 
+		\vfill
+
+		\begin{tikzpicture}
 			\begin{axis}[
-				width=0.84\textwidth,
-				height=0.7\textwidth,
-				xmin=-12,
+				height=0.65\textwidth,
+				width=0.85\textwidth,
+				xmin=-9,
 				xmax=0,
-				ymin=-0.05,
-				ymax=1.05,
-				ylabel=Prediction,
-				every tick label/.append style={font=\footnotesize},
-				xlabel={Years to diagnosis},
+				ymin=0,
+				ymax=1,
+				xlabel=\footnotesize{Years before diagnosis},
+				ylabel=\footnotesize{Group-wise mean prediction},
+				error bars/y dir=both,
+				error bars/y explicit,
 				clip=false,
-				grid,
-				grid style={line width=0.05mm, gray!50},
+				every tick label/.append style={font=\footnotesize},
+				xtick pos=bottom,
+				ytick pos=left,
 				xtick style={draw=none},
-				ytick style={draw=none}
+				ytick style={draw=none},
+				xmajorgrids=true,
+				ymajorgrids=true
 			]
-				\addplot[mark=*,mark options={fill=cases-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/patient_histories.csv};
-				\addplot[mark=*,mark options={fill=controls-default}] table [
-					x expr=\thisrow{bucket} * -3 / 12,
-					y=mean,
-					col sep=comma
-				] {data/control_histories.csv};
-				\addplot[dashed] coordinates {
-					(-12, 0.677)
-					(0, 0.677)
+				\addplot[densely dotted, thick] coordinates {
+					(-9, 0.05)
+					(0, 0.45)
 				};
-				\addplot[dashed] coordinates {
-					(-12, 0.304)
-					(0, 0.304)
+
+				\node[anchor=west, font=\scriptsize\selectfont] at (axis cs: 0, 0.45) {\textcolor{controls-default}{0.015}};
+
+				\addplot[densely dotted, thick] coordinates {
+					(-9, 0.35)
+					(0, 0.8)
 				};
-				\addplot[cases-default, dashed] coordinates {
-					(-12, 0.42)
-					(0, 0.73)
+				\node[anchor=west, font=\scriptsize\selectfont] at (axis cs: 0, 0.8) {\textcolor{cases-default}{0.062}};
+
+				\addplot[
+					cases-default,
+					scatter,
+					scatter/use mapped color={
+						draw=cases-default,
+						fill=cases-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=declining_mean,
+				] {data/yearly_trajectories.csv};
+
+				\addplot[
+					controls-default,
+					scatter,
+					scatter/use mapped color={
+						draw=controls-default,
+						fill=controls-default
+					},
+					visualization depends on=\thisrow{declining_size}\as\size,
+					scatter/@pre marker code/.append style={
+						/tikz/mark size=\size ^ 0.3,
+						/tikz/mark color=cases-default
+					}
+				] table [
+					col sep=comma,
+					x=year,
+					y=stable_mean,
+				] {data/yearly_trajectories.csv};
+
+				\node[draw=black, circle, minimum size=5.4pt, fill=gray, inner sep=0pt, anchor=north west] (n25mark) at (axis cs: -8.75, 0.95) {};
+				\node[anchor=west, inner sep=0pt] (n25label) at ($ (n25mark.east) + (5, 0) $) {\footnotesize{n=25}};
+				\node[draw=black, anchor=west, circle, minimum size=8.5pt, fill=gray, inner sep=0pt] (n100mark) at ($ (n25label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n100label) at ($ (n100mark.east) + (5, 0) $) {\footnotesize{100}};
+				\node[draw=black, anchor=west, circle, minimum size=12pt, fill=gray, inner sep=0pt] (n250mark) at ($ (n100label.east) + (20, 0) $) {};
+				\node[anchor=west, inner sep=0pt] (n250label) at ($ (n250mark.east) + (5, 0) $) {\footnotesize{250}};
+
+				\draw[<->] (axis cs: -0.25, 0.4375) -- (axis cs: -0.25, 0.7875);
+				\node[anchor=west, align=left, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 0, 0.625) {
+					$\beta=0.047$\\
+					$p=6.12 \times 10^{-15}$
 				};
-				\addplot[controls-default, dashed] coordinates {
-					(-10, 0.10)
-					(0, 0.34)
+				\node[anchor=north, font=\scriptsize] at (axis cs: -4.5, -0.25) {
+					\ref{trace:smci} Stable MCI\hspace*{0.3cm}\ref{trace:pmci} Progressive MCI
 				};
-				\draw[Latex-Latex, thick, densely dotted] (axis cs: -0.2, 0.337) -- (axis cs: -0.2, 0.727);
-				\coordinate (coef) at (axis cs: 0, 0.532);
 			\end{axis}
-			\node[anchor=west,align=left,font=\scriptsize\linespread{0.8}\selectfont] at (coef) {$\beta\mathrm{=}0.047$\\$p\mathrm{=}6.12 * 10^{-15}$};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
@@ -6780,1100 +6966,6 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA origin
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA pca
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[-{Latex[width=2.5mm]}, line width=2pt] ($ (x47.east)!0.5!(x57.east) + (0.2, 0) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0) $) node [midway, label=\textbf{\small{$PCA$}}] {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA functions
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA compressed
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
-
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=north, thick] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=west, thick] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=west, thick] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=west, thick] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=west, thick] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, anchor=west, thick] (y15) at (y14.east) {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA dimensions
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
-
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y90.south) + (0, -0.4) $) -- (y90.south);
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y91.south) + (0, -0.4) $) -- (y91.south);
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y92.south) + (0, -0.4) $) -- (y92.south);
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA dimensions formulas
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
-
-			\node[inner sep=1pt] (f0) at ($ (x97.south east)!0.5!(y90.south west) + (0, -2) $) {\footnotesize{$f^{\ast}([1, 0, 0, \ldots, 0, 0, 0])=\textcolor{red}{?}$}};
-			\node[anchor=north, inner sep=1pt] (f0) at (f0.south) {\footnotesize{$f^{\ast}([0, 1, 0, \ldots, 0, 0, 0])=\textcolor{red}{?}$}};
-			\node[anchor=north, inner sep=1pt] (f0) at (f0.south) {\footnotesize{$f^{\ast}([0, 0, 1, \ldots, 0, 0, 0])=\textcolor{red}{?}$}};
-
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y90.south) + (0, -0.4) $) -- (y90.south);
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y91.south) + (0, -0.4) $) -- (y91.south);
-			\draw[-{Latex[width=1.5mm]}, thick, color=red] ($ (y92.south) + (0, -0.4) $) -- (y92.south);
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
 	\begin{frame}{Exploring relevance maps in MCI patients} % PCA components
 		\vfill
 		\centering
@@ -7913,210 +7005,6 @@
 
 			\node[] at (-1.5, -4.6) {};
 			\node[] at (9.1, -4.6) {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA subject loadings
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y01) at (y01) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y11) at (y11) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y21) at (y21) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y31) at (y31) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y41) at (y41) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y51) at (y51) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y61) at (y61) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y71) at (y71) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y81) at (y81) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, draw=red, thick] (y91) at (y91) {};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
@@ -8339,200 +7227,6 @@
 
 			\node[] at (-1.5, -4.6) {};
 			\node[] at (9.1, -4.6) {};
-		\end{tikzpicture}
-		\vfill
-	\end{frame}
-
-
-	\begin{frame}{Exploring relevance maps in MCI patients} % PCA full matrix
-		\centering
-		\vfill
-		\begin{tikzpicture}
-			\node[] at (-1, 1) {};
-			\node[] at (5.8, -5.5) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black] (x00) at (0, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x01) at (x00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x02) at (x01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x03) at (x02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x04) at (x03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x05) at (x04.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x06) at (x05.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x07) at (x06.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x10) at (x00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x11) at (x10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x12) at (x11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x13) at (x12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x14) at (x13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x15) at (x14.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x16) at (x15.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x17) at (x16.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x20) at (x10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x21) at (x20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x22) at (x21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x23) at (x22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x24) at (x23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x25) at (x24.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x26) at (x25.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x27) at (x26.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x30) at (x20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x31) at (x30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x32) at (x31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x33) at (x32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x34) at (x33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x35) at (x34.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x36) at (x35.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x37) at (x36.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x40) at (x30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x41) at (x40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x42) at (x41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x43) at (x42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x44) at (x43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x45) at (x44.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x46) at (x45.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x47) at (x46.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x50) at (x40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x51) at (x50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x52) at (x51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x53) at (x52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x54) at (x53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x55) at (x54.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x56) at (x55.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x57) at (x56.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x60) at (x50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x61) at (x60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x62) at (x61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x63) at (x62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x64) at (x63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x65) at (x64.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x66) at (x65.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x67) at (x66.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x70) at (x60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x71) at (x70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x72) at (x71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x73) at (x72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x74) at (x73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x75) at (x74.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x76) at (x75.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x77) at (x76.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x80) at (x70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x81) at (x80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x82) at (x81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x83) at (x82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x84) at (x83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x85) at (x84.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x86) at (x85.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x87) at (x86.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=north] (x90) at (x80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x91) at (x90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x92) at (x91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x93) at (x92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x94) at (x93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x95) at (x94.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x96) at (x95.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=black, anchor=west] (x97) at (x96.east) {};
-
-			\node[anchor=north] at ($ (x93.south)!0.5!(x94.south) + (0, -0.2) $) {\small{$X$}};
-
-			\node[anchor=south] (voxels) at ($ (x03.north)!0.5!(x04.north) $) {\scriptsize{$voxels$}};
-			\draw[->] (voxels.east) -- ($ (voxels.east) + (0.2, 0) $);
-			\draw[->] (voxels.west) -- ($ (voxels.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects) at ($ (x40.west)!0.5!(x50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects.east) -- ($ (subjects.east) + (0, 0.2) $);
-			\draw[->] (subjects.west) -- ($ (subjects.west) + (0, -0.2) $);
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick] (y00) at (4, 0) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y01) at (y00.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y02) at (y01.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y03) at (y02.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y04) at (y03.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y05) at (y04.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y10) at (y00.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y11) at (y10.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y12) at (y11.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y13) at (y12.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y14) at (y13.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y15) at (y14.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y20) at (y10.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y21) at (y20.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y22) at (y21.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y23) at (y22.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y24) at (y23.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y25) at (y24.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y30) at (y20.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y31) at (y30.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y32) at (y31.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y33) at (y32.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y34) at (y33.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y35) at (y34.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y40) at (y30.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y41) at (y40.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y42) at (y41.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y43) at (y42.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y44) at (y43.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y45) at (y44.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y50) at (y40.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y51) at (y50.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y52) at (y51.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y53) at (y52.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y54) at (y53.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y55) at (y54.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y60) at (y50.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y61) at (y60.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y62) at (y61.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y63) at (y62.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y64) at (y63.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y65) at (y64.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y70) at (y60.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y71) at (y70.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y72) at (y71.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y73) at (y72.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y74) at (y73.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y75) at (y74.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y80) at (y70.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y81) at (y80.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y82) at (y81.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y83) at (y82.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y84) at (y83.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y85) at (y84.east) {};
-
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=north] (y90) at (y80.south) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y91) at (y90.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y92) at (y91.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y93) at (y92.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y94) at (y93.east) {};
-			\node[minimum width=0.2cm, minimum height=0.2cm, inner sep=0pt, outer sep=0pt, draw=red, thick, anchor=west] (y95) at (y94.east) {};
-
-			\node[anchor=north] at ($ (y92.south)!0.5!(y93.south) + (0, -0.2) $) {\small{$C$}};
-
-			\node[anchor=south] (dims) at ($ (y02.north)!0.5!(y03.north) $) {\scriptsize{$64$}};
-			\draw[->] (dims.east) -- ($ (dims.east) + (0.2, 0) $);
-			\draw[->] (dims.west) -- ($ (dims.west) + (-0.2, 0) $);
-
-			\node[anchor=south, rotate=90] (subjects2) at ($ (y40.west)!0.5!(y50.west) $) {\scriptsize{$subjects$}};
-			\draw[->] (subjects2.east) -- ($ (subjects2.east) + (0, 0.2) $);
-			\draw[->] (subjects2.west) -- ($ (subjects2.west) + (0, -0.2) $);
-
-			\draw[->] ($ (x47.east)!0.5!(x57.east) + (0.2, 0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, 0.1) $) node [midway, label=\small{$f$}] {};
-			\draw[<-] ($ (x47.east)!0.5!(x57.east) + (0.2, -0.1) $) -- ($ (y40.west)!0.5!(y50.west) + (-0.5, -0.1) $) node [midway, label=below:\small{$f^{\ast}$}] {};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
@@ -9820,19 +8514,20 @@
 				{
 					\begin{tabular}{|c|c|c|c|c|c|}
 						\hline
-						\textbf{Covariates}&\textbf{AUC}&\textbf{Accuracy}&\textbf{PPV}&\textbf{Sensitivity}&\textbf{Specificity}\\
+						\textbf{Predictors}&\textbf{AUC}&\textbf{Accuracy}&\textbf{PPV}&\textbf{Sensitivity}&\textbf{Specificity}\\
 						\hline
-						$\mathrm{age} + \mathrm{sex}$&$0.521\pm0.029$&$51.57\pm3.56$&$0.61\pm0.03$&$0.66\pm0.03$&$0.37\pm0.04$\\
+						age + sex&$0.538\pm0.072$&$53.81\pm7.25$&$0.53\pm0.06$&$0.62\pm0.09$&$0.42\pm0.13$\\
 						\hline
-						$\mathrm{age} + \mathrm{sex} + \hat{y}_{n}$&$0.833\pm0.077$&$75.23\pm7.03$&$0.82\pm0.10$&$0.72\pm0.11$&$0.79\pm0.09$\\
+						age + sex + $\hat{y}_{n}$&$0.808\pm0.035$&$76.41\pm3.79$&$0.76\pm0.03$&$0.75\pm0.07$&$0.77\pm0.04$\\
 						\hline
-						$\mathrm{age} + \mathrm{sex} + \hat{y}_{n}$ + $c_{n}$&$0.855\pm0.088$&$71.65\pm7.51$&$0.90\pm0.10$&$0.49\pm0.12$&$0.93\pm0.07$\\
+						age + sex + $\hat{y}^{\ast}_{n+1}$&$0.806\pm0.03$&$75.15\pm3.34$&$0.74\pm0.02$&$0.76\pm0.07$&$0.74\pm0.04$\\
 						\hline
-						$\mathrm{age} + \mathrm{sex} + \hat{y}^{\ast}_{n+1} + c^{\ast}_{n+1}$&$0.849\pm0.074$&$76.97\pm9.46$&$0.82\pm0.10$&$0.78\pm0.15$&$0.76\pm0.08$\\
+						age + sex + $\hat{y}_{n} + c_n$&$0.810\pm0.035$&$75.78\pm3.45$&$0.72\pm0.03$&$0.78\pm0.07$&$0.78\pm0.03$\\
+						\hline
+						age + sex + $\hat{y}^{\ast}_{n+1} + c^{\ast}_{n+1}$&$\mathbf{0.831\pm0.037}$&$74.52\pm3.08$&$0.72\pm0.03$&$0.78\pm0.07$&$0.70\pm0.05$\\
 						\hline
 					\end{tabular}
 				}
-
 		\end{table}
 		\footnotesize{Prediction of progression at $t_{n+1}$}
 		\vfill
@@ -9841,6 +8536,7 @@
 	\begin{frame}{Exploring relevance maps in MCI patients} % Summary
 		\centering
 		\vfill
+		\vspace{1.2cm}
 		\noindent
 		\begin{quotation}
 			"There is an X\% chance the patient will progress into dementia by date XX.YY.ZZZZ based on existing pathology in brain regions A, B and C, and an expected increase/decrease of pathology in regions D and E."
@@ -9882,6 +8578,20 @@
 			\node[anchor=north,font=\tiny\linespread{0.8}\selectfont, align=center] at (thomas.south) {
 				Thomas Wolfers\\
 				dr.thomas.wolfers@gmail.com
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Appendix 1}
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[label=below:{Dementia}] at (0, 0) {
+				\includegraphics[width=4cm]{data/dementia_average.png}
+			};
+			\node[label=below:{Multiple Sclerosis}] at (5, 0) {
+				\includegraphics[width=4cm]{data/averages/ms.png}
 			};
 		\end{tikzpicture}
 		\vfill
