@@ -6,6 +6,8 @@
 \usepackage{varwidth}
 \usepackage{xcolor}
 
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
 
 \date{19.01.23}
@@ -20,6 +22,9 @@
 \colorlet{model1}{red}
 \colorlet{model2}{green}
 \colorlet{model3}{orange}
+
+\def\nodesize{14pt}
+\colorlet{nodefill}{green!20}
 
 \begin{document}
 	\begin{frame}
@@ -801,7 +806,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Loss functions} % Formulas
+	\begin{frame}{Training} % Formulas
 		\vfill
 		\begin{tikzpicture}
 			\begin{axis}[
@@ -850,7 +855,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Loss functions} % Formulas
+	\begin{frame}{Training} % Formula replacement
 		\vfill
 		\begin{tikzpicture}
 			\begin{axis}[
@@ -913,7 +918,7 @@
 		\vfill
 	\end{frame}
 
-	\begin{frame}{Loss functions} % Formulas
+	\begin{frame}{Training} % Single formula
 		\vfill
 		\begin{tikzpicture}
 			\begin{axis}[
@@ -959,6 +964,772 @@
 
 			\node[] at ($ (center) - (5.3, 1.8) $) {};
 			\node[] at ($ (center) + (5.3, 5.8) $) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Training} % Actual formula
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000
+			]
+				\addplot[
+					only marks,
+					mark size=3pt,
+					mark options={draw=black, fill=cyan}
+				] coordinates {
+					(72, 5127379)
+					(50, 4552170)
+					(45, 4486654)
+					(62, 5709276)
+					(53, 4634912)
+					(81, 8388570)
+					(44, 4828170)
+					(78, 7557770)
+					(37, 4016520)
+					(73, 6572351)
+				};
+				\addplot[model2] coordinates {
+					(0, 3500000)
+					(100, 6500000)
+				};
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+
+
+			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
+				$1.10 \times 10^{13}=\sum (y - (30000x + 3500000))^2$
+			};
+
+			\node[] at ($ (center) - (5.3, 1.8) $) {};
+			\node[] at ($ (center) + (5.3, 5.8) $) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Training} % Update
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000
+			]
+				\addplot[
+					only marks,
+					mark size=3pt,
+					mark options={draw=black, fill=cyan}
+				] coordinates {
+					(72, 5127379)
+					(50, 4552170)
+					(45, 4486654)
+					(62, 5709276)
+					(53, 4634912)
+					(81, 8388570)
+					(44, 4828170)
+					(78, 7557770)
+					(37, 4016520)
+					(73, 6572351)
+				};
+				\addplot[model2] coordinates {
+					(0, 3000000)
+					(100, 7500000)
+				};
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+
+
+			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
+				$7.24 \times 10^{12}=\sum (y - (45000x + 3000000))^2$
+			};
+
+			\node[] at ($ (center) - (5.3, 1.8) $) {};
+			\node[] at ($ (center) + (5.3, 5.8) $) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Linear regression
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$\hat{y}=wx+b$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$w$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Straight line
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$\hat{y}=wx+b$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$w$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+
+			\draw[very thick, blue!60] (-2, -3.5) -- (2, -1.75);
+
+			\node[anchor=north] at (0, -4.1) {x};
+			\node[anchor=south, rotate=90] at (-2.1, -2.75) {y};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Non-linearity
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$\hat{y}=max(0, wx+b)$};
+
+			\draw[->] (x) -- (n) node [midway, above] {$w$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+			\draw[very thick, blue!60] (-2, -3.5) -- (0, -3.5) -- (2, -1.75);
+
+			\node[anchor=north] at (0, -4.1) {x};
+			\node[anchor=south, rotate=90] at (-2.1, -2.75) {y};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % MLP
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n0) at (0, 2) {};
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n1) at (0, 1) {};
+			\node[] (x) at (-1.5, 1.5) {$x$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$\hat{y}=max(0, w_0x+b_0)+max(0, w_1x+b_1)$};
+
+			\draw[->] (x) -- (n0) node [midway, above] {$w_0$};
+			\draw[->] (x) -- (n1) node [midway, below] {$w_1$};
+			\draw[->] (n0) -- (y);
+			\draw[->] (n1) -- (y);
+
+			\draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+			\draw[very thick, blue!60] (-2, -3.5) -- (-0.66, -3.5) -- (0.66, -2.25) -- (2, -3);
+
+			\node[anchor=north] at (0, -4.1) {x};
+			\node[anchor=south, rotate=90] at (-2.1, -2.75) {y};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Universal approximation theorem
+		\vfill
+		\centering
+		\begin{quotation}
+			\centering
+			"Any relationship that can be described with a polynomial function can be approximated by a neural network with a single hidden layer."
+		\end{quotation}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Multidimensional
+		\centering
+		\vfill
+		\newsavebox{\mybox}
+		\sbox{\mybox}{%
+			\begin{tikzpicture}[
+				declare function = {
+					q(\x) = \x - 1;
+					Z(\x,\y) = max(0, \x*0.5 + \y*0.25);
+				}
+			]
+				\begin{axis}
+				[
+					height=5cm,
+					ticks=none,
+					xlabel=$x_0$,
+					ylabel=$x_1$,
+					zlabel=$y$,
+					domain=-1:1,
+					samples=20,
+				]
+					\addplot3 [surf, opacity=0.5] {Z(x,y)};
+				\end{axis}
+			\end{tikzpicture}
+		}
+		\begin{tikzpicture}
+			\node[] at (-5, 3) {};
+			\node[] at (5, -4.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n) at (0, 1.5) {};
+			\node[] (x0) at (-1.5, 2) {$x_0$};
+			\node[] (x1) at (-1.5, 1) {$x_1$};
+			\node[] (b) at (0, 2.5) {$b$};
+			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] at (0, 0) {$\hat{y}=max(0, w_0x_0+w_1x_1+b)$};
+
+			\draw[->] (x0) -- (n) node [midway, above] {$w_0$};
+			\draw[->] (x1) -- (n) node [midway, below] {$w_1$};
+			\draw[->] (b) -- (n);
+			\draw[->] (n) -- (y);
+
+			\node[] at (0, -2.75) {
+				\usebox{\mybox}
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Actual MLP
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x) at (-3, 0) {\footnotesize{$x$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (0, 0.5) {};
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (0, -0.5) {};
+
+			\node[
+				circle,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\draw[->] (x) -- (n00) node [midway, above] {$w_0$};
+			\draw[->] (x) -- (n01) node [midway, below] {$w_1$};
+
+			\draw[->] (n00) -- (y);
+			\draw[->] (n01) -- (y);
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} = max(0, w_0x+b_0)+max(0, w_1x+b_1)\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Input/output layers
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x) at (-3, 0) {\footnotesize{$x$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (0, 0.5) {};
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (0, -0.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=nodefill,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\draw[->] (x) -- (n00) node [midway, above] {$w^0_0$};
+			\draw[->] (x) -- (n01) node [midway, below] {$w^0_1$};
+
+			\draw[->] (n00) -- (y) node [midway, above] {$w^1_0$};
+			\draw[->] (n01) -- (y) node [midway, below] {$w^1_0$};
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} = max(0, w^1_{0,0}*max(0, w^0_{0,0}*x+b_{0,0})+w^1_{1,0}*max(0, w^0_{0,1}*x+b_{1,0})+b_1)\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Terminology
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x) at (-3, 0) {\footnotesize{$x$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (0, 0.5) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (0, -0.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\node[text depth=0] at (-3, -1.2) {\textcolor{red}{Input}};
+			\node[text depth=0] at (0, -1.2) {\textcolor{red}{Hidden}};
+			\node[text depth=0] at (3, -1.2) {\textcolor{red}{Output}};
+
+			\draw[->] (x) -- (n00) node [midway, above] {$w^0_0$};
+			\draw[->] (x) -- (n01) node [midway, below] {$w^0_1$};
+
+			\draw[->] (n00) -- (y) node [midway, above] {$w^1_0$};
+			\draw[->] (n01) -- (y) node [midway, below] {$w^1_0$};
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} = max(0, w^1_{0,0}*max(0, w^0_{0,0}*x+b_{0,0})+w^1_{1,0}*max(0, w^0_{0,1}*x+b_{1,0})+b_1)\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % Multidimensional MLP
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (0, 0.5) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (0, -0.5) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\draw[->] (x0) -- (n00);
+			\draw[->] (x0) -- (n01);
+			\draw[->] (x1) -- (n00);
+			\draw[->] (x1) -- (n01);
+
+			\draw[->] (n00) -- (y);
+			\draw[->] (n01) -- (y);
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+						& &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+						& &&b_1)&&\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % 3-node MLP
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (0, 1) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (0, 0) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n02) at (0, -1) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\draw[->] (x0) -- (n00);
+			\draw[->] (x0) -- (n01);
+			\draw[->] (x0) -- (n02);
+			\draw[->] (x1) -- (n00);
+			\draw[->] (x1) -- (n01);
+			\draw[->] (x1) -- (n02);
+
+			\draw[->] (n00) -- (y);
+			\draw[->] (n01) -- (y);
+			\draw[->] (n02) -- (y);
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+						& &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+						& &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
+						& &&b_1)&&\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Building a neural network} % 2-layer MLP
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] at (-3.5, 1.25) {};
+			\node[] at (3.5, -6.25) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n00) at (-1, 1) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n01) at (-1, 0) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n02) at (-1, -1) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n10) at (1, 1) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n11) at (1, 0) {};
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt
+			] (n12) at (1, -1) {};
+
+			\node[
+				circle,
+				draw=black,
+				fill=green!20,
+				minimum size=\nodesize,
+				inner sep=0pt,
+				text depth=0
+			] (y) at (3, 0) {\footnotesize{$y$}};
+
+			\draw[->] (x0) -- (n00);
+			\draw[->] (x0) -- (n01);
+			\draw[->] (x0) -- (n02);
+			\draw[->] (x1) -- (n00);
+			\draw[->] (x1) -- (n01);
+			\draw[->] (x1) -- (n02);
+
+			\draw[->] (n00) -- (n10);
+			\draw[->] (n00) -- (n11);
+			\draw[->] (n00) -- (n12);
+			\draw[->] (n01) -- (n10);
+			\draw[->] (n01) -- (n11);
+			\draw[->] (n01) -- (n12);
+			\draw[->] (n02) -- (n10);
+			\draw[->] (n02) -- (n11);
+			\draw[->] (n02) -- (n12);
+
+			\draw[->] (n10) -- (y);
+			\draw[->] (n11) -- (y);
+			\draw[->] (n12) -- (y);
+
+			\def\spacing{-0.1cm}
+			\node[anchor=north] at (0, -1.5) {\tiny{
+				\begin{math}
+					\begin{alignedat}{5}
+						\hat{y} &= max(0, &&w^2_{0,0}*max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+						& && &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^+_{1,1}*w_{1}+b_{0,1})+\\[\spacing]
+						& && &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^+_{1,2}*w_{1}+b_{0,2})+\\[\spacing]
+						& && &&b_{1,0})+\\[\spacing]
+						& &&w^2_{1,0}*max(0, &&w^1_{0,1}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+						& && &&w^1_{1,1}*max(0, w^0_{0,1}*x_0+w^+_{1,1}*w_{1}+b_{0,1})+\\[\spacing]
+						& && &&w^1_{2,1}*max(0, w^0_{0,2}*x_0+w^+_{1,2}*w_{1}+b_{0,2})+\\[\spacing]
+						& && &&b_{1,1})+\\[\spacing]
+						& &&w^2_{2,0}*max(0, &&w^1_{0,2}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+						& && &&w^1_{1,2}*max(0, w^0_{0,1}*x_0+w^+_{1,1}*w_{1}+b_{0,1})+\\[\spacing]
+						& && &&w^1_{2,2}*max(0, w^0_{0,2}*x_0+w^+_{1,2}*w_{1}+b_{0,2})+\\[\spacing]
+						& && &&b_{1,2})+\\[\spacing]
+						& &&b_2)&&\\
+					\end{alignedat}
+				\end{math}
+			}};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks} % Images
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[] (cat) at (-6, -0.25) {
+				\includegraphics[width=3cm]{data/cat.png}
+			};
+			\node[] (red) at (0, 0) {
+				\includegraphics[width=3cm]{data/red.png}
+			};
+			\node[] (green) at (0.25, -0.25) {
+				\includegraphics[width=3cm]{data/green.png}
+			};
+			\node[] (blue) at (0.5, -0.5) {
+				\includegraphics[width=3cm]{data/blue.png}
+			};
+
+			\draw[<->] ($ (red.north west) - (0.1, 0.1) $) -- ($ (red.south west) - (0.1, -0.1) $) node[midway, above, rotate=90] {\footnotesize{height}};
+			\draw[<->] ($ (blue.south west) - (-0.1, 0.1) $) -- ($ (blue.south east) - (0.1, 0.1) $) node[midway, below] {\footnotesize{width}};
+			\draw[<->] ($ (red.north east) + (-0.1, 0.2) $) -- ($ (blue.north east) + (0.2, -0.1) $) node[midway, above, rotate=315] {\footnotesize{channels}};
+
+			\draw[
+				{Stealth[length=5mm]}-{Stealth[length=5mm]},
+				double distance=3pt,
+				line width=1pt
+			] ($ (cat.east) + (0.4, 0) $) -- ($ (green.west) + (-1, 0) $);
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
