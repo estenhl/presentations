@@ -213,6 +213,55 @@
 		\vfill
 	\end{frame}
 
+	\begin{frame}{Statistical learning: Models} % 2d dataset
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000
+			]
+				\addplot[
+					only marks,
+					mark size=3pt,
+					mark options={draw=black, fill=cyan}
+				] coordinates {
+					(72, 5127379)
+					(50, 4552170)
+					(45, 4486654)
+					(62, 5709276)
+					(53, 4634912)
+					(81, 8388570)
+					(44, 4828170)
+					(78, 7557770)
+					(37, 4016520)
+					(73, 6572351)
+				};
+
+				\newcommand{\loss}[2]{
+					\addplot[dashed] coordinates {
+						(####1, 3500000 + ####1 * 30000)
+						(####1, ####2)
+					};
+				}
+
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+
+			\node[] at ($ (center) - (5.3, 1.8) $) {};
+			\node[] at ($ (center) + (5.3, 5.8) $) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
 	\begin{frame}{Statistical learning: Models} % General Model
 		\vfill
 		\begin{tikzpicture}
@@ -357,7 +406,7 @@
 				\coordinate (center) at (axis cs: 60, 3500000);
 			\end{axis}
 			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
-				$\hat{y}=Wx+b$
+				$\hat{y}=wx+b$
 			};
 
 			\node[] at ($ (center) - (5.3, 1.8) $) {};
@@ -962,7 +1011,7 @@
 				\coordinate (center) at (axis cs: 60, 3500000);
 			\end{axis}
 			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
-				$\hat{y}=Wx + b$\\
+				$\hat{y}=wx + b$\\
 				$\ell=\sum (y - \hat{y})^2$
 			};
 
@@ -1013,7 +1062,7 @@
 
 
 			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
-				$\hat{y}=Wx + b$\\
+				$\hat{y}=wx + b$\\
 				$\ell=\sum (y - \hat{y})^2$
 			};
 			\node[
@@ -1076,7 +1125,7 @@
 
 
 			\node[anchor=north,align=center] (m1) at ($ (center) - (0, 1) $) {
-				$\ell=\sum (y - (Wx + b))^2$
+				$\ell=\sum (y - (wx + b))^2$
 			};
 
 			\node[] at ($ (center) - (5.3, 1.8) $) {};
@@ -1203,7 +1252,7 @@
 			] (n) at (0, 1.5) {};
 			\node[] (x) at (-1.5, 1.5) {$x$};
 			\node[] (b) at (0, 2.5) {$b$};
-			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] (y) at (1.5, 1.5) {$\hat{y}$};
 			\node[] at (0, 0) {$\hat{y}=wx+b$};
 
 			\draw[->] (x) -- (n) node [midway, above] {$w$};
@@ -1229,7 +1278,7 @@
 			] (n) at (0, 1.5) {};
 			\node[] (x) at (-1.5, 1.5) {$x$};
 			\node[] (b) at (0, 2.5) {$b$};
-			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] (y) at (1.5, 1.5) {$\hat{y}$};
 			\node[] at (0, 0) {$\hat{y}=wx+b$};
 
 			\draw[->] (x) -- (n) node [midway, above] {$w$};
@@ -1241,7 +1290,7 @@
 			\draw[very thick, blue!60] (-2, -3.5) -- (2, -1.75);
 
 			\node[anchor=north] at (0, -4.1) {x};
-			\node[anchor=south, rotate=90] at (-2.1, -2.75) {y};
+			\node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
@@ -1262,7 +1311,7 @@
 			] (n) at (0, 1.5) {};
 			\node[] (x) at (-1.5, 1.5) {$x$};
 			\node[] (b) at (0, 2.5) {$b$};
-			\node[] (y) at (1.5, 1.5) {$y$};
+			\node[] (y) at (1.5, 1.5) {$\hat{y}$};
 			\node[] at (0, 0) {$\hat{y}=max(0, wx+b)$};
 
 			\draw[->] (x) -- (n) node [midway, above] {$w$};
@@ -1273,7 +1322,7 @@
 			\draw[very thick, blue!60] (-2, -3.5) -- (0, -3.5) -- (2, -1.75);
 
 			\node[anchor=north] at (0, -4.1) {x};
-			\node[anchor=south, rotate=90] at (-2.1, -2.75) {y};
+			\node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
 		\end{tikzpicture}
 		\vfill
 	\end{frame}
