@@ -2,6 +2,8 @@
 
 \usetheme{metropolis}
 
+\usepackage{amssymb}
+\usepackage{fontawesome}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage[normalem]{ulem}
@@ -87,7 +89,7 @@
 			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk KI};
 			\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
 			\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
-			\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresion};
+			\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresjon};
 			\node[text=white, align=center] at ($ (ml.north) - (-0.7, 1.2) $) {XGBoost};
 			\node[circle, fill=red!60, minimum size=3cm, anchor=south] (dl) at ($ (ai.south) + (0, 0.1) $) {};
 			\node[text=white, anchor=north] at ($ (dl.north) - (0, 0.3) $) {\textbf{Dyplæring}};
@@ -1188,7 +1190,9 @@
 					(73, 6572351)
 				};
 				\addplot[
-					smooth
+					smooth,
+					green,
+					thick
 				] coordinates {
 					(30, 3500000)
 					(37, 4016520)
@@ -2368,12 +2372,310 @@
 			\item Sammenlign modeller og velg den beste (validering)
 			\item Test hvor bra modellen gjør det (testing)
 			\item Implementer modellen inn i et sluttbrukersystem
-			\item Sluttbruker testing
+			\item Sluttbrukertesting
 			\item Kontinuerlig monitorering
 		\end{enumerate}
 	\end{frame}
 
 	\begin{frame}{Forklarbar KI}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000,
+				height=5cm,
+				width=8cm
+			]
+				\addplot[
+					smooth,
+					green,
+					thick
+				] coordinates {
+					(30, 3500000)
+					(37, 4016520)
+					(44, 4828170)
+					(45, 4486654)
+					(50, 4552170)
+					(53, 4634912)
+					(62, 5709276)
+					(72, 5127379)
+					(73, 6572351)
+					(78, 7557770)
+					(81, 8388570)
+					(90, 8800000)
+				};
+
+				\newcommand{\loss}[2]{
+					\addplot[dashed, red] coordinates {
+						(####1, 3500000 + ####1 * 30000)
+						(####1, ####2)
+					};
+				}
+
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Forklarbar KI}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000,
+				height=5cm,
+				width=8cm
+			]
+				\addplot[
+					smooth,
+					green,
+					thick
+				] coordinates {
+					(30, 3500000)
+					(37, 4016520)
+					(44, 4828170)
+					(45, 4486654)
+					(50, 4552170)
+					(53, 4634912)
+					(62, 5709276)
+					(72, 5127379)
+					(73, 6572351)
+					(78, 7557770)
+					(81, 8388570)
+					(90, 8800000)
+				};
+				\addplot[
+					red,
+					thick
+				] coordinates {
+					(53, 4600000)
+					(60, 5600000)
+				};
+
+				\newcommand{\loss}[2]{
+					\addplot[dashed, red] coordinates {
+						(####1, 3500000 + ####1 * 30000)
+						(####1, ####2)
+					};
+				}
+
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Forklarbar KI}
+		\centering
+		\vfill
+		\includegraphics[width=6cm]{data/heatmap.jpeg}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Forklarbar AI}
+		\centering
+		\vfill
+		\includegraphics[width=6cm]{data/dementia.png}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Forklarbar AI}
+		\centering
+		\vfill
+		\includegraphics[width=6cm]{data/rf.png}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Chatbotter} % gpt 3.5
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[align=left] at ($ (model.east) + (3.5, 0) $) {
+				Albert Einstein (født 14. mars 1879 i Ulm i\\ Tyskland) var en tyskfødt teoretisk \uline{\hspace{5em}}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbotter} % Finetuning
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=blue!20,
+				minimum width=2.8cm,
+				text depth=2cm,
+				rounded corners=.1cm
+			] (finetuning) at (0, 0.5) {\large{\textbf{Finetuning}}};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[align=left] at ($ (finetuning.east) + (3.5, 0) $) {
+				> Hei, jeg heter Esten.\\
+				> Hei, jeg heter ChatGPT og er en chatbot.\\
+				> Jeg kommer fra Oslo, hvor kommer du fra?\\
+				> Jeg kommer fra \uline{\hspace{5em}}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5}}};
+		\end{tikzpicture}
 	\end{frame}
 
 	\begin{frame}{Chatbotter} % Reinforcement learning
@@ -2407,8 +2709,11 @@
 			] (model) at (0, 0) {};
 
 
-			\node[draw=black, inner sep=0pt] at ($ (rl.east) + (3.5, 0) $) {
-				\includegraphics[width=6cm]{data/rules.png}
+			\node[align=left] at ($ (rl.east) + (3.5, 0) $) {
+				> Hvem er Jonas Gahr St{\o}re?\\
+				\textcolor{red}{\faTimesCircle} Jeg interesserer meg ikke s{\aa} mye for politikk.\\
+				\textcolor{green}{\faCheckCircle} Jonas Gahr St{\o}re er statsminister i Norge.\\
+				\textcolor{red}{\faTimesCircle} Jeg gidder ikke snakke med deg.
 			};
 
 			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
@@ -2697,6 +3002,40 @@
 		\end{tikzpicture}
 	\end{frame}
 
+	\begin{frame}{Chatbotter} % Bad examples
+		\begin{tikzpicture}
+			\node[] at (0, -0.8) {
+				\includegraphics[width=2.8cm]{data/marriage.png}
+			};
+
+			\node[] at (-2.7, -3.7) {
+				\includegraphics[width=5cm]{data/angry.jpeg}
+			};
+
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=5cm]{data/existential.jpeg}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbotter} % Hallucinations
+		\centering
+		\vfill
+		\includegraphics[width=5cm]{data/halluciation.png}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Chatbotter} % Parrot
+		\centering
+		\vfill
+		\includegraphics[width=5cm]{data/parrot.png}
+		\vfill
+	\end{frame}
+
 	\begin{frame}{Fremtiden}
+		\centering
+		\vfill
+		\includegraphics[width=7cm]{data/hockeystick.png}
+		\vfill
 	\end{frame}
 \end{document}
