@@ -1,0 +1,1083 @@
+\documentclass[8pt]{beamer}
+
+\usetheme{metropolis}
+
+\usepackage{amssymb}
+\usepackage{fontawesome}
+\usepackage{hyperref}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage[normalem]{ulem}
+\usepackage{varwidth}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+	urlcolor=blue
+}
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+
+\date{19.03.23}
+\title{What is ChatGPT?}
+\author{Esten H. Leonardsen}
+
+\titlegraphic{
+	\centering
+	\vspace{6.5cm}
+	\includegraphics[height=2cm]{data/uio.png}
+}
+
+\def\nodesize{14pt}
+\colorlet{nodefill}{green!20}
+
+\begin{document}
+	\begin{frame}
+	 	\maketitle
+	\end{frame}
+
+	\section{Modellering}
+
+	\begin{frame}{Teori: Nevrale nett} % Neural net
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=$m^2$,
+				ylabel=NOK,
+				ytick={4000000, 5000000, 6000000, 7000000, 8000000},
+				yticklabels={4M, 5M, 6M, 7M, 8M},
+				scaled y ticks=false,
+				xtick pos=bottom,
+				ytick pos=left,
+				xmin=30,
+				xmax=90,,
+				ymin=3500000,
+				ymax=8800000,
+				height=5cm,
+				width=8cm
+			]
+				\addplot[
+					only marks,
+					mark size=3pt,
+					mark options={draw=black, fill=cyan}
+				] coordinates {
+					(72, 5127379)
+					(50, 4552170)
+					(45, 4486654)
+					(62, 5709276)
+					(53, 4634912)
+					(81, 8388570)
+					(44, 4828170)
+					(78, 7557770)
+					(37, 4016520)
+					(73, 6572351)
+				};
+
+				\newcommand{\loss}[2]{
+					\addplot[dashed, red] coordinates {
+						(####1, 3500000 + ####1 * 30000)
+						(####1, ####2)
+					};
+				}
+
+				\coordinate (center) at (axis cs: 60, 3500000);
+			\end{axis}
+
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=gray!10,
+				label=\small{Nevralt nett}
+			] (model) at ($ (center) - (0, 2.5) $) {};
+			\node[] (input) at ($ (model.west) - (1.5, 0) $) {$m^2$};
+			\node[] (output) at ($ (model.east) + (1.5, 0) $) {NOK};
+			\draw[->] (input) -- (model);
+			\draw[->] (model) -- (output);
+			\node[] at ($ (center) - (4.1, -3.5) $) {};
+			\node[] at ($ (center) + (4.1, -3.5) $) {};
+			\node[circle, draw=black, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[] (model.west) -- (n00);
+			\draw[] (model.west) -- (n01);
+			\draw[] (model.west) -- (n02);
+			\draw[] (model.west) -- (n03);
+
+			\draw[] (n00) -- (n10);
+			\draw[] (n00) -- (n11);
+			\draw[] (n00) -- (n12);
+			\draw[] (n00) -- (n13);
+			\draw[] (n01) -- (n10);
+			\draw[] (n01) -- (n11);
+			\draw[] (n01) -- (n12);
+			\draw[] (n01) -- (n13);
+			\draw[] (n02) -- (n10);
+			\draw[] (n02) -- (n11);
+			\draw[] (n02) -- (n12);
+			\draw[] (n02) -- (n13);
+			\draw[] (n03) -- (n10);
+			\draw[] (n03) -- (n11);
+			\draw[] (n03) -- (n12);
+			\draw[] (n03) -- (n13);
+
+			\draw[] (n10) -- (n20);
+			\draw[] (n10) -- (n21);
+			\draw[] (n10) -- (n22);
+			\draw[] (n10) -- (n23);
+			\draw[] (n11) -- (n20);
+			\draw[] (n11) -- (n21);
+			\draw[] (n11) -- (n22);
+			\draw[] (n11) -- (n23);
+			\draw[] (n12) -- (n20);
+			\draw[] (n12) -- (n21);
+			\draw[] (n12) -- (n22);
+			\draw[] (n12) -- (n23);
+			\draw[] (n13) -- (n20);
+			\draw[] (n13) -- (n21);
+			\draw[] (n13) -- (n22);
+			\draw[] (n13) -- (n23);
+
+			\draw[] (n20) -- (model.east);
+			\draw[] (n21) -- (model.east);
+			\draw[] (n22) -- (model.east);
+			\draw[] (n23) -- (model.east);
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\section{Language technology}
+
+	\begin{frame}{Language technology} %NLTK
+		\begin{enumerate}
+			\item The "Natural Language Toolkit"-era: Prehistoric times (2001-2013)
+			\item The word2vec-era: Math with words (2013-2017)
+			\item The transformer-era: Welcoming our robot overlords (2017-)
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+			\node[] (lemmas) at (0, -0.75) {
+				\footnotesize{find pattern in data be much effective than apply rule}
+			};
+
+			\draw[->] (sentence) -- (lemmas) node[pos=0.5,right] {\textcolor{red}{\scriptsize{Lemmatization}}};
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+			\node[] (lemmas) at (0, -0.75) {
+				\footnotesize{find pattern in data be much effective than apply rule}
+			};
+			\node[] (pos) at (0, -1.5) {
+				\footnotesize{VBG NNS IN NNS VBZ RBR JJ IN VBG NNS}
+			};
+
+			\draw[->] (sentence) -- (lemmas) node[pos=0.5,right] {\textcolor{red}{\scriptsize{Lemmatization}}};
+			\draw[->] (lemmas) -- (pos) node[pos=0.5,right] {\textcolor{red}{\scriptsize{POS-tagging}}};
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+			\node[] (lemmas) at (0, -0.75) {
+				\footnotesize{find pattern in data be much effective than apply rule}
+			};
+			\node[] (pos) at (0, -1.5) {
+				\footnotesize{VBG NNS IN NNS VBZ RBR JJ IN VBG NNS}
+			};
+			\node[] (input) at (-3, -3.5) {
+				\renewcommand{\arraystretch}{0.7}
+				\begin{tabular}{lr}
+					\footnotesize{apply(VBG)}&\footnotesize{1}\\
+					\footnotesize{be(VBZ)}&\footnotesize{1}\\
+					\footnotesize{data(NNS)}&\footnotesize{1}\\
+					\footnotesize{effective(JJ)}&\footnotesize{1}\\
+					\footnotesize{find(VBG)}&\footnotesize{1}\\
+					\footnotesize{in(IN)}&\footnotesize{1}\\
+					\footnotesize{much(RBR)}&\footnotesize{1}\\
+					\footnotesize{pattern(NNS)}&\footnotesize{1}\\
+					\footnotesize{rule(NNS)}&\footnotesize{1}\\
+					\footnotesize{than(IN)}&\footnotesize{1}\\
+				\end{tabular}
+			};
+
+			\draw[->] (sentence) -- (lemmas) node[pos=0.5,right] {\textcolor{red}{\scriptsize{Lemmatization}}};
+			\draw[->] (lemmas) -- (pos) node[pos=0.5,right] {\textcolor{red}{\scriptsize{POS-tagging}}};
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+			\node[] (lemmas) at (0, -0.75) {
+				\footnotesize{find pattern in data be much effective than apply rule}
+			};
+			\node[] (pos) at (0, -1.5) {
+				\footnotesize{VBG NNS IN NNS VBZ RBR JJ IN VBG NNS}
+			};
+			\node[] (input) at (-3, -3.5) {
+				\renewcommand{\arraystretch}{0.7}
+				\begin{tabular}{lr}
+					\footnotesize{apply(VBG)}&\footnotesize{1}\\
+					\footnotesize{be(VBZ)}&\footnotesize{1}\\
+					\footnotesize{data(NNS)}&\footnotesize{1}\\
+					\footnotesize{effective(JJ)}&\footnotesize{1}\\
+					\footnotesize{find(VBG)}&\footnotesize{1}\\
+					\footnotesize{in(IN)}&\footnotesize{1}\\
+					\footnotesize{much(RBR)}&\footnotesize{1}\\
+					\footnotesize{pattern(NNS)}&\footnotesize{1}\\
+					\footnotesize{rule(NNS)}&\footnotesize{1}\\
+					\footnotesize{than(IN)}&\footnotesize{1}\\
+				\end{tabular}
+			};
+
+			\node[draw=black,fill=green!10] (model) at (0, -3.5) {$\hat{y} \sim \beta X$};
+			\draw[->] (sentence) -- (lemmas) node[pos=0.5,right] {\textcolor{red}{\scriptsize{Lemmatization}}};
+			\draw[->] (lemmas) -- (pos) node[pos=0.5,right] {\textcolor{red}{\scriptsize{POS-tagging}}};
+			\draw[->] (input) -- (model);
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology} %NLTK
+		\centering
+		\begin{tikzpicture}
+			\node[] (sentence) at (0, 0) {
+				\footnotesize{finding patterns in data is more effective than applying rules}
+			};
+			\node[] (lemmas) at (0, -0.75) {
+				\footnotesize{find pattern in data be much effective than apply rule}
+			};
+			\node[] (pos) at (0, -1.5) {
+				\footnotesize{VBG NNS IN NNS VBZ RBR JJ IN VBG NNS}
+			};
+			\node[] (input) at (-3, -3.5) {
+				\renewcommand{\arraystretch}{0.7}
+				\begin{tabular}{lr}
+					\footnotesize{apply(VBG)}&\footnotesize{1}\\
+					\footnotesize{be(VBZ)}&\footnotesize{1}\\
+					\footnotesize{data(NNS)}&\footnotesize{1}\\
+					\footnotesize{effective(JJ)}&\footnotesize{1}\\
+					\footnotesize{find(VBG)}&\footnotesize{1}\\
+					\footnotesize{in(IN)}&\footnotesize{1}\\
+					\footnotesize{much(RBR)}&\footnotesize{1}\\
+					\footnotesize{pattern(NNS)}&\footnotesize{1}\\
+					\footnotesize{rule(NNS)}&\footnotesize{1}\\
+					\footnotesize{than(IN)}&\footnotesize{1}\\
+				\end{tabular}
+			};
+
+			\node[draw=black,fill=green!10] (model) at (0, -3.5) {$\hat{y} \sim \beta X$};
+			\node[] (pred) at (3, -3.5) {
+				\footnotesize{true}
+			};
+			\draw[->] (sentence) -- (lemmas) node[pos=0.5,right] {\textcolor{red}{\scriptsize{Lemmatization}}};
+			\draw[->] (lemmas) -- (pos) node[pos=0.5,right] {\textcolor{red}{\scriptsize{POS-tagging}}};
+			\draw[->] (input) -- (model);
+			\draw[->] (model) -- (pred);
+
+			\node[] at (4.5, 0.5) {};
+			\node[] at (-4.5, -5) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology}
+		\centering
+		\begin{tikzpicture}
+			\node[] (input) at (-4, -3.5) {My \uline{\hspace{0.5cm}} is named Ludvig};
+			\node[] (encoding) at (-4, -4) {[65, \uline{\hspace{0.3cm}}, 37, 89, 15]};
+			\node[] (output) at (3, -3.5) {dog};
+			\node[] (outputencoding) at (3, -4) {101};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=gray!10,
+				label=\small{Neural network}
+			] (model) at (0, -3.5) {};
+			\draw[->] (input) -- (model);
+			\draw[->] (model) -- (output);
+
+			\node[circle, draw=black, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\draw[] (model.west) -- (n10);
+			\draw[] (model.west) -- (n11);
+			\draw[] (model.west) -- (n12);
+			\draw[] (model.west) -- (n13);
+
+			\draw[] (n10) -- (model.east);
+			\draw[] (n11) -- (model.east);
+			\draw[] (n12) -- (model.east);
+			\draw[] (n13) -- (model.east);
+
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology}
+		Whiteboard intermission
+	\end{frame}
+
+	\begin{frame}{Language technology}
+		\centering
+		\begin{tikzpicture}
+			\node[align=center] (n3) at (-1.5, -4.5) {
+				\begin{tabular}{rl}
+					&King\\
+					-&Man\\
+					+&Woman\\
+					\hline
+					=&Queen
+				\end{tabular}
+			};
+
+			\node[align=center] (n3) at (1.5, -4.5) {
+				\begin{tabular}{rl}
+					&Oslo\\
+					-&Norway\\
+					+&England\\
+					\hline
+					=&London
+				\end{tabular}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Language technology}
+		\begin{enumerate}
+			\item Trained to predict the next word based on long sentences
+			\item Uses positional encoding to denote the location of words in the input
+			\item Has attention mechanisms to learn about context
+			\item Is very large
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Emergence
+		\centering
+		\begin{tikzpicture}
+			\node[] {
+				\includegraphics[width=6cm]{data/llms.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\section{Chatbots and generative AI}
+
+	\begin{frame}{Chatbots} % gpt 3.5
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[align=left] at ($ (model.east) + (3.5, 0) $) {
+				Albert Einstein (born 14. of march 1879 in Ulm in\\ Germany) was a german theoretic \uline{\hspace{5em}}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5*}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbots} % Finetuning
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=blue!20,
+				minimum width=2.8cm,
+				text depth=2cm,
+				rounded corners=.1cm
+			] (finetuning) at (0, 0.5) {\large{\textbf{Finetuning}}};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[align=left] at ($ (finetuning.east) + (3.5, 0) $) {
+				> Hello, my name is Esten.\\
+				> Hi, I'm ChatGPT and I'm a chatbot.\\
+				> I'm from Oslo, where are you from?\\
+				> I'm from \uline{\hspace{5em}}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5*}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbots} % Reinforcement learning
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=purple!20,
+				minimum width=3.1cm,
+				text depth=2.7cm,
+				align=center,
+				rounded corners=.1cm
+			] (rl) at (0, 1.4) {\large{\textbf{Reinforcement}}\\ \large{\textbf{learning}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=blue!20,
+				minimum width=2.8cm,
+				text depth=2cm,
+				rounded corners=.1cm
+			] (finetuning) at (0, 0.5) {\large{\textbf{Finetuning}}};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[align=left] at ($ (rl.east) + (3.5, 0) $) {
+				> Who is Jonas Gahr St{\o}re?\\
+				\textcolor{red}{\faTimesCircle} I'm not that interested in Norwegian politics.\\
+				\textcolor{green}{\faCheckCircle} Jonas Gahr St{\o}re is the prime minister of Norway.\\
+				\textcolor{red}{\faTimesCircle} I can't be bothered to talk to you.
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5*}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbots} % Rules
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=red!20,
+				minimum width=3.4cm,
+				text depth=3.75cm,
+				rounded corners=.1cm
+			] (rules) at (0, 1.9){\large{\textbf{Rule set}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=purple!20,
+				minimum width=3.1cm,
+				text depth=2.7cm,
+				align=center,
+				rounded corners=.1cm
+			] (rl) at (0, 1.4) {\large{\textbf{Reinforcement}}\\ \large{\textbf{learning}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=blue!20,
+				minimum width=2.8cm,
+				text depth=2cm,
+				rounded corners=.1cm
+			] (finetuning) at (0, 0.5) {\large{\textbf{Finetuning}}};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[draw=black, inner sep=0pt] at ($ (rules.east) + (3.5, 0) $) {
+				\includegraphics[width=6cm]{data/rules.png}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5*}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Chatbots} % Interface
+		\begin{tikzpicture}
+			\node[] at (-1.9, 2.5) {};
+			\node[] at (8.3, -2.5) {};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=orange!20,
+				minimum width=3.7cm,
+				text depth=4.4cm,
+				rounded corners=.1cm
+			] (interface) at (0, 2.4){\large{\textbf{Interface}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=red!20,
+				minimum width=3.4cm,
+				text depth=3.75cm,
+				rounded corners=.1cm
+			] (rules) at (0, 1.9){\large{\textbf{Rule set}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=purple!20,
+				minimum width=3.1cm,
+				text depth=2.7cm,
+				align=center,
+				rounded corners=.1cm
+			] (rl) at (0, 1.4) {\large{\textbf{Reinforcement}}\\ \large{\textbf{learning}}};
+			\node[
+				anchor=north,
+				draw=black,
+				fill=blue!20,
+				minimum width=2.8cm,
+				text depth=2cm,
+				rounded corners=.1cm
+			] (finetuning) at (0, 0.5) {\large{\textbf{Finetuning}}};
+			\node[
+				draw=black,
+				minimum width=2.5cm,
+				minimum height=1.75cm,
+				fill=teal!20,
+				rounded corners=.1cm,
+				anchor=north
+			] (model) at (0, 0) {};
+
+
+			\node[draw=black, inner sep=0pt] at ($ (interface.east) + (3.5, 0) $) {
+				\includegraphics[width=6cm]{data/instructions.png}
+			};
+
+			\node[circle, draw=black!20, fill=green!20] (n11) at ($ (model) + (0, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n12) at ($ (model) + (0, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n10) at ($ (model) + (0, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n13) at ($ (model) + (0, -0.6) $) {};
+
+			\node[circle, draw=black!20, fill=green!20] (n01) at ($ (model) + (-0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n02) at ($ (model) + (-0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n00) at ($ (model) + (-0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n03) at ($ (model) + (-0.6, -0.6) $) {};
+
+
+			\node[circle, draw=black!20, fill=green!20] (n21) at ($ (model) + (0.6, 0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n22) at ($ (model) + (0.6, -0.2) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n20) at ($ (model) + (0.6, 0.6) $) {};
+			\node[circle, draw=black!20, fill=green!20] (n23) at ($ (model) + (0.6, -0.6) $) {};
+
+			\draw[black!20] (model.west) -- (n00);
+			\draw[black!20] (model.west) -- (n01);
+			\draw[black!20] (model.west) -- (n02);
+			\draw[black!20] (model.west) -- (n03);
+
+			\draw[black!20] (n00) -- (n10);
+			\draw[black!20] (n00) -- (n11);
+			\draw[black!20] (n00) -- (n12);
+			\draw[black!20] (n00) -- (n13);
+			\draw[black!20] (n01) -- (n10);
+			\draw[black!20] (n01) -- (n11);
+			\draw[black!20] (n01) -- (n12);
+			\draw[black!20] (n01) -- (n13);
+			\draw[black!20] (n02) -- (n10);
+			\draw[black!20] (n02) -- (n11);
+			\draw[black!20] (n02) -- (n12);
+			\draw[black!20] (n02) -- (n13);
+			\draw[black!20] (n03) -- (n10);
+			\draw[black!20] (n03) -- (n11);
+			\draw[black!20] (n03) -- (n12);
+			\draw[black!20] (n03) -- (n13);
+
+			\draw[black!20] (n10) -- (n20);
+			\draw[black!20] (n10) -- (n21);
+			\draw[black!20] (n10) -- (n22);
+			\draw[black!20] (n10) -- (n23);
+			\draw[black!20] (n11) -- (n20);
+			\draw[black!20] (n11) -- (n21);
+			\draw[black!20] (n11) -- (n22);
+			\draw[black!20] (n11) -- (n23);
+			\draw[black!20] (n12) -- (n20);
+			\draw[black!20] (n12) -- (n21);
+			\draw[black!20] (n12) -- (n22);
+			\draw[black!20] (n12) -- (n23);
+			\draw[black!20] (n13) -- (n20);
+			\draw[black!20] (n13) -- (n21);
+			\draw[black!20] (n13) -- (n22);
+			\draw[black!20] (n13) -- (n23);
+
+			\draw[black!20] (n20) -- (model.east);
+			\draw[black!20] (n21) -- (model.east);
+			\draw[black!20] (n22) -- (model.east);
+			\draw[black!20] (n23) -- (model.east);
+
+			\node[] at (model) {\large{\textbf{GPT 3.5*}}};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Generative AI} % Sushi house
+		\centering
+		\begin{tikzpicture}
+			\node[] at (-2.7, -3.7) {
+				\includegraphics[width=7cm]{data/sushihouse.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Generative AI} % Models
+		\centering
+		\begin{tikzpicture}
+			\node[] at (-2.7, -3.7) {
+				\includegraphics[width=3cm]{data/models.png}
+			};
+			\node[] at (-2.7, -7) {
+				\href{https://slidesgpt.com/}{\uline{Automatic slides}}
+			};
+			\node[] at (-2.7, -7.5) {
+				\href{https://instruct-nerf2nerf.github.io/}{\uline{Automatic 3d avatars}}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Stochastic parrots} % Parrot
+		\centering
+		\vfill
+		\includegraphics[width=4cm]{data/parrot.png}
+		\vfill
+	\end{frame}
+
+	\section{Emergent properties}
+
+	\begin{frame}{Emergent properties} % Emergence
+		\centering
+		\begin{tikzpicture}
+			\node[] {
+				\includegraphics[width=8cm]{data/emergens.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Exams
+		\centering
+		\begin{tikzpicture}
+			\node[] {
+				\includegraphics[width=6cm]{data/exams.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Theory of mind
+		\centering
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\includegraphics[width=8cm]{data/tom1.png}
+			};
+			\node[] at (0, -3) {
+				\includegraphics[width=6cm]{data/tom2.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Humour
+		\centering
+		\begin{tikzpicture}
+			\node[] {
+				\includegraphics[width=6cm]{data/humour.jpeg}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Coding
+		\centering
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\includegraphics[width=3cm]{data/drawing.jpeg}
+			};
+			\node[] at (5, 0) {
+				\includegraphics[width=6cm]{data/website.jpeg}
+			};
+		\end{tikzpicture}
+
+		\href{https://twitter.com/i/status/1636477569565335553}{\uline{Making games}}\\
+		\href{https://twitter.com/AiGigachad/status/1637553328056827904}{\uline{Designing websites}}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Angry
+		\centering
+		\begin{tikzpicture}
+			\node[] at (-2.7, -3.7) {
+				\includegraphics[width=7cm]{data/angry.jpeg}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Marriage
+		\centering
+		\begin{tikzpicture}
+			\node[] at (0, -0.8) {
+				\includegraphics[width=4cm]{data/marriage.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Emergent properties} % Existential
+		\centering
+		\begin{tikzpicture}
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=6cm]{data/existential.jpeg}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Challenges} % Hallucinations
+		\centering
+		\vfill
+		\includegraphics[width=5cm]{data/halluciation.png}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Challenges}
+		\centering
+		\begin{tikzpicture}
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=6cm]{data/climate.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Challenges}
+		\centering
+		\begin{tikzpicture}
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=5cm]{data/capitalism.jpeg}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Challenges}
+		\centering
+		\begin{tikzpicture}
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=9cm]{data/paper.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Challenges}
+		\centering
+		\begin{tikzpicture}
+			\node[] at (2.7, -3.7) {
+				\includegraphics[width=9cm]{data/sparks.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
+\end{document}
