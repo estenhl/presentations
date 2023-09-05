@@ -1,0 +1,89 @@
+\frametitle{Coding tips: Separation of concerns}
+\begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{4}{4}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:In{[}1{]}:}
+            ] (code) at (0, 0) {
+                \begin{lstlisting}[style=PythonStyle, basicstyle=\ttfamily\fontsize{4}{4}\selectfont]
+# Read and clean data
+path = '/Users/esten/Downloads/Auto.csv'
+df = pd.read_csv(path)
+
+# Split data
+train = df.iloc[:int(len(df) * 0.8)]
+validation = df.iloc[int(len(df) * 0.8):]
+
+# Define input and output variables
+predictors = ['cylinders', 'displacement', 'horsepower',
+                'weight', 'acceleration', 'year']
+target = 'mpg'
+
+# Define necessary data structures for state
+chosen_predictors = []
+mses = []
+
+def fit_and_evaluate_model(model: LinearRegression, train: pd.DataFrame,
+                           validation: pd.DataFrame, variables: List[str],
+                           target: str):
+    """ Fit a given model on a training dataset using a given set of variables
+    and return MSE from a validation dataset. """
+    model = LinearRegression()
+    model.fit(train[potential_predictors], train[target])
+    predictions = model.predict(validation[potential_predictors])
+
+    return np.mean((validation[target] - predictions) ** 2)
+
+while len(predictors) > 0:
+    best_predictor = {'mse': float('inf'), 'predictor': None}
+
+    for predictor in set(predictors) - set(chosen_predictors):
+        potential_predictors = chosen_predictors + [predictor]
+        test_mse = fit_and_evaluate_model(LinearRegression(), train, validation,
+                                            variables=potential_predictors,
+                                            target=target)
+
+        # Compare model with previous best
+        if test_mse < best_predictor['mse']:
+            best_predictor = {'mse': test_mse, 'predictor': predictor}
+
+    # Update state
+    chosen_predictors.append(best_predictor['predictor'])
+    mses.append(best_predictor['mse'])
+    predictors = [p for p in predictors if p != best_predictor['predictor']]
+                \end{lstlisting}
+            };
+            \node[
+                anchor=north west,
+                fill=blue,
+                inner sep=0pt,
+                outer sep=0pt,
+                minimum width=\codewidth - 0.14cm,
+                minimum height=1.8cm,
+                opacity=0.2
+            ] (training) at ($ (code.north west) + (0.07, -2.8) $) {};
+            \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
+
+            \node[
+                anchor=north west,
+                draw=blue,
+                line width=0.5pt,
+                inner sep=0pt,
+                outer sep=0pt,
+                minimum width=\codewidth - 1.37cm,
+                minimum height=0.52cm
+            ] (training) at ($ (code.north west) + (0.74, -5.49) $) {};
+
+            \node[] at (0, -7.55) {};
+        \end{tikzpicture}
