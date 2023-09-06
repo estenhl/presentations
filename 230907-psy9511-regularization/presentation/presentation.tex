@@ -127,22 +127,11 @@
                 \item Python
                 \item Coding tips: Separation of concerns
             \end{itemize}
-            \item Variable selection
-            \begin{itemize}
-                \item Best subset selection
-                \item Forward stepwise selection
-                \item Backward stepwise selection
-            \end{itemize}
             \item Regularization
             \begin{itemize}
-                \item Ridge regression
-                \item Lasso
-                \item Elastic net
-            \end{itemize}
-            \item Dimensionality reduction
-            \begin{itemize}
-                \item Principal component regression
-                \item Partial least squares
+                \item Variable selection
+                \item Shrinkage (+ live coding)
+                \item Dimensionality reduction
             \end{itemize}
         \end{enumerate}
         \vfill
@@ -1663,6 +1652,12 @@ while len(predictors) > 0:
         \end{tikzpicture}
     \end{frame}
 
+    \begin{frame}{Regularization: Motivation}
+        \centering
+        \vfill
+        $y \sim \beta_0 + \beta_1 * x_1 + \beta_2 * x_2 + \beta_3 * x_3$
+        \vfill
+    \end{frame}
 
     \begin{frame}{Regularization: Motivation}
         \centering
@@ -1675,7 +1670,59 @@ while len(predictors) > 0:
         \vfill
     \end{frame}
 
-    \begin{frame}{Regularization: Out-of-sample testing}
+    \begin{frame}[fragile]{Regularization: Out-of-sample testing}
+        \begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:In{[}1{]}:}
+            ] (code) at (0, 0) {
+                \begin{lstlisting}[style=PythonStyle]
+import pandas as pd
+
+
+df = pd.read_csv('/Users/esten/Downloads/Auto.csv')
+train = df.iloc[:int(len(df) * 0.8)]
+validation = df.iloc[int(len(df) * 0.8):]
+
+print(f'Using {len(train)} samples for training')
+print(f'Using {len(validation)} samples for validation')
+                \end{lstlisting}
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (output) at ($ (code.south) - (0, 0.2) $) {
+                \begin{lstlisting}[style=PythonOutput]
+Using 317 samples for training
+Using 80 samples for validation
+                \end{lstlisting}
+            };
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{Regularization: Methods}
@@ -1690,7 +1737,6 @@ while len(predictors) > 0:
             \begin{enumerate}
                 \item[a.] LASSO
                 \item[b.] Ridge Regression
-                \item[c.] Elastic net
             \end{enumerate}
             \item Dimensionality reduction
             \begin{enumerate}
@@ -1698,6 +1744,13 @@ while len(predictors) > 0:
                 \item[b.] Partial Least Squares
             \end{enumerate}
         \end{enumerate}
+    \end{frame}
+
+    \section{Variable selection}
+
+    \begin{frame}{Variable selection: Motivation}
+        \centering
+        The number of predictors we are using in our model directly impacts model complexity.
     \end{frame}
 
     \begin{frame}[t]{Variable selection: Outline} % Problem definition
@@ -1711,8 +1764,8 @@ while len(predictors) > 0:
         \vspace{0.25cm}
         \underline{Motivation}\\
         \begin{enumerate}
-            \item Simplify interpretation
             \item Reduce model complexity (overfitting)
+            \item Simplify interpretation
         \end{enumerate}
     \end{frame}
 
@@ -1860,13 +1913,17 @@ MSE: 29.68, predictors: ('cylinders', 'displacement', 'horsepower', 'weight', 'y
      \end{frame}
 
      \begin{frame}[t]{Variable selection: Best subset selection} % Number of models
+        \centering
+        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 smooth,
                 xmin=0,
                 xmax=10,
                 ymin=0,
-                ymax=1200
+                ymax=1200,
+                xlabel={Number of predictors},
+                ylabel={Number of models},
             ]
                 \addplot[mark=*] coordinates {
                     (1, 2^1)
@@ -1883,6 +1940,7 @@ MSE: 29.68, predictors: ('cylinders', 'displacement', 'horsepower', 'weight', 'y
                 \node[anchor=south] at (axis cs: 6, 2^6) {64};
             \end{axis}
         \end{tikzpicture}
+        \vfill
      \end{frame}
 
      \begin{frame}[t]{Variable selection: Forward stepwise selection} % Intro
@@ -3383,7 +3441,7 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Formula
         \centering
         \vfill
         \begin{tikzpicture}
@@ -3414,7 +3472,7 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Ridge coefficients
         \vfill
         \centering
         \begin{tikzpicture}
@@ -3428,7 +3486,7 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Lasso coefficients
         \vfill
         \centering
         \begin{tikzpicture}
@@ -3446,7 +3504,28 @@ year after: -0.00 (1.00)
     \end{frame}
 
     \begin{frame}{Shrinkage: LASSO}
-        Python coefficients
+        \centering
+        \vfill
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
+            \hline
+            Intercept&23.44&23.44\\
+            \hline
+            Weight&-5.59&-4.78\\
+            \hline
+            Year&2.75&2.00\\
+            \hline
+            Horsepower&-0.07&-0.09\\
+            \hline
+            Cylinders&-0.54&0\\
+            \hline
+            Acceleration&0.19&0\\
+            \hline
+            Displacement&0.66&0\\
+            \hline
+        \end{tabular}
+        \vfill
     \end{frame}
 
     \begin{frame}{Shrinkage: LASSO}
@@ -3571,15 +3650,395 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
+    \section{Dimensionality reduction}
+
+    \begin{frame}{Dimensionality reduction: Motivation}
+        \centering
+        Although we have $p$ predictors, there are actually $q<p$ dimensions of variability in our data, and using $q$ instead of $p$ is going to reduce model complexity.
+    \end{frame}
+
     \begin{frame}{Dimensionality reduction: Outline}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{groupplot}[
+                group style={
+                    group size=3 by 2,
+                    horizontal sep=0.5cm
+                },
+                ticklabel style = {font=\tiny},
+                height=3.9cm,
+                width=3.9cm
+            ]
+                \newcommand{\autoplot}[1]{
+                    \nextgroupplot[
+                        title=\scriptsize{####1},
+                        every axis title/.style={at={(0.5,1.15)}},
+                        xtick pos=bottom,
+                        ytick pos=left
+                    ]
+                        \addplot[
+                            only marks,
+                            mark=*,
+                            color=blue,
+                            opacity=0.25
+                        ] table[
+                            col sep=comma,
+                            y=mpg,
+                            x=####1
+                        ] {data/Auto.csv};
+                }
+                \autoplot{cylinders}
+                \autoplot{displacement}
+                \autoplot{horsepower}
+                \autoplot{weight}
+                \autoplot{acceleration}
+                \autoplot{year}
+            \end{groupplot}
+
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % Heatmap
+        \begin{tikzpicture}
+            \begin{axis}[
+                colormap/hot, % You can choose a different colormap
+                colorbar,
+                axis on top,
+                xlabel=X-axis Label,
+                ylabel=Y-axis Label,
+            ]
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % 2 variables
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % Center
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % First direction
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 0.96677463, -1.81260902e-17 + 0.96677463);
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % First PC
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16 - 5 * 0.96677463, -1.81260902e-17 - 5 * 0.96677463) -- (axis cs: -1.81260902e-16 + 5 * 0.96677463, -1.81260902e-17 + 5 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) -- (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) -- (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463);
+
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{-1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{-2}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{2}}}};
+                \node[rotate=45, anchor=south, inner sep=3pt] at (axis cs: -1.81260902e-16 + 2.5 * 0.96677463, -1.81260902e-17 + 2.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{PC1}}}};
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % Second direction
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16 - 5 * 0.96677463, -1.81260902e-17 - 5 * 0.96677463) -- (axis cs: -1.81260902e-16 + 5 * 0.96677463, -1.81260902e-17 + 5 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) -- (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) -- (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463);
+
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{-1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{-2}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{2}}}};
+                \node[rotate=45, anchor=south, inner sep=3pt] at (axis cs: -1.81260902e-16 + 2.5 * 0.96677463, -1.81260902e-17 + 2.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{PC1}}}};
+
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 3 * 0.26058464, -1.81260902e-17 - 3 * 0.26058464);
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % Second PC
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16 - 5 * 0.96677463, -1.81260902e-17 - 5 * 0.96677463) -- (axis cs: -1.81260902e-16 + 5 * 0.96677463, -1.81260902e-17 + 5 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) -- (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) -- (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463);
+
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 1 * 0.96677463, -1.81260902e-17 - 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{-1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 - 2 * 0.96677463, -1.81260902e-17 - 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{-2}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 1 * 0.96677463, -1.81260902e-17 + 1 * 0.96677463) {\Large{\textbf{\textcolor{red}{1}}}};
+                \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{2}}}};
+                \node[rotate=45, anchor=south, inner sep=3pt] at (axis cs: -1.81260902e-16 + 2.5 * 0.96677463, -1.81260902e-17 + 2.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{PC1}}}};
+
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 1 * 0.26058464, -1.81260902e-17 + 1 * 0.26058464) -- (axis cs: -1.81260902e-16 + 1 * 0.26058464, -1.81260902e-17 - 1 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 2 * 0.26058464, -1.81260902e-17 + 2 * 0.26058464) -- (axis cs: -1.81260902e-16 + 2 * 0.26058464, -1.81260902e-17 - 2 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 3 * 0.26058464, -1.81260902e-17 + 3 * 0.26058464) -- (axis cs: -1.81260902e-16 + 3 * 0.26058464, -1.81260902e-17 - 3 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 4 * 0.26058464, -1.81260902e-17 + 4 * 0.26058464) -- (axis cs: -1.81260902e-16 + 4 * 0.26058464, -1.81260902e-17 - 4 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 5 * 0.26058464, -1.81260902e-17 + 5 * 0.26058464) -- (axis cs: -1.81260902e-16 + 5 * 0.26058464, -1.81260902e-17 - 5 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 6 * 0.26058464, -1.81260902e-17 + 6 * 0.26058464) -- (axis cs: -1.81260902e-16 + 6 * 0.26058464, -1.81260902e-17 - 6 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 7 * 0.26058464, -1.81260902e-17 + 7 * 0.26058464) -- (axis cs: -1.81260902e-16 + 7 * 0.26058464, -1.81260902e-17 - 7 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 8 * 0.26058464, -1.81260902e-17 + 8 * 0.26058464) -- (axis cs: -1.81260902e-16 + 8 * 0.26058464, -1.81260902e-17 - 8 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 9 * 0.26058464, -1.81260902e-17 + 9 * 0.26058464) -- (axis cs: -1.81260902e-16 + 9 * 0.26058464, -1.81260902e-17 - 9 * 0.26058464);
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis} % PC space
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=PC1,
+                ylabel=PC2,
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.25
+                ] table [col sep=comma, x=x, y=y] {data/pcs.csv};
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[t]{Dimensionality reduction: Principal component regression} % Table
+        \centering
+        \vspace{1cm}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \textbf{mpg}&\textbf{horsepower}&\textbf{weight}&\textbf{PC1}&\textbf{PC2}\\
+            \hline
+            18&130&3504&0.908&0.303\\
+            \hline
+            15&165&3693&1.709&0.517\\
+            \hline
+            18&150&3436&1.219&0.455\\
+            \hline
+            16&150&3433&1.217&0.457\\
+            \hline
+            17&140&3449&1.046&0.260\\
+            \hline
+            15&198&4341&2.856&0.583\\
+            \hline
+            14&220&4354&3.272&0.977\\
+            \hline
+        \end{tabular}
+    \end{frame}
+
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % Regular OLS
+        \centering
+        \vspace{1cm}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \textbf{mpg}&\textbf{horsepower}&\textbf{weight}&\textbf{PC1}&\textbf{PC2}\\
+            \hline
+            18&130&3504&0.908&0.303\\
+            \hline
+            15&165&3693&1.709&0.517\\
+            \hline
+            18&150&3436&1.219&0.455\\
+            \hline
+            16&150&3433&1.217&0.457\\
+            \hline
+            17&140&3449&1.046&0.260\\
+            \hline
+            15&198&4341&2.856&0.583\\
+            \hline
+            14&220&4354&3.272&0.977\\
+            \hline
+        \end{tabular}\\
+        \vspace{0.5cm}
+        $mpg \sim \beta_0 + \beta_1 * horsepower + \beta_2 * weight$\\
+    \end{frame}
+
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % PCR
+        \centering
+        \vspace{1cm}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \textbf{mpg}&\textbf{horsepower}&\textbf{weight}&\textbf{PC1}&\textbf{PC2}\\
+            \hline
+            18&130&3504&0.908&0.303\\
+            \hline
+            15&165&3693&1.709&0.517\\
+            \hline
+            18&150&3436&1.219&0.455\\
+            \hline
+            16&150&3433&1.217&0.457\\
+            \hline
+            17&140&3449&1.046&0.260\\
+            \hline
+            15&198&4341&2.856&0.583\\
+            \hline
+            14&220&4354&3.272&0.977\\
+            \hline
+        \end{tabular}\\
+        \vspace{0.5cm}
+        $mpg \sim \beta_0 + \beta_1 * horsepower + \beta_2 * weight$\\
+        \vspace{0.25cm}
+        $mpg \sim \beta_0 + \beta_1 * PC1 + \beta_2 * PC2$
     \end{frame}
 
     \begin{frame}{Dimensionality reduction: Principal component analysis}
-    \end{frame}
-
-    \begin{frame}{Dimensionality reduction: Principal component regression}
-    \end{frame}
+        \underline{Principal component regression}
+        \begin{enumerate}
+            \item Fit a PCA to transform your $p$ predictors into $p$ principal components.
+            \item Fit a linear regression model using a subset of the principal components.
+        \end{enumerate}
+        \vspace{0.25cm}
+        \underline{\textcolor{green}{+} Positives}\\
+        \begin{itemize}
+            \item The principal components are orthogonal, so there is no issue of collinearity.\\
+            \item The principal components are ordered by the amount of variance they explain, so we can select the early principal components to explain most of the variability in the predictors.\\
+        \end{itemize}
+        \vspace{0.25cm}
+        \underline{\textcolor{red}{-} Drawbacks}\\
+        \begin{itemize}
+            \item Have to select number of principal components to use.
+            \item What if the principal components that explain the largest amount of variance as not related to the outcome?
+        \end{itemize}
+        \end{frame}
 
     \begin{frame}{Dimensionality reduction: Partial least squares}
+        Next time
     \end{frame}
 \end{document}
