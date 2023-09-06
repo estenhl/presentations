@@ -2990,43 +2990,16 @@ while len(chosen_predictors) < len(predictors):
 
     \def\codewidth{5.2cm}
 
-    \begin{frame}[fragile]{Shrinkage: Outline} % Coefficients
+    \begin{frame}[fragile]{Shrinkage: Outline} % Formula
         \centering
         \vfill
         \begin{tikzpicture}
-            \node[
-                minimum width=\codewidth,
-                text width=\codewidth,
-                align=left,
-                inner sep=0pt,
-                anchor=north west,
-                label={[red,
-                        anchor=north east,
-                        font=\ttfamily\fontsize{5}{6}\selectfont,
-                        inner sep=0pt,
-                        outer sep=0pt,
-                        xshift=-3pt,
-                        yshift=-3.5pt,
-                        text depth=0
-                        ]north west:Out{[}1{]}:}
-            ] (pythonout) at (0, 0) {
-                \begin{lstlisting}[style=PythonOutput]
-coef  std err  P>|t|  [0.025 0.975]
------------------------------------------------
-Intercept    -14.5353 4.764 0.002 -23.90 -5.16
-cylinders    -0.3299  0.332 0.321  -0.98  0.32
-displacement  0.0077  0.007 0.297  -0.00  0.02
-horsepower   -0.0004  0.014 0.977  -0.02  0.02
-weight       -0.0068  0.001 0.000  -0.00 -0.00
-acceleration  0.0853  0.102 0.404  -0.11  0.28
-year          0.7534  0.053 0.000   0.65  0.85
-===============================================
-                \end{lstlisting}
+            \node[] at (2.1, -3.5) {
+                $y \sim \beta_0 + $\textcolor{red}{$\beta_1$}$x_1 + $\textcolor{red}{$\beta_2$}$x_2 + $\textcolor{red}{$\beta_3$}$x_3 + $\textcolor{red}{$\beta_4$}$x_4 + $\textcolor{red}{$\beta_5$}$x_5 + $\textcolor{red}{$\beta_6$}$x_6$
             };
-
+            \node[] at (0, 2) {};
             \node[] at (0, -4) {};
         \end{tikzpicture}\\
-        \vspace{0.5cm}
         \vfill
     \end{frame}
 
@@ -3066,9 +3039,9 @@ year          0.7534  0.053 0.000   0.65  0.85
             \node[] at (2.1, -3.5) {
                 $y \sim \beta_0 + $\textcolor{red}{$\beta_1$}$x_1 + $\textcolor{red}{$\beta_2$}$x_2 + $\textcolor{red}{$\beta_3$}$x_3 + $\textcolor{red}{$\beta_4$}$x_4 + $\textcolor{red}{$\beta_5$}$x_5 + $\textcolor{red}{$\beta_6$}$x_6$
             };
+            \node[] at (0, 2) {};
             \node[] at (0, -4) {};
         \end{tikzpicture}\\
-        \vspace{0.5cm}
         \vfill
     \end{frame}
 
@@ -3097,8 +3070,8 @@ year          0.7534  0.053 0.000   0.65  0.85
             \node[] at (0, 0) {
                 $salary \sim \beta_0 + \beta_1 * age$
             };
-            \node[] at (-5, -2) {};
-            \node[] at (5, 1) {};
+            \node[] at (-6, -2) {};
+            \node[] at (6, 1) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
@@ -3118,8 +3091,8 @@ year          0.7534  0.053 0.000   0.65  0.85
             \node[] at (-3, -1) {
                 $salary \sim 3000000 + 10000 * age$
             };
-            \node[] at (-5, -2) {};
-            \node[] at (5, 1) {};
+            \node[] at (-6, -2) {};
+            \node[] at (6, 1) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
@@ -3185,7 +3158,7 @@ year          0.7534  0.053 0.000   0.65  0.85
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage}
+    \begin{frame}{Shrinkage} % Ridge coefficients
         \centering
         \vfill
         \begin{tikzpicture}
@@ -3216,7 +3189,7 @@ year          0.7534  0.053 0.000   0.65  0.85
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: Feature standardization}
+    \begin{frame}{Shrinkage: Feature standardization} % Variables
         \centering
         \vfill
         \begin{tikzpicture}
@@ -3239,8 +3212,8 @@ year          0.7534  0.053 0.000   0.65  0.85
         \centering
         \begin{tikzpicture}
             \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
-            \node[] at (0, -7.5) {};
-            \node[] at (0, 0.5) {};
+            \node[] at (4.5, -7.5) {};
+            \node[] at (-5, 0.5) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
@@ -3254,9 +3227,8 @@ year          0.7534  0.053 0.000   0.65  0.85
             \node[] at (0, -0.7) {
                 $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x^2}$
             };
-
-            \node[] at (0, -7.5) {};
-            \node[] at (0, 0.5) {};
+            \node[] at (4.5, -7.5) {};
+            \node[] at (-5, 0.5) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
@@ -3299,8 +3271,8 @@ for col in predictors:
     print(f'{col} after: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
                 \end{lstlisting}
             };
-            \node[] at (0, -7.5) {};
-            \node[] at (0, 0.5) {};
+            \node[] at (4.5, -7.5) {};
+            \node[] at (-5, 0.5) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
@@ -3374,16 +3346,229 @@ acceleration after: 0.00 (1.00)
 year after: -0.00 (1.00)
                 \end{lstlisting}
             };
-            \node[] at (0, -7.5) {};
-            \node[] at (0, 0.5) {};
+            \node[] at (4.5, -7.5) {};
+            \node[] at (-5, 0.5) {};
         \end{tikzpicture}
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: Lasso}
+    \begin{frame}{Shrinkage: Ridge regression}
+        \centering
+        \vfill
+        \href{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}
+        \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: Elastic net}
+    \begin{frame}{Shrinkage: Ridge regression}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+
+            \node[] at (0, -1.5) {
+                Regularization through shrinking the model covariates towards zero.
+            };
+
+            \node[] at (-4.4, -4) {};
+            \node[] at (5.2, 3) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+
+
+            \node[inner sep=0pt] (lassomse) at (0, -2) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (lasso) at (lassomse.east) {
+                $ + \lambda \sum\limits_{j=0}^p |\beta_j|$
+            };
+            \node[anchor=east, inner sep=0pt] at (lassomse.west) {
+                $loss_{lasso}$
+            };
+
+            \node[] at (-4.4, -4) {};
+            \node[] at (5.2, 3) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[fill=white, draw=black, label=Ridge] at (0, 0) {
+                \includegraphics[width=4cm]{data/ridge.png}
+            };
+
+            \node[] at (-2.5, -2.5) {};
+            \node[] at (7.5, 2.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[fill=white, draw=black, label=Ridge] at (0, 0) {
+                \includegraphics[width=4cm]{data/ridge.png}
+            };
+            \node[fill=white, draw=black, label=LASSO] at (5, 0) {
+                \includegraphics[width=4cm]{data/lasso.png}
+            };
+
+            \node[] at (-2.5, -2.5) {};
+            \node[] at (7.5, 2.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        Python coefficients
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[fill=white, draw=black] at (0, 0) {
+                \includegraphics[width=10cm]{data/ridge_vs_lasso.png}
+            };
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO}
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[fill=white, draw=black] at (0, 0) {
+                \includegraphics[width=9.5cm]{data/shrinkage_priors.png}
+            };
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Summary} % MSE
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (mse) at (0, 2.2) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (mse.west) {
+                $loss_{mse}$
+            };
+
+            \node[anchor=west, align=left] at ($ (mse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data.};
+
+            \node[] at (-3, -4) {};
+            \node[] at (6.8, 3) {};
+
+            \draw[black] (3.2, 3) -- (3.2, -3.9);
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Summary} % Ridge
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (mse) at (0, 2.2) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (mse.west) {
+                $loss_{mse}$
+            };
+
+
+            \node[inner sep=0pt] (ridgemse) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (lasso) at (ridgemse.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (ridgemse.west) {
+                $loss_{ridge}$
+            };
+
+
+            \node[anchor=west, align=left] at ($ (mse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data.};
+            \node[anchor=west, align=left] at ($ (ridgemse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data while\\\textbf{shrinking} coefficients\\towards zero.};
+
+            \node[] at (-3, -4) {};
+            \node[] at (6.8, 3) {};
+
+            \draw[black] (3.2, 3) -- (3.2, -3.9);
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Summary} % LASSO
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (mse) at (0, 2.2) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (mse.west) {
+                $loss_{mse}$
+            };
+
+
+            \node[inner sep=0pt] (ridgemse) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (lasso) at (ridgemse.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (ridgemse.west) {
+                $loss_{ridge}$
+            };
+
+
+            \node[inner sep=0pt] (lassomse) at (0, -2.2) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (lasso) at (lassomse.east) {
+                $ + \lambda \sum\limits_{j=0}^p |\beta_j|$
+            };
+            \node[anchor=east, inner sep=0pt] at (lassomse.west) {
+                $loss_{lasso}$
+            };
+
+            \node[anchor=west, align=left] at ($ (mse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data.};
+            \node[anchor=west, align=left] at ($ (ridgemse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data while\\\textbf{shrinking} coefficients\\towards zero.};
+            \node[anchor=west, align=left] at ($ (lassomse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data while\\\textbf{shrinking} coefficients\\towards zero such\\that some variables\\are effectively \textbf{removed}.};
+
+            \node[] at (-3, -4) {};
+            \node[] at (6.8, 3) {};
+
+            \draw[black] (3.2, 3) -- (3.2, -3.9);
+        \end{tikzpicture}
+        \vfill
     \end{frame}
 
     \begin{frame}{Dimensionality reduction: Outline}
