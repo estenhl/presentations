@@ -1,7 +1,9 @@
-\documentclass{beamer}
+\documentclass[8pt]{beamer}
 
 \usetheme{metropolis}
 
+\usepackage{amsmath}
+\usepackage{bbm}
 \usepackage{pgfplots}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -10,6 +12,7 @@
 
 \usepgfplotslibrary{groupplots}
 
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
 
 \hypersetup{
@@ -1660,6 +1663,7 @@ while len(predictors) > 0:
         \end{tikzpicture}
     \end{frame}
 
+
     \begin{frame}{Regularization: Motivation}
         \centering
         \vfill
@@ -1696,15 +1700,15 @@ while len(predictors) > 0:
         \end{enumerate}
     \end{frame}
 
-    \begin{frame}[t]{Variable selection: Outline}
+    \begin{frame}[t]{Variable selection: Outline} % Problem definition
         \underline{Problem}\\
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
     \end{frame}
 
-    \begin{frame}[t]{Variable selection: Outline}
+    \begin{frame}[t]{Variable selection: Outline} % Motivation
         \underline{Problem}\\
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-        \vspace{1cm}
+        \vspace{0.25cm}
         \underline{Motivation}\\
         \begin{enumerate}
             \item Simplify interpretation
@@ -1712,65 +1716,1685 @@ while len(predictors) > 0:
         \end{enumerate}
     \end{frame}
 
-    \begin{frame}[t]{Variable selection: Outline}
+    \def\codewidth{10cm}
+
+    \begin{frame}[t]{Variable selection: Outline} % Variables
         \underline{Problem}\\
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-        \vspace{1cm}
+        \vspace{0.25cm}
 
+        \centering
         \begin{tikzpicture}
+            \begin{groupplot}[
+                group style={
+                    group size=3 by 2,
+                    horizontal sep=0.5cm
+                },
+                ticklabel style = {font=\tiny},
+                height=3.9cm,
+                width=3.9cm
+            ]
+                \newcommand{\autoplot}[1]{
+                    \nextgroupplot[
+                        title=\scriptsize{####1},
+                        every axis title/.style={at={(0.5,1.15)}}
+                    ]
+                        \addplot[
+                            only marks,
+                            mark=*,
+                            color=blue,
+                            opacity=0.25
+                        ] table[
+                            col sep=comma,
+                            y=mpg,
+                            x=####1
+                        ] {data/Auto.csv};
+                }
+                \autoplot{cylinders}
+                \autoplot{displacement}
+                \autoplot{horsepower}
+                \autoplot{weight}
+                \autoplot{acceleration}
+                \autoplot{year}
+            \end{groupplot}
 
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}[t]{Variable selection: Best subset selection}
+    \begin{frame}[t]{Variable selection: Best subset selection} % Implementation
         \underline{Problem}\\
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-        \vspace{1cm}
-        \underline{Solution (best subset selection)}\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
         Train models on all subsets $p$ and select the best one.
     \end{frame}
 
-    \begin{frame}[t]{Variable selection: Best subset selection}
+    \begin{frame}[t,fragile]{Variable selection: Best subset selection} % Implementation
         \underline{Problem}\\
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-        \vspace{1cm}
-        \underline{Solution (best subset selection)}\\
-        Train models on all subsets $p$ and select the best one.
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        \vspace{0.05cm}
+        \centering
+        \begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{4}{4}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:In{[}1{]}:}
+            ] (code) at (0, 0) {
+                \begin{lstlisting}[style=PythonStyle]
+import numpy as np
+
+from itertools import chain, combinations
+from sklearn.linear_model import LinearRegression
+
+subsets = list(chain.from_iterable(combinations(predictors, r) \
+                                    for r in range(len(predictors)+1)))
+
+best = {'mse': float('inf'), 'subset': None}
+
+for subset in subsets:
+    if len(subset) == 0:
+        continue
+
+    model = LinearRegression()
+    model.fit(train[list(subset)], train[target])
+    predictions = model.predict(validation[list(subset)])
+    mse = np.mean((predictions - validation[target]) ** 2)
+
+    if mse < best['mse']:
+        best = {'mse': mse, 'subset': subset}
+
+print(f'MSE: {best["mse"]:.2f}, predictors: {best["subset"]}')
+                \end{lstlisting}
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{4}{4}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (output) at ($ (code.south) - (0, 0.1) $) {
+                \begin{lstlisting}[style=PythonOutput]
+MSE: 29.68, predictors: ('cylinders', 'displacement', 'horsepower', 'weight', 'year')                \end{lstlisting}
+            };
+
+        \end{tikzpicture}
+
     \end{frame}
 
-     \begin{frame}{Variable selection: Best subset selection}
+     \begin{frame}[t]{Variable selection: Best subset selection} % Summary
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Train models on all subsets $p$ and select the best one.\\
+        \vspace{0.25cm}
+        \underline{\textcolor{green}{+} Positives}\\
+        Guaranteed to find the optimal solution.\\
+        Simple implementation\\
+        \vspace{0.25cm}
+        \underline{\textcolor{red}{-} Drawbacks}\\
+        Need to train many ($2^{|P|}$) models.
      \end{frame}
 
-%     \begin{frame}{Variable selection: Forward stepwise selection}
-%     \end{frame}
+     \begin{frame}[t]{Variable selection: Best subset selection} % Number of models
+        \begin{tikzpicture}
+            \begin{axis}[
+                smooth,
+                xmin=0,
+                xmax=10,
+                ymin=0,
+                ymax=1200
+            ]
+                \addplot[mark=*] coordinates {
+                    (1, 2^1)
+                    (2, 2^2)
+                    (3, 2^3)
+                    (4, 2^4)
+                    (5, 2^5)
+                    (6, 2^6)
+                    (7, 2^7)
+                    (8, 2^8)
+                    (9, 2^9)
+                    (10, 2^10)
+                };
+                \node[anchor=south] at (axis cs: 6, 2^6) {64};
+            \end{axis}
+        \end{tikzpicture}
+     \end{frame}
 
-%     \begin{frame}{Variable selection: Backward stepwise selection}
-%     \end{frame}
+     \begin{frame}[t]{Variable selection: Forward stepwise selection} % Intro
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+    \end{frame}
 
-%     \begin{frame}{Regularization: Outline}
-%     \end{frame}
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % Empty model
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
 
-%     \begin{frame}{Regularization: Feature standardization}
-%     \end{frame}
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
 
-%     \begin{frame}{Regularization: Ridge regression}
-%     \end{frame}
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+        \end{tikzpicture}
+    \end{frame}
 
-%     \begin{frame}{Regularization: Lasso}
-%     \end{frame}
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % n-5
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
 
-%     \begin{frame}{Regularization: Elastic net}
-%     \end{frame}
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
 
-%     \begin{frame}{Dimensionality reduction: Outline}
-%     \end{frame}
+            \node[draw=black, align=center, font=\nodefont, color=black] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
 
-%     \begin{frame}{Dimensionality reduction: Principal component analysis}
-%     \end{frame}
 
-%     \begin{frame}{Dimensionality reduction: Principal component regression}
-%     \end{frame}
+            \draw[black] (n00.east) -- (n11.west);
+            \draw[black] (n00.east) -- (n12.west);
+            \draw[black] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[black] (n00.east) -- (n15.west);
+            \draw[black] (n00.east) -- (n16.west);
 
-%     \begin{frame}{Dimensionality reduction: Partial least squares}
-%     \end{frame}
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % n-4
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
+
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
+
+            \node[draw=black, align=center, font=\nodefont, color=black] (n21) at (2 * \hsep, 2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $60.02$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n22) at (2 * \hsep, 1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year
+                \end{aligned}$\\
+                $29.84$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n23) at (2 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $60.01$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n24) at (2 * \hsep, -1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $58.59$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n25) at (2 * \hsep, -2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $59.91$
+            };
+
+            \draw[gray!25] (n00.east) -- (n11.west);
+            \draw[gray!25] (n00.east) -- (n12.west);
+            \draw[gray!25] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[gray!25] (n00.east) -- (n15.west);
+            \draw[gray!25] (n00.east) -- (n16.west);
+
+            \draw[black] (n14.east) -- (n21.west);
+            \draw[black] (n14.east) -- (n22.west);
+            \draw[black] (n14.east) -- (n23.west);
+            \draw[black] (n14.east) -- (n24.west);
+            \draw[black] (n14.east) -- (n25.west);
+
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % n-3
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
+
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n21) at (2 * \hsep, 2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $60.02$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n22) at (2 * \hsep, 1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year
+                \end{aligned}$\\
+                $29.84$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n23) at (2 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $60.01$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n24) at (2 * \hsep, -1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $58.59$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n25) at (2 * \hsep, -2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $59.91$
+            };
+
+            \node[draw=black, align=center, font=\nodefont, color=black] (n31) at (3 * \hsep, 2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.91$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n32) at (3 * \hsep, 0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.99$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n33) at (3 * \hsep, -0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $29.85$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n34) at (3 * \hsep, -2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.96$
+            };
+
+            \draw[gray!25] (n00.east) -- (n11.west);
+            \draw[gray!25] (n00.east) -- (n12.west);
+            \draw[gray!25] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[gray!25] (n00.east) -- (n15.west);
+            \draw[gray!25] (n00.east) -- (n16.west);
+
+            \draw[gray!25] (n14.east) -- (n21.west);
+            \draw[black] (n14.east) -- (n22.west);
+            \draw[gray!25] (n14.east) -- (n23.west);
+            \draw[gray!25] (n14.east) -- (n24.west);
+            \draw[gray!25] (n14.east) -- (n25.west);
+
+            \draw[black] (n22.east) -- (n31.west);
+            \draw[black] (n22.east) -- (n32.west);
+            \draw[black] (n22.east) -- (n33.west);
+            \draw[black] (n22.east) -- (n34.west);
+
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % n-2
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
+
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n21) at (2 * \hsep, 2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $60.02$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n22) at (2 * \hsep, 1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year
+                \end{aligned}$\\
+                $29.84$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n23) at (2 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $60.01$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n24) at (2 * \hsep, -1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $58.59$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n25) at (2 * \hsep, -2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $59.91$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n31) at (3 * \hsep, 2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.91$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n32) at (3 * \hsep, 0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.99$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n33) at (3 * \hsep, -0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $29.85$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n34) at (3 * \hsep, -2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.96$
+            };
+
+            \node[draw=black, align=center, font=\nodefont, color=black] (n41) at (4 * \hsep, 1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.87$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n42) at (4 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $30.29$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n43) at (4 * \hsep, -1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.95$
+            };
+
+
+            \draw[gray!25] (n00.east) -- (n11.west);
+            \draw[gray!25] (n00.east) -- (n12.west);
+            \draw[gray!25] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[gray!25] (n00.east) -- (n15.west);
+            \draw[gray!25] (n00.east) -- (n16.west);
+
+            \draw[gray!25] (n14.east) -- (n21.west);
+            \draw[black] (n14.east) -- (n22.west);
+            \draw[gray!25] (n14.east) -- (n23.west);
+            \draw[gray!25] (n14.east) -- (n24.west);
+            \draw[gray!25] (n14.east) -- (n25.west);
+
+            \draw[gray!25] (n22.east) -- (n31.west);
+            \draw[gray!25] (n22.east) -- (n32.west);
+            \draw[black] (n22.east) -- (n33.west);
+            \draw[gray!25] (n22.east) -- (n34.west);
+
+            \draw[black] (n33.east) -- (n41.west);
+            \draw[black] (n33.east) -- (n42.west);
+            \draw[black] (n33.east) -- (n43.west);
+
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % n-1
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
+
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n21) at (2 * \hsep, 2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $60.02$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n22) at (2 * \hsep, 1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year
+                \end{aligned}$\\
+                $29.84$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n23) at (2 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $60.01$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n24) at (2 * \hsep, -1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $58.59$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n25) at (2 * \hsep, -2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $59.91$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n31) at (3 * \hsep, 2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.91$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n32) at (3 * \hsep, 0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.99$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n33) at (3 * \hsep, -0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $29.85$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n34) at (3 * \hsep, -2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.96$
+            };
+
+            \node[draw=black, align=center, font=\nodefont, color=black] (n41) at (4 * \hsep, 1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.87$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n42) at (4 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $30.29$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n43) at (4 * \hsep, -1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.95$
+            };
+
+
+            \node[draw=black, align=center, font=\nodefont] (n51) at (5 * \hsep, 1 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.68$
+            };
+            \node[draw=black, align=center, font=\nodefont, color=black] (n52) at (5 * \hsep, -1 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $30.47$
+            };
+
+
+            \draw[gray!25] (n00.east) -- (n11.west);
+            \draw[gray!25] (n00.east) -- (n12.west);
+            \draw[gray!25] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[gray!25] (n00.east) -- (n15.west);
+            \draw[gray!25] (n00.east) -- (n16.west);
+
+            \draw[gray!25] (n14.east) -- (n21.west);
+            \draw[black] (n14.east) -- (n22.west);
+            \draw[gray!25] (n14.east) -- (n23.west);
+            \draw[gray!25] (n14.east) -- (n24.west);
+            \draw[gray!25] (n14.east) -- (n25.west);
+
+            \draw[gray!25] (n22.east) -- (n31.west);
+            \draw[gray!25] (n22.east) -- (n32.west);
+            \draw[black] (n22.east) -- (n33.west);
+            \draw[gray!25] (n22.east) -- (n34.west);
+
+            \draw[black] (n33.east) -- (n41.west);
+            \draw[gray!25] (n33.east) -- (n42.west);
+            \draw[gray!25] (n33.east) -- (n43.west);
+
+            \draw[black] (n41.east) -- (n51.west);
+            \draw[black] (n41.east) -- (n52.west);
+
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % Full model
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \centering
+
+        \def\nodefont{\fontsize{4}{4}\linespread{0.85}\selectfont}
+        \def\hsep{1.6}
+        \def\vsep{0.75}
+        \begin{tikzpicture}
+            \node[draw=black, align=center, font=\nodefont] (n00) at (0, 0 * \vsep) {
+                $y \sim \mathbbm{1}$\\
+                $mse=146.47$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n11) at (\hsep, 2.5 * \vsep) {
+                $y \sim cylinders$\\
+                $67.96$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n12) at (\hsep, 1.5 * \vsep) {
+                $y \sim year$\\
+                $61.56$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n13) at (\hsep, 0.5 * \vsep) {
+                $y \sim acceleration$\\
+                $119.72$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n14) at (\hsep, -0.5 * \vsep) {
+                $y \sim weight$\\
+                $61.18$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n15) at (\hsep, -1.5 * \vsep) {
+                $y \sim horsepower$\\
+                $65.75$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n16) at (\hsep, -2.5 * \vsep) {
+                $y \sim displacement$\\
+                $63.84$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n21) at (2 * \hsep, 2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $60.02$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n22) at (2 * \hsep, 1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year
+                \end{aligned}$\\
+                $29.84$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n23) at (2 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $60.01$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n24) at (2 * \hsep, -1.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $58.59$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n25) at (2 * \hsep, -2.5 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $59.91$
+            };
+
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n31) at (3 * \hsep, 2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.91$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n32) at (3 * \hsep, 0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.99$
+            };
+            \node[draw=black, align=center, font=\nodefont] (n33) at (3 * \hsep, -0.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower
+                \end{aligned}$\\
+                $29.85$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n34) at (3 * \hsep, -2.25 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.96$
+            };
+
+            \node[draw=black, align=center, font=\nodefont, color=black] (n41) at (4 * \hsep, 1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders
+                \end{aligned}$\\
+                $29.87$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n42) at (4 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $30.29$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n43) at (4 * \hsep, -1.75 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $29.95$
+            };
+
+
+            \node[draw=black, align=center, font=\nodefont] (n51) at (5 * \hsep, 1 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders +\\[-0.8em]
+                    &acceleration
+                \end{aligned}$\\
+                $29.68$
+            };
+            \node[draw=gray!25, align=center, font=\nodefont, color=gray!25] (n52) at (5 * \hsep, -1 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $30.47$
+            };
+
+            \node[draw=black, align=center, font=\nodefont] (n61) at (6 * \hsep, 0 * \vsep) {
+                $\begin{aligned}
+                    y\sim&weight +\\[-0.8em]
+                    &year +\\[-0.8em]
+                    &horsepower +\\[-0.8em]
+                    &cylinders +\\[-0.8em]
+                    &acceleration +\\[-0.8em]
+                    &displacement
+                \end{aligned}$\\
+                $30.29$
+            };
+
+            \draw[gray!25] (n00.east) -- (n11.west);
+            \draw[gray!25] (n00.east) -- (n12.west);
+            \draw[gray!25] (n00.east) -- (n13.west);
+            \draw[black] (n00.east) -- (n14.west);
+            \draw[gray!25] (n00.east) -- (n15.west);
+            \draw[gray!25] (n00.east) -- (n16.west);
+
+            \draw[gray!25] (n14.east) -- (n21.west);
+            \draw[black] (n14.east) -- (n22.west);
+            \draw[gray!25] (n14.east) -- (n23.west);
+            \draw[gray!25] (n14.east) -- (n24.west);
+            \draw[gray!25] (n14.east) -- (n25.west);
+
+            \draw[gray!25] (n22.east) -- (n31.west);
+            \draw[gray!25] (n22.east) -- (n32.west);
+            \draw[black] (n22.east) -- (n33.west);
+            \draw[gray!25] (n22.east) -- (n34.west);
+
+            \draw[black] (n33.east) -- (n41.west);
+            \draw[gray!25] (n33.east) -- (n42.west);
+            \draw[gray!25] (n33.east) -- (n43.west);
+
+            \draw[black] (n41.east) -- (n51.west);
+            \draw[gray!25] (n41.east) -- (n52.west);
+
+            \draw[black] (n51.east) -- (n61.west);
+
+            \node[] at (6.5 * \hsep, 3.3 * \vsep) {};
+            \node[] at (-0.32 * \hsep, -3.3 * \vsep) {};
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Variable selection: Forward stepwise selection} % Loss curves
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=-0.5,
+                xmax=6.5,
+                ymin=0,
+                ymax=150,
+                ytick pos=left,
+                xtick pos=bottom,
+                ylabel=MSE,
+                xlabel=Number of predictors
+            ]
+                \addplot[red,mark=*] coordinates {
+                    (0, 44.74)
+                    (1, 11.02)
+                    (2, 8.31)
+                    (3, 8.31)
+                    (4, 8.25)
+                    (5, 8.24)
+                    (6, 8.21)
+                };
+                \addplot[blue,mark=*] coordinates {
+                    (0, 146.47)
+                    (1, 61.18)
+                    (2, 29.84)
+                    (3, 29.85)
+                    (4, 29.87)
+                    (5, 29.68)
+                    (6, 30.29)
+                };
+
+                \node[
+                    circle,
+                    fill=red,
+                    minimum size=4.3pt,
+                    inner sep=0pt,
+                    label=right:Training
+                ] at (axis cs: 4.7, 140) {};
+                \node[
+                    circle,
+                    fill=blue,
+                    minimum size=4.3pt,
+                    inner sep=0pt,
+                    label=right:Validation
+                ] at (axis cs: 4.7, 132) {};
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Variable selection: Forward stepwise selection} % Optimal models
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=-0.5,
+                xmax=6.5,
+                ymin=0,
+                ymax=150,
+                ytick pos=left,
+                xtick pos=bottom,
+                ylabel=MSE,
+                xlabel=Number of predictors
+            ]
+                \addplot[red,mark=*] coordinates {
+                    (0, 44.74)
+                    (1, 11.02)
+                    (2, 8.31)
+                    (3, 8.31)
+                    (4, 8.25)
+                    (5, 8.24)
+                    (6, 8.21)
+                };
+                \addplot[blue,mark=*] coordinates {
+                    (0, 146.47)
+                    (1, 61.18)
+                    (2, 29.84)
+                    (3, 29.85)
+                    (4, 29.87)
+                    (5, 29.68)
+                    (6, 30.29)
+                };
+
+                \node[
+                    circle,
+                    fill=red,
+                    minimum size=4.3pt,
+                    inner sep=0pt,
+                    label=right:Training
+                ] at (axis cs: 4.7, 140) {};
+                \node[
+                    circle,
+                    fill=blue,
+                    minimum size=4.3pt,
+                    inner sep=0pt,
+                    label=right:Validation
+                ] at (axis cs: 4.7, 132) {};
+
+                \draw[blue, densely dotted] (axis cs: 5, 75) -- (axis cs: 5, 0);
+                \draw[red, densely dotted] (axis cs: 6, 75) -- (axis cs: 6, 0);
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[t,fragile]{Variable selection: Forward stepwise selection} %Implementation
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        \begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{4}{4}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:In{[}1{]}:}
+            ] (code) at (0, 0) {
+                \begin{lstlisting}[style=PythonStyle, basicstyle=\ttfamily\fontsize{4}{4}\selectfont]
+def fit_and_evaluate(train: pd.DataFrame, validation: pd.DataFrame,
+                     predictors: List[str], target: str):
+   model = LinearRegression()
+   model.fit(train[predictors], train[target])
+
+   train_predictions = model.predict(train[predictors])
+   validation_predictions = model.predict(validation[predictors])
+
+   return np.mean((train_predictions - train[target]) ** 2), \
+          np.mean((validation_predictions - validation[target]) ** 2)
+
+predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']
+target = 'mpg'
+
+train['intercept'] = 1
+validation['intercept'] = 1
+train_mse, validation_mse = fit_and_evaluate(train, validation,
+                                            predictors=['intercept'],
+                                            target=target)
+print(f'[]: {validation_mse:.2f} ({train_mse:.2f})')
+
+chosen_predictors = []
+
+while len(chosen_predictors) < len(predictors):
+   best_predictor = {'train_mse': None, 'validation_mse': float('inf'),
+                     'predictor': None}
+
+   for predictor in set(predictors) - set(chosen_predictors):
+       train_mse, validation_mse = fit_and_evaluate(train, validation,
+                                   predictors=chosen_predictors + [predictor],
+                                   target=target)
+
+       if validation_mse < best_predictor['validation_mse']:
+           best_predictor = {'train_mse': train_mse, 'validation_mse': validation_mse, 'predictor': predictor}
+
+   chosen_predictors.append(best_predictor['predictor'])
+
+   print(f'{chosen_predictors}: {best_predictor["validation_mse"]:.2f} ({best_predictor["train_mse"]:.2f})')
+                \end{lstlisting}
+            };
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Forward stepwise selection} % Summary
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with no predictors. Iteratively add the predictor that yields the best model until all are included.\\
+        \vspace{0.25cm}
+        \underline{\textcolor{green}{+} Positives}\\
+        Need to train fewer models.\\
+        \vspace{0.25cm}
+        \underline{\textcolor{red}{-} Drawbacks}\\
+        Not guaranteed to find the optimal solution.\\
+     \end{frame}
+
+    \begin{frame}[t]{Variable selection: Backward stepwise selection}
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with all predictors. Iteratively remove the predictor that yields the best model until all you have none left.\\
+    \end{frame}
+
+    \begin{frame}[t]{Variable selection: Backward stepwise selection}
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Solution}\\
+        Start with all predictors. Iteratively remove the predictor that yields the best model until all you have none left.\\
+        \vspace{0.25cm}
+        \underline{\textcolor{green}{+} Positives}\\
+        Need to train fewer models.\\
+        \vspace{0.25cm}
+        \underline{\textcolor{red}{-} Drawbacks}\\
+        Not guaranteed to find the optimal solution.\\
+    \end{frame}
+
+    \section{Shrinkage}
+
+    \def\codewidth{5.2cm}
+
+    \begin{frame}[fragile]{Shrinkage: Outline} % Coefficients
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north west,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (pythonout) at (0, 0) {
+                \begin{lstlisting}[style=PythonOutput]
+coef  std err  P>|t|  [0.025 0.975]
+-----------------------------------------------
+Intercept    -14.5353 4.764 0.002 -23.90 -5.16
+cylinders    -0.3299  0.332 0.321  -0.98  0.32
+displacement  0.0077  0.007 0.297  -0.00  0.02
+horsepower   -0.0004  0.014 0.977  -0.02  0.02
+weight       -0.0068  0.001 0.000  -0.00 -0.00
+acceleration  0.0853  0.102 0.404  -0.11  0.28
+year          0.7534  0.053 0.000   0.65  0.85
+===============================================
+                \end{lstlisting}
+            };
+
+            \node[] at (0, -4) {};
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[fragile]{Shrinkage: Outline} % Coefficients with formula
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north west,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (pythonout) at (0, 0) {
+                \begin{lstlisting}[style=PythonOutput]
+coef  std err  P>|t|  [0.025 0.975]
+-----------------------------------------------
+Intercept    -14.5353 4.764 0.002 -23.90 -5.16
+cylinders    -0.3299  0.332 0.321  -0.98  0.32
+displacement  0.0077  0.007 0.297  -0.00  0.02
+horsepower   -0.0004  0.014 0.977  -0.02  0.02
+weight       -0.0068  0.001 0.000  -0.00 -0.00
+acceleration  0.0853  0.102 0.404  -0.11  0.28
+year          0.7534  0.053 0.000   0.65  0.85
+===============================================
+                \end{lstlisting}
+            };
+            \node[] at (2.1, -3.5) {
+                $y \sim \beta_0 + $\textcolor{red}{$\beta_1$}$x_1 + $\textcolor{red}{$\beta_2$}$x_2 + $\textcolor{red}{$\beta_3$}$x_3 + $\textcolor{red}{$\beta_4$}$x_4 + $\textcolor{red}{$\beta_5$}$x_5 + $\textcolor{red}{$\beta_6$}$x_6$
+            };
+            \node[] at (0, -4) {};
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Outline} % Bias variance decomposition
+        \centering
+        \vfill
+        $mse = bias^2 + variance + irreducible\ error$
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Outline} % ISL plot
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[draw=black, fill=white] {
+                \includegraphics[width=8cm]{data/bias_variance_decomp.png}
+            };
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Outline} % Salary general model
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[] at (0, 0) {
+                $salary \sim \beta_0 + \beta_1 * age$
+            };
+            \node[] at (-5, -2) {};
+            \node[] at (5, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Outline} % Salary actual models
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[] at (0, 0) {
+                $salary \sim \beta_0 + \beta_1 * age$
+            };
+
+            \node[] at (3, -1) {
+                $salary \sim 6000000 + 0 * age$
+            };
+
+            \node[] at (-3, -1) {
+                $salary \sim 3000000 + 10000 * age$
+            };
+            \node[] at (-5, -2) {};
+            \node[] at (5, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Ridge regression} % MSE
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{mse}$
+            };
+
+            \node[] at (-2.5, -2) {};
+            \node[] at (3.3, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Ridge regression} % Ridge loss
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+
+            \node[] at (-2.5, -2) {};
+            \node[] at (3.3, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Ridge regression} % Ridge interpretation
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt, draw=red] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+            \draw[double, -Latex, red] ($ (ridge.south) - (0, 0.2) $) -- ($ (ridge.south) - (0, 0.6) $);
+            \node[red] at ($ (ridge.south) - (0, 0.8) $) {
+                $\lambda \to \infty \Rightarrow \beta \to 0$
+            };
+
+            \node[] at (-2.5, -2) {};
+            \node[] at (3.3, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[draw=black, fill=white] {
+                \includegraphics[width=8cm]{data/ridge_coefs.png}
+            };
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Ridge regression} % Ridge loss for scaling
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+
+            \node[] at (-2.5, -2) {};
+            \node[] at (3.3, 1) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Feature standardization}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=8cm,
+                height=8cm,
+                xlabel=Acceleration,
+                ylabel=Weight
+            ]
+                \addplot[only marks, blue!50, opacity=0.5] table [col sep=comma, x=acceleration, y=weight] {data/Auto.csv};
+            \end{axis}
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \def\codewidth{8cm}
+
+    \begin{frame}[fragile]{Shrinkage: Feature standardization} % Name
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
+            \node[] at (0, -7.5) {};
+            \node[] at (0, 0.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[fragile]{Shrinkage: Feature standardization} % Formula
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
+
+            \node[] at (0, -0.7) {
+                $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x^2}$
+            };
+
+            \node[] at (0, -7.5) {};
+            \node[] at (0, 0.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[fragile]{Shrinkage: Feature standardization} % Code
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
+
+            \node[] at (0, -0.7) {
+                $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x^2}$
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                outer sep=0pt,
+                draw=black,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3pt
+                       ]north west:In{[}1{]}:},
+            ] (pythoncode) at (0, -3) {
+                \begin{lstlisting}[style=PythonStyle, linewidth=\codewidth]
+for col in predictors:
+    print(f'{col}: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+
+# z-score standardization
+for col in predictors:
+    df[col] = (df[col] - np.mean(df[col])) / np.std(df[col])
+
+for col in predictors:
+    print(f'{col} after: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+                \end{lstlisting}
+            };
+            \node[] at (0, -7.5) {};
+            \node[] at (0, 0.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}[fragile]{Shrinkage: Feature standardization} % Result
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
+
+            \node[] at (0, -0.7) {
+                $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x^2}$
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                outer sep=0pt,
+                draw=black,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3pt
+                       ]north west:In{[}1{]}:},
+            ] (pythoncode) at (0, -3) {
+                \begin{lstlisting}[style=PythonStyle, linewidth=\codewidth]
+for col in predictors:
+    print(f'{col}: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+
+# z-score standardization
+for col in predictors:
+    df[col] = (df[col] - np.mean(df[col])) / np.std(df[col])
+
+for col in predictors:
+    print(f'{col} after: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+                \end{lstlisting}
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (pythonout) at (0, -6) {
+                \begin{lstlisting}[style=PythonOutput]
+cylinders: 5.47 (1.70)
+displacement: 194.41 (104.51)
+horsepower: 104.47 (38.44)
+weight: 2977.58 (848.32)
+acceleration: 15.54 (2.76)
+year: 75.98 (3.68)
+cylinders after: -0.00 (1.00)
+displacement after: -0.00 (1.00)
+horsepower after: -0.00 (1.00)
+weight after: -0.00 (1.00)
+acceleration after: 0.00 (1.00)
+year after: -0.00 (1.00)
+                \end{lstlisting}
+            };
+            \node[] at (0, -7.5) {};
+            \node[] at (0, 0.5) {};
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Lasso}
+    \end{frame}
+
+    \begin{frame}{Shrinkage: Elastic net}
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Outline}
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component analysis}
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Principal component regression}
+    \end{frame}
+
+    \begin{frame}{Dimensionality reduction: Partial least squares}
+    \end{frame}
 \end{document}
