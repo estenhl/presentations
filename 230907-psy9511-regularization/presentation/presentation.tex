@@ -3701,16 +3701,25 @@ year after: -0.00 (1.00)
     \end{frame}
 
     \begin{frame}{Dimensionality reduction: Principal component analysis} % Heatmap
+        \centering
+        \vfill
         \begin{tikzpicture}
-            \begin{axis}[
-                colormap/hot, % You can choose a different colormap
-                colorbar,
-                axis on top,
-                xlabel=X-axis Label,
-                ylabel=Y-axis Label,
-            ]
-            \end{axis}
-        \end{tikzpicture}
+            \foreach \y [count=\n] in {
+                {1,0.30,0.86,0.89,0.41,0.93},
+                {0.30,1,0.41,0.34,0.29,0.36},
+                {0.86,0.41,1,0.84,0.68,0.89},
+                {0.89,0.34,0.84,1,0.50,0.95},
+                {0.41,0.29,0.68,0.50,1,0.54},
+                {0.93,0.36,0.89,0.95,0.54,1},
+              } {
+                \foreach \x [count=\m] in \y {
+                    \pgfmathsetmacro{\colorfraction}{100*\x} % Multiply by 100
+                  \node[fill=red!\colorfraction!yellow, minimum size=1cm, text=white, inner sep=0pt, outer sep=0pt] at (\m,-\n) {\x};
+                }
+              }
+
+          \end{tikzpicture}
+          \vfill
     \end{frame}
 
     \begin{frame}{Dimensionality reduction: Principal component analysis} % 2 variables
