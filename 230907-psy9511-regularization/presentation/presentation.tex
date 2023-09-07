@@ -1670,6 +1670,13 @@ while len(predictors) > 0:
         \vfill
     \end{frame}
 
+    \begin{frame}{Regularization: Motivation}
+        \centering
+        \vfill
+        $y \sim$\textcolor{red} {$ \beta_0 + \beta_1 * x_1 + \beta_2 * x_2 + \beta_3 * x_3$}
+        \vfill
+    \end{frame}
+
     \begin{frame}[fragile]{Regularization: Out-of-sample testing}
         \begin{tikzpicture}
             \node[
@@ -3503,7 +3510,7 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Table of coefficients
         \centering
         \vfill
         \begin{tabular}{|c|c|c|}
@@ -3528,7 +3535,20 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Lasso intuition
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node[fill=white, draw=black] at (0, 0) {
+                \includegraphics[width=8cm]{data/lasso_intuition.png}
+            };
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        Whiteboard!
+        \vfill
+    \end{frame}
+
+    \begin{frame}{Shrinkage: LASSO} % Lasso vs Ridge effect
         \vfill
         \centering
         \begin{tikzpicture}
@@ -3539,7 +3559,7 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO}
+    \begin{frame}{Shrinkage: LASSO} % Lasso vs ridge priors
         \vfill
         \centering
         \begin{tikzpicture}
@@ -3722,9 +3742,8 @@ year after: -0.00 (1.00)
           \vfill
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % 2 variables
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % 2 variables
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3744,13 +3763,11 @@ year after: -0.00 (1.00)
                 ] table [col sep=comma, x=x, y=y] {data/components.csv};
             \end{axis}
         \end{tikzpicture}
-        \vfill
     \end{frame}
 
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % Center
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % Center
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3773,12 +3790,10 @@ year after: -0.00 (1.00)
                 };
             \end{axis}
         \end{tikzpicture}
-        \vfill
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % First direction
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % First direction
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3800,14 +3815,15 @@ year after: -0.00 (1.00)
                     (-1.81260902e-16, -1.81260902e-17)
                 };
                 \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 0.96677463, -1.81260902e-17 + 0.96677463);
+                \node[anchor=north, outer sep=3pt] at (axis cs: -1.81260902e-16 + 0.5 * 0.96677463, -1.81260902e-17 + 0.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{$v$}}}};
             \end{axis}
-        \end{tikzpicture}
-        \vfill
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $v \implies$ direction of greatest variance in $X$
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % First PC
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % First PC
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3838,13 +3854,13 @@ year after: -0.00 (1.00)
                 \node[rotate=45, anchor=north, inner sep=5pt] at (axis cs: -1.81260902e-16 + 2 * 0.96677463, -1.81260902e-17 + 2 * 0.96677463) {\Large{\textbf{\textcolor{red}{2}}}};
                 \node[rotate=45, anchor=south, inner sep=3pt] at (axis cs: -1.81260902e-16 + 2.5 * 0.96677463, -1.81260902e-17 + 2.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{PC1}}}};
             \end{axis}
-        \end{tikzpicture}
-        \vfill
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $PC1 = 0.69 * horsepower + 0.71 * weight$
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % Second direction
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % Second direction
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3876,14 +3892,15 @@ year after: -0.00 (1.00)
                 \node[rotate=45, anchor=south, inner sep=3pt] at (axis cs: -1.81260902e-16 + 2.5 * 0.96677463, -1.81260902e-17 + 2.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{PC1}}}};
 
                 \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 3 * 0.26058464, -1.81260902e-17 - 3 * 0.26058464);
+                \node[anchor=west, outer sep=3pt] at (axis cs: -1.81260902e-16 + 0.8 * 0.26058464, -1.81260902e-17 - 0.8 * 0.26058464) {\Large{\textbf{\textcolor{red}{$v$}}}};
             \end{axis}
-        \end{tikzpicture}
-        \vfill
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $v \implies$ direction of greatest variance in $X$ \textbf{after regressing out PC1}
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % Second PC
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % Second PC
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3924,13 +3941,13 @@ year after: -0.00 (1.00)
                 \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 8 * 0.26058464, -1.81260902e-17 + 8 * 0.26058464) -- (axis cs: -1.81260902e-16 + 8 * 0.26058464, -1.81260902e-17 - 8 * 0.26058464);
                 \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 9 * 0.26058464, -1.81260902e-17 + 9 * 0.26058464) -- (axis cs: -1.81260902e-16 + 9 * 0.26058464, -1.81260902e-17 - 9 * 0.26058464);
             \end{axis}
-        \end{tikzpicture}
-        \vfill
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $PC2 = 0.69 * horsepower + 0.71 * weight$
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis} % PC space
+    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % PC space
         \centering
-        \vfill
         \begin{tikzpicture}
             \begin{axis}[
                 height=7cm,
@@ -3946,7 +3963,6 @@ year after: -0.00 (1.00)
                 ] table [col sep=comma, x=x, y=y] {data/pcs.csv};
             \end{axis}
         \end{tikzpicture}
-        \vfill
     \end{frame}
 
     \begin{frame}[t]{Dimensionality reduction: Principal component regression} % Table
@@ -3973,7 +3989,7 @@ year after: -0.00 (1.00)
         \end{tabular}
     \end{frame}
 
-    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % Regular OLS
+    \begin{frame}[t]{Dimensionality reduction: Principal component regression} % Regular OLS
         \centering
         \vspace{1cm}
         \begin{tabular}{|c|c|c|c|c|}
@@ -3999,7 +4015,7 @@ year after: -0.00 (1.00)
         $mpg \sim \beta_0 + \beta_1 * horsepower + \beta_2 * weight$\\
     \end{frame}
 
-    \begin{frame}[t]{Dimensionality reduction: Principal component analysis} % PCR
+    \begin{frame}[t]{Dimensionality reduction: Principal component regression} % PCR
         \centering
         \vspace{1cm}
         \begin{tabular}{|c|c|c|c|c|}
@@ -4027,7 +4043,7 @@ year after: -0.00 (1.00)
         $mpg \sim \beta_0 + \beta_1 * PC1 + \beta_2 * PC2$
     \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Principal component analysis}
+    \begin{frame}{Dimensionality reduction: Principal component regression} % Summary
         \underline{Principal component regression}
         \begin{enumerate}
             \item Fit a PCA to transform your $p$ predictors into $p$ principal components.
@@ -4037,17 +4053,73 @@ year after: -0.00 (1.00)
         \underline{\textcolor{green}{+} Positives}\\
         \begin{itemize}
             \item The principal components are orthogonal, so there is no issue of collinearity.\\
-            \item The principal components are ordered by the amount of variance they explain, so we can select the early principal components to explain most of the variability in the predictors.\\
+            \item The principal components are ordered by the amount of variance they explain, so we can the early principal components are (probably) the best predictors.
         \end{itemize}
         \vspace{0.25cm}
         \underline{\textcolor{red}{-} Drawbacks}\\
         \begin{itemize}
             \item Have to select number of principal components to use.
-            \item What if the principal components that explain the largest amount of variance as not related to the outcome?
+            \item What if the principal components that explain the largest amount of variance are not related to the outcome?
         \end{itemize}
-        \end{frame}
+    \end{frame}
 
-    \begin{frame}{Dimensionality reduction: Partial least squares}
-        Next time
+    \begin{frame}[t]{Dimensionality reduction: Partial least squares} % First direction
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 0.96677463, -1.81260902e-17 + 0.96677463);
+                \node[anchor=north, outer sep=3pt] at (axis cs: -1.81260902e-16 + 0.5 * 0.96677463, -1.81260902e-17 + 0.5 * 0.96677463) {\Large{\textbf{\textcolor{red}{$v$}}}};
+            \end{axis}
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $v \implies$ direction of greatest variance in $X$
+    \end{frame}
+
+    \begin{frame}[t]{Dimensionality reduction: Partial least squares} % First direction
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=7cm,
+                xlabel=weight,
+                ylabel=horsepower,
+                xmin=-2,
+                xmax=3.5,
+                ymin=-2,
+                ymax=3
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue,
+                    opacity=0.05
+                ] table [col sep=comma, x=x, y=y] {data/components.csv};
+                \addplot[only marks, mark=*, color=red] coordinates {
+                    (-1.81260902e-16, -1.81260902e-17)
+                };
+                \draw[red,-Latex,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + -0.1, -1.81260902e-17 + -0.8);
+                \node[anchor=west, outer sep=3pt] at (axis cs: -1.81260902e-16 + 0.5 * -0.1, -1.81260902e-17 + 0.5 * -0.8) {\Large{\textbf{\textcolor{red}{$v$}}}};
+            \end{axis}
+        \end{tikzpicture}\\
+        \vspace{0.5cm}
+        $v \implies$ direction of greatest covariance between $X$ and $Y$
     \end{frame}
 \end{document}
