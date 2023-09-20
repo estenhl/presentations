@@ -1611,7 +1611,6 @@ def fit_and_evaluate_model(model: LinearRegression, train: pd.DataFrame,
                            target: str):
     """ Fit a given model on a training dataset using a given set of variables
     and return MSE from a validation dataset. """
-    model = LinearRegression()
     model.fit(train[potential_predictors], train[target])
     predictions = model.predict(validation[potential_predictors])
 
@@ -1623,8 +1622,8 @@ while len(predictors) > 0:
     for predictor in set(predictors) - set(chosen_predictors):
         potential_predictors = chosen_predictors + [predictor]
         test_mse = fit_and_evaluate_model(LinearRegression(), train, validation,
-                                            variables=potential_predictors,
-                                            target=target)
+                                          variables=potential_predictors,
+                                          target=target)
 
         # Compare model with previous best
         if test_mse < best_predictor['mse']:
@@ -1642,7 +1641,7 @@ while len(predictors) > 0:
                 inner sep=0pt,
                 outer sep=0pt,
                 minimum width=\codewidth - 0.14cm,
-                minimum height=1.8cm,
+                minimum height=1.6cm,
                 opacity=0.2
             ] (training) at ($ (code.north west) + (0.07, -2.8) $) {};
             \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
@@ -1654,12 +1653,14 @@ while len(predictors) > 0:
                 inner sep=0pt,
                 outer sep=0pt,
                 minimum width=\codewidth - 1.37cm,
-                minimum height=0.52cm
-            ] (training) at ($ (code.north west) + (0.74, -5.49) $) {};
+                minimum height=0.57cm
+            ] (training) at ($ (code.north west) + (0.74, -5.3) $) {};
 
             \node[] at (0, -7.55) {};
         \end{tikzpicture}
     \end{frame}
+
+    \section{Regularization}
 
     \begin{frame}{Regularization: Motivation}
         \centering
@@ -3071,8 +3072,8 @@ while len(chosen_predictors) < len(predictors):
             \node[] at (2.1, -3.5) {
                 $y \sim \beta_0 + $\textcolor{red}{$\beta_1$}$x_1 + $\textcolor{red}{$\beta_2$}$x_2 + $\textcolor{red}{$\beta_3$}$x_3 + $\textcolor{red}{$\beta_4$}$x_4 + $\textcolor{red}{$\beta_5$}$x_5 + $\textcolor{red}{$\beta_6$}$x_6$
             };
-            \node[] at (0, 2) {};
-            \node[] at (0, -4) {};
+            \node[] at (-1, 2) {};
+            \node[] at (5.5, -4) {};
         \end{tikzpicture}\\
         \vfill
     \end{frame}
@@ -3113,8 +3114,8 @@ year          0.7534  0.053 0.000   0.65  0.85
             \node[] at (2.1, -3.5) {
                 $y \sim \beta_0 + $\textcolor{red}{$\beta_1$}$x_1 + $\textcolor{red}{$\beta_2$}$x_2 + $\textcolor{red}{$\beta_3$}$x_3 + $\textcolor{red}{$\beta_4$}$x_4 + $\textcolor{red}{$\beta_5$}$x_5 + $\textcolor{red}{$\beta_6$}$x_6$
             };
-            \node[] at (0, 2) {};
-            \node[] at (0, -4) {};
+            \node[] at (-1, 2) {};
+            \node[] at (5.5, -4) {};
         \end{tikzpicture}\\
         \vfill
     \end{frame}
@@ -3159,11 +3160,11 @@ year          0.7534  0.053 0.000   0.65  0.85
             };
 
             \node[] at (3, -1) {
-                $salary \sim 6000000 + 0 * age$
+                $salary \sim 600000 + 0 * age$
             };
 
             \node[] at (-3, -1) {
-                $salary \sim 3000000 + 10000 * age$
+                $salary \sim 300000 + 10000 * age$
             };
             \node[] at (-6, -2) {};
             \node[] at (6, 1) {};
@@ -3519,9 +3520,9 @@ year after: -0.00 (1.00)
         \vfill
     \end{frame}
 
-    \begin{frame}{Shrinkage: LASSO} % Table of coefficients
+    \begin{frame}[t]{Shrinkage: LASSO} % Table of coefficients
         \centering
-        \vfill
+        \vspace{2cm}
         \begin{tabular}{|c|c|c|}
             \hline
             \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
@@ -3541,7 +3542,33 @@ year after: -0.00 (1.00)
             Displacement&0.66&0\\
             \hline
         \end{tabular}
-        \vfill
+    \end{frame}
+
+
+    \begin{frame}[t]{Shrinkage: LASSO} % Table of coefficients
+        \centering
+        \vspace{2cm}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
+            \hline
+            Intercept&23.44&23.44\\
+            \hline
+            Weight&-5.59&-4.78\\
+            \hline
+            Year&2.75&2.00\\
+            \hline
+            Horsepower&-0.07&-0.09\\
+            \hline
+            Cylinders&-0.54&0\\
+            \hline
+            Acceleration&0.19&0\\
+            \hline
+            Displacement&0.66&0\\
+            \hline
+        \end{tabular}\\
+        \vspace{1cm}
+        \textcolor{red}{A coefficient of 0 does not mean the predictor has no predictive value for the outcome!}
     \end{frame}
 
     \begin{frame}{Shrinkage: LASSO} % Lasso intuition

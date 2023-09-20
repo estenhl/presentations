@@ -1,0 +1,3227 @@
+\documentclass[8pt]{beamer}
+
+\usetheme{metropolis}
+
+\usepackage{emoji}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+
+\date{22.09.23}
+\title{Kunstig intelligens og bildegjenkjenning i hjerneforskning}
+\author{Esten H. Leonardsen}
+
+\begin{document}
+	\begin{frame}
+	 	\maketitle
+	\end{frame}
+
+	\begin{frame}{Introduksjon} % Math
+		\centering
+		\vfill
+		\begin{itemize}
+			\item $\theta_{t+1} = \theta_t - \alpha \nabla_\theta \mathcal{L}(\theta_t)$
+			\item $\delta_i = \frac{\partial \mathcal{L}}{\partial z_i}$, $\delta_j = \sum_i w_{ij} \delta_i$, $\frac{\partial \mathcal{L}}{\partial w_{ij}} = \delta_i a_j$
+			\item $p_i = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}}$
+			\item $\mathcal{L}(\theta) = -\frac{1}{N} \sum_{i=1}^N \sum_{k=1}^K y_{ik} \log p_{ik}$
+			\item $y_{i,j,k} = \sum_{l=1}^C \sum_{p=1}^H \sum_{q=1}^W x_{i+p-1,j+q-1,l} w_{p,q,l,k}$
+			\item $\hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}$, $y = \gamma \hat{x} + \beta$
+			\item $r_i \sim \text{Bernoulli}(p)$, $h_i = r_i \odot f(x_i)$, $f_{\text{out}}(x) = \frac{1}{1-p} \sum_{i=1}^n h_i$
+			\item $L(x, g(f(x))) = \|x - g(f(x))\|^2$
+		\end{itemize}
+		\vfill
+	\end{frame}
+
+	\section{Kunstig intelligens}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Artificial intelligence
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[anchor=north west, align=left, font=\small] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Symbolic AI
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Symbolic AI explanation
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[anchor=north west, align=left, font=\small] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Symbolsk AI}};
+			\node[] (patient) at (5.2, 1) {\Huge{\emoji{face-with-medical-mask}}};
+			\node[font=\small, draw=black] (check) at ($ (patient.south) - (0, 0.5) $) {Undersøkelse};
+			\node[font=\small, align=center, text depth=0, draw=black, inner sep=2pt] (virus) at ($ (patient.south) - (0.8, 1.5) $) {Virus\\oppdaget};
+			\node[font=\small, text depth=0, draw=black, inner sep=2pt] (fever) at ($ (patient.south) - (-0.8, 1.5) $) {Feber > 39};
+			\node[font=\small, text depth=0, inner sep=2pt, draw=black] (join) at ($ (patient.south) - (0, 2.3) $) {Sammenstilling};
+			\node[font=\small, text depth=0, inner sep=2pt, draw=black] (diagnosis) at ($ (patient.south) - (0, 3.3) $) {Diagnose};
+
+			\draw[->] (patient) -- (check);
+			\draw[->] ($ (check.south) - (0.05, 0) $) |-  ($ (virus.north) + (0, 0.15) $) -| (virus);
+			\draw[->] ($ (check.south) + (0.05, 0) $) |-  ($ (fever.north) + (0, 0.31) $) -| (fever);
+
+			\draw[->] (virus.south) |-  ($ (virus.south) - (0, 0.15) $) -| ($ (join.north) - (0.05, 0) $);
+			\draw[->] (fever.south) |-  ($ (fever.south) - (0, 0.31) $) -| ($ (join.north) + (0.05, 0) $);
+			\draw[->] (join) -- (diagnosis);
+
+			\draw[densely dotted] ($ (patient.south) + (-1.53, -0.9) $) --
+						  ($ (patient.south) + (1.56, -0.9) $) --
+						  ($ (patient.south) + (1.56, -2.6) $) --
+						  ($ (patient.south) + (-1.53, -2.6) $) --
+						  ($ (patient.south) + (-1.53, -0.9) $);
+
+			\node[anchor=north east] at ($ (patient.south) + (1.56, -2.6) $) {AI};
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Machine learning explanation
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
+			\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[anchor=north west, align=left, font=\small] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring}};
+			\node[] (patient) at (5.2, 1) {\Huge{\emoji{face-with-medical-mask}}};
+			\node[font=\small, draw=black] (check) at ($ (patient.south) - (0, 0.5) $) {Undersøkelse};
+			\node[font=\small, text depth=0, inner sep=2pt, draw=black] (diagnosis) at ($ (patient.south) - (0, 3.3) $) {Diagnose};
+
+			\draw[densely dotted] ($ (patient.south) + (-1.53, -0.9) $) --
+						  ($ (patient.south) + (1.56, -0.9) $) --
+						  ($ (patient.south) + (1.56, -2.6) $) --
+						  ($ (patient.south) + (-1.53, -2.6) $) --
+						  ($ (patient.south) + (-1.53, -0.9) $);
+
+			\node[] at ($ (patient.south) + (0, -1.75) $) {\Huge{\textcolor{gray}{?}}};
+
+			\draw[->] (patient) -- (check);
+			\draw[->] (check) -- ($ (check.south) - (0, 0.2) $);
+			\draw[->] ($ (diagnosis.north) + (0, 0.53) $) -- (diagnosis);
+
+			\node[anchor=north east] at ($ (patient.south) + (1.56, -2.6) $) {AI};
+
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Machine learning explanation
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
+			\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[anchor=north west, align=left, font=\small] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring:}\\Modeller som lærer å\\løse oppgaver gjennom å\\finne mønster i data};
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, Deep learning
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
+			\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
+			\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresjon};
+			\node[text=white, align=center] at ($ (ml.north) - (-0.7, 1.2) $) {XGBoost};
+			\node[circle, fill=red!60, minimum size=3cm, anchor=south] (dl) at ($ (ai.south) + (0, 0.1) $) {};
+			\node[text=white, anchor=north] at ($ (dl.north) - (0, 0.3) $) {\textbf{Dyplæring}};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring:}\\Modeller som lærer å\\løse oppgaver gjennom å\\finne mønster i data};
+			\node[anchor=north west, align=left, font=\small] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er lagvis\\ organisert ($\approx$ dype nevrale nett)\\for å lære mer effektive\\representasjoner av data};
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Taksonomi} % Taxonomy, CNNs and LLMs
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[circle, fill=blue!60, minimum size=6cm] (ai) at (0, 0) {};
+			\node[text=white, anchor=north] at ($ (ai.north) - (0, 0.3) $) {\textbf{Kunstig intelligens}};
+			\node[text=white] at ($ (ai.north) - (-1.1, 1.2) $) {Symbolsk AI};
+			\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
+			\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
+			\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresjon};
+			\node[text=white, align=center] at ($ (ml.north) - (-0.7, 1.2) $) {XGBoost};
+			\node[circle, fill=red!60, minimum size=3cm, anchor=south] (dl) at ($ (ai.south) + (0, 0.1) $) {};
+			\node[text=white, anchor=north] at ($ (dl.north) - (0, 0.3) $) {\textbf{Dyplæring}};
+			\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (-0.2, 1.2) $) {Konvolusjonære\\nevrale nett};
+			\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (0.2, 2.1) $) {Store\\språkmodeller};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ai-text) at ($ (ai.north) + (3.5, 0.2) $) {\textbf{Kunstig intelligens:}\\Maskiner som løser oppgaver\\som krever intelligens};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring:}\\Modeller som lærer å\\løse oppgaver gjennom å\\finne mønster i data};
+			\node[anchor=north west, align=left, font=\small, text=gray!40] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er lagvis\\ organisert ($\approx$ dype nevrale nett)\\for å lære mer effektive\\representasjoner av data};
+			\node[anchor=north west, align=left, font=\small] (cnn-text) at ($ (dl-text.south west) - (0, 0) $) {\textbf{Konvolusjonære nevrale nett:}\\Nevrale nett som løser problemer\\i bildedata};
+			\node[anchor=north west, align=left, font=\small] at ($ (cnn-text.south west) - (0, 0) $) {\textbf{Store språkmodeller:}\\Nevrale nett som løser problemer\\i naturlig språk (ChatGPT)};
+			\node[] at (-3, 3) {};
+			\node[] at (7.7, -3.2) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Terminologi: Veiledet vs ikke-veiledet læring} % Supervised vs unsupervised
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[align=center, anchor=north] (supervised) at (0, 0) {Veiledet læring\\(Supervised learning)};
+			\node[align=center, anchor=north] (unsupervised) at (7, 0) {Ikke-veiledet læring\\(Unsupervised learning)};
+			\draw[] (3.5, 0) -- (3.5, -7.5);
+			\node[] (cat1) at ($ (supervised.south) + (-1, -0.8) $) {
+				\includegraphics[width=1.2cm]{data/cat.1.jpg}
+			};
+			\node[anchor=west] (cattext1) at ($ (cat1.east) + (1.2, 0) $) {Katt};
+			\draw[->] (cat1) -- (cattext1);
+			\node[anchor=north] (dog1) at ($ (cat1.south) + (0, -0.1) $) {
+				\includegraphics[width=1.2cm]{data/dog.0.jpg}
+			};
+			\node[anchor=west] (dogtext1) at ($ (dog1.east) + (1.2, 0) $) {Hund};
+			\draw[->] (dog1) -- (dogtext1);
+			\node[anchor=north] (cat2) at ($ (dog1.south) + (0, -0.1) $) {
+				\includegraphics[width=1.2cm]{data/cat.2.jpg}
+			};
+			\node[anchor=west] (cattext2) at ($ (cat2.east) + (1.2, 0) $) {Katt};
+			\draw[->] (cat2) -- (cattext2);
+			\node[anchor=north] (dog2) at ($ (cat2.south) + (0, -0.1) $) {
+				\includegraphics[width=1.2cm]{data/dog.1.jpg}
+			};
+			\node[anchor=west] (dogtext2) at ($ (dog2.east) + (1.2, 0) $) {Hund};
+			\draw[->] (dog2) -- (dogtext2);
+
+			\node[] (cat1) at ($ (unsupervised.south) + (-1.2, -1.1) $) {
+				\includegraphics[width=0.8cm]{data/cat.1.jpg}
+			};
+			\node[] (cat2) at ($ (cat1) + (-0.9, 0.2) $) {
+				\includegraphics[width=0.8cm]{data/cat.2.jpg}
+			};
+			\node[] (cat3) at ($ (cat1) + (-0.5, -0.8) $) {
+				\includegraphics[width=0.8cm]{data/cat.3.jpg}
+			};
+			\node[] (cat4) at ($ (cat1) + (0.9, -0.1) $) {
+				\includegraphics[width=0.8cm]{data/cat.4.jpg}
+			};
+
+			\node[] (dog1) at ($ (cat1) + (1.8, -1.5) $) {
+				\includegraphics[width=0.8cm]{data/dog.0.jpg}
+			};
+			\node[] (dog2) at ($ (dog1) + (0.9, 0.1) $) {
+				\includegraphics[width=0.8cm]{data/dog.1.jpg}
+			};
+			\node[] (dog3) at ($ (dog1) + (0.3, -0.8) $) {
+				\includegraphics[width=0.8cm]{data/dog.3.jpg}
+			};
+			\node[] (dog4) at ($ (dog1) + (-0.9, -0.3) $) {
+				\includegraphics[width=0.8cm]{data/dog.4.jpg}
+			};
+			\draw[dashed, thick, red] ($ (cat1) + (-0.9, -1.7) $) -- ($ (dog1) + (1.2, 1.7) $);
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\section{Maskinlæring}
+
+	\begin{frame}{Maskinlæring: Lineær regresjon} % Table
+		\small
+		\centering
+		\vfill
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{BMI}&\textbf{Systolisk blodtrykk}\\
+			\hline
+			28.99&152.43\\
+			26.45&153.27\\
+			29.59&158.09\\
+			33.09&168.63\\
+			26.06&146.40\\
+			26.06&136.18\\
+			33.32&175.97\\
+			30.07&150.52\\
+			25.12&131.41\\
+			29.17&157.25\\
+			25.15&141.85\\
+			25.14&138.97\\
+			27.97&150.28\\
+			19.35&110.56\\
+			20.10&108.06\\
+			24.75&132.78\\
+			22.95&125.97\\
+			28.26&157.44\\
+			23.37&131.87\\
+			21.35&112.26\\
+			\hline
+		\end{tabular}
+		\vfill
+	\end{frame}
+
+
+	\newsavebox{\linearpoints}
+	\sbox{\linearpoints}{%
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=BMI,
+				ylabel={Systolisk blodtrykk},
+				height=6cm,
+				width=6cm,
+				xmin=18,
+				xmax=35.5,
+				ymin=102,
+				ymax=178,
+				xtick pos=bottom,
+				ytick pos=left
+			]
+				\addplot[
+					only marks,
+					blue!60,
+					mark size=2pt,
+					opacity=0.5,
+				] coordinates {
+					(28.99,152.43)
+					(26.45,153.27)
+					(29.59,158.09)
+					(33.09,168.63)
+					(26.06,146.40)
+					(26.06,136.18)
+					(33.32,175.97)
+					(30.07,150.52)
+					(25.12,131.41)
+					(29.17,157.25)
+					(25.15,141.85)
+					(25.14,138.97)
+					(27.97,150.28)
+					(19.35,110.56)
+					(20.10,108.06)
+					(24.75,132.78)
+					(22.95,125.97)
+					(28.26,157.44)
+					(23.37,131.87)
+					(21.35,112.26)
+					(32.86,174.50)
+					(26.10,140.51)
+					(27.27,144.33)
+					(21.30,123.91)
+					(24.82,141.86)
+					(27.44,153.15)
+					(22.40,121.59)
+					(28.50,151.72)
+					(24.60,137.34)
+					(25.83,146.13)
+				};
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\begin{frame}{Maskinlæring: Lineær regresjon} % Linear points
+		\centering
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\linearpoints}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\newsavebox{\linearbox}
+	\sbox{\linearbox}{%
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=BMI,
+				ylabel={Systolisk blodtrykk},
+				height=6cm,
+				width=6cm,
+				xmin=18,
+				xmax=35.5,
+				ymin=102,
+				ymax=178,
+				xtick pos=bottom,
+				ytick pos=left
+			]
+				\addplot[
+					only marks,
+					blue!60,
+					mark size=2pt,
+					opacity=0.5,
+				] coordinates {
+					(28.99,152.43)
+					(26.45,153.27)
+					(29.59,158.09)
+					(33.09,168.63)
+					(26.06,146.40)
+					(26.06,136.18)
+					(33.32,175.97)
+					(30.07,150.52)
+					(25.12,131.41)
+					(29.17,157.25)
+					(25.15,141.85)
+					(25.14,138.97)
+					(27.97,150.28)
+					(19.35,110.56)
+					(20.10,108.06)
+					(24.75,132.78)
+					(22.95,125.97)
+					(28.26,157.44)
+					(23.37,131.87)
+					(21.35,112.26)
+					(32.86,174.50)
+					(26.10,140.51)
+					(27.27,144.33)
+					(21.30,123.91)
+					(24.82,141.86)
+					(27.44,153.15)
+					(22.40,121.59)
+					(28.50,151.72)
+					(24.60,137.34)
+					(25.83,146.13)
+				};
+				\addplot[thick, blue] coordinates {
+					(18, 25+4.5*18)
+					(35, 25+4.5*35)
+				};
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\begin{frame}{Maskinlæring: Lineær regresjon} % Linear line
+		\centering
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\linearbox}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Maskinlæring: Lineær regresjon} % Linear formula
+		\centering
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\linearbox}
+			};
+			\node[] at (0.85, -3.5) {
+				$SBP=25+4.5*BMI$
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\newsavebox{\linearmodel}
+	\sbox{\linearmodel}{%
+		\begin{tikzpicture}
+			\node[draw=black] (in) at (-1.25, -0.75) {BMI};
+
+			\node[minimum width=3.1cm, minimum height=1.2cm, draw=black, fill=gray!10] at (1.2, -0.75) {$25+4.5*BMI$};
+			\node[anchor=south] at (1.2, -0.15) {\small{Lineær modell}};
+
+			\node[draw=black, align=center, dashed] (out) at (4.1, -0.75) {Systolisk\\blodtrykk};
+
+			\draw[->] (in) -- (-0.35, -0.75);
+			\draw[->] (2.75, -0.75) -- (out);
+		\end{tikzpicture}
+	}
+
+	\begin{frame}{Maskinlæring: Lineær regresjon} % Linear model
+		\centering
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\linearbox}
+			};
+			\node[] at (0.85, -4) {
+				\usebox{\linearmodel}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\newsavebox{\nonlinearpoints}
+	\sbox{\nonlinearpoints}{%
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=BMI,
+				ylabel={Systolisk blodtrykk},
+				height=6cm,
+				width=6cm,
+				xmin=18,
+				xmax=35.5,
+				ymin=102,
+				ymax=178,
+				xtick pos=bottom,
+				ytick pos=left
+			]
+				\addplot[
+					only marks,
+					blue!60,
+					mark size=2pt,
+					opacity=0.5,
+				] coordinates {
+					(25.20,141.07)
+					(27.00,164.47)
+					(21.02,111.24)
+					(27.77,159.40)
+					(23.33,116.16)
+					(18.66,112.62)
+					(22.41,120.45)
+					(27.39,167.73)
+					(26.33,156.61)
+					(20.41,112.99)
+					(27.47,161.91)
+					(24.65,136.30)
+					(26.70,156.69)
+					(26.33,157.41)
+					(20.37,110.19)
+					(26.40,160.58)
+					(22.57,113.96)
+					(31.19,173.48)
+					(27.89,166.26)
+					(25.18,145.27)
+					(21.07,113.51)
+					(25.22,137.73)
+					(25.64,149.39)
+					(20.16,110.58)
+					(33.89,167.66)
+					(26.58,160.27)
+					(31.77,165.56)
+					(20.55,112.36)
+					(31.54,171.44)
+					(19.56,111.16)
+				};
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\begin{frame}{Maskinlæring: Dype nevrale nettverk} % Non-linear points
+		\centering
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\nonlinearpoints}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\newsavebox{\nonlinearbox}
+	\sbox{\nonlinearbox}{%
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel=BMI,
+				ylabel={Systolisk blodtrykk},
+				height=6cm,
+				width=6cm,
+				xmin=18,
+				xmax=35.5,
+				ymin=102,
+				ymax=178,
+				xtick pos=bottom,
+				ytick pos=left
+			]
+				\addplot[
+					only marks,
+					blue!60,
+					mark size=2pt,
+					opacity=0.5,
+				] coordinates {
+					(25.20,141.07)
+					(27.00,164.47)
+					(21.02,111.24)
+					(27.77,159.40)
+					(23.33,116.16)
+					(18.66,112.62)
+					(22.41,120.45)
+					(27.39,167.73)
+					(26.33,156.61)
+					(20.41,112.99)
+					(27.47,161.91)
+					(24.65,136.30)
+					(26.70,156.69)
+					(26.33,157.41)
+					(20.37,110.19)
+					(26.40,160.58)
+					(22.57,113.96)
+					(31.19,173.48)
+					(27.89,166.26)
+					(25.18,145.27)
+					(21.07,113.51)
+					(25.22,137.73)
+					(25.64,149.39)
+					(20.16,110.58)
+					(33.89,167.66)
+					(26.58,160.27)
+					(31.77,165.56)
+					(20.55,112.36)
+					(31.54,171.44)
+					(19.56,111.16)
+				};
+				\addplot[smooth, blue, thick] coordinates {
+					(18, 110)
+					(23, 117)
+					(28, 165)
+					(36, 175)
+				};
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\begin{frame}{Maskinlæring: Dype nevrale nettverk} % Black box neural net
+		\centering
+
+		\newsavebox{\blackbox}
+		\sbox{\blackbox}{%
+			\begin{tikzpicture}
+				\node[draw=black] (in) at (-1.25, -0.75) {BMI};
+
+				\node[minimum width=3.1cm, minimum height=2.2cm, draw=black, fill=gray!70] at (1.2, -0.75) {};
+				\node[anchor=south] at (1.2, 0.3) {\small{Nevralt nettverk}};
+
+				\node[draw=black, align=center, dashed] (out) at (4.1, -0.75) {Systolisk\\blodtrykk};
+
+				\draw[->] (in) -- (-0.35, -0.75);
+				\draw[->] (2.75, -0.75) -- (out);
+			\end{tikzpicture}
+		}
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\nonlinearbox}
+			};
+			\node[] at (0.85, -4) {
+				\usebox{\blackbox}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Maskinlæring: Dype nevrale nettverk} % Detailed neural net
+		\centering
+
+		\newcommand{\graphnode}[3]{
+			\node[
+				circle,
+				fill=cyan!40,
+				inner sep=0pt,
+				outer sep=0pt,
+				minimum width=10pt,
+				draw=black
+			] (####3) at (####1 * 0.6, ####2 * 0.5) {};
+		}
+
+		\newsavebox{\graphbox}
+		\sbox{\graphbox}{%
+			\begin{tikzpicture}
+				\node[draw=black] (in) at (-1.25, -0.75) {BMI};
+
+				\node[minimum width=3.1cm, minimum height=2.2cm, draw=black, fill=gray!10] at (1.2, -0.75) {};
+				\node[anchor=south] at (1.2, 0.3) {\small{Nevralt nettverk}};
+
+				\graphnode{0}{0}{n00}
+				\graphnode{0}{-1}{n01}
+				\graphnode{0}{-2}{n02}
+				\graphnode{0}{-3}{n03}
+				\graphnode{1}{-0.5}{n10}
+				\graphnode{1}{-1.5}{n11}
+				\graphnode{1}{-2.5}{n12}
+				\graphnode{2}{-0.5}{n20}
+				\graphnode{2}{-1.5}{n21}
+				\graphnode{2}{-2.5}{n22}
+				\graphnode{3}{-1}{n30}
+				\graphnode{3}{-2}{n31}
+				\graphnode{4}{-1}{n40}
+				\graphnode{4}{-2}{n41}
+
+				\node[draw=black, align=center, dashed] (out) at (4.1, -0.75) {Systolisk\\blodtrykk};
+
+				\draw[] (n00) -- (n10);
+				\draw[] (n00) -- (n11);
+				\draw[] (n00) -- (n12);
+				\draw[] (n01) -- (n10);
+				\draw[] (n01) -- (n11);
+				\draw[] (n01) -- (n12);
+				\draw[] (n02) -- (n10);
+				\draw[] (n02) -- (n11);
+				\draw[] (n02) -- (n12);
+				\draw[] (n03) -- (n10);
+				\draw[] (n03) -- (n11);
+				\draw[] (n03) -- (n12);
+				\draw[] (n10) -- (n20);
+				\draw[] (n10) -- (n21);
+				\draw[] (n10) -- (n22);
+				\draw[] (n11) -- (n20);
+				\draw[] (n11) -- (n21);
+				\draw[] (n11) -- (n22);
+				\draw[] (n12) -- (n20);
+				\draw[] (n12) -- (n21);
+				\draw[] (n12) -- (n22);
+				\draw[] (n20) -- (n30);
+				\draw[] (n20) -- (n31);
+				\draw[] (n21) -- (n30);
+				\draw[] (n21) -- (n31);
+				\draw[] (n22) -- (n30);
+				\draw[] (n22) -- (n31);
+				\draw[] (n30) -- (n40);
+				\draw[] (n30) -- (n41);
+				\draw[] (n31) -- (n40);
+				\draw[] (n31) -- (n41);
+
+				\draw[] (-0.35, -0.75) -- (n00);
+				\draw[] (-0.35, -0.75) -- (n01);
+				\draw[] (-0.35, -0.75) -- (n02);
+				\draw[] (-0.35, -0.75) -- (n03);
+
+				\draw[] (2.75, -0.75) -- (n40);
+				\draw[] (2.75, -0.75) -- (n41);
+
+				\draw[->] (in) -- (-0.35, -0.75);
+				\draw[->] (2.75, -0.75) -- (out);
+			\end{tikzpicture}
+		}
+
+		\begin{tikzpicture}
+			\node[] at (0, 0) {
+				\usebox{\nonlinearbox}
+			};
+			\node[] at (0.85, -4) {
+				\usebox{\graphbox}
+			};
+			\node[] at (-4, -5.5) {};
+			\node[] at (4.87, 2.75) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}{Maskinlæring: Ustrukturert data}
+		\newsavebox{\eegbox}
+		\sbox{\eegbox}{%
+		\begin{tikzpicture}
+			\begin{axis}[
+				height=3cm,
+				width=6cm,
+				xmajorticks=false,
+				ymajorticks=false,
+				axis line style={draw=none}
+			]
+				\addplot[samples=500,domain=0:1,red,thick] {1.5*sin(deg(2*pi*10*x)) + 0.5*sin(deg(2*pi*7*x))};
+			\end{axis}
+		\end{tikzpicture}
+		}
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			{
+				\small
+				\node[label={Strukturert data}] at (0, -1) {
+					\begin{tabular}{|c|c|c|c|}
+						\hline
+						\textbf{Alder}&\textbf{Kjønn}&\textbf{BMI}&\textbf{SBP}\\
+						\hline
+						54&M&28.99&152\\
+						32&K&26.45&110\\
+						41&K&21.59&91\\
+						72&M&25.52&130\\
+						\hline
+					\end{tabular}
+				};
+			}
+
+			\draw[dashed] (3, 2.5) -- (3, -4.5);
+
+			\node[align=center, anchor=west] at (3.7, 1.5) {
+				"Pasienten opplever\\smerter i brystet og\\har høyt blodtrykk."
+			};
+
+			\node[draw=black, fill=black, anchor=west] at (3.8, -0.9) {
+				\includegraphics[width=2cm]{data/slice_10.png}
+			};
+
+			\node[anchor=west, inner sep=0pt] at (3.5, -3.5) {
+				\usebox{\eegbox}
+			};
+
+			\node[anchor=west] at (3.7, 2.5) {\underline{\textbf{Ustrukturert data}}};
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Kunstig intelligens: Oppsummering}
+		\centering
+		\vfill
+		\begin{itemize}
+			\item Kunstig intelligens er et fagfelt som handler om å lage maskiner som løser vanskelige oppgaver som tidligere var reservert for mennesker.
+			\item Maskinlæring er en teknikk der en maskin lærer å løse et problem gjennom å finne mønster i data.
+			\item Nevrale nett er en type maskinlæringsmodell inspirert av hjernen, der prediksjonen skjer via et nettverk av kunstige nevroner.
+			\begin{itemize}
+				\item[\textcolor{green}{+}] Kan modellere komplekse, ikke-lineære sammenhenger.
+				\item[\textcolor{green}{+}] Er i stand til å håndtere ikke-strukturert data (e.g. bilder).
+				\item[\textcolor{red}{-}] Reglene som modellen lærer er ikke nødvendigvis forståelig for mennesker.
+				\item[\textcolor{red}{-}] Krever mye data og regnekraft.
+				\item[\textcolor{red}{-}] Kan være slutten på menneskeheten(?)
+			\end{itemize}
+		\end{itemize}
+		\vfill
+	\end{frame}
+
+	\section{Bildegjenkjenning}
+
+	\begin{frame}{Bildegjenkjenning} % Images
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\node[label=below:Katt] at (-5, 0) {
+				\includegraphics[width=2cm]{data/cat.jpeg}
+			};
+			\node[label=below:Solsikke] at (-2.5, 0) {
+				\includegraphics[width=2cm]{data/sunflower.jpeg}
+			};
+			\node[label=below:Hvithai] at (0, 0) {
+				\includegraphics[width=2cm]{data/shark.jpeg}
+			};
+			\node[label=below:Fly] at (2.5, 0) {
+				\includegraphics[width=2cm]{data/airplane.jpeg}
+			};
+			\node[] at (-1.25, -3) {};
+		\end{tikzpicture}
+		\centering
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning} % Imagenet
+		\vfill
+		\centering
+		\begin{tikzpicture}
+			\node[label=below:Katt] at (-5, 0) {
+				\includegraphics[width=2cm]{data/cat.jpeg}
+			};
+			\node[label=below:Solsikke] at (-2.5, 0) {
+				\includegraphics[width=2cm]{data/sunflower.jpeg}
+			};
+			\node[label=below:Hvithai] at (0, 0) {
+				\includegraphics[width=2cm]{data/shark.jpeg}
+			};
+			\node[label=below:Fly] at (2.5, 0) {
+				\includegraphics[width=2cm]{data/airplane.jpeg}
+			};
+
+			\node[] at (-1.25, -2) {
+				ImageNet: $\sim$14 millioner bilder, 1000 kategorier
+			};
+
+			\node[] at (-1.25, -3) {};
+		\end{tikzpicture}
+		\centering
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet 2010
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					\textbf{28.2}
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet 2011
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+					(2011, 25.8)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					28.2
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+					\textbf{25.8}
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet CNNs
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+					(2011, 25.8)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					28.2
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+					\textbf{25.8}
+				};
+
+				\addplot[densely dotted] coordinates {
+					(2011.5, 30)
+					(2011.5, 0)
+				};
+
+				\node[anchor=north west] at (axis cs: 2011.5, 29) {
+					CNN
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet 2012
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+					(2011, 25.8)
+					(2012, 16.4)
+				};
+
+				\addplot[densely dotted] coordinates {
+					(2011.5, 30)
+					(2011.5, 0)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					28.2
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+					25.8
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2012, 16.4) {
+					\textbf{16.4}
+				};
+
+				\node[anchor=north west] at (axis cs: 2011.5, 29) {
+					CNN
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet 2020
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+					(2011, 25.8)
+					(2012, 16.4)
+					(2013, 11.7)
+					(2014, 7.3)
+					(2015, 3.5)
+					(2016, 3.0)
+					(2017, 2.3)
+					(2018, 1.8)
+					(2019, 1.3)
+					(2020, 0.9)
+				};
+
+				\addplot[densely dotted] coordinates {
+					(2011.5, 30)
+					(2011.5, 0)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					28.2
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+					25.8
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2012, 16.4) {
+					16.4
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2013, 11.7) {
+					11.7
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2014, 7.3) {
+					7.3
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2015, 3.5) {
+					3.5
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2016, 3.0) {
+					3.0
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2017, 2.3) {
+					2.3
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2018, 1.8) {
+					1.8
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2019, 1.3) {
+					1.3
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2020, 0.9) {
+					\textbf{0.9}
+				};
+
+				\node[anchor=north west] at (axis cs: 2011.5, 29) {
+					CNN
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Historikk} % Imagenet human
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\begin{axis}[
+				ylabel={Feilrate},
+				xlabel={År},
+				xtick={2010, 2012, 2014, 2016, 2018, 2020},
+				xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+				ytick={0, 10, 20, 30},
+				yticklabels={0\%, 10\%, 20\%, 30\%},
+				ytick style={draw=none},
+				ytick pos=left,
+				xtick pos=bottom,
+				ymajorgrids=true,
+				ymax=29,
+				ymin=0,
+				xmin=2009,
+				xmax=2021
+			]
+				\addplot[mark=*, purple,thick] coordinates {
+					(2010, 28.2)
+					(2011, 25.8)
+					(2012, 16.4)
+					(2013, 11.7)
+					(2014, 7.3)
+					(2015, 3.5)
+					(2016, 3.0)
+					(2017, 2.3)
+					(2018, 1.8)
+					(2019, 1.3)
+					(2020, 0.9)
+				};
+
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+					28.2
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+					25.8
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2012, 16.4) {
+					16.4
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2013, 11.7) {
+					11.7
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2014, 7.3) {
+					7.3
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2015, 3.5) {
+					3.5
+				};
+				\node[anchor=north, inner sep=5pt] at (axis cs: 2016, 3.0) {
+					3.0
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2017, 2.3) {
+					2.3
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2018, 1.8) {
+					1.8
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2019, 1.3) {
+					1.3
+				};
+				\node[anchor=south, inner sep=5pt] at (axis cs: 2020, 0.9) {
+					\textbf{0.9}
+				};
+
+				\addplot[densely dotted] coordinates {
+					(2011.5, 30)
+					(2011.5, 0)
+				};
+
+				\addplot[dashed, red] coordinates {
+					(2009, 5.1)
+					(2021, 5.1)
+				};
+
+				\node[anchor=north west] at (axis cs: 2011.5, 29) {
+					CNN
+				};
+
+				\node[anchor=south east] at (axis cs: 2021, 5.1) {
+					\textcolor{red}{Menneskelig nivå}
+				};
+			\end{axis}
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Flower
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/sunflower.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Cat
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Early
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (1.75, -2) {
+				\includegraphics[width=3cm]{data/early.png}
+			};
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Intermediate
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (1.75, -2) {
+				\includegraphics[width=3cm]{data/early.png}
+			};
+
+			\node[] at (5.25, -2) {
+				\includegraphics[width=3cm]{data/intermediate.png}
+			};
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Final
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (1.75, -2) {
+				\includegraphics[width=3cm]{data/early.png}
+			};
+
+			\node[] at (5.25, -2) {
+				\includegraphics[width=3cm]{data/intermediate.png}
+			};
+
+			\node[] at (8.55, -2) {
+				\includegraphics[width=3cm]{data/final.png}
+			};
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Cat again
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Bottleneck
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\draw[-Latex, very thick, red] (9.7, -1) -- (9.7, 0);
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Bildegjenkjenning: Konvolusjonære nevrale nettverk} % Bottleneck
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+
+		\colorlet{nodefill}{cyan!40}
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.jpeg}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=nodefill, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=nodefill, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\draw[-Latex, very thick, red] (9.7, -1) -- (9.7, 0);
+			\draw[red, dashed] (9.7, -1.2) -- (9.7, -2.5);
+
+			\node[anchor=east, align=right] at (9.7, -1.85) {\textcolor{red}{Opptrent} \\ \textcolor{red}{mønstergjenkjenning}};
+			\node[anchor=west, align=left] at (9.7, -1.85) {\textcolor{red}{Symbolsk} \\ \textcolor{red}{logikk}};
+
+			\node[] at (6, 3) {};
+			\node[] at (11, -3) {};
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\section{Bildegjenkjenning i hjerneforskning}
+
+\end{document}
