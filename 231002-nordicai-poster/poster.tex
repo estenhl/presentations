@@ -1,0 +1,574 @@
+\documentclass[final, 14pt]{beamer}
+
+% Set the font size and paper size
+\usepackage[size=a1,orientation=portrait, scale=1.3]{beamerposter}
+
+% Load necessary packages
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{lipsum}
+\usepackage{pgfplots}
+\usepackage{ragged2e}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{transparent}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+
+% Define the theme
+\usetheme{metropolis}
+
+% Colours
+\definecolor{uiored}{HTML}{DD0000}
+\definecolor{uiogrey}{HTML}{B2B3B7}
+\definecolor{uioblack}{HTML}{000000}
+\definecolor{uiowhite}{HTML}{FFFFFF}
+
+% Define the colors
+\definecolor{background}{HTML}{FAFAFA}
+\setbeamercolor{block title}{bg=background,fg=red}
+\setbeamercolor{block body}{bg=background,fg=black}
+\setbeamercolor{title}{bg=uiored,fg=uiowhite}
+\setbeamercolor{authors}{bg=uioblack,fg=uiowhite}
+
+\setbeamertemplate{page number}{}
+\setlength{\paperwidth}{\textwidth}
+\setbeamersize{text margin left=0pt, text margin right=0pt}
+
+% Title and author information
+\title{Characterizing Personalized Neuropathology in Dementia and\\[0.5cm]Mild Cognitive Impairment with Explainable Artificial Intelligence}
+
+
+\definecolor{cb-green}{HTML}{4dac93}
+\definecolor{cb-blue}{HTML}{3594d6}
+
+\def\verticalspace{0.61cm}
+
+\captionsetup[figure]{labelformat=empty}
+
+\begin{document}
+
+% Start the poster
+\begin{frame}[t]
+    \thispagestyle{empty}
+
+% Title and author block
+\begin{beamercolorbox}[sep=0em,wd=\textwidth]{title}
+    \centering\\[2.75cm]
+    \fontsize{48}{48}{\textbf{\inserttitle}}\\[3.25cm]
+
+\end{beamercolorbox}
+
+\begin{beamercolorbox}[sep=0em, wd=\textwidth]{authors}
+    \def\authorwidth{.16\textwidth}
+    \begin{columns}[T]
+        \begin{column}{\authorwidth}
+            \centering
+            Esten H. Leonardsen\\
+            University of Oslo\\
+            \vspace{1em}
+        \end{column}
+        \begin{column}{\authorwidth}
+            \centering
+            Yunpeng Wang\\
+            University of Oslo
+        \end{column}
+        \begin{column}{\authorwidth}
+            \centering
+            Lars T. Westlye\\
+            University of Oslo
+        \end{column}
+        \begin{column}{\authorwidth}
+            \centering
+            Thomas Wolfers\\
+            University of Tübingen
+        \end{column}
+    \end{columns}
+\end{beamercolorbox}
+
+\vspace{\verticalspace}
+
+\begin{columns}[t]
+    \begin{column}{.33\textwidth}
+        \begin{block}{Introduction}
+            \parbox{\linewidth}{\justify
+With over 55 million people affected globally and a projected threefold increase in prevalence by 2050,
+dementia presents a paramount public health challenge for the coming decades.
+Deep learning applied to magnetic resonance imaging (MRI) scans have shown great promise for diagnosis and prognosis in dementia, but its clinical adoption is limited. This is partially attributed
+to the opaqueness of deep neural networks (DNNs), causing insufficient understanding of what underlies their decisions.
+Layerwise relevance propagation (LRP) is a technique for explaining the decision of DNNs via heatmaps highlighting regions of an
+image contributing to the prediction, potentially ameliorating the distrust impeding their clinical use. Furthermore,
+the explanations procured by LRP are highly individualized and could shed light on the specific manifestation of the disease in the brain,
+crucial information for accurate diagnosis and treatment.
+            }
+        \end{block}
+    \end{column}
+    \begin{column}{.63\textwidth}
+        \input{figures/overview.tex}
+    \end{column}
+\end{columns}
+
+\vspace{\verticalspace}
+
+% First column
+\begin{columns}[t]
+  \begin{column}{.33\textwidth}
+
+    \begin{block}{Methods}
+        \parbox{\linewidth}{\justify
+We compiled structural MRI scans from 1708 dementia patients and controls, and fit
+a simple fully convolutional network (SFCN) to differentiate between them. Next, we implemented LRP on top of the trained
+model to generate explanations in the form of heatmaps, accompanying its predictions. We validated the heatmaps by comparing an
+average map compiled from all true positives to a statistical reference map constructed with a GingerALE meta-analysis,
+containing spatial locations with observed deviations in dementia from 124 relevant publications. Following the validation, we employed the explainable pipeline
+in an exploratory analysis of 1256 patients with mild cognitive impairment (MCI). Here, we utilized information derived from it
+to predict progression to dementia in the 5 years following the scan, and to investigate associations between facets of the relevance maps
+and impairments in specific cognitive domains (Figure \ref{fig:outline}).
+        }
+    \end{block}
+
+  \end{column}
+
+% Second column
+  \begin{column}{.63\textwidth}
+    \begin{block}{Results}
+        \begin{columns}[t]
+            \begin{column}{.45\textwidth}
+                \parbox[t]{\textwidth}{\justify
+                \begin{itemize}[leftmargin=0em,labelindent=\parindent]
+
+                    \item[\textbullet] The best performing classifier was able to differentiate dementia
+                    patients from controls with an out-of-sample AUC of 0.9.
+                    \vspace{1.7cm}
+                    \begin{figure}
+                        \begin{tikzpicture}
+                            \def\mriwidth{6.25cm}
+                            \node[inner sep=0pt, outer sep=0pt] (zeroth) at (0, 0) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 128mm 232mm 64mm 0mm
+                                ]{data/test_90.png}
+                            };
+                            \node[inner sep=0pt, outer sep=0pt, anchor=west] (first) at (zeroth.east) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 192mm 232mm 0mm 0mm
+                                ]{data/test_90.png}
+                            };
+                            \node[inner sep=0pt, outer sep=0pt, anchor=west] (second) at (first.east) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 0mm 157mm 192mm 77mm
+                                ]{data/test_90.png}
+                            };
+                            \draw[fill=black] (zeroth.north west) -- (second.north east) -- ($ (second.south east) - (0, 1) $) -- ($ (zeroth.south west) -(0, 1) $) -- cycle;
+                            \node[inner sep=0pt, outer sep=0pt] (zeroth) at (0, 0) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 128mm 232mm 64mm 0mm
+                                ]{data/test_90.png}
+                            };
+                            \node[inner sep=0pt, outer sep=0pt, anchor=west] (first) at (zeroth.east) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 192mm 232mm 0mm 0mm
+                                ]{data/test_90.png}
+                            };
+                            \node[inner sep=0pt, outer sep=0pt, anchor=west] (second) at (first.east) {
+                                \includegraphics[
+                                    height=\mriwidth,
+                                    clip=true,
+                                    trim = 0mm 157mm 192mm 77mm
+                                ]{data/test_90.png}
+                            };
+
+                            \node[text=white, text depth=0] at ($ (first.south) - (0, 0.5) $) (overlap-text) {Overlap};
+                            \node[fill=yellow, anchor=east] at ($ (overlap-text.west) - (0.2, 0) $) (overlap) {};
+                            \node[text=white, text depth=0, anchor=east] at ($ (overlap.west) - (0.4, 0) $) (lrp-text) {LRP};
+                            \node[fill=green, anchor=east] at ($ (lrp-text.west) - (0.2, 0) $) (lrp) {};
+                            \node[fill=red, anchor=west] at ($ (overlap-text.east) + (0.4, 0) $) (ale) {};
+                            \node[text=white, text depth=0, anchor=west] at ($ (ale.east) + (0.2, 0) $) (ale-text) {ALE};
+                        \end{tikzpicture}
+                        \centering
+                        \caption{%
+                            \parbox{\textwidth}{\justify%
+                                \textbf{Figure~\thefigure:}~ Three axial brain slices, showing the concordance between the average heatmap from LRP and the statistical reference map from GingerALE.
+                            }
+                        }\label{fig:overlap}
+                    \end{figure}
+                    \vspace{0.8cm}
+                    \item[\textbullet] The average heatmap for dementia patients highly resembled the statistical reference map (Figure \ref{fig:overlap}),
+                     yielding a normalized cross-correlation of 0.64.
+                \end{itemize}
+                }
+            \end{column}
+            \begin{column}{.45\textwidth}
+                \parbox[t]{\textwidth}{\justify
+                \begin{itemize}[leftmargin=0em,labelindent=\parindent]
+                    \item[\textbullet] In the MCI sample, we predicted
+                    progression to dementia within 5 years with an AUC of 0.9.
+                    \item[\textbullet] Inter-individual variation in the heatmaps were associated with distinct patterns of performance on
+                    neuropsychological tests (Figure 3).
+                    \vspace{0.3cm}
+                    \begin{figure}
+                        \definecolor{color0}{rgb}{0.62, 0.004, 0.259}
+                        \definecolor{color1}{rgb}{0.755, 0.154, 0.291}
+                        \definecolor{color2}{rgb}{0.866, 0.29, 0.298}
+                        \definecolor{color3}{rgb}{0.943, 0.406, 0.268}
+                        \definecolor{color4}{rgb}{0.975, 0.557, 0.323}
+                        \definecolor{color5}{rgb}{0.993, 0.709, 0.403}
+                        \definecolor{color6}{rgb}{0.995, 0.832, 0.506}
+                        \definecolor{color7}{rgb}{0.998, 0.926, 0.625}
+                        \definecolor{color8}{rgb}{0.998, 0.999, 0.746}
+                        \definecolor{color9}{rgb}{0.937, 0.975, 0.65}
+                        \definecolor{color10}{rgb}{0.838, 0.935, 0.609}
+                        \definecolor{color11}{rgb}{0.693, 0.876, 0.639}
+                        \definecolor{color12}{rgb}{0.527, 0.811, 0.645}
+                        \definecolor{color13}{rgb}{0.368, 0.725, 0.662}
+                        \definecolor{color14}{rgb}{0.24, 0.582, 0.721}
+                        \definecolor{color15}{rgb}{0.267, 0.441, 0.698}
+                        \definecolor{color16}{rgb}{0.369, 0.31, 0.635}
+
+                        \newcommand{\mriwidth}{4.3cm}
+                        \newcommand{\gap}{-0.2cm}
+
+                        \newcommand{\correlationplot}[4]{
+                            \begin{tikzpicture}
+                                \begin{axis}[
+                                    height=1.1 * \mriwidth,
+                                    width=1.365 * \mriwidth,
+                                    xmajorticks=false,
+                                    ylabel=####3,
+                                    ytick={0, 2, 4, 6, 8},
+                                    yticklabels=####2,
+                                    xmin=-1,
+                                    xmax=17,
+                                    ymin=0,
+                                    ymax=9,
+                                    every tick label/.append style={font=\footnotesize},
+                                    ytick pos=left,
+                                    scatter/classes={
+                                        ADNI_EF={color0, draw=black},
+                                        ADNI_MEM={color1, draw=black},
+                                        CDCARE={color2, draw=black},
+                                        CDCOMMUN={color3, draw=black},
+                                        CDGLOBAL={color4, draw=black},
+                                        CDHOME={color5, draw=black},
+                                        CDJUDGE={color6, draw=black},
+                                        CDMEMORY={color7, draw=black},
+                                        CDORIENT={color8, draw=black},
+                                        FAQTOTAL={color9, draw=black},
+                                        GDTOTAL={color10, draw=black},
+                                        MMSCORE={color11, draw=black},
+                                        NPISCORE={color12, draw=black},
+                                        PHC_EXF={color13, draw=black},
+                                        PHC_LAN={color14, draw=black},
+                                        PHC_MEM={color15, draw=black},
+                                        PHC_VSP={color16, draw=black}
+                                    },
+                                    y label style={at={(-0.1,0.5)}},
+                                    ymajorgrids=true,
+                                    ytick style={draw=none},
+                                    clip=false,
+                                    grid style={draw=gray!20},
+                                    axis line style={draw=gray!70}
+                                ]
+                                    \addplot[
+                                        only marks,
+                                        scatter,
+                                        scatter src=explicit symbolic,
+                                        mark size=4pt
+                                    ] table [
+                                        col sep=comma,
+                                        x=index,
+                                        y=component_####1,
+                                        meta=symptom
+                                    ] {data/correlations.csv};
+                                    \addplot[dashed,red, thick] coordinates {
+                                        (-1, 2.76)
+                                        (17, 2.76)
+                                    };
+                                    ####4
+                                \end{axis}
+                            \end{tikzpicture}
+                        }
+
+                        \newsavebox{\firstcorrelations}
+                        \sbox{\firstcorrelations}{%
+                            \correlationplot{0}{{0, 2, 4, 6, 8}}{\footnotesize{$-log_{10}(p)$}}{
+                                \node[] at (axis cs: 14, 6.77) {\footnotesize{PHC LAN}};
+                            }
+                        }
+                        \newsavebox{\secondcorrelations}
+                        \sbox{\secondcorrelations}{%
+                            \correlationplot{1}{{,,}}{{}}{
+                                \node[] at (axis cs: 9, 4.3) {\footnotesize{FAQTOTAL}};
+                            }
+                        }
+                        \newsavebox{\thirdcorrelations}
+                        \sbox{\thirdcorrelations}{%
+                            \correlationplot{2}{{,,}}{{}}{
+                                \node[] at (axis cs: 0, 7) {\footnotesize{ADNI EF}};
+                                \node[] at (axis cs: 13, 8.51) {\footnotesize{PHC EXF}};
+                            }
+                        }
+
+                        \begin{tikzpicture}
+                            \node[] (first) at (0, 0) {
+                                \includegraphics[
+                                    width=\mriwidth,
+                                    clip=true,
+                                    trim = 192mm 232mm 0mm 0mm
+                                ]{data/components/component_0.png}
+                            };
+                            \node[anchor=north west] (first-correlation) at ($ (first.south west) + (-1.75, 0.3) $) {
+                                \usebox{\firstcorrelations}
+                            };
+
+                            \node[anchor=west] (second) at ($ (first.east) + (\gap, 0) $) {
+                                \includegraphics[
+                                    width=\mriwidth,
+                                    clip=true,
+                                    trim = 192mm 232mm 0mm 0mm
+                                ]{data/components/component_1.png}
+                            };
+                            \node[anchor=north west] (second-correlation) at ($ (first-correlation.north east) - (2.02, 0.11) $) {
+                                \usebox{\secondcorrelations}
+                            };
+
+                            \node[anchor=west] (third) at ($ (second.east) + (\gap, 0) $) {
+                                \includegraphics[
+                                    width=\mriwidth,
+                                    clip=true,
+                                    trim = 192mm 232mm 0mm 0mm
+                                ]{data/components/component_2.png}
+                            };
+                            \node[anchor=north west] (third-correlation) at ($ (second-correlation.north east) - (1.86, -0.29) $) {
+                                \usebox{\thirdcorrelations}
+                            };
+                        \end{tikzpicture}
+                        \caption{%
+                            \parbox{\textwidth}{\justify%
+                                \textbf{Figure~\thefigure:}~ Three prototypical heatmaps and the strength of
+                                their associations with performance on cognitive
+                                tests. PHC LAN: Composite language score; FAQTOTAL:
+                                Functional Activities Questionnaire; ADNI EF/PHC
+                                EXF: Executive function scores
+                            }
+                        }\label{fig:associations}
+                    \end{figure}
+                \end{itemize}
+                }
+            \end{column}
+        \end{columns}
+    \end{block}
+  \end{column}
+\end{columns}
+
+\vspace{\verticalspace}
+
+\begin{columns}
+    \begin{column}{.6\textwidth}
+        \centering
+        \definecolor{cases-default}{HTML}{EB5353}
+        \definecolor{controls-default}{HTML}{0079FF}
+        \definecolor{healthy-default}{HTML}{36AE7C}
+        \definecolor{baseline}{HTML}{FAEAB1}
+        \definecolor{preds}{HTML}{E5BA73}
+        \definecolor{maps}{HTML}{C58940}
+
+        \def\marksize{8pt}
+
+        \newsavebox{\resultsbox}
+            \sbox{\resultsbox}{%
+            \begin{tikzpicture}
+                \begin{axis}[
+                    height=7cm,
+                    width=12.5cm,
+                    xmajorticks=false,
+                    xmin=0.5,
+                    xmax=5.5,
+                    ymin=0,
+                    ymax=1,
+                    ylabel=AUC,
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    ytick={0.25, 0.50, 0.75},
+                    axis background/.style={fill=white}
+                ]
+                    \addplot[mark=*, draw=black, mark options={fill=baseline}, mark size=\marksize] coordinates {
+                        (1, 0.506)
+                        (2, 0.474)
+                        (3, 0.536)
+                        (4, 0.529)
+                        (5, 0.515)
+                    };\label{trace:baseline}
+                    % \addplot[mark=*, draw=black, mark options={fill=preds}, mark size=\marksize, opacity=0.5] coordinates {
+                    %     (1, 0.666)
+                    %     (2, 0.742)
+                    %     (3, 0.797)
+                    %     (4, 0.844)
+                    %     (5, 0.889)
+                    % };
+                    \addplot[mark=*, draw=black, mark options={fill=maps}, mark size=\marksize] coordinates {
+                        (1, 0.743)
+                        (2, 0.786)
+                        (3, 0.808)
+                        (4, 0.867)
+                        (5, 0.903)
+                    };\label{trace:maps}
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 1, 0.506) {\footnotesize{0.50}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 2, 0.474) {\footnotesize{0.47}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 3, 0.536) {\footnotesize{0.53}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 4, 0.529) {\footnotesize{0.52}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 5, 0.515) {\footnotesize{0.51}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 1, 0.743) {\footnotesize{0.74}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 2, 0.786) {\footnotesize{0.78}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 3, 0.808) {\footnotesize{0.80}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 4, 0.867) {\footnotesize{0.86}};
+                    \node[anchor=north, inner sep=12pt] at (axis cs: 5, 0.903) {\footnotesize{0.90}};
+                \end{axis}
+            \end{tikzpicture}
+        }
+        \begin{figure}
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=0.408\textwidth,
+                width=0.9\textwidth,
+                xlabel={Age},
+                ylabel={Cognitive function},
+                ticks=none,
+                axis x line=bottom,
+                axis y line=left,
+                y axis line style={-|},
+                xmin=0,
+                xmax=1.4,
+                ymin=0,
+                ymax=1,
+                clip=false
+            ]
+            \addplot[draw=healthy-default, smooth, line width=15pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.63)
+                (0.9, 0.72)
+                (1.4, 0.67)
+            };
+            \addplot[draw=controls-default, smooth, line width=15pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.63)
+                (0.9, 0.61)
+                (1.4, 0.54)
+            };
+            \addplot[draw=cases-default, smooth, line width=15pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.625)
+                (1.1, 0.48)
+                (1.4, 0.3)
+            };
+            \addplot[dashed] coordinates {
+                (0, 0.65)
+                (1.4, 0.65)
+            };
+            \addplot[dashed] coordinates {
+                (0, 0.4)
+                (1.4, 0.4)
+            };
+            \node[anchor=south west] at (axis cs: 0.1, 0.64) {Normal cognition};
+            \node[anchor=north west] at (axis cs: 0.1, 0.66) {Mild cognitive impairment};
+            \node[anchor=north west] at (axis cs: 0.1, 0.41) {Dementia};
+            \node[
+                align=center,
+                font=\linespread{0},
+                text=healthy-default
+            ] at (axis cs: 1.51, 0.67) {Improving\\[-10pt](n=80)};
+            \node[
+                align=center,
+                font=\linespread{0},
+                text=controls-default
+            ] at (axis cs: 1.51, 0.53) {Stable\\[-10pt](n=754)};
+            \node[
+                align=center,
+                font=\linespread{0},
+                text=cases-default
+            ] at (axis cs: 1.51, 0.3) {Progressive\\[-10pt](n=304)};
+            \draw[-{Stealth[length=10pt, width=6pt, inset=3pt]}, red, thick] (axis cs: 0.8, 0.8) -- (axis cs: 0.8, 0.67);
+            \node[anchor=south] at (axis cs: 0.8, 0.8) {\textcolor{red}{t}};
+            \draw[densely dotted] (axis cs: 0.9, 0.8) -- (axis cs: 0.9, 0.3);
+            \draw[densely dotted] (axis cs: 1, 0.8) -- (axis cs: 1, 0.3);
+            \draw[densely dotted] (axis cs: 1.1, 0.8) -- (axis cs: 1.1, 0.3);
+            \draw[densely dotted] (axis cs: 1.2, 0.8) -- (axis cs: 1.2, 0.3);
+            \draw[densely dotted] (axis cs: 1.3, 0.8) -- (axis cs: 1.3, 0.3);
+            \node[anchor=south] at (axis cs: 0.9, 0.8) {t+1};
+            \node[anchor=south] at (axis cs: 1, 0.8) {t+2};
+            \node[anchor=south] at (axis cs: 1.1, 0.8) {t+3};
+            \node[anchor=south] at (axis cs: 1.2, 0.8) {t+4};
+            \node[anchor=south] at (axis cs: 1.3, 0.8) {t+5};
+            \node[] at (axis cs: 1.08, 0.155) {
+                \usebox{\resultsbox}
+            };
+            \node[] at (axis cs: 1.7, 0.6) {};
+            \end{axis}
+        \end{tikzpicture}
+        \centering
+        \caption{%
+            \parbox{\textwidth}{\justify%
+                \textbf{Figure~\thefigure:}~Clinical trajectories observed in the
+                MCI sample. Embedded is the performance of the prognostic models
+                for each year, the baseline model (\ref{trace:baseline}) and the
+                model employing information from the pipeline (\ref{trace:maps}).
+            }
+        }\label{fig:prognosis}
+    \end{figure}
+    \end{column}
+    \begin{column}{.3\textwidth}
+        \begin{block}{Conclusion}
+            \parbox{\textwidth}{\justify%
+            Our explainable pipeline for dementia prediction allowed us to accurately
+            characterize the manifestation of dementia in individual patients. When
+            employing the pipeline in a sample of patients with MCI,
+            information derived from it allowed us to predict progression of the disease,
+            and revealed associations between heterogeneity in the brain and specific cognitive impairments.
+            Our study presents an empirical foundation for further investigations into how
+            explainable artificial intelligence can play an important role in precise personalized
+            diagnosis of heterogeneous neurological disorders.
+            }
+        \end{block}
+    \end{column}
+\end{columns}
+
+\vspace{\verticalspace}
+
+\vfill
+\begin{beamercolorbox}[sep=0pt,wd=\textwidth]{title}
+    \begin{tikzpicture}
+        \node[] at (-29, 0) {};
+        \node[] at (0, 0) {
+            \includegraphics[height=3cm]{
+                data/qr.png
+            }
+        };
+        \node[anchor=east] at (29, 0) {
+            \includegraphics[height=3cm]{data/uio.png}
+        };
+    \end{tikzpicture}
+\end{beamercolorbox}
+
+\end{frame}
+
+\end{document}
