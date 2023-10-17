@@ -101,7 +101,7 @@ to the opaqueness of deep neural networks (DNNs), causing insufficient understan
 Layerwise relevance propagation (LRP) is a technique for explaining the decision of DNNs via heatmaps highlighting regions of an
 image contributing to the prediction, potentially ameliorating the distrust impeding their clinical use. Furthermore,
 the explanations procured by LRP are highly individualized and could shed light on the specific manifestation of the disease in the brain,
-crucial information for accurate diagnosis and treatment.
+information which could prove crucial for accurate diagnosis and treatment.
             }
         \end{block}
     \end{column}
@@ -118,13 +118,13 @@ crucial information for accurate diagnosis and treatment.
 
     \begin{block}{Methods}
         \parbox{\linewidth}{\justify
-We compiled structural MRI scans from 1708 dementia patients and controls, and fit
+We compiled structural MRI scans from a balanced set of 1708 dementia patients and healthy controls, and fit
 a simple fully convolutional network (SFCN) to differentiate between them. Next, we implemented LRP on top of the trained
 model to generate explanations in the form of heatmaps, accompanying its predictions. We validated the heatmaps by comparing an
 average map compiled from all true positives to a statistical reference map constructed with a GingerALE meta-analysis,
 containing spatial locations with observed deviations in dementia from 124 relevant publications. Following the validation, we employed the explainable pipeline
-in an exploratory analysis of 1256 patients with mild cognitive impairment (MCI). Here, we utilized information derived from it
-to predict progression to dementia in the 5 years following the scan, and to investigate associations between facets of the relevance maps
+in an exploratory analysis of 1256 patients with mild cognitive impairment (MCI). Here, we utilized its predictions and heatmaps
+to predict progression to dementia in the 5 years following the scan, and to investigate associations between spatial variability in the heatmaps
 and impairments in specific cognitive domains (Figure \ref{fig:outline}).
         }
     \end{block}
@@ -199,7 +199,7 @@ and impairments in specific cognitive domains (Figure \ref{fig:outline}).
                         \centering
                         \caption{%
                             \parbox{\textwidth}{\justify%
-                                \textbf{Figure~\thefigure:}~ Three axial brain slices, showing the concordance between the average heatmap from LRP and the statistical reference map from GingerALE.
+                                \textbf{Figure~\thefigure:}~ Three axial brain slices, showing the concordance between the average heatmap from our pipeline and the statistical reference map from GingerALE.
                             }
                         }\label{fig:overlap}
                     \end{figure}
@@ -212,8 +212,8 @@ and impairments in specific cognitive domains (Figure \ref{fig:outline}).
             \begin{column}{.45\textwidth}
                 \parbox[t]{\textwidth}{\justify
                 \begin{itemize}[leftmargin=0em,labelindent=\parindent]
-                    \item[\textbullet] In the MCI sample, we predicted
-                    progression to dementia within 5 years with an AUC of 0.9.
+                    \item[\textbullet] In MCI patients, we predicted
+                    progression within 5 years with an AUC of 0.9 (Figure \ref{fig:prognosis}).
                     \item[\textbullet] Inter-individual variation in the heatmaps were associated with distinct patterns of performance on
                     neuropsychological tests (Figure 3).
                     \vspace{0.3cm}
@@ -540,10 +540,10 @@ and impairments in specific cognitive domains (Figure \ref{fig:outline}).
         \begin{block}{Conclusion}
             \parbox{\textwidth}{\justify%
             Our explainable pipeline for dementia prediction allowed us to accurately
-            characterize the manifestation of dementia in individual patients. When
+            \textbf{characterize the manifestation of dementia in individual patients}. When
             employing the pipeline in a sample of patients with MCI,
-            information derived from it allowed us to predict progression of the disease,
-            and revealed associations between heterogeneity in the brain and specific cognitive impairments.
+            information derived from it allowed us to \textbf{predict progression of the disease},
+            and revealed \textbf{associations between heterogeneity in the brain and impairments in distinct cognitive domains}.
             Our study presents an empirical foundation for further investigations into how
             explainable artificial intelligence can play an important role in precise personalized
             diagnosis of heterogeneous neurological disorders.
