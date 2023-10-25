@@ -12,6 +12,8 @@
 \usepackage{tikz}
 \usepackage{xcolor}
 
+\usepgfplotslibrary{fillbetween}
+
 \usetikzlibrary{calc}
 \usetikzlibrary{patterns}
 
@@ -2231,7 +2233,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                     \hline
                     0&0&0\\
                     \hline
-                    &&\\
+                    0.15&0.95&0.5\\
                     \hline
                     &&\\
                     \hline
@@ -2242,6 +2244,388 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                 \end{tabular}
             };
         \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[t]{Performance metrics: Binary classification} % ROC first threshold
+        \newsavebox{\casecontrolboxseventeen}
+        \sbox{\casecontrolboxseventeen}{%
+            \begin{tikzpicture}
+                \begin{axis}[
+                    height=3cm,
+                    width=7cm,
+                    ymajorticks=false,
+                    xtick={0, 0.25, 0.5, 0.75, 1},
+                    xlabel=\small{Prediction},
+                    xmin=-0.1,
+                    xmax=1.1,
+                    ymin=-0.25,
+                    ymax=1.25,
+                    xtick pos=bottom,
+                    clip=false,
+                    typeset ticklabels with strut
+                ]
+                    \addplot[
+                        only marks,
+                        mark options={fill=controls}
+                    ] coordinates {
+                        ((0.588 - 0.5) * 0.4, -0.026)
+                        ((0.491 - 0.45) * 0.4, 0.021)
+                        ((0.522 - 0.4) * 0.4, -0.042)
+                        ((0.450 - 0.425) * 0.4, -0.004)
+                        ((0.488 - 0.375) * 0.4, 0.006)
+                        ((0.573 - 0.325) * 0.4, 0.073)
+                        ((0.505 - 0.275) * 0.4, -0.060)
+                        ((0.554 - 0.225) * 0.4, -0.002)
+                        ((0.502 - 0.35) * 0.4, -0.023)
+                        ((0.576 - 0.15) * 0.4, -0.031)
+                        ((0.607 - 0.1) * 0.4, -0.018)
+                        ((0.544 - 0.05) * 0.4, 0.018)
+                        ((0.523 - 0.0) * 0.4, -0.093)
+                        ((0.432- 0.125) * 0.4, -0.054)
+                        ((0.460 + 0.025) * 0.4, 0.085)
+                        ((0.479 + 0.075) * 0.4, 0.072)
+                        ((0.547 + 0.125) * 0.4, -0.108)
+                        ((0.523 + 0.175) * 0.4, -0.082)
+                        ((0.586 + 0.05) * 0.4, -0.049)
+                        ((0.527 + 0.2) * 0.4, 0.021)
+                    };
+
+                    \addplot[
+                        only marks,
+                        mark options={fill=cases}
+                    ] coordinates {
+                        ((0.494 - 0.2) * 0.4, -0.047 + 1)
+                        ((0.526 - 0.15) * 0.4, -0.001 + 1)
+                        ((0.514 - 0.1) * 0.4, 0.039 + 1)
+                        ((0.451 - 0.05) * 0.4, -0.002 + 1)
+                        ((0.459 - 0.075) * 0.4, -0.077 + 1)
+                        ((0.533 + 0.025) * 0.4, 0.079 + 1)
+                        ((0.479 + 0.075) * 0.4, -0.025 + 1)
+                        ((0.462 + 0.125) * 0.4, 0.031 + 1)
+                        ((0.472 + 0.1) * 0.4, 0.038 + 1)
+                        ((0.462 + 0.15) * 0.4, -0.014 + 1)
+                        ((0.549 + 0.2) * 0.4, 0.013 + 1)
+                        ((0.572 + 0.25) * 0.4, 0.008 + 1)
+                        ((0.491 + 0.3) * 0.4, 0.022 + 1)
+                        ((0.501 + 0.325) * 0.4, 0.015 + 1)
+                        ((0.453 + 0.35) * 0.4, -0.046 + 1)
+                        ((0.439 + 0.4) * 0.4, -0.023 + 1)
+                        ((0.477 + 0.425) * 0.4, 0.007 + 1)
+                        ((0.446 + 0.45) * 0.4, 0.016 + 1)
+                        ((0.487 + 0.475) * 0.4, -0.036 + 1)
+                        ((0.424 + 0.5) * 0.4, 0.004 + 1)
+                    };
+                    \draw[dashed] (axis cs: 0.15, -0.25) -- (axis cs: 0.15, 1.25);
+                    \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
+                    \draw[dashed] (axis cs: 0.35, -0.25) -- (axis cs: 0.35, 1.25);
+                    \draw[dashed, red, thick] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
+                    \draw[dashed, red, thick] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
+                \end{axis}
+            \end{tikzpicture}
+        }
+
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (10.5, -7.2) {};
+
+            \node[] at (5.25, -2) {
+                \usebox{\casecontrolboxseventeen}
+            };
+
+            \node[] at (5.25, -5.5) {
+                \small
+                \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
+                    \hline
+                    \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
+                    \hline
+                    0&1&1\\
+                    \hline
+                    0.15&0.95&0.5\\
+                    \hline
+                    0.25&0.5&0.2\\
+                    \hline
+                    0.35&0.2&0.0\\
+                    \hline
+                    1&0&0\\
+                    \hline
+                \end{tabular}
+            };
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    only marks,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+                \addplot[dashed] coordinates {
+                    (0, 0)
+                    (1, 1)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt,
+                    name path=roc
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+                \addplot[dashed] coordinates {
+                    (0, 0)
+                    (1, 1)
+                };
+                \path[name path=axis] (axis cs:0,0) -- (axis cs:1,0);
+                \addplot[pattern=north west lines, pattern color=red] fill between [of=roc and axis];
+                \node[fill=white] at (axis cs: 0.56, 0.45) {\textcolor{red}{AUC}};
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+                \addplot[dashed] coordinates {
+                    (0, 0)
+                    (1, 1)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+                \addplot[dashed] coordinates {
+                    (0, 0)
+                    (1, 1)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0, 0.2)
+                    (0.1, 0.1)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0.2, 0.5)
+                    (0.35, 0.35)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0.5, 0.95)
+                    (0.725, 0.725)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=7cm,
+                height=7cm,
+                ylabel={True positive rate},
+                xlabel={False positive rate},
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1
+            ]
+                \addplot[
+                    very thick,
+                    mark=*,
+                    mark options={fill=orange!50},
+                    mark size=3pt
+                ] coordinates {
+                    (0, 0)
+                    (0, 0.2)
+                    (0.2, 0.5)
+                    (0.5, 0.95)
+                    (1, 1)
+                };
+                \node[] at (axis cs: 0.27, 0.75) {ROC};
+                \addplot[dashed] coordinates {
+                    (0, 0)
+                    (1, 1)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0, 0.2)
+                    (0.1, 0.1)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0.2, 0.5)
+                    (0.35, 0.35)
+                };
+                \addplot[red, dashed, thick] coordinates {
+                    (0.5, 0.95)
+                    (0.725, 0.725)
+                };
+                \addplot[
+                    very thick,
+                    mark=o,
+                    mark options={fill=none, draw=red},
+                    mark size=5pt
+                ] coordinates {
+                    (0.5, 0.95)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Summary}
+        \begin{itemize}
+            \item There is a range of metrics that can be used, each capturing a different aspect of a model's performance
+            \item If possible, it is my personal preference is to evaluate a model using a different model than the one that was used for training
+            \item It is good practice to report more than one metric
+            \item For regression, MAE provides a good, intuitive summary of model performance
+            \item For classification, AUC is a widely used metric that is easy to interpret, not reliant on the choice of classification threshold, and handles class imbalance
+        \end{itemize}
     \end{frame}
 
     \section{Strategies for model assessment}
