@@ -3913,12 +3913,6 @@
 	\begin{frame}[t]{Decision making: Summary}
 		\vspace{2cm}
 		\textbf{How does a neural network make a decision?}\\
-		By looking for patterns in input data it has learned to recognize based on training to solve a \textcolor{red}{specific task}, represented by a \textcolor{red}{loss function}, using \textcolor{red}{training data}.
-	\end{frame}
-
-	\begin{frame}[t]{Decision making: Summary}
-		\vspace{2cm}
-		\textbf{How does a neural network make a decision?}\\
 		By looking for patterns in input data it has learned to recognize based on training to solve a \textcolor{red}{\textit{specific} task}, represented by a \textcolor{red}{loss function}, using \textcolor{red}{training data}.
 		\begin{itemize}
 			\item[\textcolor{green}+] The model will get very good at this task.
@@ -4148,7 +4142,7 @@
 			\item Evaluation of bias in human decision making in help-wanted advertisements in the US.
 			\item "Applicants" were given very African American or European-sounding names.
 			\item European names received 50\% more callbacks for interviews.
-			\item Applicants from neighbourshoods considered higher class received more callbacks.
+			\item Applicants from neighbourhoods considered higher class received more callbacks.
 			\item Employers listing themselves as an "Equal Opportunity Employer" were as biased as others.
 		\end{itemize}
 	\end{frame}
@@ -4297,6 +4291,7 @@
 			\item Uncertain whether they can imagine other actors with their own goals and desires.
 			\item Uncertain whether they can create anything new.
 			\item Lacks wisdom, a fundamental understanding of the world, and common sense.
+			\item \textbf{Reliable and objective (in one sense of the word)}
 		\end{itemize}
 	\end{frame}
 
@@ -4380,7 +4375,7 @@
 		\end{itemize}
 		\textbf{Assessing the efficacy of AI in fracture detection (Guermazi et al., 2022)}\\
 		\begin{itemize}
-			\item AI assistant on its own achieved an area under the receiver operator curve of 0.97.
+			\item AI assistant on its own achieved an area under the receiver operating characteristic curve of 0.97.
 			\item Radiologist in conjunction with the AI assistant achieved a 10.4\% increase in sensitivity (64.8\% to 75.2\%), and an increase in specificity (90.6\% vs 95.6\%).
 			\item \textbf{Assistance from the AI reduced average reading time with 6.3 seconds}.
 		\end{itemize}
@@ -4591,7 +4586,7 @@
 		\centering
 		\begin{tikzpicture}
 			\node[inner sep=0pt, draw=black] {
-				\includegraphics[width=10.5cm]{data/shap.png}
+				\includegraphics[width=6cm]{data/shap.png}
 			};
 		\end{tikzpicture}
 	\end{frame}
@@ -4609,13 +4604,86 @@
 
 	\setbeamertemplate{footline}[default]
 
-	\begin{frame}{Decision support: Explainability} % LRP
+	\begin{frame}{Decision support: Explainability} % Example relevance maps
 		\centering
+		\vfill
 		\begin{tikzpicture}
-			\node[inner sep=0pt, draw=black] {
-				\includegraphics[width=10.5cm]{data/lrp.png}
+			\node[
+				minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black
+			] (box1) at (0, 0) {};
+			\node[anchor=south] at (box1.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject1.png}
+			};
+			\node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box2) at ($ (box1.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box2.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject2.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Patient 2};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box3) at ($ (box2.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box3.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject3.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Decision support: Explainability} % Average maps
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[draw=none] at (-2, -2) {};
+			\node[draw=none] at (6.5, 2.5) {};
+			\node[label={[text depth=0]above:AI}] at (0, 0) {
+				\includegraphics[width=0.31\textwidth]{data/dementia.png}
+			};
+
+			\node[label={[text depth=0]above:Human}] at (4.5, 0) {
+				\includegraphics[width=0.31\textwidth]{data/ALE.png}
 			};
 		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Decision support: Explainability} % Overlap
+		\centering
+		\vfill
+		\begin{tikzpicture}
+
+            \node
+                [minimum height=0.45\textwidth,
+                minimum width=0.33\textwidth,
+                fill=black,
+                anchor=west
+            ] (box2) at ($ (box1.east) + (0.05,0) $) {};
+            \node[anchor=south] at ($ (box2.south) + (0, 0.3) $) {
+                \includegraphics[width=0.31\textwidth]{data/test_70.png}
+            };
+            \node[anchor=south, inner sep=0pt, text depth=0] (overlap) at ($ (box2.south) + (-0.1, 0.15) $) {\textcolor{white}{\scriptsize{Overlap}}};
+            \node[anchor=east, inner sep=2pt, fill=yellow] (overlap-box) at ($ (overlap.west) + (-0.07, 0) $) {};
+            \node[anchor=east, inner sep=0pt,text depth=0] (lrp) at ($ (overlap-box.west) + (-0.2, 0) $) {\textcolor{white}{\scriptsize{AI}}};
+            \node[anchor=east, inner sep=2pt, fill=green] at ($ (lrp.west) + (-0.07, 0) $) {};
+            \node[anchor=west, inner sep=2pt, fill=red] (ale-box) at ($ (overlap.east) + (0.2, 0) $) {};
+            \node[anchor=west, inner sep=0pt, text depth=0] at ($ (ale-box.east) + (0.07, 0) $) {\textcolor{white}{\scriptsize{Human}}};
+
+        \end{tikzpicture}
+		\vfill
 	\end{frame}
 
 	\begin{frame}{Decision support: Summary}
@@ -4635,7 +4703,7 @@
 		\textbf{In some studies, people show low acceptance for AI making high stake decisions}
 		\begin{itemize}
 			\item 58\% of Americans feel that computer programs will always reflect some level of human bias (Smith 2018).
-			\item A majority of US Americans consider it unacceptable to use algorithmic decision making with real life consequences (Smith, 2018).
+			\item A majority of US Americans consider it unacceptable to use algorithmic decision making in situations with real life consequences (Smith, 2018).
 			\item Concerns that they (algorithms) may violate privacy, are unfair, and lack nuance (Smith 2018).
 		\end{itemize}
 		\vspace{0.5cm}
@@ -4657,7 +4725,7 @@
 			\item Concerns that they (algorithms) may violate privacy, are unfair, and lack nuance (Smith 2018).
 			\item AI is seen as having less agency, and thus are less able to make moral decisions (Bigman \& Gray, 2018).
 			\item Participants found it less permissible for AI to make decisions about life and death driving situations, parole (Bigman \& Gray, 2018).
-			\item Participants found it less permissible for AI to make decisions about potentially life-saving, but risky, medical procedures, than a doctor (Bigman \& Gray).
+			\item Participants found it less permissible for AI to make decisions about potentially life-saving, but risky, medical procedures, than a doctor (Bigman \& Gray, 2018).
 			\item AI perceived to have less agency and experience, mediating the lower permissibility (Bigman \& Gray, 2018).
 		\end{itemize}
 	\end{frame}
@@ -4670,10 +4738,26 @@
 		\begin{itemize}
 			\item For high-stake decisions, participants perceived decisions by AI (vs. human) to be more useful, fairer and less risky in health and justice contexts (no difference for low-stake decisions)
 			\item Perceived usefulness and fairness increased with knowledge on AI, programming, and algorithms (self-reported).
+			\item "... people are by and large concerned about risks and have mixed opinions about fairness and usefulness of automated decision-making at a societal level, with general attitudes influenced by individual characteristics."
 		\end{itemize}
 	\end{frame}
 
 	\setbeamertemplate{footline}[moraloutrage]
+
+	\begin{frame}[t]{Perception of AI: Man vs machine}
+		\textbf{More moral outrage when humans discriminate than AI (Bigman et al., 2023)}\\
+		Participants were asked to assess degree of discrimination, objectivity, prejudice and moral outrage after reading about a discriminatory hiring process. The discrimination was performed either by an AI or a human (HR specialist).
+		\begin{itemize}
+			\item When discrimination was performed by the AI, participants perceived the process as more objective, less discriminatory, and less prejudiced.
+		\end{itemize}
+		\vspace{0.5cm}
+		\centering
+		\begin{tikzpicture}
+			\node[inner sep=0pt, draw=black] {
+				\includegraphics[width=5cm]{data/discriminatory_action.png}
+			};
+		\end{tikzpicture}
+	\end{frame}
 
 	\begin{frame}[t]{Perception of AI: Man vs machine}
 		\textbf{More moral outrage when humans discriminate than AI (Bigman et al., 2023)}\\
@@ -4690,7 +4774,7 @@
 
 	\begin{frame}[t]{Perception of AI: Trust in AI}
 		\textbf{What predicts trust in AI (Kaplan et al., 2023)}\\
-		A meta-anaylsis was performed across 65 studies that empirically investigated what leads people to trust in AI. Trust defined as "the reliance by an agent that actions prejudicial to their well-being will not be undertaken by influential others."
+		A meta-anaylsis was performed across 65 studies that empirically investigated what leads people to trust, defined as "the reliance by an agent that actions prejudicial to their well-being will not be undertaken by influential others" in AI.
 		\begin{itemize}
 			\item In humans (interacting with the AI), competency, understanding and expertise were the most important factors for facilitating trust.
 			\item In the AI itself, reliability was the most important factor, succeeded by performance.
@@ -4705,12 +4789,12 @@
 		\textbf{Humans overrate their ability to understand eachother (Bonezzi et al., 2022)}\\
 		Participants were tasked with evaluating how well they understood the decision process of an agent (human or an AI) performing one of three tasks: (1) evaluating risk for recidivism, (2) examining video interviews, (3) examining a Magnetic Resonance Image to diagnose a disease.
 		\begin{itemize}
-			\item When only the decision of the agent was made available, without explanation, respondents reported a higher degree of understanding.
+			\item When only the decision of the agent was made available, without explanation, respondents reported a higher degree of understanding the humans.
 			\item This difference was reduced when an explanation was provided alongside the decision.
 			\item People project their own decision-making processes onto others.
 			\item People overestimate their ability to understand the decision-making processes of other humans.
 			\item Could also have a negative effect, e.g. by projecting ones own biases onto others.
-			\item Are we unfair when asking AIs to explain themselves? Is the only thing that matters predictive proficiency?
+			\item \textbf{Are we unfair when asking AIs to explain themselves? Is the only thing that matters predictive proficiency?}
 		\end{itemize}
 	\end{frame}
 

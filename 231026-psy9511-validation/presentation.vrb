@@ -1,0 +1,33 @@
+\frametitle{Coding tips: R}
+\begin{center}
+            \begin{tikzpicture}
+                \RInputNode{(0, 0)}{badnode}{0.9\textwidth}{5}{
+                    data <- read.csv('Auto.csv')^^J
+                    data[] <- lapply(data, function(x) replace(x, x == '?', NA))^^J
+                    ^^J
+                    train <- data[1:200,]^^J
+                    test <- data[200:nrow(data),]^^J
+                    ^^J
+                    test$cylinders <- (test$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    train$cylinders <- (train$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    test$weight <- (test$weight - mean(train$weight)) / sd(train$weight)^^J
+                    train$weight <- (train$weight - mean(train$weight)) / sd(train$weight)^^J
+                    test$year <- (test$year - mean(train$year)) / sd(train$year)^^J
+                    train$year <- (train$year - mean(train$year)) / sd(train$year)^^J
+                }
+                \RInputNode{($ (badnode.south west) - (0, 0.2) $)}{goodnode}{0.9\textwidth}{5}{
+                    data <- read.csv('Auto.csv')^^J
+                    data[] <- lapply(data, function(x) replace(x, x == '?', NA))^^J
+                    ^^J
+                    train <- data[1:200,]^^J
+                    test <- data[200:nrow(data),]^^J
+                    ^^J
+                    test$cylinders <- (test$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    train$cylinders <- (train$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    test$weight <- (test$weight - mean(train$weight)) / sd(train$weight)^^J
+                    train$weight <- (train$weight - mean(train$weight)) / sd(train$weight)^^J
+                    test$year <- (test$year - mean(train$year)) / sd(train$year)^^J
+                    train$year <- (train$year - mean(train$year)) / sd(train$year)^^J
+                }
+            \end{tikzpicture}
+        \end{center}
