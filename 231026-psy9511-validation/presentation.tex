@@ -226,7 +226,7 @@
                 \item Functions
             \end{itemize}
             \item Performance metrics
-            \item Strategies for model assessment
+            \item Strategies for model evaluation
             \begin{itemize}
                 \item Training and validation split
                 \item (Stratification)
@@ -235,7 +235,7 @@
                 \item Bootstrap
                 \item Model comparison
             \end{itemize}
-            \item Strategies for model selection \textbf{and} assessment
+            \item Strategies for model selection \textbf{and} evaluation
             \begin{itemize}
                 \item Train/validation/test split
                 \item Nested cross-validation
@@ -334,18 +334,27 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                     train$year <- (train$year - mean(train$year)) / sd(train$year)^^J
                 }
                 \RInputNode{($ (badnode.south west) - (0, 0.2) $)}{goodnode}{0.9\textwidth}{5}{
-                    data <- read.csv('Auto.csv')^^J
+                    data <- read.csv('~/Downloads/Auto.csv')^^J
                     data[] <- lapply(data, function(x) replace(x, x == '?', NA))^^J
                     ^^J
                     train <- data[1:200,]^^J
                     test <- data[200:nrow(data),]^^J
                     ^^J
-                    test$cylinders <- (test$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
-                    train$cylinders <- (train$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
-                    test$weight <- (test$weight - mean(train$weight)) / sd(train$weight)^^J
-                    train$weight <- (train$weight - mean(train$weight)) / sd(train$weight)^^J
-                    test$year <- (test$year - mean(train$year)) / sd(train$year)^^J
-                    train$year <- (train$year - mean(train$year)) / sd(train$year)^^J
+                    standardize <- function(train, test, column) {^^J
+                      train <- copy(train)^^J
+                      test <- copy(test)^^J
+                      ^^J
+                      test[,column] <- (test[column] - mean(train[,column])) / sd(train[,column])^^J
+                      train[,column] <- (train[column] - mean(train[,column])) / sd(train[,column])^^J
+                      ^^J
+                      return(list(train=train, test=test))^^J
+                    }^^J
+                    ^^J
+                    for (column in c('cylinders', 'weight', 'year')) {^^J
+                      result <- standardize(train, test, column)^^J
+                      train <- result$train^^J
+                      test <- result$test^^J
+                    }
                 }
             \end{tikzpicture}
         \end{center}
@@ -475,7 +484,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
 
 
             \node[] at (5.25, -1.5) {
-               \LARGE{$\frac{\sum\limits_{i=1}^{n} (y_i - \bar{y})(\hat{y}_i - \bar{\hat{y}})}{\sqrt{\sum_{i=1}^{n} (y_i - \bar{y})^2 \sum_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}}$}
+               \LARGE{$\frac{\sum\limits_{i=1}^{n} (y_i - \bar{y})(\hat{y}_i - \bar{\hat{y}})}{\sqrt{\sum\limits_{i=1}^{n} (y_i - \bar{y})^2 \sum\limits_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}}$}
             };
         \end{tikzpicture}
     \end{frame}
@@ -488,7 +497,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
 
 
             \node[] at (5.25, -1.5) {
-               \LARGE{$\frac{\sum\limits_{i=1}^{n} (y_i - \bar{y})(\hat{y}_i - \bar{\hat{y}})}{\sqrt{\sum_{i=1}^{n} (y_i - \bar{y})^2 \sum_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}}$}
+               \LARGE{$\frac{\sum\limits_{i=1}^{n} (y_i - \bar{y})(\hat{y}_i - \bar{\hat{y}})}{\sqrt{\sum\limits_{i=1}^{n} (y_i - \bar{y})^2 \sum\limits_{i=1}^{n} (\hat{y}_i - \bar{\hat{y}})^2}}$}
             };
             \node[anchor=north west, align=left, text width=8.5cm] at (1, -2.75) {
                 \textbf{\underline{Pearson correlation coefficient (r)}}\\
@@ -500,7 +509,6 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             };
         \end{tikzpicture}
     \end{frame}
-
 
     \begin{frame}[t]{Performance metrics: Regression} % r^2?
         \centering
@@ -810,6 +818,8 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             \end{tikzpicture}
         }
 
+        \vspace{0.26cm}
+
         \centering
         \begin{tikzpicture}
             \node[] at (0, 0) {};
@@ -1102,9 +1112,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             \node[] at (5.25, -6.5) {
                 \begin{tabular}{|m{0.4cm}|m{0.4cm}|}
                     \hline
-                    &\\
+                    TN&\\
                     \hline
-                    &TN\\
+                    &\\
                     \hline
                 \end{tabular}
             };
@@ -1204,9 +1214,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             \node[] at (5.25, -6.5) {
                 \begin{tabular}{|m{0.4cm}|m{0.4cm}|}
                     \hline
-                    TP&\\
+                    TN&\\
                     \hline
-                    &TN\\
+                    &TP\\
                     \hline
                 \end{tabular}
             };
@@ -1307,9 +1317,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             \node[] at (5.25, -6.5) {
                 \begin{tabular}{|m{0.4cm}|m{0.4cm}|}
                     \hline
-                    TP&FN\\
+                    TN&\\
                     \hline
-                    &TN\\
+                    FN&TP\\
                     \hline
                 \end{tabular}
             };
@@ -1411,9 +1421,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             \node[] at (5.25, -6.5) {
                 \begin{tabular}{|m{0.4cm}|m{0.4cm}|}
                     \hline
-                    TP&FN\\
+                    TN&FP\\
                     \hline
-                    FP&TN\\
+                    FN&TP\\
                     \hline
                 \end{tabular}
             };
@@ -1448,7 +1458,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                 \begin{itemize}
                     \item[\textcolor{green}{+}] \textbf{Interpretable}
                     \item[\textcolor{red}{-}] \textbf{Does not account for imbalanced classes}
-                    \item[\textcolor{red}{-}] Does not different costs of misclassification
+                    \item[\textcolor{red}{-}] Does not account for different costs of misclassification
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -1515,7 +1525,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                 \textbf{\underline{True negative rate (specificity)}}\\
                 \begin{itemize}
                     \item[\textcolor{green}{+}] Interpretable, calculates the proportion of controls that are detected
-                    \item[\textcolor{green}{+}] Useful when the cost of false positives is high (Intrusive treatment of rare and benign condition)
+                    \item[\textcolor{green}{+}] Useful when the cost of false positives is high (Intrusive treatment of rare and mild conditions)
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -1923,6 +1933,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         }
 
         \centering
+
+        \vspace{0.22cm}
+
         \begin{tikzpicture}
             \node[] at (0, 0) {};
             \node[] at (10.5, -7.2) {};
@@ -2007,6 +2020,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         }
 
         \centering
+
+        \vspace{0.22cm}
+
         \begin{tikzpicture}
             \node[] at (0, 0) {};
             \node[] at (10.5, -7.2) {};
@@ -2112,6 +2128,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         }
 
         \centering
+
+        \vspace{0.22cm}
+
         \begin{tikzpicture}
             \node[] at (0, 0) {};
             \node[] at (10.5, -7.2) {};
@@ -2218,6 +2237,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         }
 
         \centering
+
+        \vspace{0.22cm}
+
         \begin{tikzpicture}
             \node[] at (0, 0) {};
             \node[] at (10.5, -7.2) {};
@@ -2247,7 +2269,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}[t]{Performance metrics: Binary classification} % ROC first threshold
+    \begin{frame}[t]{Performance metrics: Binary classification} % ROC all thresholds
         \newsavebox{\casecontrolboxseventeen}
         \sbox{\casecontrolboxseventeen}{%
             \begin{tikzpicture}
@@ -2326,6 +2348,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         }
 
         \centering
+
+        \vspace{0.22cm}
+
         \begin{tikzpicture}
             \node[] at (0, 0) {};
             \node[] at (10.5, -7.2) {};
@@ -2355,7 +2380,120 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Performance metrics: Binary classification}
+    \begin{frame}[t]{Performance metrics: Binary classification} % ROC all thresholds
+        \newsavebox{\casecontrolboxeighteen}
+        \sbox{\casecontrolboxeighteen}{%
+            \begin{tikzpicture}
+                \begin{axis}[
+                    height=3cm,
+                    width=7cm,
+                    ymajorticks=false,
+                    xtick={0, 0.25, 0.5, 0.75, 1},
+                    xlabel=\small{Prediction},
+                    xmin=-0.1,
+                    xmax=1.1,
+                    ymin=-0.25,
+                    ymax=1.25,
+                    xtick pos=bottom,
+                    clip=false,
+                    typeset ticklabels with strut
+                ]
+                    \addplot[
+                        only marks,
+                        mark options={fill=controls}
+                    ] coordinates {
+                        ((0.588 - 0.5) * 0.4, -0.026)
+                        ((0.491 - 0.45) * 0.4, 0.021)
+                        ((0.522 - 0.4) * 0.4, -0.042)
+                        ((0.450 - 0.425) * 0.4, -0.004)
+                        ((0.488 - 0.375) * 0.4, 0.006)
+                        ((0.573 - 0.325) * 0.4, 0.073)
+                        ((0.505 - 0.275) * 0.4, -0.060)
+                        ((0.554 - 0.225) * 0.4, -0.002)
+                        ((0.502 - 0.35) * 0.4, -0.023)
+                        ((0.576 - 0.15) * 0.4, -0.031)
+                        ((0.607 - 0.1) * 0.4, -0.018)
+                        ((0.544 - 0.05) * 0.4, 0.018)
+                        ((0.523 - 0.0) * 0.4, -0.093)
+                        ((0.432- 0.125) * 0.4, -0.054)
+                        ((0.460 + 0.025) * 0.4, 0.085)
+                        ((0.479 + 0.075) * 0.4, 0.072)
+                        ((0.547 + 0.125) * 0.4, -0.108)
+                        ((0.523 + 0.175) * 0.4, -0.082)
+                        ((0.586 + 0.05) * 0.4, -0.049)
+                        ((0.527 + 0.2) * 0.4, 0.021)
+                    };
+
+                    \addplot[
+                        only marks,
+                        mark options={fill=cases}
+                    ] coordinates {
+                        ((0.494 - 0.2) * 0.4, -0.047 + 1)
+                        ((0.526 - 0.15) * 0.4, -0.001 + 1)
+                        ((0.514 - 0.1) * 0.4, 0.039 + 1)
+                        ((0.451 - 0.05) * 0.4, -0.002 + 1)
+                        ((0.459 - 0.075) * 0.4, -0.077 + 1)
+                        ((0.533 + 0.025) * 0.4, 0.079 + 1)
+                        ((0.479 + 0.075) * 0.4, -0.025 + 1)
+                        ((0.462 + 0.125) * 0.4, 0.031 + 1)
+                        ((0.472 + 0.1) * 0.4, 0.038 + 1)
+                        ((0.462 + 0.15) * 0.4, -0.014 + 1)
+                        ((0.549 + 0.2) * 0.4, 0.013 + 1)
+                        ((0.572 + 0.25) * 0.4, 0.008 + 1)
+                        ((0.491 + 0.3) * 0.4, 0.022 + 1)
+                        ((0.501 + 0.325) * 0.4, 0.015 + 1)
+                        ((0.453 + 0.35) * 0.4, -0.046 + 1)
+                        ((0.439 + 0.4) * 0.4, -0.023 + 1)
+                        ((0.477 + 0.425) * 0.4, 0.007 + 1)
+                        ((0.446 + 0.45) * 0.4, 0.016 + 1)
+                        ((0.487 + 0.475) * 0.4, -0.036 + 1)
+                        ((0.424 + 0.5) * 0.4, 0.004 + 1)
+                    };
+                    \draw[dashed] (axis cs: 0.15, -0.25) -- (axis cs: 0.15, 1.25);
+                    \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
+                    \draw[dashed] (axis cs: 0.35, -0.25) -- (axis cs: 0.35, 1.25);
+                    \draw[dashed, red, thick] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
+                    \draw[dashed, red, thick] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
+                \end{axis}
+            \end{tikzpicture}
+        }
+
+        \centering
+
+        \vspace{0.22cm}
+
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (10.5, -7.2) {};
+
+            \node[] at (5.25, -2) {
+                \usebox{\casecontrolboxeighteen}
+            };
+
+            \node[inner sep=0pt] (table) at (5.25, -5.5) {
+                \small
+                \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
+                    \hline
+                    \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
+                    \hline
+                    0&1&1\\
+                    \hline
+                    0.15&0.95&0.5\\
+                    \hline
+                    0.25&0.5&0.2\\
+                    \hline
+                    0.35&0.2&0.0\\
+                    \hline
+                    1&0&0\\
+                    \hline
+                \end{tabular}
+            };
+
+            \node[draw=red, anchor=south east, minimum width=2.47cm, minimum height=2.29cm, inner sep=0pt, thick] at (table.south east) {};
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Performance metrics: Binary classification} % ROC points
         \centering
         \begin{tikzpicture}
             \begin{axis}[
@@ -2370,7 +2508,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
             ]
                 \addplot[
                     only marks,
-                    mark options={fill=orange!50},
+                    mark options={fill=orange!50, very thick},
                     mark size=3pt
                 ] coordinates {
                     (0, 0)
@@ -2383,7 +2521,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Performance metrics: Binary classification}
+    \begin{frame}{Performance metrics: Binary classification} % ROC curve
         \centering
         \begin{tikzpicture}
             \begin{axis}[
@@ -2413,7 +2551,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Performance metrics: Binary classification}
+    \begin{frame}{Performance metrics: Binary classification} % ROC baseline
         \centering
         \begin{tikzpicture}
             \begin{axis}[
@@ -2447,7 +2585,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Performance metrics: Binary classification}
+    \begin{frame}{Performance metrics: Binary classification} % AUC
         \centering
         \begin{tikzpicture}
             \begin{axis}[
@@ -2480,7 +2618,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
                 };
                 \path[name path=axis] (axis cs:0,0) -- (axis cs:1,0);
                 \addplot[pattern=north west lines, pattern color=red] fill between [of=roc and axis];
-                \node[fill=white] at (axis cs: 0.56, 0.45) {\textcolor{red}{AUC}};
+                \node[fill=white, draw=red] at (axis cs: 0.56, 0.45) {\textcolor{red}{AUC}};
             \end{axis}
         \end{tikzpicture}
     \end{frame}
@@ -2622,24 +2760,24 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
     \begin{frame}{Performance metrics: Summary}
         \begin{itemize}
             \item There is a range of metrics that can be used, each capturing a different aspect of a model's performance
-            \item If possible, it is my personal preference is to evaluate a model using a different model than the one that was used for training
+            \item If possible, (it is my personal preference to) evaluate a model using a different metric than the one that was used for training
             \item It is good practice to report more than one metric
             \item For regression, MAE provides a good, intuitive summary of model performance
-            \item For classification, AUC is a widely used metric that is easy to interpret, not reliant on the choice of classification threshold, and handles class imbalance
+            \item For classification, AUC is a widely used metric that is easy to interpret, handles class imbalance (to some degree), and is not reliant on the choice of classification threshold
         \end{itemize}
     \end{frame}
 
-    \section{Strategies for model assessment}
+    \section{Strategies for model evaluation}
 
-    \begin{frame}{Model assessment: Rationale}
+    \begin{frame}{Model evaluation: Rationale}
         \textbf{\underline{Statistical inference:}}\\
-        In-sample quantification
+        Goal: In-sample quantification
         \vspace{0.7cm}\\
         \textbf{\underline{Predictive modelling:}}\\
-        Out-of-sample prediction (generalization)
+        Goal: Out-of-sample generalization
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Dataset
+    \begin{frame}{Model evaluation: Validation set} % Dataset
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2648,7 +2786,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Split
+    \begin{frame}{Model evaluation: Validation set} % Split
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2659,7 +2797,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Training
+    \begin{frame}{Model evaluation: Validation set} % Training
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2674,7 +2812,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Evaluation
+    \begin{frame}{Model evaluation: Validation set} % Evaluation
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2693,7 +2831,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Performance
+    \begin{frame}{Model evaluation: Validation set} % Performance
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2715,18 +2853,18 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set}
-        In the validation set approach we split the dataset into two subsets, and use for training the model and the other for testing performance.
+    \begin{frame}{Model evaluation: Validation set}
+        In the validation set approach we split the dataset into two subsets (commonly $\sim$80\%/20\%), use the first for training the model and the second to test its performance.
         \begin{itemize}
             \item[\textcolor{green}{+}] Accurate estimate of out-of-sample error
             \item[\textcolor{green}{+}] Simple
-            \item[\textcolor{red}{-}] Highly variable, depends on the exact split
+            \item[\textcolor{red}{-}] Variable results depending on the exact split
             \item[\textcolor{red}{-}] Only uses a subset of data for training models
             \item[\textcolor{red}{-}] Gives a point estimate of the error, without confidence intervals
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Performance
+    \begin{frame}{Model evaluation: Validation set} % Performance
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2750,7 +2888,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Performance
+    \begin{frame}{Model evaluation: Validation set} % Performance
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 1) {};
@@ -2776,7 +2914,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Validation set} % Performance
+    \begin{frame}{Model evaluation: Validation set} % Performance
         \centering
         \begin{tikzpicture}
             \node[] at (-4, 2) {};
@@ -2808,12 +2946,12 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Definition
+    \begin{frame}{Model evaluation: Stratification} % Definition
         \textbf{\underline{Stratification:}}\\
-        Ensuring all folds of the dataset are similar in terms of some given characteristics.
+        Ensuring all folds of the dataset are similar with respect to some given characteristics.
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Dataset
+    \begin{frame}{Model evaluation: Stratification} % Dataset
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 1) {};
@@ -2831,7 +2969,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Distribution
+    \begin{frame}{Model evaluation: Stratification} % Distribution
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 1) {};
@@ -2879,7 +3017,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Bad split
+    \begin{frame}{Model evaluation: Stratification} % Bad split
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 1) {};
@@ -2929,7 +3067,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Sorting
+    \begin{frame}{Model evaluation: Stratification} % Sorting
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 1) {};
@@ -2976,7 +3114,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Good split
+    \begin{frame}{Model evaluation: Stratification} % Good split
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 1) {};
@@ -3027,9 +3165,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Stratification} % Summary
+    \begin{frame}{Model evaluation: Stratification} % Summary
         \textbf{\underline{Stratification:}}\\
-        Ensuring all folds of the dataset are similar in terms of some given characteristics.
+        Ensuring all folds of the dataset are similar with respect to some given characteristics.
         \begin{itemize}
             \item Helps alleviate the risk of training performance $\gg$ validation performance
             \item \textbf{Always} stratify on target variable first
@@ -3048,7 +3186,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Dataset
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Dataset
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3058,7 +3196,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Data points
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Data points
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3088,7 +3226,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Split
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Split
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3121,7 +3259,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Single error
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Single error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3165,7 +3303,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Error 1
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Error 1
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3198,7 +3336,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Error 2
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Error 2
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3256,7 +3394,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Error 3
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Error 3
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3339,7 +3477,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Error n
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Error n
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3450,7 +3588,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation} % Error n
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Error n
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3563,17 +3701,19 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Leave-one-out cross-validation}
+    \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Summary
         Fits $n$ models for $n$ datapoints, each leaving a single datapoint out for testing.
         \begin{itemize}
             \item[\textcolor{green}{+}] Uses all data to train models
             \item[\textcolor{green}{+}] Not dependent on arbitrary data splits
+            \item[\textcolor{green}{+}] Unbiased (with regards to the full dataset)
             \item[\textcolor{red}{-}] Computationally expensive
             \item[\textcolor{red}{-}] Effectively gives a point estimate of the error
+            \item[\textcolor{red}{-}] All models are going to be trained on $> 99$\% overlapping data \\ \rightarrow{ }highly correlated
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Dataset
+    \begin{frame}{Model evaluation: Cross-validation} % Dataset
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3603,7 +3743,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Split
+    \begin{frame}{Model evaluation: Cross-validation} % Split
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3636,7 +3776,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Single error
+    \begin{frame}{Model evaluation: Cross-validation} % Single error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3680,7 +3820,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % First error
+    \begin{frame}{Model evaluation: Cross-validation} % First error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3713,7 +3853,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Second error
+    \begin{frame}{Model evaluation: Cross-validation} % Second error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3771,7 +3911,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Third error
+    \begin{frame}{Model evaluation: Cross-validation} % Third error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3854,7 +3994,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Fourth error
+    \begin{frame}{Model evaluation: Cross-validation} % Fourth error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -3962,7 +4102,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Fifth error
+    \begin{frame}{Model evaluation: Cross-validation} % Fifth error
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -4095,7 +4235,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation} % Average
+    \begin{frame}{Model evaluation: Cross-validation} % Average
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -4231,7 +4371,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Cross-validation}
+    \begin{frame}{Model evaluation: Cross-validation}
         Fits $k$ models for $n > k$ datapoints, each leaving $n/k$ datapoints out for testing.
         \begin{itemize}
             \item[\textcolor{green}{+}] Uses all data to train models
@@ -4241,7 +4381,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap}
+    \begin{frame}{Model evaluation: The bootstrap}
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4270,7 +4410,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % First datapoint
+    \begin{frame}{Model evaluation: The bootstrap} % First datapoint
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4301,7 +4441,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Second datapoint
+    \begin{frame}{Model evaluation: The bootstrap} % Second datapoint
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4333,7 +4473,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Third datapoint
+    \begin{frame}{Model evaluation: The bootstrap} % Third datapoint
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4366,7 +4506,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Fourth datapoint
+    \begin{frame}{Model evaluation: The bootstrap} % Fourth datapoint
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4400,7 +4540,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Full training sample
+    \begin{frame}{Model evaluation: The bootstrap} % Full training sample
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4448,7 +4588,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Validation set
+    \begin{frame}{Model evaluation: The bootstrap} % Validation set
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4507,7 +4647,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Full setup
+    \begin{frame}{Model evaluation: The bootstrap} % Full setup
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4577,7 +4717,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % First error
+    \begin{frame}{Model evaluation: The bootstrap} % First error
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4609,7 +4749,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Second error
+    \begin{frame}{Model evaluation: The bootstrap} % Second error
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4666,7 +4806,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Third error
+    \begin{frame}{Model evaluation: The bootstrap} % Third error
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4750,7 +4890,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Third error
+    \begin{frame}{Model evaluation: The bootstrap} % Third error
         \begin{tikzpicture}
             \node[] at (-4.7, 1) {};
             \node[] at (6.5, -5.5) {};
@@ -4838,7 +4978,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: The bootstrap} % Summary
+    \begin{frame}{Model evaluation: The bootstrap} % Summary
          Fits $x$ models with $m$ datapoints each, sampled from the original dataset with replacement.
         \begin{itemize}
             \item[\textcolor{green}{+}] Uses all data to train models
@@ -4848,7 +4988,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \textbf{Why do we want to assess our model?}
         \begin{enumerate}
             \item We want to show that our model is better than random guessing
@@ -4856,7 +4996,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{enumerate}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4869,7 +5009,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4884,7 +5024,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4899,7 +5039,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4924,7 +5064,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4950,7 +5090,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -4965,7 +5105,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \begin{tikzpicture}
             \node[] at (-3, 3) {};
             \node[] at (8, -3) {};
@@ -4997,7 +5137,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \begin{tikzpicture}
             \node[] at (-3, 3) {};
             \node[] at (8, -3) {};
@@ -5029,7 +5169,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \begin{tikzpicture}
             \node[] at (-3, 3) {};
             \node[] at (8, -3) {};
@@ -5061,7 +5201,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \begin{tikzpicture}
             \node[] at (-3, 3) {};
             \node[] at (8, -3) {};
@@ -5093,7 +5233,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \begin{tikzpicture}
             \node[] at (-3, 3) {};
             \node[] at (8, -3) {};
@@ -5125,7 +5265,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -5149,7 +5289,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -5176,7 +5316,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model assessment: Comparison}
+    \begin{frame}{Model evaluation: Comparison}
         \centering
         \begin{tikzpicture}
             \node[] at (-5, 3) {};
@@ -5219,7 +5359,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}[t]{Model assessment: Comparison}
+    \begin{frame}[t]{Model evaluation: Comparison}
         \begin{center}
             \begin{tabular}{|c|c|c|}
                 \hline
@@ -5241,9 +5381,9 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         The small gain of our model will disappear in the noise between the folds using a non-paired statistical test. Use a paired test, e.g. Wilcoxon signed-rank test
     \end{frame}
 
-    \begin{frame}{Model assessment: Summary}
+    \begin{frame}{Model evaluation: Summary}
         \begin{itemize}
-            \item Model assessment should \textbf{always} happen out-of-sample
+            \item Model evaluation should \textbf{always} happen out-of-sample
             \item If n is big ($\geq 10000$), a single train/validation split is often sufficient
             \item For smaller samples, k-fold cross-validation with $5 \leq k \leq 10$ is a good trade-off between bias and variance
             \item The bootstrap is an effective way of getting confidence intervals for model parameters
@@ -5253,22 +5393,22 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{itemize}
     \end{frame}
 
-    \section{Model selection and assessment}
+    \section{Model selection and evaluation}
 
-    \begin{frame}[t]{Model selection and assessment}
+    \begin{frame}[t]{Model selection and evaluation}
         \vspace{1cm}
         \begin{itemize}
-            \item Model assessment via cross-validation is sufficient if we want to estimate the out-of-sample error of a known model.
+            \item Model evaluation via cross-validation is sufficient if we want to estimate the out-of-sample error of a known model.
             \item Very often we want to know whether a set of predictors are informative for an outcome \textit{given the best possible model}
             \item In that case, we have to both choose the best model, and estimate its performance
             \item If we choose the model based on regular cross-validation, the performance estimate will likely be inflated
          \end{itemize}
     \end{frame}
 
-    \begin{frame}[t]{Model selection and assessment}
+    \begin{frame}[t]{Model selection and evaluation}
         \vspace{1cm}
         \begin{itemize}
-            \item Model assessment via cross-validation is sufficient if we want to estimate the out-of-sample error of a known model.
+            \item Model evaluation via cross-validation is sufficient if we want to estimate the out-of-sample error of a known model.
             \item Very often we want to know whether a set of predictors are informative for an outcome \textit{given the best possible model}
             \item In that case, we have to both choose the best model, and estimate its performance
             \item If we choose the model based on regular cross-validation, the performance estimate will likely be inflated
@@ -5276,7 +5416,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
          \end{itemize}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Train/validation/test}
+    \begin{frame}{Model selection and evaluation: Train/validation/test}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5306,7 +5446,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Train/validation/test}
+    \begin{frame}{Model selection and evaluation: Train/validation/test}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5340,7 +5480,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Train/validation/test}
+    \begin{frame}{Model selection and evaluation: Train/validation/test}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5378,7 +5518,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Train/validation/test}
+    \begin{frame}{Model selection and evaluation: Train/validation/test}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5421,7 +5561,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Train/validation/test}
+    \begin{frame}{Model selection and evaluation: Train/validation/test}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5469,7 +5609,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Neste cross-validation}
+    \begin{frame}{Model selection and evaluation: Neste cross-validation}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5499,7 +5639,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5532,7 +5672,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \newsavebox{\innercvtwo}
         \sbox{\innercvtwo}{%
         \begin{tikzpicture}[transform canvas={scale=0.3}]
@@ -5707,7 +5847,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \newsavebox{\innercv}
         \sbox{\innercv}{%
         \begin{tikzpicture}[transform canvas={scale=0.3}]
@@ -5889,7 +6029,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -5925,7 +6065,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -6058,7 +6198,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Nested cross-validation}
+    \begin{frame}{Model selection and evaluation: Nested cross-validation}
         \centering
         \begin{tikzpicture}
             \node[] at (-4.5, 1) {};
@@ -6195,7 +6335,7 @@ train['year'] = (train['year'] - train['year'].mean()) / train['year'].std()^^J
         \end{tikzpicture}
     \end{frame}
 
-    \begin{frame}{Model selection and assessment: Summary}
+    \begin{frame}{Model selection and evaluation: Summary}
         \begin{itemize}
             \item Whenever a choice is made on the basis of performance in a dataset, the performance of the chosen model on that dataset is going to be biased.
             \item If n is big ($\geq 10000$), a single train/validation/test split is often sufficient
