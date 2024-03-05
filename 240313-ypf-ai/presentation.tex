@@ -611,6 +611,148 @@
 
     \section{Hva er egentlig kunstig intelligens (og maskinlæring)?}
 
+	\newcommand{\classificationplot}[1]{
+		\edef\stage{#1}
+
+		\def\xlabel{Trøtthet (t)}
+		\def\ylabel{Nedstemthet (n)}
+		\def\axislinestyle{black}
+		\def\showticks{true}
+
+		\ifnum\stage<3
+			\renewcommand{\xlabel}{}
+			\renewcommand{\ylabel}{}
+			\renewcommand{\axislinestyle}{none}
+			\renewcommand{\showticks}{false}
+		\fi
+
+		\begin{tikzpicture}
+			\begin{axis}[
+				height=5cm,
+				width=5cm,
+				xlabel=\xlabel,
+				ylabel=\ylabel,
+				axis line style={draw=\axislinestyle},
+				xmajorticks=\showticks,
+				ymajorticks=\showticks,
+				axis x line*=bottom,
+				axis y line*=left,
+				xmin=-3,
+				xmax=5,
+				ymin=-1.5,
+				ymax=4.5,
+				xtick={-2, 0, 2, 4},
+				xticklabels={0, 0.25, 0.5, 0.75},
+				ytick={0, 2, 4},
+				yticklabels={0, 0.25, 0.5}
+			]	\ifnum\stage=1
+					\addplot[only marks, color=gray] coordinates {
+						(1.624, -1.100)
+						(-0.612, -0.172)
+						(-0.528, -0.878)
+						(-1.073, 0.042)
+						(0.865, 0.583)
+						(-2.302, -1.101)
+						(1.745, 1.145)
+						(-0.761, 0.902)
+						(0.319, 0.502)
+						(-0.249, 0.901)
+						(1.462, -0.684)
+						(-2.060, -0.123)
+						(-0.322, -0.936)
+						(-0.384, -0.268)
+						(1.134, 0.530)
+						(1.308, 1.363)
+						(1.603, 2.191)
+						(1.313, 4.100)
+						(1.155, 2.120)
+						(1.329, 2.617)
+						(1.987, 2.300)
+						(0.883, 1.648)
+						(2.234, 0.857)
+						(3.660, 1.651)
+						(2.742, 1.791)
+						(1.808, 2.587)
+						(1.112, 2.839)
+						(1.253, 2.931)
+						(3.692, 2.286)
+						(2.051, 2.885)
+					};
+				\fi
+				\ifnum\stage>1
+					\addplot[only marks, color=blue!80] coordinates {
+						(1.624, -1.100)
+						(-0.612, -0.172)
+						(-0.528, -0.878)
+						(-1.073, 0.042)
+						(0.865, 0.583)
+						(-2.302, -1.101)
+						(1.745, 1.145)
+						(-0.761, 0.902)
+						(0.319, 0.502)
+						(-0.249, 0.901)
+						(1.462, -0.684)
+						(-2.060, -0.123)
+						(-0.322, -0.936)
+						(-0.384, -0.268)
+						(1.134, 0.530)
+					};
+					\addplot[only marks, color=red!80] coordinates {
+						(1.308, 1.363)
+						(1.603, 2.191)
+						(1.313, 4.100)
+						(1.155, 2.120)
+						(1.329, 2.617)
+						(1.987, 2.300)
+						(0.883, 1.648)
+						(2.234, 0.857)
+						(3.660, 1.651)
+						(2.742, 1.791)
+						(1.808, 2.587)
+						(1.112, 2.839)
+						(1.253, 2.931)
+						(3.692, 2.286)
+						(2.051, 2.885)
+					};
+				\fi
+				\ifnum\stage>3
+					\addplot[dashed, thick] coordinates {
+						(-6, 3.75)
+						(5, -0.5)
+					};
+				\fi
+				\ifnum\stage>4
+					\node[rotate=-28] at (axis cs: -1, 2.1) {\textbf{\small{0.2$*$n+0.3$*$t}}};
+				\fi
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\newsavebox{\classificationpoints}
+	\sbox{\classificationpoints}{%
+		\classificationplot{1}
+	}
+
+	\newsavebox{\classificationclasses}
+	\sbox{\classificationclasses}{%
+		\classificationplot{2}
+	}
+
+	\newsavebox{\classificationaxes}
+	\sbox{\classificationaxes}{%
+		\classificationplot{3}
+	}
+
+	\newsavebox{\classificationthreshold}
+	\sbox{\classificationthreshold}{%
+		\classificationplot{4}
+	}
+
+	\newsavebox{\classificationmath}
+	\sbox{\classificationmath}{%
+		\classificationplot{5}
+	}
+
     \begin{frame}{Hva er kunstig intelligens?} % Taxonomy, CNNs and LLMs
 		\centering
 		\vfill
@@ -625,18 +767,18 @@
 				\node[circle, fill=purple!60, minimum size=4.5cm, anchor=south] (ml) at ($ (ai.south) + (0, 0.05) $) {};
 				\node[text=white, anchor=north] at ($ (ml.north) - (0, 0.3) $) {\textbf{Maskinlæring}};
 			}
-			\onslide<14->{
-				\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresjon};
-			}
-			\onslide<15->{
-				\node[circle, fill=red!60, minimum size=3cm, anchor=south] (dl) at ($ (ai.south) + (0, 0.1) $) {};
-				\node[text=white, anchor=north] at ($ (dl.north) - (0, 0.3) $) {\textbf{Dyplæring}};
-			}
-			\onslide<16->{
-				\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (-0.2, 1.2) $) {Konvolusjonelle\\nevral nettverk};
-				\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (0.2, 2.1) $) {Store\\språkmodeller};
-			}
-			\only<1-2,12-16>{
+			% \onslide<14->{
+			% 	\node[text=white, align=center, font=\linespread{0.5}\selectfont] at ($ (ml.north) - (1, 1.1) $) {Lineær\\regresjon};
+			% }
+			% \onslide<15->{
+			% 	\node[circle, fill=red!60, minimum size=3cm, anchor=south] (dl) at ($ (ai.south) + (0, 0.1) $) {};
+			% 	\node[text=white, anchor=north] at ($ (dl.north) - (0, 0.3) $) {\textbf{Dyplæring}};
+			% }
+			% \onslide<16->{
+			% 	\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (-0.2, 1.2) $) {Konvolusjonelle\\nevral nettverk};
+			% 	\node[align=center, text=white, font=\linespread{0.5}\selectfont] at ($ (dl.north) - (0.2, 2.1) $) {Store\\språkmodeller};
+			% }
+			\only<1-2,12-13>{
 				\only<1>{
 					\node[anchor=north west, align=left, font=\small] (ai-text) at ($ (ai.north) + (3.5, 0.0) $) {\textbf{Kunstig intelligens (AI):}\\Maskiner som løser problemer\\som krever intelligens};
 				}
@@ -649,32 +791,32 @@
 				\only<13>{
 					\node[anchor=north west, align=left, font=\small] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring:}\\Maskiner som lærer å løse problemer\\gjennom å finne mønster i data på\\egenhånd};
 				}
-				\onslide<14->{
-					\node[anchor=north west, align=left, font=\small, text=gray!40] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring (ML):}\\Maskiner som lærer å løse problemer\\gjennom å finne mønster i data på\\egenhånd};
-				}
-				\only<14>{
-					\node[anchor=north west, align=left, font=\small] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Lineær regresion:}\\Maskinlæringsmodeller som \\finner lineære (m.a.o. enkle) mønstre};
-				}
-				\only<15>{
-					\node[anchor=north west, align=left, font=\small] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er\\hierarkisk organisert ($\approx$ dype\\nevrale nettverk), inspirert av\\hjernens struktur};
-				}
-				\onslide<16->{
-					\node[anchor=north west, align=left, font=\small, text=gray!40] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er\\hierarkisk organisert ($\approx$ dype\\nevrale nettverk), inspirert av\\hjernens struktur};
-				}
-				\only<16>{
-					\node[anchor=north west, align=left, font=\small] (cnn-text) at ($ (dl-text.south west) - (0, 0) $) {\textbf{Konvolusjonelle nevrale nettverk:}\\Nevrale nettverk for prosessering\\av bildedata};
-					\node[anchor=north west, align=left, font=\small] at ($ (cnn-text.south west) - (0, 0) $) {\textbf{Store språkmodeller:}\\(Store) nevrale nettverk\\for språkprosessering (f.eks. ChatGPT)};
-				}
+				% \onslide<14->{
+				% 	\node[anchor=north west, align=left, font=\small, text=gray!40] (ml-text) at ($ (ai-text.south west) - (0, 0) $) {\textbf{Maskinlæring (ML):}\\Maskiner som lærer å løse problemer\\gjennom å finne mønster i data på\\egenhånd};
+				% }
+				% \only<14>{
+				% 	\node[anchor=north west, align=left, font=\small] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Lineær regresion:}\\Maskinlæringsmodeller som \\finner lineære (m.a.o. enkle) mønstre};
+				% }
+				% \only<15>{
+				% 	\node[anchor=north west, align=left, font=\small] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er\\hierarkisk organisert ($\approx$ dype\\nevrale nettverk), inspirert av\\hjernens struktur};
+				% }
+				% \onslide<16->{
+				% 	\node[anchor=north west, align=left, font=\small, text=gray!40] (dl-text) at ($ (ml-text.south west) - (0, 0) $) {\textbf{Dyplæring:}\\Maskinlæringsmodeller som er\\hierarkisk organisert ($\approx$ dype\\nevrale nettverk), inspirert av\\hjernens struktur};
+				% }
+				% \only<16>{
+				% 	\node[anchor=north west, align=left, font=\small] (cnn-text) at ($ (dl-text.south west) - (0, 0) $) {\textbf{Konvolusjonelle nevrale nettverk:}\\Nevrale nettverk for prosessering\\av bildedata};
+				% 	\node[anchor=north west, align=left, font=\small] at ($ (cnn-text.south west) - (0, 0) $) {\textbf{Store språkmodeller:}\\(Store) nevrale nettverk\\for språkprosessering (f.eks. ChatGPT)};
+				% }
 			}
 
-			\only<3-11>{
-				\def\outerwidth{2pt}
-				\def\outercolour{gray!80}
-				\def\offset{0.6}
-				\colorlet{systemcolour}{gray!10}
-				\colorlet{rulescolour}{blue!20}
-				\colorlet{rulecolour}{cyan!20}
+			\def\outerwidth{2pt}
+			\def\outercolour{gray!80}
+			\def\offset{0.6}
+			\colorlet{systemcolour}{gray!10}
+			\colorlet{rulescolour}{blue!20}
+			\colorlet{rulecolour}{cyan!20}
 
+			\only<3-11>{
 				\node[
 					minimum width=3.8cm,
 					minimum height=2.8cm,
@@ -785,6 +927,125 @@
 					\draw[red, thick] (rule2.north east) -- (rule2.north west) -- (rule2.south west) -- (rule2.south east) -- cycle;
 					\draw[red, thick] (rule3.north east) -- (rule3.north west) -- (rule3.south west) -- (rule3.south east) -- cycle;
 					\draw[-stealth, red, thick, dashed] (scientist) -- (rule3);
+				}
+			}
+
+			\only<14-21>{
+				\only<14>{
+					\node[
+						minimum width=3.8cm,
+						minimum height=2.8cm,
+						draw=black,
+						fill=systemcolour,
+						label=above:{\textbf{\small{PSYCIN}}}
+					] (system) at (5.5, -1) {};
+
+					\node[] (doctor) at (5.5, 2.5) {
+						\Huge{\emoji{woman-health-worker}}
+					};
+
+					\node[] (notes) at (5.5 - \offset, 1.25) {
+						\Huge{\emoji{spiral-notepad}}
+					};
+					\draw[-stealth, line width=\outerwidth, \outercolour]
+						(doctor) to [out=270, in=90]
+						(notes) --
+						($ (system.north) - (\offset, 0) $);
+				}
+
+				\only<14-16>{
+					\node[
+						minimum width=2.4cm,
+						minimum height=1.6cm,
+						draw=black,
+						fill=rulescolour,
+						label=above:{\textbf{\footnotesize{Regelmotor}}}
+					] (rules) at (5.5, -1.5) {};
+				}
+
+				\only<14>{
+					\draw[-stealth, line width=\outerwidth, \outercolour]
+						($ (system.north) - (\offset, 0) $) to [in=0, out=270]
+						($ (rules.north west) + (-0.2, 0.2) $) to [in=180, out=180]
+						($ (rules.west) - (0.2, 0) $) --
+						(rules.west);
+				}
+
+				\only<14-15>{
+					\node[
+						minimum width=1.5cm,
+						minimum height=0.3cm,
+						draw=black,
+						fill=rulecolour
+					] (rule1) at ($ (rules) + (0, 0.5) $) {
+						\small{Nedstemt}
+					};
+					\node[
+						minimum width=1.5cm,
+						minimum height=0.3cm,
+						draw=black,
+						fill=rulecolour
+					] (rule2) at ($ (rules) + (0, 0.0) $) {
+						\small{Søvnløshet}
+					};
+					\node[
+						minimum width=1.5cm,
+						minimum height=0.3cm,
+						draw=black,
+						fill=rulecolour
+					] (rule3) at ($ (rules) + (0, -0.5) $) {
+						\small{Tretthet}
+					};
+					\draw[] (rules.west) to [in=180, out=0] (rule1.west);
+					\draw[] (rules.west) to [in=180, out=0] (rule2.west);
+					\draw[] (rules.west) to [in=180, out=0] (rule3.west);
+
+					\draw[] (rule1.east) to [in=180, out=0] (rules.east);
+					\draw[] (rule2.east) to [in=180, out=0] (rules.east);
+					\draw[] (rule3.east) to [in=180, out=0] (rules.east);
+				}
+
+				\only<14>{
+					\draw[-stealth, line width=\outerwidth, \outercolour]
+						(rules.east) --
+						($ (rules.east) + (0.2, 0) $) to [out=0, in=0]
+						($ (rules.north east) + (0.2, 0.2) $) to [out=180, in=270]
+						($ (system.north) + (\offset, 0) $);
+
+					\node[minimum height=0.75cm] (diagnosis) at (5.5 + \offset, 1.25) {
+						\small{Depresjon}
+					};
+
+					\draw[line width=\outerwidth, \outercolour]
+						($ (system.north) + (\offset, 0) $) --
+						(diagnosis) to [out=90, in=270]
+						(doctor);
+				}
+
+				\only<17>{
+					\node[] at (5.5, -1) {
+						\usebox{\classificationpoints}
+					};
+				}
+				\only<18>{
+					\node[] at (5.5, -1) {
+						\usebox{\classificationclasses}
+					};
+				}
+				\only<19>{
+					\node[] at (5.5, -1) {
+						\usebox{\classificationaxes}
+					};
+				}
+				\only<20>{
+					\node[] at (5.5, -1) {
+						\usebox{\classificationthreshold}
+					};
+				}
+				\only<21>{
+					\node[] at (5.5, -1) {
+						\usebox{\classificationmath}
+					};
 				}
 			}
 
