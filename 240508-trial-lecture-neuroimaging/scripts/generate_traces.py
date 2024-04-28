@@ -27,10 +27,16 @@ modality_map = {
     'FLAIR': 'sMRI',
     'rsfMRI': 'fMRI',
     'tfMRI': 'fMRI',
-    'DTI': 'dMRI'
+    'DTI': 'dMRI',
+    'PET': 'Molecular',
+    'SPECT': 'Molecular'
 }
 
-known_diagnoses = ['AD', 'SCZ', 'MDD', 'BP', 'MS', 'Multiclass', 'PD']
+diagnosis_map = {
+    'AD': 'DEM'
+}
+
+known_diagnoses = ['DEM', 'MS', 'PD', 'SCZ', 'MDD', 'BP']
 
 xlimit = [0, 1700]
 
@@ -53,6 +59,10 @@ def standardize(df: pd.DataFrame, modalities: bool = False,
         df['diagnosis'] = df['diagnosis'].apply(
             lambda x: 'Multiclass' if len(x) > 1 else x.pop()
         )
+
+        for key, value in diagnosis_map.items():
+            df.loc[df['diagnosis'] == key, 'diagnosis'] = value
+
         unknown_diagnoses = set(df['diagnosis'].values) - set(known_diagnoses)
         print(f'Dropping {unknown_diagnoses}')
         df = df[df['diagnosis'].isin(known_diagnoses)]
@@ -192,15 +202,43 @@ def plot_fmri(df: pd.DataFrame):
 
     df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv('data/fmri_studies.csv', index=False)
 
+def plot_accuracies(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+
+    fig = px.box(df, x='diagnosis', y='accuracy')
+    fig.show()
+
+def plot_boxplots(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+
+    for diagnosis in known_diagnoses:
+        subset = df[df['diagnosis'] == diagnosis]
+        accuracies = subset['accuracy'].values
+        upper_quartile = np.percentile(accuracies, 75)
+        lower_quartile = np.percentile(accuracies, 25)
+        iqr = upper_quartile - lower_quartile
+        upper_whisker = min(np.amax(accuracies), upper_quartile + 1.5 * iqr)
+        lower_whisker = max(np.amin(accuracies), lower_quartile - 1.5 * iqr)
+        print(diagnosis)
+        print(f'median: {np.median(accuracies):.2f}')
+        print(f'upper quartile: {upper_quartile:.2f}')
+        print(f'lower quartile: {lower_quartile:.2f}')
+        print(f'upper whisker: {upper_whisker:.2f}')
+        print(f'lower whisker: {lower_whisker:.2f}')
+
+
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
 df = df.drop_duplicates(['author', 'year', 'diagnosis', 'modality'])
+print(df[pd.isna(df['accuracy'])])
 print(Counter(df['modality']))
 print(Counter(df['diagnosis']))
 #plot_occurences(df)
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
-plot_dmri(df)
-plot_fmri(df)
+#plot_dmri(df)
+#plot_fmri(df)
+#plot_accuracies(df)
+plot_boxplots(df)
 
 
