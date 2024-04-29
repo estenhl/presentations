@@ -6,8 +6,10 @@ from pygam import LinearGAM, s
 import statsmodels.formula.api as smf
 
 from collections import Counter
+from functools import reduce
 from plotly.subplots import make_subplots
 from sklearn.linear_model import LinearRegression
+from typing import List
 
 
 colours = [
@@ -29,7 +31,9 @@ modality_map = {
     'tfMRI': 'fMRI',
     'DTI': 'dMRI',
     'PET': 'Molecular',
-    'SPECT': 'Molecular'
+    'SPECT': 'Molecular',
+    'EEG': 'Electrophysiological',
+    'MEG': 'Electrophysiological'
 }
 
 diagnosis_map = {
@@ -41,7 +45,8 @@ known_diagnoses = ['DEM', 'MS', 'PD', 'SCZ', 'MDD', 'BP']
 xlimit = [0, 1700]
 
 def standardize(df: pd.DataFrame, modalities: bool = False,
-                diagnoses: bool = False) -> pd.DataFrame:
+                diagnoses: bool = False,
+                known_diagnoses: List[str] = known_diagnoses) -> pd.DataFrame:
     df = df.copy()
 
     if modalities:
@@ -70,25 +75,47 @@ def standardize(df: pd.DataFrame, modalities: bool = False,
     return df
 
 def plot_occurences(df: pd.DataFrame):
-    df = standardize(df, modalities=True, diagnoses=True)
+    diagnoses = known_diagnoses + ['Multiclass']
+    df = standardize(df, diagnoses=True, known_diagnoses=diagnoses)
 
-    df = df.groupby(['modality', 'diagnosis']).size().reset_index(name='count')
+    df['modality'] = df['modality'].apply(lambda x: x.split('/'))
+    df['new_modality'] = df['modality'].apply(lambda x: [modality_map[y] if y in modality_map else y for y in x])
+    print(df.loc[df['modality'].apply(lambda x: 'EEG' in x), ['modality', 'new_modality']])
+    modalities = ['sMRI', 'fMRI', 'dMRI', 'Molecular', 'Electrophysiological']
 
-    fig = px.bar(df, x='modality', y='count', color='diagnosis',
-                 title='Modalities')
+    for modality in modalities:
+        df[modality] = df['new_modality'].apply(lambda x: modality in x)
 
-    fig.show()
+    diagnosis = 'SCZ'
+    modality = 'fMRI'
+    counts = {diagnosis: {modality: np.sum(df.loc[df['diagnosis'] == diagnosis, modality]) \
+                          for modality in modalities} \
+              for diagnosis in diagnoses}
+    modalities = pd.DataFrame([counts[key] for key in diagnoses],
+                              index=diagnoses, columns=modalities)
+    print(modalities)
+    print(np.sum(modalities))
+
+
+
+    #fig = px.bar(df, x='modality', y='count', color='diagnosis',
+    #             title='Modalities')
+
+    #fig.show()
 
 def plot_accuracy_by_size(df: pd.DataFrame):
     df = standardize(df, diagnoses=True)
 
     traces = []
 
-    for i, diagnosis in enumerate(np.unique(df['diagnosis'])):
+    for i, diagnosis in enumerate(['MS']):#np.unique(df['diagnosis'])):
         subset = df[df['diagnosis'] == diagnosis]
-        model = LinearGAM(s(0)).fit(subset[['sample']], subset['accuracy'])
-
+        #model = LinearGAM(s(0)).fit(subset[['sample']], subset['accuracy'])
+        model = LinearRegression()
+        model.fit(subset[['sample']].values, subset['accuracy'])
+        print(len(subset))
         def predict(train, model, test):
+            return model.predict(np.reshape(test, (-1, 1)))
             max_prediction = model.predict(np.amax(train))
             min_prediction = model.predict(np.amin(train))
             predictions = model.predict(test)
@@ -202,14 +229,12 @@ def plot_fmri(df: pd.DataFrame):
 
     df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv('data/fmri_studies.csv', index=False)
 
-def plot_accuracies(df: pd.DataFrame):
+def plot_boxplots(df: pd.DataFrame):
     df = standardize(df, diagnoses=True)
 
     fig = px.box(df, x='diagnosis', y='accuracy')
     fig.show()
 
-def plot_boxplots(df: pd.DataFrame):
-    df = standardize(df, diagnoses=True)
 
     for diagnosis in known_diagnoses:
         subset = df[df['diagnosis'] == diagnosis]
@@ -226,19 +251,55 @@ def plot_boxplots(df: pd.DataFrame):
         print(f'upper whisker: {upper_whisker:.2f}')
         print(f'lower whisker: {lower_whisker:.2f}')
 
+def plot_per_disorder(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+
+    fig = make_subplots(rows=2, cols=3)
+
+    for i, diagnosis in enumerate(np.unique(df['diagnosis'])):
+        row = i // 3
+        col = i % 3
+        subset = df[df['diagnosis'] == diagnosis]
+        model = LinearRegression()
+        model.fit(subset[['sample']].values, subset['accuracy'])
+        print(diagnosis)
+        print(f'Intercept: {model.intercept_:.4f}, coef: {model.coef_[0]:.4f}')
+
+        fig.add_trace(
+            go.Scatter(
+                x=subset['sample'],
+                y=subset['accuracy'],
+                mode='markers'
+            ), row=row+1, col=col+1
+        )
+        x_min = np.amin(subset['sample'])
+        x_max = np.amax(subset['sample'])
+        fig.add_trace(
+            go.Scatter(
+                x=[x_min, x_max],
+                y=model.predict([[x_min], [x_max]]),
+                mode='lines'
+            ), row=row+1, col=col+1
+        )
+        subset.to_csv(f'data/{diagnosis}_accuracy_sample.csv', index=False)
+
+    fig.show()
+
 
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
+print(f'Originally: {len(df)}')
 df = df.drop_duplicates(['author', 'year', 'diagnosis', 'modality'])
+print(f'After dropping: {len(df)}')
 print(df[pd.isna(df['accuracy'])])
 print(Counter(df['modality']))
 print(Counter(df['diagnosis']))
-#plot_occurences(df)
+plot_occurences(df)
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
 #plot_dmri(df)
 #plot_fmri(df)
-#plot_accuracies(df)
-plot_boxplots(df)
+#plot_boxplots(df)
+#plot_per_disorder(df)
 
 
