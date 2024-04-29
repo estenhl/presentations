@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
-from pygam import LinearGAM, s
 import statsmodels.formula.api as smf
+import matplotlib.pyplot as plt
 
 from collections import Counter
 from functools import reduce
@@ -285,6 +285,42 @@ def plot_per_disorder(df: pd.DataFrame):
 
     fig.show()
 
+def plot_multimodality(df: pd.DataFrame):
+    df = standardize(df, modalities=True)
+
+    df['multimodal'] = df['modality'].apply(lambda x: x == 'Multimodal')
+    df = df.groupby('year')['multimodal'].mean().reset_index()
+    #plt.plot(df['year'], df['multimodal'])
+    #plt.show()
+
+    df.to_csv('data/multimodal_years.csv', index=False)
+
+def plot_future(df: pd.DataFrame):
+    df = standardize(df)
+
+    cs = ['red', 'blue']
+
+    for i, method in enumerate(np.unique(df['method'])):
+        print(i)
+        print(method)
+        subset = df[df['method'] == method]
+        model = LinearRegression()
+        model.fit(subset[['year']], subset['accuracy'])
+        plt.scatter(subset['year'], subset['accuracy'], c=cs[i], label=method)
+        plt.plot([2005, 2020], model.predict([[2005], [2020]]), c=cs[i])
+
+        print(f'{method}: {model.intercept_:.3f}, {model.coef_[0]:.3f}')
+        subset.to_csv(f'data/{method}_accuracies.csv')
+
+    plt.show()
+
+    model = LinearRegression()
+    model.fit(df[['year']], df['sample'])
+    print(f'Samples: {model.intercept_:.3f}, {model.coef_[0]:.3f}')
+    df.to_csv('data/samples_per_year.csv', index=False)
+    plt.scatter(df['year'], df['sample'])
+    plt.plot([2005, 2020], model.predict([[2005], [2020]]))
+    plt.show()
 
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
 print(f'Originally: {len(df)}')
@@ -301,5 +337,7 @@ plot_occurences(df)
 #plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
+#plot_multimodality(df)
+plot_future(df)
 
 
