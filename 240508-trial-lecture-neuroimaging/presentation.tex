@@ -4,6 +4,7 @@
 
 \usepackage[export]{adjustbox}
 \usepackage{array}
+\usepackage{enumitem}
 \usepackage{etoolbox}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -1138,169 +1139,172 @@
     %     }
     % \end{frame}
 
-    % \newsavebox{\fmristudies}
-    % \sbox{\fmristudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=Year,
-    %             ylabel=Accuracy,
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=2005,
-    %             xmax=2023,
-    %             xtick={2005, 2010, 2015, 2020},
-    %             xticklabels={2005, 2010, 2015, 2020},
-    %             ymin=50,
-    %             ymax=100
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     DEM={mark=*,dem},
-    %                     SCZ={mark=*,scz},
-    %                     MDD={mark=*,mdd},
-    %                     BP={mark=*,bp},
-    %                     MS={mark=*,ms},
-    %                     PD={mark=*,pd}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/fMRI_studies.csv};
-    %             \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
-    %             \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
-    %             \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
-    %             \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
-    %             \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
-    %             \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\fmristudies}
+    \sbox{\fmristudies}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=Year,
+                ylabel=Accuracy,
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=2005,
+                xmax=2023,
+                xtick={2005, 2010, 2015, 2020},
+                xticklabels={2005, 2010, 2015, 2020},
+                ymin=50,
+                ymax=100
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        DEM={mark=*,dem},
+                        SCZ={mark=*,scz},
+                        MDD={mark=*,mdd},
+                        BP={mark=*,bp},
+                        MS={mark=*,ms},
+                        PD={mark=*,pd}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/fMRI_studies.csv};
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
+                \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
+                \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
+                \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \begin{frame}[t]{Functional Magnetic Resonance Imaging (fMRI)}
-    %     \only<1-10>{
-    %         \begin{tikzpicture}
-    %             \node[draw=black] at (0, 0) {};
-    %             \node[draw=black] at (10, -7) {};
+    \begin{frame}[t]{Functional Magnetic Resonance Imaging (fMRI)}
+        \only<1-10>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
 
-    %             \only<1-3>{
-    %                 \node[] at (2, -3.5) {
-    %                     Explanation of fMRI
-    %                 };
-    %             }
-    %             \only<2>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     Task vs rest
-    %                 };
-    %             };
-    %             \only<3>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     \usebox{\fmristudies}
-    %                 };
-    %             }
-    %             \only<4-8>{
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                     Drysdale, A. T., Grosenick, L., Downar, J., Dunlop, K., Mansouri, F., Meng, Y., ... \& Liston, C. (2017). Resting-state connectivity\\biomarkers define neurophysiological subtypes of depression. Nature medicine, 23(1), 28-38
-    %                 };
-    %                 \only<4>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=5.5cm]{data/mdd_biotypes_overview.jpeg}
-    %                     };
-    %                 }
-    %                 \only<5>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[
-    %                             width=6.5cm,
-    %                             trim={0 6.9cm 0 5.7cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_features.jpeg}
-    %                     };
-    %                 }
-    %                 \only<6>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[
-    %                             width=7cm,
-    %                             trim={0 0 0 13cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_replication.jpeg}
-    %                     };
-    %                 }
-    %                 \only<7,8>{
-    %                     \node[inner sep=0pt, draw=black] at (2.5, -3.2) {
-    %                         \includegraphics[
-    %                             height=1.5cm,
-    %                             trim={0 13.3cm 7.2cm 0},
-    %                             clip
-    %                         ]{data/mdd_biotypes_treatment.jpeg}
-    %                     };
-    %                 }
-    %                 \only<8>{
-    %                     \node[inner sep=0pt, draw=black] at (7.5, -3.2) {
-    %                         \includegraphics[
-    %                             height=2.5cm,
-    %                             trim={0 0 0 9.6cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_treatment.jpeg}
-    %                     };
-    %                 }
-    %             }
-    %             \onslide<9->{
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                     Dinga, R., Schmaal, L., Penninx, B. W., van Tol, M. J., Veltman, D. J., van Velzen, L., ... \& Marquand, A. F. (2019). Evaluating the evidence\\for biotypes of depression: Methodological replication and extension of. NeuroImage: Clinical, 22, 101796
-    %                 };
-    %                 \only<9>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=7cm]{data/dinga_pipeline.jpg}
-    %                     };
-    %                 }
-    %                 \only<10>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=5cm]{data/dinga_results.jpg}
-    %                     };
-    %                 }
-    %             }
-    %         \end{tikzpicture}
-    %     }
-    %     \only<11>{
-    %         \begin{itemize}
-    %             \setlength\itemsep{-0.3em}
-    %             \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
-    %             \begin{itemize}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
-    %             \end{itemize}
-    %             \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Diffusion MRI}}
-    %             \begin{itemize}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}}
-    %             \end{itemize}
-    %             \item \footnotesize{Functional MRI}
-    %             \begin{itemize}
-    %                 \item \scriptsize{Widely used for all conditions, most prominently SCZ and MDD with varying accuracies (60-100\%) and DEM (80-100\%).}
-    %                 \item \scriptsize{Used by Drysdale et al. to detect biotypes of MDD that reacted differently to treatment by transcranial magnetic stimulation.}
-    %                 \item \scriptsize{However, Dinga et al. failed to replicate their results \textcolor{red}{WHY}.}
-    %             \end{itemize}
-    %         \end{itemize}
+                \only<1-3>{
+                    \node[] at (2, -3.5) {
+                        Explanation of fMRI
+                    };
+                }
+                \only<2>{
+                    \node[] at (7.6, -3.2) {
+                        Task vs rest
+                    };
+                };
+                \only<3>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\fmristudies}
+                    };
+                }
+                \only<4-8>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Drysdale, A. T., Grosenick, L., Downar, J., Dunlop, K., Mansouri, F., Meng, Y., ... \& Liston, C. (2017). Resting-state connectivity\\biomarkers define neurophysiological subtypes of depression. Nature medicine, 23(1), 28-38
+                    };
+                    \only<4>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=5.5cm]{data/mdd_biotypes_overview.jpeg}
+                        };
+                    }
+                    \only<5>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[
+                                width=6.5cm,
+                                trim={0 6.9cm 0 5.7cm},
+                                clip
+                            ]{data/mdd_biotypes_features.jpeg}
+                        };
+                    }
+                    \only<6>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[
+                                width=7cm,
+                                trim={0 0 0 13cm},
+                                clip
+                            ]{data/mdd_biotypes_replication.jpeg}
+                        };
+                    }
+                    \only<7,8>{
+                        \node[inner sep=0pt, draw=black] at (2.5, -3.2) {
+                            \includegraphics[
+                                height=1.5cm,
+                                trim={0 13.3cm 7.2cm 0},
+                                clip
+                            ]{data/mdd_biotypes_treatment.jpeg}
+                        };
+                    }
+                    \only<8>{
+                        \node[inner sep=0pt, draw=black] at (7.5, -3.2) {
+                            \includegraphics[
+                                height=2.5cm,
+                                trim={0 0 0 9.6cm},
+                                clip
+                            ]{data/mdd_biotypes_treatment.jpeg}
+                        };
+                    }
+                }
+                \onslide<9->{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Dinga, R., Schmaal, L., Penninx, B. W., van Tol, M. J., Veltman, D. J., van Velzen, L., ... \& Marquand, A. F. (2019). Evaluating the evidence\\for biotypes of depression: Methodological replication and extension of. NeuroImage: Clinical, 22, 101796
+                    };
+                    \only<9>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=7cm]{data/dinga_pipeline.jpg}
+                        };
+                    }
+                    \only<10>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=5cm]{data/dinga_results.jpg}
+                        };
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<11>{
+            \begin{itemize}
+                \setlength\itemsep{-0.3em}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
+                \end{itemize}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Diffusion MRI}}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item[] \textcolor{gray!50}{\scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}}
+                \end{itemize}
+                \item {\footnotesize Functional MRI}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item {\scriptsize Widely used for all conditions, most prominently SCZ and MDD with varying accuracies (60-100\%) and DEM (80-100\%).}
+                    \item {\scriptsize Used by Drysdale et al. to detect biotypes of MDD that reacted differently to treatment by transcranial magnetic stimulation.}
+                    \item {\scriptsize However, Dinga et al. failed to replicate their results \textcolor{red}{WHY}.}
+                \end{itemize}
+            \end{itemize}
 
-    %     }
-    % \end{frame}
+        }
+    \end{frame}
 
 
     \newsavebox{\molstudies}
@@ -1476,129 +1480,239 @@
     }
 
     \begin{frame}[t]{Molecular imaging (PET/SPECT)}
-        % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9181385/#B45-ijms-23-06079
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7) {};
+        \only<1-20>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
 
-            \only<1,2>{
-                \node[] at (2, -3.5) {
-                    Explanation of molecular
-                };
-            }
-            \only<2>{
-                \node[] at (7.6, -3.2) {
-                    \usebox{\molstudies}
-                };
-            }
-            \only<3>{
-                \node[] at (5, -3.2) {
-                    Explanation of PET
-                };
-            }
-            \only<4>{
-                \node[] at (7.6, -3.2) {
-                    \usebox{\moldem}
-                };
-            }
-            %https://alz.org/media/Documents/scientific-conferences/Figures-and-Tables-Clinical-Criteria-for-Staging-and-Diagnosis-for-Public-Comment-Draft-2.pdf?_gl=1*ltg2em*_ga*NDUxNDk5MDY3LjE3MTQ1MDcyNTA.*_ga_9JTEWVX24V*MTcxNDUwNzI1MC4xLjEuMTcxNDUwNzI3MC40MC4wLjA.*_ga_QSFTKCEH7C*MTcxNDUwNzI1MC4xLjEuMTcxNDUwNzI3MC40MC4wLjA.
-            \only<5-13>{
-                \only<5>{
-                    \node[] at (5, -3.75) {
-                        \usebox{\cascade}
+                \only<1,2>{
+                    \node[] at (2, -3.5) {
+                        Explanation of molecular
                     };
                 }
-                \only<6-9>{
-                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-                        Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
+                \only<2>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\molstudies}
                     };
                 }
-                \only<6>{
-                    \node[anchor=west] at (0.4, -3.2) {
-                        \includegraphics[
-                            height=5cm,
-                            trim={0 0 23.6cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
+                \only<3>{
+                    \node[] at (5, -3.2) {
+                        Explanation of PET
                     };
                 }
-                \only<7>{
-                    \node[anchor=west] at (0.4, -3.2) {
-                        \includegraphics[
-                            height=5cm,
-                            trim={0 0 15.9cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
+                \only<4>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\moldem}
                     };
                 }
-                \only<8>{
-                    \node[anchor=west] at (0.4, -3.2) {
-                        \includegraphics[
-                            height=5cm,
-                            trim={0 0 7.85cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
-                    };
-                }
-                \only<9>{
-                    \node[anchor=west] at (0.4, -3.2) {
-                        \includegraphics[height=5cm]{data/AD_pet_types.png}
-                    };
-                }
-                \only<10>{
-                    \node[font=\scriptsize\itshape, align=left] at (5.2, -3.5) {
-                        "It is necessary to separate syndrome (clinically identified impairment) from biology\\(etiology)\\
-                        \\[-0.2cm]
-                        AD is defined by its biology with the following implications\\
-                        \\[-0.2cm]
-                        The disease is first evident with the appearance of β-amyloid plaques, and later\\neocortical tau tangles, while people are asymptomatic. Pathophysiologic mechanisms\\involved with processing and clearance of protein fragments may be involved very early\\in the disease process, but these are not yet well understood.\\
-                        \\[-0.2cm]
-                        In living people the disease is diagnosed by disease specific core biomarkers\\
-                        \\[-0.2cm]
-                        Unimpaired individuals with abnormal biomarker testing are at risk for symptoms due to\\AD.\\
-                        \\[-0.2cm]
-                        They are not at risk for a disease they already have.\\
-                        \\[-0.2cm]
-                        Symptoms are a result of the disease process and are not necessary to diagnose AD\\
-                        \\[-0.2cm]
-                        AD exists on a continuum not as discrete clinically defined entities\\
-                        \\[-0.2cm]
-                        Clinical syndromes commonly seen with AD may also be caused by disorders other than\\AD and therefore clinical presentation alone is not diagnostic of AD\\
-                        \\[-0.2cm]
-                        The same AD biology may result in different phenotypic presentations"\\
-                    };
-
-                }
-                \only<11-13>{
-                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-                        Perovnik, M., Vo, A., Nguyen, N., Jamšek, J., Rus, T., Tang, C. C., ... \& Eidelberg, D. (2022). Automated differential diagnosis\\of dementia syndromes using FDG PET and machine learning. Frontiers in Aging Neuroscience, 14, 1005731
-                    };
-                    \only<11>{
-                        \node[inner sep=0pt, draw=black] at (5, -3.25) {
-                            \includegraphics[width=7cm]{data/PET_AD_pipeline.jpeg}
+                \only<5-13>{
+                    \only<5>{
+                        \node[] at (5, -3.75) {
+                            \usebox{\cascade}
                         };
                     }
-                    \only<12,13>{
-                        \node[inner sep=0pt, draw=black] at (2, -3.25) {
-                            \begin{tabular}{r|c|c|c|c}
-                                \textbf{AD}&32&9&&2\\
-                                \hline
-                                \textbf{DLB}&10&46&0&3\\
-                                \hline
-                                \textbf{FTD}&&1&21&1\\
-                                \hline
-                                \textbf{NC}&&
-                            \end{tabular}
+                    \only<6-9>{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
                         };
                     }
+                    \only<6>{
+                        \node[anchor=west] at (0.4, -3.2) {
+                            \includegraphics[
+                                height=5cm,
+                                trim={0 0 23.6cm 0},
+                                clip
+                            ]{data/AD_pet_types.png}
+                        };
+                    }
+                    \only<7>{
+                        \node[anchor=west] at (0.4, -3.2) {
+                            \includegraphics[
+                                height=5cm,
+                                trim={0 0 15.9cm 0},
+                                clip
+                            ]{data/AD_pet_types.png}
+                        };
+                    }
+                    \only<8>{
+                        \node[anchor=west] at (0.4, -3.2) {
+                            \includegraphics[
+                                height=5cm,
+                                trim={0 0 7.85cm 0},
+                                clip
+                            ]{data/AD_pet_types.png}
+                        };
+                    }
+                    \only<9>{
+                        \node[anchor=west] at (0.4, -3.2) {
+                            \includegraphics[height=5cm]{data/AD_pet_types.png}
+                        };
+                    }
+                    \only<10>{
+                        \node[font=\scriptsize\itshape, align=left] at (5.2, -3.5) {
+                            "It is necessary to separate syndrome (clinically identified impairment) from biology\\(etiology)\\
+                            \\[-0.2cm]
+                            AD is defined by its biology with the following implications\\
+                            \\[-0.2cm]
+                            The disease is first evident with the appearance of β-amyloid plaques, and later\\neocortical tau tangles, while people are asymptomatic. Pathophysiologic mechanisms\\involved with processing and clearance of protein fragments may be involved very early\\in the disease process, but these are not yet well understood.\\
+                            \\[-0.2cm]
+                            In living people the disease is diagnosed by disease specific core biomarkers\\
+                            \\[-0.2cm]
+                            Unimpaired individuals with abnormal biomarker testing are at risk for symptoms due to\\AD.\\
+                            \\[-0.2cm]
+                            They are not at risk for a disease they already have.\\
+                            \\[-0.2cm]
+                            Symptoms are a result of the disease process and are not necessary to diagnose AD\\
+                            \\[-0.2cm]
+                            AD exists on a continuum not as discrete clinically defined entities\\
+                            \\[-0.2cm]
+                            Clinical syndromes commonly seen with AD may also be caused by disorders other than\\AD and therefore clinical presentation alone is not diagnostic of AD\\
+                            \\[-0.2cm]
+                            The same AD biology may result in different phenotypic presentations"\\
+                        };
+
+                    }
+                    \only<11-13>{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Perovnik, M., Vo, A., Nguyen, N., Jamšek, J., Rus, T., Tang, C. C., ... \& Eidelberg, D. (2022). Automated differential diagnosis\\of dementia syndromes using FDG PET and machine learning. Frontiers in Aging Neuroscience, 14, 1005731
+                        };
+                        \only<11>{
+                            \node[inner sep=0pt, draw=black] at (5, -3.25) {
+                                \includegraphics[width=7cm]{data/PET_AD_pipeline.jpeg}
+                            };
+                        }
+                        \only<12,13>{
+                            \node[font=\scriptsize, label=below:\footnotesize{Model predicted diagnosis (86\%)}] at (5, -1.5) {
+                                \begin{tabular}{r|c|c|c|c|}
+                                    &\textbf{AD}&\textbf{DLB}&\textbf{FTD}&\textbf{NC}\\
+                                    \hline
+                                    \textbf{AD}&53&7&&3\\
+                                    \hline
+                                    \textbf{DLB}&9&65&1&4\\
+                                    \hline
+                                    \textbf{FTD}&&1&21&1\\
+                                    \hline
+                                    \textbf{NC}&2&&&39\\
+                                    \hline
+                                \end{tabular}
+                            };
+                            \only<13>{
+                                \node[font=\scriptsize, label=below:\footnotesize{Human predicted diagnosis (78\%)}] at (5, -4.5) {
+                                    \begin{tabular}{r|c|c|c|c|c|}
+                                        &\textbf{AD}&\textbf{DLB}&\textbf{FTD}&\textbf{Other}&\textbf{NC}\\
+                                        \hline
+                                        \textbf{AD}&50&4&&8&1\\
+                                        \hline
+                                        \textbf{DLB}&5&54&&19&1\\
+                                        \hline
+                                        \textbf{FTD}&3&&16&24&\\
+                                        \hline
+                                        \textbf{Other}&&&&&\\
+                                        \hline
+                                        \textbf{NC}&&&&&41\\
+                                        \hline
+                                    \end{tabular}
+                                };
+                            }
+                        }
+                    }
                 }
-            }
-            % \only<6>{
-            %     \node[] at (7.6, -3.2) {
-            %         \usebox{\molpd}
-            %     };
-            % }
-        \end{tikzpicture}
+                \only<14-20>{
+                    \only<14>{
+                        \node[] at (7.6, -3.2) {
+                            \usebox{\molpd}
+                        };
+                    }
+                    \only<15,16>{
+                        \node[inner sep=0pt, outer sep=0pt] (pet) at (5, -2.2) {
+                            \includegraphics[
+                                width=3cm,
+                                trim={0 0 5.5cm 0},
+                                clip
+                            ]{data/PD_PET.jpg}
+                        };
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Pagano, G., Niccolini, F., \& Politis, M. (2016). Imaging in Parkinson’s disease. Clinical Medicine, 16(4), 371
+                        };
+
+                    }
+                    \only<16>{
+                        \node[inner sep=0pt, anchor=north, outer sep=0pt] at ($ (pet.south) + (0, 0.05) $){
+                            \includegraphics[
+                                width=3cm,
+                                trim={3.83cm 0 3.5cm 0},
+                                clip
+                            ]{data/PD_SPECT.jpg}
+                        };
+                    }
+                    \only<17>{
+                        \node[] at (5, -3.5) {
+                            Explanation of SPECT
+                        };
+                    }
+                    \onslide<18->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Adams, M. P., Rahmim, A., \& Tang, J. (2021). Improved motor outcome prediction in Parkinson's disease\\applying deep learning to DaTscan SPECT images. Computers in Biology and Medicine, 132, 104312
+                        };
+                        \only<18>{
+                            \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                                \includegraphics[width=4.5cm]{data/PD_SPECT_images.jpg}
+                            };
+                        }
+                        \only<19>{
+                            \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                                \includegraphics[width=7cm]{data/PD_SPECT_model.jpg}
+                            };
+                        }
+                        \only<20>{
+                            \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                                \includegraphics[width=8cm]{data/PD_SPECT_results.jpg}
+                            };
+                        }
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<21>{
+            \begin{itemize}[itemsep=-0.3em]
+                \item[\textcolor{gray!50}{\textbullet}] {\footnotesize \textcolor{gray!50}{Non-T1 weighted structural MRI}}
+                \begin{itemize}[itemsep=-0.3em]
+                    \vspace{-0.4em}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{\setlength{\baselineskip}{10pt}High accuracies for classifying MS and PD (>90\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
+                \end{itemize}
+                \item[\textcolor{gray!50}{\textbullet}] {\footnotesize \textcolor{gray!50}{Diffusion MRI}}
+                \begin{itemize}[itemsep=-0.3em]
+                    \vspace{-0.4em}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}}
+                    \item[\textcolor{gray!50}{\textbullet}] {\scriptsize \textcolor{gray!50}{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}}
+                \end{itemize}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Functional MRI}}
+                \begin{itemize}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Widely used for all conditions, most prominently SCZ and MDD with varying accuracies (60-100\%) and DEM (80-100\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Drysdale et al. to detect biotypes of MDD that reacted differently to treatment by transcranial magnetic stimulation.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{However, Dinga et al. failed to replicate their results.}}
+                \end{itemize}
+                \item {\footnotesize Molecular imaging}
+                \begin{itemize}
+                    \item {\scriptsize Used in a moderate amount of studies predicting PD and DEM with good results (mean accuracy=92\%).}
+                    \item {\scriptsize PET is excellent for detecting AD-related pathology, and was shown by Pevronik et al. to differentially diagnose DEM above human level. }
+                    \item {\scriptsize SPECT is excellent for detecting XXX in PD, and was shown by Adams et al. to prognosticate motor function beyond what was done by current motor function alone.}
+                \end{itemize}
+            \end{itemize}
+        }
+    \end{frame}
+
+    \begin{frame}
+        \begin{itemize}
+            \setlength\itemsep{-0.3em}
+            \item {\scriptsize \textcolor{red}{Hello}}
+            \item {\scriptsize \textcolor{red}{Hello}}
+            \item {\scriptsize Hello}
+            \item {\scriptsize Hello}
+        \end{itemize}
     \end{frame}
 
     % \begin{frame}{Summary}
