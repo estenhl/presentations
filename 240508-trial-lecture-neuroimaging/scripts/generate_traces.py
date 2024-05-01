@@ -225,32 +225,17 @@ def plot_modality(df: pd.DataFrame, modality: str, modalities: str):
     df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv(f'data/{modality}_studies.csv', index=False)
 
     for diagnosis in np.unique(df['diagnosis']):
-        print(f'{modality} mean accuracy {diagnosis}: {np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"])}')
+        print(f'{modality} mean accuracy {diagnosis}: '
+              f'{np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"]):.2f} '
+              f'({np.amax(df.loc[df["diagnosis"] == diagnosis, "sample"])})')
 
 
 
 def plot_t2(df: pd.DataFrame):
-    df = standardize(df, diagnoses=True)
-    df.loc[df['modality'] == 'FLAIR', 'modality'] = 'T2'
-    df = df[df['modality'] == 'T2']
-
-    for diagnosis in np.unique(df['diagnosis']):
-        print(f'T2 mean accuracy {diagnosis}: '
-              f'{np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"])} '
-              f'({np.amax(df.loc[df["diagnosis"] == diagnosis, "sample"])})')
-
-    df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv('data/t2_studies.csv', index=False)
+    plot_modality(df, 'T2', ['FLAIR'])
 
 def plot_dmri(df: pd.DataFrame):
-    df = standardize(df, diagnoses=True)
-    df['modality'] = df['modality'].apply(lambda x: x.split('/'))
-    df = df[df['modality'].apply(lambda x: 'dMRI' in x or 'DTI' in x)]
-    print(f'Found {len(df)} DTI studies: {Counter(df["diagnosis"])}')
-
-    df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv('data/dmri_studies.csv', index=False)
-
-    for diagnosis in np.unique(df['diagnosis']):
-        print(f'DTI mean accuracy {diagnosis}: {np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"])}')
+    plot_modality(df, 'dMRI', ['DTI'])
 
 def plot_molecular(df: pd.DataFrame):
     plot_modality(df, 'molecular', ['PET', 'SPECT'])
@@ -386,15 +371,14 @@ print(Counter(df['diagnosis']))
 #plot_occurences(df)
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
-plot_t2(df)
+#plot_t2(df)
 #plot_dmri(df)
 #plot_molecular(df)
-#plot_fmri(df)
-#plot_fmri(df)
+plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
 #plot_multimodality(df)
 #plot_future(df)
-expand(df)
+#expand(df)
 
 

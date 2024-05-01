@@ -12,6 +12,7 @@
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage{tikz}
+\usepackage{transparent}
 \usepackage{xcolor}
 
 \usepgfplotslibrary{fillbetween}
@@ -696,7 +697,7 @@
     %     \end{tikzpicture}
     % \end{frame}
 
-    \newcommand{\mortalityplot}[5]{
+    \newcommand{\modalityplot}[5]{
         \begin{tikzpicture}
             \begin{axis}[
                 ymin=50,
@@ -718,8 +719,12 @@
                     only marks,
                     scatter,
                     scatter/classes={
+                        DEM={mark=*,dem},
                         MS={mark=*,ms},
-                        PD={mark=*,pd}
+                        PD={mark=*,pd},
+                        SCZ={mark=*,scz},
+                        MDD={mark=*,mdd},
+                        BP={mark=*,bp}
                     },
                     scatter src=explicit symbolic,
                     visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
@@ -740,7 +745,7 @@
 
     \newsavebox{\ttwostudies}
     \sbox{\ttwostudies}{%
-        \mortalityplot{t2_studies.csv}{{2016, 2018, 2020, 2022}}{2015.5}{2022.5}{
+        \modalityplot{t2_studies.csv}{{2016, 2018, 2020, 2022}}{2015.5}{2022.5}{
             \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (4)}}] at (axis cs: 2023, 51) {};
             \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (11)}}] at (axis cs: 2023, 56) {};
         }
@@ -781,7 +786,7 @@
                     (0, #4)
                     (#5, #4)
                 };
-                \node[anchor=north east, ms] at (axis cs: #7, #4) {\footnotesize{#4\%}};
+                \node[anchor=north east, #6] at (axis cs: #7, #4) {\footnotesize{#4\%}};
             \end{axis}
         \end{tikzpicture}
     }
@@ -920,423 +925,372 @@
         }
     \end{frame}
 
-    % \newsavebox{\dmristudies}
-    % \sbox{\dmristudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=\footnotesize{Year},
-    %             ylabel=\footnotesize{Accuracy},
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=2004,
-    %             xmax=2022,
-    %             xtick={2005, 2010, 2015, 2020},
-    %             xticklabels={2005, 2010, 2015, 2020},
-    %             ymin=50,
-    %             ymax=100
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     DEM={mark=*,dem},
-    %                     SCZ={mark=*,scz},
-    %                     MDD={mark=*,mdd},
-    %                     BP={mark=*,bp},
-    %                     MS={mark=*,ms}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/dmri_studies.csv};
-    %             \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (1)}}] at (axis cs: 2023, 51) {};
-    %             \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (2)}}] at (axis cs: 2023, 56) {};
-    %             \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (6)}}] at (axis cs: 2023, 61) {};
-    %             \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (9)}}] at (axis cs: 2023, 66) {};
-    %             \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (10)}}] at (axis cs: 2023, 71) {};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\dmristudies}
+    \sbox{\dmristudies}{%
+        \modalityplot{dmri_studies.csv}{{2005, 2010, 2015, 2020}}{2005}{2022}{
+            \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (1)}}] at (axis cs: 2023, 51) {};
+            \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (2)}}] at (axis cs: 2023, 56) {};
+            \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (6)}}] at (axis cs: 2023, 61) {};
+            \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (9)}}] at (axis cs: 2023, 66) {};
+            \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (10)}}] at (axis cs: 2023, 71) {};
+        }
+    }
 
-    % \newsavebox{\dmriscz}
-    % \sbox{\dmriscz}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=\footnotesize{Sample size},
-    %             ylabel=\footnotesize{Accuracy},
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=0,
-    %             xmax=220,
-    %             xmax=900
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 discard if not={diagnosis}{SCZ},
-    %                 mark=*,
-    %                 scz,
-    %                 opacity=0.75,
-    %                 mark size=3pt
-    %             ] table [
-    %                 x=sample,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %             ] {data/dmri_studies.csv};
-    %             \addplot[
-    %                 dashed,
-    %                 scz
-    %             ] coordinates {
-    %                 (0, 84.297)
-    %                 (900, 84.297)
-    %             };
-    %             \node[anchor=north east, scz] at (axis cs: 900, 84.297) {\footnotesize{84.29\%}};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\dmriscz}
+    \sbox{\dmriscz}{%
+        \disordermodalityplot{SCZ}{dMRI}{dmri_studies.csv}{84.30}{220}{scz}{220}
+    }
 
-    % \newsavebox{\dmridem}
-    % \sbox{\dmridem}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=\footnotesize{Sample size},
-    %             ylabel=\footnotesize{Accuracy},
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=0,
-    %             xmax=900
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 discard if not={diagnosis}{DEM},
-    %                 mark=*,
-    %                 dem,
-    %                 opacity=0.75,
-    %                 mark size=3pt
-    %             ] table [
-    %                 x=sample,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %             ] {data/dmri_studies.csv};
-    %             \addplot[
-    %                 dashed,
-    %                 dem
-    %             ] coordinates {
-    %                 (0, 90.09)
-    %                 (900, 90.09)
-    %             };
-    %             \node[anchor=north east, dem] at (axis cs: 900, 90.09) {\footnotesize{90.09\%}};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\dmridem}
+    \sbox{\dmridem}{%
+        \disordermodalityplot{DEM}{dMRI}{dmri_studies.csv}{89.56}{850}{dem}{850}
+    }
 
-    % \begin{frame}[t]{Diffusion MRI}
-    %     \only<1-13>{
-    %         \begin{tikzpicture}
-    %             \node[draw=black] at (0, 0) {};
-    %             \node[draw=black] at (10, -7) {};
+    \begin{frame}[t]{Diffusion MRI}
+        \only<1-13>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
 
-    %             \only<1-3>{
-    %                 \node[] at (2, -3.5) {
-    %                     Explanation of DTI
-    %                 };
-    %             }
-    %             \only<2>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     \usebox{\dmristudies}
-    %                 };
-    %             };
-    %             \only<3>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     Lack of prediction studies
-    %                 };
-    %             }
-    %             \onslide<4-8>{
-    %                 \only<4>{
-    %                     \node[] at (5, -3.2) {
-    %                         \usebox{\dmriscz}
-    %                     };
-    %                 }
-    %                 \onslide<5->{
-    %                     \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                         Saglam, Y., Oz, A., Yildiz, G., Ermis, C., Kargin, O. A., Arslan, S., \& Karacetin, G. (2023). Can diffusion\\tensor imaging have a diagnostic utility to differentiate early-onset forms of bipolar disorder and schizophrenia:\\A neuroimaging study with explainable machine learning algorithms. Psychiatry Research: Neuroimaging, 335, 111696
-    %                     };
-    %                 }
-    %                 \only<5>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=5cm]{data/scz_bp_pipeline.png}
-    %                     };
-    %                 }
-    %                 \only<6>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=7cm]{data/scz_bp_dti.png}
-    %                     };
-    %                 }
-    %                 \only<7>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=9cm]{data/scz_bp_performance.png}
-    %                     };
-    %                 }
-    %                 \only<8>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=7cm]{data/scz_bp_shap.png}
-    %                     };
-    %                 }
-    %             }
+                \only<1-3>{
+                    \node[] at (2, -3.5) {
+                        Explanation of DTI
+                    };
+                }
+                \only<2>{
+                    \node[] at (7.6, -3.6) {
+                        \usebox{\dmristudies}
+                    };
+                };
+                \only<3>{
+                    \node[] at (7.6, -3.2) {
+                        Lack of prediction studies
+                    };
+                }
+                \onslide<4-8>{
+                    \only<4>{
+                        \node[] at (5, -3.2) {
+                            \usebox{\dmriscz}
+                        };
+                    }
+                    \onslide<5->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                            Saglam, Y., Oz, A., Yildiz, G., Ermis, C., Kargin, O. A., Arslan, S., \& Karacetin, G. (2023). Can diffusion\\tensor imaging have a diagnostic utility to differentiate early-onset forms of bipolar disorder and schizophrenia:\\A neuroimaging study with explainable machine learning algorithms. Psychiatry Research: Neuroimaging, 335, 111696
+                        };
+                    }
+                    \only<5>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=5cm]{data/scz_bp_pipeline.png}
+                        };
+                    }
+                    \only<6>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=7cm]{data/scz_bp_dti.png}
+                        };
+                    }
+                    \only<7>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/scz_bp_performance.png}
+                        };
+                    }
+                    \only<8>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=7cm]{data/scz_bp_shap.png}
+                        };
+                    }
+                }
 
-    %             \onslide<9->{
-    %                 \only<9>{
-    %                     \node[] at (5, -3.2) {
-    %                         \usebox{\dmridem}
-    %                     };
-    %                 }
-    %                 \onslide<10->{
-    %                     \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                             Sun, Y., Bi, Q., Wang, X., Hu, X., Li, H., Li, X., ... \& Han, Y. (2019). Prediction of conversion from amnestic\\mild cognitive impairment to Alzheimer's disease based on the brain structural connectome. Frontiers in neurology, 9, 1178
-    %                     };
+                \onslide<9->{
+                    \only<9>{
+                        \node[] at (5, -3.2) {
+                            \usebox{\dmridem}
+                        };
+                    }
+                    \onslide<10->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                                Sun, Y., Bi, Q., Wang, X., Hu, X., Li, H., Li, X., ... \& Han, Y. (2019). Prediction of conversion from amnestic\\mild cognitive impairment to Alzheimer's disease based on the brain structural connectome. Frontiers in neurology, 9, 1178
+                        };
 
-    %                 }
-    %                 \only<10>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=9cm]{data/mci_conversion_overview.jpeg}
-    %                     };
-    %                 }
-    %                 \only<11>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=9cm]{data/mci_conversion_hubs.jpeg}
-    %                     };
-    %                 }
-    %                 \only<12-13>{
-    %                     \node[inner sep=0pt, draw=black] at (3, -3.2) {
-    %                         \includegraphics[
-    %                             height=5cm,
-    %                             trim={22.2cm, 0, 0, 0},
-    %                             clip
-    %                         ]{data/mci_conversion_connectivity.jpeg}
-    %                     };
-    %                     \only<13>{
-    %                         \node[inner sep=0pt, draw=black] at (7, -3.2) {
-    %                             \includegraphics[
-    %                                 height=5cm,
-    %                                 trim={22.2cm, 0, 0, 0},
-    %                                 clip
-    %                             ]{data/mci_conversion_regions.jpeg}
-    %                         };
-    %                     }
-    %                 }
-    %             }
-    %         \end{tikzpicture}
-    %     }
-    %     \only<14>{
-    %         \begin{itemize}
-    %             \setlength\itemsep{-0.3em}
-    %             \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
-    %             \begin{itemize}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
-    %             \end{itemize}
-    %             \item \footnotesize{Diffusion MRI}
-    %             \begin{itemize}
-    %                 \item \scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}
-    %                 \item \scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}
-    %                 \item \scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}
-    %             \end{itemize}
-    %         \end{itemize}
-    %     }
-    % \end{frame}
+                    }
+                    \only<10>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/mci_conversion_overview.jpeg}
+                        };
+                    }
+                    \only<11>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/mci_conversion_hubs.jpeg}
+                        };
+                    }
+                    \only<12-13>{
+                        \node[inner sep=0pt, draw=black] at (3, -3.2) {
+                            \includegraphics[
+                                height=5cm,
+                                trim={22.2cm, 0, 0, 0},
+                                clip
+                            ]{data/mci_conversion_connectivity.jpeg}
+                        };
+                        \only<13>{
+                            \node[inner sep=0pt, draw=black] at (7, -3.2) {
+                                \includegraphics[
+                                    height=5cm,
+                                    trim={22.2cm, 0, 0, 0},
+                                    clip
+                                ]{data/mci_conversion_regions.jpeg}
+                            };
+                        }
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<14>{
+            \begin{itemize}
+                \setlength\itemsep{-0.3em}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
+                \begin{itemize}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
+                \end{itemize}
+                \item \footnotesize{Diffusion MRI}
+                \begin{itemize}
+                    \item \scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}
+                    \item \scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}
+                    \item \scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}
+                \end{itemize}
+            \end{itemize}
+        }
+    \end{frame}
 
-    % \newsavebox{\fmristudies}
-    % \sbox{\fmristudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=Year,
-    %             ylabel=Accuracy,
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=2005,
-    %             xmax=2023,
-    %             xtick={2005, 2010, 2015, 2020},
-    %             xticklabels={2005, 2010, 2015, 2020},
-    %             ymin=50,
-    %             ymax=100
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     DEM={mark=*,dem},
-    %                     SCZ={mark=*,scz},
-    %                     MDD={mark=*,mdd},
-    %                     BP={mark=*,bp},
-    %                     MS={mark=*,ms},
-    %                     PD={mark=*,pd}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/fMRI_studies.csv};
-    %             \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
-    %             \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
-    %             \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
-    %             \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
-    %             \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
-    %             \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\fmristudies}
+    \sbox{\fmristudies}{%
+        \modalityplot{fmri_studies.csv}{{2005, 2010, 2015, 2020}}{2005}{2023}{
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
+                \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
+                \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
+                \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
+        }
+    }
 
-    % \begin{frame}[t]{Functional Magnetic Resonance Imaging (fMRI)}
-    %     \only<1-10>{
-    %         \begin{tikzpicture}
-    %             \node[draw=black] at (0, 0) {};
-    %             \node[draw=black] at (10, -7) {};
+    \newsavebox{\mddfmri}
+    \sbox{\mddfmri}{%
+        \disordermodalityplot{MDD}{fMRI}{fmri_studies.csv}{81.99}{380}{mdd}{380}
+    }
 
-    %             \only<1-3>{
-    %                 \node[] at (2, -3.5) {
-    %                     Explanation of fMRI
-    %                 };
-    %             }
-    %             \only<2>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     Task vs rest
-    %                 };
-    %             };
-    %             \only<3>{
-    %                 \node[] at (7.6, -3.2) {
-    %                     \usebox{\fmristudies}
-    %                 };
-    %             }
-    %             \only<4-8>{
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                     Drysdale, A. T., Grosenick, L., Downar, J., Dunlop, K., Mansouri, F., Meng, Y., ... \& Liston, C. (2017). Resting-state connectivity\\biomarkers define neurophysiological subtypes of depression. Nature medicine, 23(1), 28-38
-    %                 };
-    %                 \only<4>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=5.5cm]{data/mdd_biotypes_overview.jpeg}
-    %                     };
-    %                 }
-    %                 \only<5>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[
-    %                             width=6.5cm,
-    %                             trim={0 6.9cm 0 5.7cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_features.jpeg}
-    %                     };
-    %                 }
-    %                 \only<6>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[
-    %                             width=7cm,
-    %                             trim={0 0 0 13cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_replication.jpeg}
-    %                     };
-    %                 }
-    %                 \only<7,8>{
-    %                     \node[inner sep=0pt, draw=black] at (2.5, -3.2) {
-    %                         \includegraphics[
-    %                             height=1.5cm,
-    %                             trim={0 13.3cm 7.2cm 0},
-    %                             clip
-    %                         ]{data/mdd_biotypes_treatment.jpeg}
-    %                     };
-    %                 }
-    %                 \only<8>{
-    %                     \node[inner sep=0pt, draw=black] at (7.5, -3.2) {
-    %                         \includegraphics[
-    %                             height=2.5cm,
-    %                             trim={0 0 0 9.6cm},
-    %                             clip
-    %                         ]{data/mdd_biotypes_treatment.jpeg}
-    %                     };
-    %                 }
-    %             }
-    %             \onslide<9->{
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                     Dinga, R., Schmaal, L., Penninx, B. W., van Tol, M. J., Veltman, D. J., van Velzen, L., ... \& Marquand, A. F. (2019). Evaluating the evidence\\for biotypes of depression: Methodological replication and extension of. NeuroImage: Clinical, 22, 101796
-    %                 };
-    %                 \only<9>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=7cm]{data/dinga_pipeline.jpg}
-    %                     };
-    %                 }
-    %                 \only<10>{
-    %                     \node[inner sep=0pt, draw=black] at (5, -3.2) {
-    %                         \includegraphics[width=5cm]{data/dinga_results.jpg}
-    %                     };
-    %                 }
-    %             }
-    %         \end{tikzpicture}
-    %     }
-    %     \only<11>{
-    %         \begin{itemize}
-    %             \setlength\itemsep{-0.3em}
-    %             \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
-    %             \begin{itemize}
-    %                 \setlength\itemsep{-0.4em}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
-    %             \end{itemize}
-    %             \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Diffusion MRI}}
-    %             \begin{itemize}
-    %                 \setlength\itemsep{-0.4em}
-    %                 \item[] \textcolor{gray!50}{\scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}}
-    %                 \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}}
-    %             \end{itemize}
-    %             \item {\footnotesize Functional MRI}
-    %             \begin{itemize}
-    %                 \setlength\itemsep{-0.4em}
-    %                 \item {\scriptsize Widely used for all conditions, most prominently SCZ and MDD with varying accuracies (60-100\%) and DEM (80-100\%).}
-    %                 \item {\scriptsize Used by Drysdale et al. to detect biotypes of MDD that reacted differently to treatment by transcranial magnetic stimulation.}
-    %                 \item {\scriptsize However, Dinga et al. failed to replicate their results \textcolor{red}{WHY}.}
-    %             \end{itemize}
-    %         \end{itemize}
+    \begin{frame}[t]{Functional Magnetic Resonance Imaging (fMRI)}
+        \only<1-13>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
+                \only<1-2,4-5>{
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                }
+                \only<2,4-5>{
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                }
+                \only<3>{
+                    \node[anchor=west] at (0, -2.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] (first) at (0, -2.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (0.5, -3.0) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (0.5, -3.0) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1.5, -4) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1.5, -4) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (2, -4.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
 
-    %     }
-    % \end{frame}
+                    \node[anchor=west] (last) at (2, -4.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+
+                    \draw[-stealth] ($ (first.north east) + (0.5, -0.13) $) -- ($ (last.north east) + (0.5, -0.13) $) node[midway, above, rotate=315] {time};
+                }
+
+                \only<4>{
+                    \node[inner sep=0pt, draw=black] at (7.6, -3.2) {
+                        \includegraphics[
+                            width=5cm,
+                            trim={0 0 150 0},
+                            clip
+                        ]{data/rest_task.jpeg}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Branco, P., Seixas, D., Deprez, S., Kovacs, S., Peeters, R., Castro, S. L., \& Sunaert, S. (2016). Resting-state functional magnetic\\resonance imaging for language preoperative planning. Frontiers in human neuroscience, 10, 11
+                    };
+                };
+                \only<5>{
+                    \node[] at (7.6, -3.6) {
+                        \usebox{\fmristudies}
+                    };
+                }
+                \only<6>{
+                    \node[] at (5, -3.2) {
+                        \usebox{\mddfmri}
+                    };
+                }
+                \only<7-11>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Drysdale, A. T., Grosenick, L., Downar, J., Dunlop, K., Mansouri, F., Meng, Y., ... \& Liston, C. (2017). Resting-state connectivity\\biomarkers define neurophysiological subtypes of depression. Nature medicine, 23(1), 28-38
+                    };
+                    \only<7>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.6) {
+                            \includegraphics[width=5.5cm]{data/mdd_biotypes_overview.jpeg}
+                        };
+                    }
+                    \only<8>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.6) {
+                            \includegraphics[
+                                width=8cm,
+                                trim={0 6.9cm 0 5.7cm},
+                                clip
+                            ]{data/mdd_biotypes_features.jpeg}
+                        };
+                    }
+                    \only<9>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.6) {
+                            \includegraphics[
+                                width=9cm,
+                                trim={0 0 0 13cm},
+                                clip
+                            ]{data/mdd_biotypes_replication.jpeg}
+                        };
+                    }
+                    \only<10,11>{
+                        \node[inner sep=0pt, draw=black] at (2.5, -3.6) {
+                            \includegraphics[
+                                height=2cm,
+                                trim={0 13.3cm 7.2cm 0},
+                                clip
+                            ]{data/mdd_biotypes_treatment.jpeg}
+                        };
+                    }
+                    \only<11>{
+                        \node[inner sep=0pt, draw=black] at (7.5, -3.6) {
+                            \includegraphics[
+                                height=2.8cm,
+                                trim={0 0 0 9.6cm},
+                                clip
+                            ]{data/mdd_biotypes_treatment.jpeg}
+                        };
+                    }
+                }
+                \onslide<12->{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Dinga, R., Schmaal, L., Penninx, B. W., van Tol, M. J., Veltman, D. J., van Velzen, L., ... \& Marquand, A. F. (2019). Evaluating the evidence\\for biotypes of depression: Methodological replication and extension of. NeuroImage: Clinical, 22, 101796
+                    };
+                    \only<12>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=8cm]{data/dinga_pipeline.jpg}
+                        };
+                    }
+                    \only<13>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=5cm]{data/dinga_results.jpg}
+                        };
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<14>{
+            \begin{itemize}
+                \setlength\itemsep{-0.3em}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
+                \end{itemize}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Diffusion MRI}}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item[] \textcolor{gray!50}{\scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy.}}
+                \end{itemize}
+                \item {\footnotesize Functional MRI}
+                \begin{itemize}
+                    \setlength\itemsep{-0.4em}
+                    \item {\scriptsize Widely used for all conditions, most prominently SCZ and MDD with varying accuracies (60-100\%) and DEM (80-100\%).}
+                    \item {\scriptsize Used by Drysdale et al. to detect biotypes of MDD that reacted differently to treatment by transcranial magnetic stimulation.}
+                    \item {\scriptsize However, Dinga et al. failed to replicate their results \textcolor{red}{WHY}.}
+                \end{itemize}
+            \end{itemize}
+
+        }
+    \end{frame}
 
 
     % \newsavebox{\molstudies}
