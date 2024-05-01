@@ -112,10 +112,30 @@
 \definecolor{color6}{HTML}{43aa8b}
 \definecolor{color7}{HTML}{577590}
 
+\colorlet{dem}{color1}
+\colorlet{ms}{color2}
+\colorlet{pd}{color3}
+\colorlet{scz}{color4}
+\colorlet{mdd}{color5}
+\colorlet{bp}{color6}
+
 \titlegraphic{
 	\centering
 	\vspace{7.7cm}
 	\includegraphics[width=\logowidth]{data/uio_logo_full.png}
+}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
 }
 
 \begin{document}
@@ -123,908 +143,1432 @@
 	 	\titlepage
 	\end{frame}
 
-    % \begin{frame}{Overview}
-    %     \begin{enumerate}
-    %         \item Background: Defining the scope of the lecture.
-    %         \item State-of-the-art: How is neuroimaging beyond T1-weighted MRI currently being used with respect to neuropsychiatric disorders.
-    %         \item The future: Challenges and opportunities in using neuroimaging for predicting neuropsychiatric disorders moving forward.
-    %     \end{enumerate}
-    % \end{frame}
+    \begin{frame}{Overview}
+        \begin{enumerate}
+            \item Background: Defining the scope of the lecture.
+            \item State-of-the-art: How is neuroimaging beyond T1-weighted MRI currently being used with respect to neuropsychiatric disorders.
+            \item The future: Challenges and opportunities in using neuroimaging for predicting neuropsychiatric disorders moving forward.
+        \end{enumerate}
+    \end{frame}
 
-    % \newsavebox{\modalities}
-    % \sbox{\modalities}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ybar,
-    %             height=5cm,
-    %             width=6cm,
-    %             bar width=0.8,
-    %             xmin=0.35,
-    %             xmax=5.65,
-    %             ymin=0,
-    %             xtick={1, 2, 3, 4, 5},
-    %             xticklabels={sMRI,fMRI,dMRI,Molecular,Elecrophysiological},
-    %             x tick label style={
-    %                 rotate=45,anchor=east,
-    %                 font=\footnotesize
-    %             },
-    %             tick label style={
-    %                 font=\footnotesize
-    %             },
-    %             ylabel={\footnotesize{Publications}},
-    %             ymax=399,
-    %             axis y line*=left,
-    %             axis x line*=bottom,
-    %             xtick align=outside
-    %         ]
-    %             \addplot[fill=gray!80] coordinates {
-    %                 (1, 367)
-    %                 (2, 186)
-    %                 (3, 39)
-    %                 (4, 43)
-    %                 (5, 15)
-    %             };
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\modalities}
+    \sbox{\modalities}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar,
+                height=5cm,
+                width=6cm,
+                bar width=0.8,
+                xmin=0.35,
+                xmax=5.65,
+                ymin=0,
+                xtick={1, 2, 3, 4, 5},
+                xticklabels={sMRI,fMRI,dMRI,Molecular,Elecrophysiological},
+                x tick label style={
+                    rotate=45,anchor=east,
+                    font=\footnotesize
+                },
+                tick label style={
+                    font=\footnotesize
+                },
+                ylabel={\footnotesize{Publications}},
+                ymax=399,
+                axis y line*=left,
+                axis x line*=bottom,
+                xtick align=outside
+            ]
+                \addplot[fill=gray!80] coordinates {
+                    (1, 367)
+                    (2, 186)
+                    (3, 39)
+                    (4, 43)
+                    (5, 15)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \newsavebox{\colouredmodalities}
-    % \sbox{\colouredmodalities}{%
+    \newsavebox{\colouredmodalities}
+    \sbox{\colouredmodalities}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar stacked,
+                height=5cm,
+                width=6cm,
+                bar width=0.8,
+                xmin=0.35,
+                xmax=5.65,
+                ymin=0,
+                xtick={1, 2, 3, 4, 5},
+                xticklabels={sMRI,fMRI,dMRI,Molecular,Elecrophysiological},
+                x tick label style={
+                    rotate=45,anchor=east,
+                    font=\footnotesize
+                },
+                tick label style={
+                    font=\footnotesize
+                },
+                ylabel={\footnotesize{Publications}},
+                ymax=399,
+                axis y line*=left,
+                axis x line*=bottom,
+                xtick align=outside
+            ]
+                \addplot[fill=color1] coordinates {
+                    (1, 124)
+                    (2, 12)
+                    (3, 7)
+                    (4, 23)
+                    (5, 0)
+                };
+                \addplot[fill=color2] coordinates {
+                    (1, 45)
+                    (2, 4)
+                    (3, 1)
+                    (4, 0)
+                    (5, 2)
+                };
+                \addplot[fill=color3] coordinates {
+                    (1, 10)
+                    (2, 1)
+                    (3, 0)
+                    (4, 12)
+                    (5, 0)
+                };
+                \addplot[fill=color4] coordinates {
+                    (1, 68)
+                    (2, 96)
+                    (3, 10)
+                    (4, 0)
+                    (5, 4)
+                };
+                \addplot[fill=color5] coordinates {
+                    (1, 15)
+                    (2, 34)
+                    (3, 9)
+                    (4, 0)
+                    (5, 9)
+                };
+                \addplot[fill=color6] coordinates {
+                    (1, 9)
+                    (2, 5)
+                    (3, 2)
+                    (4, 0)
+                    (5, 0)
+                };
+                \addplot[fill=color7] coordinates {
+                    (1, 96)
+                    (2, 34)
+                    (3, 10)
+                    (4, 8)
+                    (5, 0)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casehippo}
+    \sbox{\casehippo}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=4cm,
+                height=4cm,
+                ymajorticks=false,
+                xmin=2491,
+                xmax=11269,
+                xtick pos=bottom,
+                axis x line*=bottom,
+                hide y axis,
+                ymin=0,
+                xtick={4000, 7000, 10000},
+                scaled x ticks=false,
+                ticklabel style = {font=\scriptsize},
+                xlabel={\scriptsize{$mm^3$}},
+                x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
+                ymax=0.0005,
+                clip=false
+            ]
+                \addplot[name path=zero] coordinates {
+                    (2491, 0) (11269, 0)
+                };
+                \addplot[
+                    color1,
+                    thick,
+                    name path=case
+                ] table [
+                    x=volume,
+                    y=AD,
+                    col sep=comma
+                ] {data/hippocampus_traces.csv};
+                \tikzfillbetween[of=zero and case]{color1, opacity=0.5};
+                \node[draw=color1,fill=color1!50, inner sep=2pt,label=right:{\scriptsize{DEM}}] at (axis cs: 10000, 0.0004) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\hippo}
+    \sbox{\hippo}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=4cm,
+                height=4cm,
+                ymajorticks=false,
+                xmin=2491,
+                xmax=11269,
+                xtick pos=bottom,
+                axis x line*=bottom,
+                hide y axis,
+                ymin=0,
+                xtick={4000, 7000, 10000},
+                scaled x ticks=false,
+                ticklabel style = {font=\scriptsize},
+                xlabel={\scriptsize{$mm^3$}},
+                x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
+                ymax=0.0005,
+                clip=false
+            ]
+                \addplot[name path=zero] coordinates {
+                    (2491, 0) (11269, 0)
+                };
+                \addplot[
+                    color1,
+                    thick,
+                    name path=case
+                ] table [
+                    x=volume,
+                    y=AD,
+                    col sep=comma
+                ] {data/hippocampus_traces.csv};
+                \addplot[
+                    color6,
+                    thick,
+                    name path=control
+                ] table [
+                    x=volume,
+                    y=CN,
+                    col sep=comma
+                ] {data/hippocampus_traces.csv};
+                \tikzfillbetween[of=zero and case]{color1, opacity=0.5};
+                \tikzfillbetween[of=zero and control]{color6, opacity=0.5};
+                \node[draw=color1,fill=color1!50, inner sep=2pt,label=right:{\scriptsize{DEM}}] at (axis cs: 10000, 0.0004) {};
+                \node[draw=color6,fill=color6!50, inner sep=2pt,label=right:{\scriptsize{HC}}] at (axis cs: 10000, 0.00035) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\hippoauc}
+    \sbox{\hippoauc}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=4cm,
+                height=4cm,
+                xmin=0,
+                xmax=1,
+                ymin=0,
+                ymax=1,
+                ticklabel style = {font=\scriptsize},
+                xtick={0, 0.25, 0.5, 0.75, 1},
+                ytick={0, 0.25, 0.5, 0.75, 1},
+                xtick pos=bottom,
+                ytick pos=left,
+                xlabel=\scriptsize{fpr},
+                ylabel=\scriptsize{tpr},
+                x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
+                y label style={at={(axis description cs:-0.25,.5)},anchor=south},
+            ]
+            \addplot[draw=none, name path=zero] coordinates {
+                (0, 0)
+                (1, 0)
+            };
+            \addplot[
+                color7,
+                very thick,
+                name path=roc
+            ] table [
+                x=fpr,
+                y=tpr,
+                col sep=comma
+            ] {data/hippocampus_roc.csv};
+            \tikzfillbetween[of=zero and roc]{color7, opacity=0.75};
+            \node[anchor=south east] at (axis cs: 0.97, 0.02) {\textcolor{white}{\scriptsize{accuracy=0.81}}};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \begin{frame}[t]{Background}
+        \centering
+        \begin{tikzpicture}
+            \colorlet{hiddencolour}{black!20}
+
+            \def\labelsize{\scriptsize}
+
+            \node[] at (0, 0) {};
+            \node[draw=black] at (-5, 0) {};
+            \node[draw=black] at (5, -7) {};
+            \onslide<1>{
+                \node[align=center] at (0, -0.5) {
+                    The role of neuroimaging beyond T1-weighted MRI in the\\diagnosis and prediction of neuropsychiatric disorders
+                };
+            }
+            \only<2-6>{
+                \node[align=center] at (0, -0.5) {
+                    \textcolor{hiddencolour}{The role of }neuroimaging \textcolor{hiddencolour}{beyond T1-weighted MRI in the}\\\textcolor{hiddencolour}{diagnosis and prediction of neuropsychiatric disorders}
+                };
+                \onslide<3->{
+                    \node[inner sep=0pt, label=below:{\labelsize{Bert from FreeSurfer 7.3}}] at (-3, -4) {
+                        \includegraphics[width=3cm]{data/bert_sagittal.png}
+                    };
+                }
+                \onslide<4->{
+                    \node[label=below:{\labelsize{Sample from the MNE library}}] at (1.5, -2.5) {
+                        \includegraphics[width=3.75cm]{data/eeg.png}
+                    };
+                }
+                \onslide<5->{
+                    %https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4980915/
+                    \node[label=below:{\labelsize{Sample from Tremlay et al., 2016}}] at (0.7, -5.1) {
+                        \includegraphics[width=3cm]{data/patch_clamp.png}
+                    };
+                    \node[font=\tiny, align=center, anchor=south] at (0, -7.75) {
+                        Tremblay, R., Lee, S., \& Rudy, B. (2016). GABAergic interneurons in the neocortex: from cellular properties to circuits. Neuron,\\91(2), 260-292
+                    };
+                }
+                \onslide<6->{
+                    \node[label=below:{\labelsize{Meta Quest Pro}}] at (3.75, -6.1) {
+                        \includegraphics[width=2cm]{data/meta_quest.png}
+                    };
+                }
+            }
+            \only<7-11>{
+                \node[align=center] at (0, -0.5) {
+                    \textcolor{hiddencolour}{The role of neuroimaging beyond }T1-weighted MRI \textcolor{hiddencolour}{in the}\\\textcolor{hiddencolour}{diagnosis and prediction of neuropsychiatric disorders}
+                };
+                \onslide<8->{
+                    \node[inner sep=0pt, label=below:{\labelsize{Bert from FreeSurfer 7.3}}] at (-3, -3.5) {
+                        \includegraphics[width=3cm]{data/bert_sagittal.png}
+                    };
+                }
+                \only<10>{
+                    \node[] at (2, -4.2) {
+                        \usebox{\modalities}
+                    };
+                }
+                \only<11>{
+                    \node[] at (2, -4.2) {
+                        \usebox{\colouredmodalities}
+                    };
+                }
+            }
+            \only<12-16>{
+                \def\nodefont{\footnotesize}
+                \node[align=center] at (0, -0.5) {
+                    \textcolor{hiddencolour}{The role of neuroimaging beyond T1-weighted MRI in the}\\\textcolor{hiddencolour}{diagnosis and prediction of }neuropsychiatric disorders
+                };
+                \onslide<13->{
+                    \node[align=center, font=\nodefont] at (-2, -2) {
+                        Alzheimer's disease and other\\causes of dementia
+                    };
+                    \node[align=center, font=\nodefont] at (-2.8, -2.8) {
+                        Multiple Sclerosis
+                    };
+                    \node[align=center, font=\nodefont] at (-1.3, -3.2) {
+                        Parkinson's Disease
+                    };
+                }
+
+                \onslide<14->{
+                    \node[align=center, font=\nodefont] at (1.9, -2.2) {
+                        Bipolar Disorder
+                    };
+                    \node[align=center, font=\nodefont] at (1.6, -2.6) {
+                        Schizophrenia
+                    };
+                    \node[align=center, font=\nodefont] at (2.8, -3.3) {
+                        Depressive disorders
+                    };
+                }
+                \onslide<15->{
+                    \draw[stealth-stealth] (-4, -4) -- (4, -4);
+                }
+                \only<15>{
+                    \node[anchor=east] at (-4, -4) {
+                        \small{More}
+                    };
+                    \node[anchor=west] at (4, -4) {
+                        \small{Less}
+                    };
+                    \node[anchor=north, font=\small] at (0, -4.1) {
+                        Knowledge about neuropathological basis
+                    };
+                }
+                \only<16>{
+                    \node[anchor=east] at (-4, -4) {
+                        \small{Less}
+                    };
+                    \node[anchor=west] at (4, -4) {
+                        \small{More}
+                    };
+                    \node[anchor=north, font=\small] at (0, -4.1) {
+                        Importance of psychopathology
+                    };
+                }
+            }
+            \onslide<17->{
+                \node[align=center] at (0, -0.5) {
+                    \textcolor{hiddencolour}{The role of neuroimaging beyond T1-weighted MRI in the}\\diagnosis and prediction \textcolor{hiddencolour}{of neuropsychiatric disorders}
+                };
+                \only<18>{
+                    \node[label=below:{\scriptsize{Generated by DALL-E 3}}] at (0, -4.2) {
+                        \includegraphics[width=5cm]{data/medical_consultancy.png}
+                    };
+                };
+                \only<19>{
+                    \node[label=below:{\labelsize{Vogel \& Black (2024)}}, inner sep=0pt, draw=black] at (0, -3.5) {
+                        \includegraphics[width=7cm]{data/diagnostic_predictions.jpeg}
+                    };
+
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (psych-citation) at (0, -7.65) {
+                        Vogel, A. C., \& Black, K. J. (2024). Brain Imaging in Routine Psychiatric Practice. Missouri Medicine, 121(1), 37
+                    };
+
+                }
+                \onslide<20->{
+                    \only<20,25>{
+                        \node[inner sep=0pt] (bert) at (-2.8, -4)  {
+                            \includegraphics[width=3.5cm]{data/bert_coronal.png}
+                        };
+                    }
+                    \onslide<21-24>{
+                        \node[inner sep=0pt] (bert) at (-2.8, -4) {
+                            \includegraphics[width=3.5cm]{data/bert_coronal_marked.png}
+                        };
+                    }
+                    \only<22-23>{
+                        \node[] at (3.4, -4.3) {
+                            \scriptsize{Data from ADNI}
+                        };
+                        \node[font=\tiny, align=center, anchor=south] at (0, -7.75) {
+                            Jack Jr, C. R., Bernstein, M. A., Fox, N. C., Thompson, P., Alexander, G., Harvey, D., ... \& Weiner, M. W. (2008). The Alzheimer's disease\\neuroimaging initiative (ADNI): MRI methods. Journal of Magnetic Resonance Imaging: An Official Journal of the International\\Society for Magnetic Resonance in Medicine, 27(4), 685-691
+                        };
+                    }
+                    \only<22>{
+                        \node[anchor=south] at (3.66, -4.15) {
+                            \usebox{\casehippo}
+                        };
+                    }
+                    \only<23,24>{
+                        \node[anchor=south] at (3.66, -4.15) {
+                            \usebox{\hippo}
+                        };
+                    }
+                    \only<24>{
+                        \node[] at (3, -5.5) {
+                            \usebox{\hippoauc}
+                        };
+                    }
+                    \onslide<25->{
+                        \node[align=center,draw=gray,fill=gray!20, inner sep=5pt] (model) at (1.2, -4) {Predictive\\model};
+                        \node[align=center,text depth=0, anchor=west] (patient) at (3.3, -3.6) {Patient};
+                        \node[align=center,text depth=0, anchor=west] (control) at (3.3, -4.4) {Control};
+
+                        \draw[-stealth, thick] (bert) -- (model);
+                        \draw[-stealth, thick] (model.east) -- (patient.west);
+                        \draw[-stealth, thick] (model.east) -- (control.west);
+                    }
+                }
+            }
+        \end{tikzpicture}
+    \end{frame}
+    \section{\large{Neuroimaging modalities for diagnostic predictions}}
+
+    \begin{frame}{Approach}
+        \begin{tikzpicture}
+            \node[anchor=east] at (0, 0) {
+                Non-T1 structural MRI
+            };
+            \node[anchor=east] at (0, -0.75) {
+                Diffusion MRI
+            };
+            \node[anchor=east] at (0, -1.5) {
+                Functional MRI
+            };
+            \node[anchor=east] at (0, -2.25) {
+                Molecular imaging
+            };
+
+            \onslide<2->{
+                \node[anchor=east,rotate=45] at (1, -2.75) {Dementia};
+                \node[anchor=east,rotate=45] at (2, -2.75) {Multiple sclerosis};
+                \node[anchor=east,rotate=45] at (3, -2.75) {Parkinson's disease};
+                \node[anchor=east,rotate=45] at (4, -2.75) {Schizophrenia};
+                \node[anchor=east,rotate=45] at (5, -2.75) {Major depressive disorder};
+                \node[anchor=east,rotate=45] at (6, -2.75) {Bipolar disorder};
+            }
+
+            \onslide<3->{
+                \draw[] (0.5, 0.375) -- (0.5, -2.625);
+                \draw[] (1.5, 0.375) -- (1.5, -2.625);
+                \draw[] (2.5, 0.375) -- (2.5, -2.625);
+                \draw[] (3.5, 0.375) -- (3.5, -2.625);
+                \draw[] (4.5, 0.375) -- (4.5, -2.625);
+                \draw[] (5.5, 0.375) -- (5.5, -2.625);
+                \draw[] (6.5, 0.375) -- (6.5, -2.625);
+
+                \draw[] (0.5, 0.375) -- (6.5, 0.375);
+                \draw[] (0.5, -0.375) -- (6.5, -0.375);
+                \draw[] (0.5, -1.125) -- (6.5, -1.125);
+                \draw[] (0.5, -1.875) -- (6.5, -1.875);
+                \draw[] (0.5, -2.625) -- (6.5, -2.625);
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    % \newsavebox{\claudedisorders}
+    % \sbox{\claudedisorders}{%
     %     \begin{tikzpicture}
     %         \begin{axis}[
     %             ybar stacked,
-    %             height=5cm,
+    %             height=4cm,
     %             width=6cm,
-    %             bar width=0.8,
-    %             xmin=0.35,
-    %             xmax=5.65,
-    %             ymin=0,
-    %             xtick={1, 2, 3, 4, 5},
-    %             xticklabels={sMRI,fMRI,dMRI,Molecular,Elecrophysiological},
-    %             x tick label style={
-    %                 rotate=45,anchor=east,
-    %                 font=\footnotesize
-    %             },
-    %             tick label style={
-    %                 font=\footnotesize
-    %             },
-    %             ylabel={\footnotesize{Publications}},
-    %             ymax=399,
     %             axis y line*=left,
     %             axis x line*=bottom,
-    %             xtick align=outside
+    %             xmin=-0.5,
+    %             xmax=5.5,
+    %             bar width=0.8
+    %             %xtick={1, 2, 3, 4, 5, 6},
+    %             %xticklabels={DEM, MS, PD, SCZ, MDD, BP},
     %         ]
-    %             \addplot[fill=color1] coordinates {
-    %                 (1, 124)
-    %                 (2, 12)
-    %                 (3, 7)
-    %                 (4, 23)
-    %                 (5, 0)
-    %             };
-    %             \addplot[fill=color2] coordinates {
-    %                 (1, 45)
-    %                 (2, 4)
-    %                 (3, 1)
-    %                 (4, 0)
-    %                 (5, 2)
-    %             };
-    %             \addplot[fill=color3] coordinates {
-    %                 (1, 10)
-    %                 (2, 1)
-    %                 (3, 0)
-    %                 (4, 12)
-    %                 (5, 0)
-    %             };
-    %             \addplot[fill=color4] coordinates {
-    %                 (1, 68)
-    %                 (2, 96)
-    %                 (3, 10)
-    %                 (4, 0)
-    %                 (5, 4)
-    %             };
-    %             \addplot[fill=color5] coordinates {
-    %                 (1, 15)
-    %                 (2, 34)
-    %                 (3, 9)
-    %                 (4, 0)
-    %                 (5, 9)
-    %             };
-    %             \addplot[fill=color6] coordinates {
-    %                 (1, 9)
-    %                 (2, 5)
-    %                 (3, 2)
-    %                 (4, 0)
-    %                 (5, 0)
-    %             };
-    %             \addplot[fill=color7] coordinates {
-    %                 (1, 96)
-    %                 (2, 34)
-    %                 (3, 10)
-    %                 (4, 8)
-    %                 (5, 0)
-    %             };
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
-
-    % \newsavebox{\casehippo}
-    % \sbox{\casehippo}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             width=4cm,
-    %             height=4cm,
-    %             ymajorticks=false,
-    %             xmin=2491,
-    %             xmax=11269,
-    %             xtick pos=bottom,
-    %             axis x line*=bottom,
-    %             hide y axis,
-    %             ymin=0,
-    %             xtick={4000, 7000, 10000},
-    %             scaled x ticks=false,
-    %             ticklabel style = {font=\scriptsize},
-    %             xlabel={\scriptsize{$mm^3$}},
-    %             x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
-    %             ymax=0.0005,
-    %             clip=false
-    %         ]
-    %             \addplot[name path=zero] coordinates {
-    %                 (2491, 0) (11269, 0)
-    %             };
     %             \addplot[
-    %                 color1,
-    %                 thick,
-    %                 name path=case
+    %                 discard if not={source}{wolfers}
     %             ] table [
-    %                 x=volume,
-    %                 y=AD,
+    %                 x=id,
+    %                 y=count,
     %                 col sep=comma
-    %             ] {data/hippocampus_traces.csv};
-    %             \tikzfillbetween[of=zero and case]{color1, opacity=0.5};
-    %             \node[draw=color1,fill=color1!50, inner sep=2pt,label=right:{\scriptsize{DEM}}] at (axis cs: 10000, 0.0004) {};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    %             ] {data/expanded_diagnoses.csv};
 
-    % \newsavebox{\hippo}
-    % \sbox{\hippo}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             width=4cm,
-    %             height=4cm,
-    %             ymajorticks=false,
-    %             xmin=2491,
-    %             xmax=11269,
-    %             xtick pos=bottom,
-    %             axis x line*=bottom,
-    %             hide y axis,
-    %             ymin=0,
-    %             xtick={4000, 7000, 10000},
-    %             scaled x ticks=false,
-    %             ticklabel style = {font=\scriptsize},
-    %             xlabel={\scriptsize{$mm^3$}},
-    %             x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
-    %             ymax=0.0005,
-    %             clip=false
-    %         ]
-    %             \addplot[name path=zero] coordinates {
-    %                 (2491, 0) (11269, 0)
-    %             };
     %             \addplot[
-    %                 color1,
-    %                 thick,
-    %                 name path=case
+    %                 discard if not={source}{arbabshirani}
     %             ] table [
-    %                 x=volume,
-    %                 y=AD,
+    %                 x=id,
+    %                 y=count,
     %                 col sep=comma
-    %             ] {data/hippocampus_traces.csv};
-    %             \addplot[
-    %                 color6,
-    %                 thick,
-    %                 name path=control
-    %             ] table [
-    %                 x=volume,
-    %                 y=CN,
-    %                 col sep=comma
-    %             ] {data/hippocampus_traces.csv};
-    %             \tikzfillbetween[of=zero and case]{color1, opacity=0.5};
-    %             \tikzfillbetween[of=zero and control]{color6, opacity=0.5};
-    %             \node[draw=color1,fill=color1!50, inner sep=2pt,label=right:{\scriptsize{DEM}}] at (axis cs: 10000, 0.0004) {};
-    %             \node[draw=color6,fill=color6!50, inner sep=2pt,label=right:{\scriptsize{HC}}] at (axis cs: 10000, 0.00035) {};
+    %             ] {data/expanded_diagnoses.csv};
+
     %         \end{axis}
     %     \end{tikzpicture}
     % }
 
-    % \newsavebox{\hippoauc}
-    % \sbox{\hippoauc}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             width=4cm,
-    %             height=4cm,
-    %             xmin=0,
-    %             xmax=1,
-    %             ymin=0,
-    %             ymax=1,
-    %             ticklabel style = {font=\scriptsize},
-    %             xtick={0, 0.25, 0.5, 0.75, 1},
-    %             ytick={0, 0.25, 0.5, 0.75, 1},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             xlabel=\scriptsize{fpr},
-    %             ylabel=\scriptsize{tpr},
-    %             x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
-    %             y label style={at={(axis description cs:-0.25,.5)},anchor=south},
-    %         ]
-    %         \addplot[draw=none, name path=zero] coordinates {
-    %             (0, 0)
-    %             (1, 0)
-    %         };
-    %         \addplot[
-    %             color7,
-    %             very thick,
-    %             name path=roc
-    %         ] table [
-    %             x=fpr,
-    %             y=tpr,
-    %             col sep=comma
-    %         ] {data/hippocampus_roc.csv};
-    %         \tikzfillbetween[of=zero and roc]{color7, opacity=0.75};
-    %         \node[anchor=south east] at (axis cs: 0.97, 0.02) {\textcolor{white}{\scriptsize{accuracy=0.81}}};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \begin{frame}{Data}
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7) {};
 
-    % \begin{frame}[t]{Background}
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \colorlet{hiddencolour}{black!20}
+            \only<1-4>{
+                \onslide<1->{
+                    \node[draw=black,inner sep=2pt] (wolfers) at (2, -1.8) {
+                        \includegraphics[width=4cm]{data/wolfers_2015.png}
+                    };
+                }
+                \onslide<2->{
+                    \node[draw=black,inner sep=2pt, anchor=north] (arbabshirani) at ($ (wolfers.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/arbabshirani_2017.png}
+                    };
+                }
+                \onslide<3->{
+                    \node[draw=black,inner sep=2pt, anchor=north] (rashid) at ($ (arbabshirani.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/rashid_2020.png}
+                    };
+                }
+                \onslide<4->{
+                    \node[draw=black,inner sep=2pt, anchor=north] (quaak) at ($ (rashid.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/quaak_2021.png}
+                    };
+                }
+            }
+            \only<5>{
+                \node[draw=black,inner sep=2pt] (ebrahim) at (2, -2.2) {
+                    \includegraphics[width=4cm]{data/ebrahimighahnavieh_2020.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (mirzaei) at ($ (ebrahim.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/mirzaei_2022.png}
+                };
 
-    %         \def\labelsize{\scriptsize}
+                \node[draw=black,inner sep=2pt, anchor=north] (fathi) at ($ (mirzaei.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/fathi_2022.png}
+                };
+            }
+            \only<6>{
+                \node[draw=black,inner sep=2pt] (shoeibi) at (2, -2.8) {
+                    \includegraphics[width=4cm]{data/shoeibi_2021.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (aslam) at ($ (shoeibi.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/aslam_2022.png}
+                };
+            }
+            \only<7>{
+                \node[draw=black,inner sep=2pt] (aggarwal) at (2, -3.5) {
+                    \includegraphics[width=4cm]{data/aggarwal_2023.png}
+                };
+            }
+            \only<8>{
+                \node[draw=black,inner sep=2pt] (filippis) at (2, -2.8) {
+                    \includegraphics[width=4cm]{data/filippis_2019.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (verma) at ($ (filippis.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/verma_2023.png}
+                };
 
-    %         \node[] at (0, 0) {};
-    %         \node[draw=black] at (-5, 0) {};
-    %         \node[draw=black] at (5, -7) {};
-    %         \onslide<1>{
-    %             \node[align=center] at (0, -0.5) {
-    %                 The role of neuroimaging beyond T1-weighted MRI in the\\diagnosis and prediction of neuropsychiatric disorders
-    %             };
-    %         }
-    %         \only<2-6>{
-    %             \node[align=center] at (0, -0.5) {
-    %                 \textcolor{hiddencolour}{The role of }neuroimaging \textcolor{hiddencolour}{beyond T1-weighted MRI in the}\\\textcolor{hiddencolour}{diagnosis and prediction of neuropsychiatric disorders}
-    %             };
-    %             \onslide<3->{
-    %                 \node[inner sep=0pt, label=below:{\labelsize{Bert from FreeSurfer 7.3}}] at (-3, -4) {
-    %                     \includegraphics[width=3cm]{data/bert_sagittal.png}
-    %                 };
-    %             }
-    %             \onslide<4->{
-    %                 \node[label=below:{\labelsize{Sample from the MNE library}}] at (1.5, -2.5) {
-    %                     \includegraphics[width=3.75cm]{data/eeg.png}
-    %                 };
-    %             }
-    %             \onslide<5->{
-    %                 %https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4980915/
-    %                 \node[label=below:{\labelsize{Sample from Tremlay et al., 2016}}] at (0.7, -5.1) {
-    %                     \includegraphics[width=3cm]{data/patch_clamp.png}
-    %                 };
-    %                 \node[font=\tiny, align=center, anchor=south] at (0, -7.75) {
-    %                     Tremblay, R., Lee, S., \& Rudy, B. (2016). GABAergic interneurons in the neocortex: from cellular properties to circuits. Neuron,\\91(2), 260-292
-    %                 };
-    %             }
-    %             \onslide<6->{
-    %                 \node[label=below:{\labelsize{Meta Quest Pro}}] at (3.75, -6.1) {
-    %                     \includegraphics[width=2cm]{data/meta_quest.png}
-    %                 };
-    %             }
-    %         }
-    %         \only<7-11>{
-    %             \node[align=center] at (0, -0.5) {
-    %                 \textcolor{hiddencolour}{The role of neuroimaging beyond }T1-weighted MRI \textcolor{hiddencolour}{in the}\\\textcolor{hiddencolour}{diagnosis and prediction of neuropsychiatric disorders}
-    %             };
-    %             \onslide<8->{
-    %                 \node[inner sep=0pt, label=below:{\labelsize{Bert from FreeSurfer 7.3}}] at (-3, -3.5) {
-    %                     \includegraphics[width=3cm]{data/bert_sagittal.png}
-    %                 };
-    %             }
-    %             \only<10>{
-    %                 \node[] at (2, -4.2) {
-    %                     \usebox{\modalities}
-    %                 };
-    %             }
-    %             \only<11>{
-    %                 \node[] at (2, -4.2) {
-    %                     \usebox{\colouredmodalities}
-    %                 };
-    %             }
-    %         }
-    %         \only<12-16>{
-    %             \def\nodefont{\footnotesize}
-    %             \node[align=center] at (0, -0.5) {
-    %                 \textcolor{hiddencolour}{The role of neuroimaging beyond T1-weighted MRI in the}\\\textcolor{hiddencolour}{diagnosis and prediction of }neuropsychiatric disorders
-    %             };
-    %             \onslide<13->{
-    %                 \node[align=center, font=\nodefont] at (-2, -2) {
-    %                     Alzheimer's disease and other\\causes of dementia
-    %                 };
-    %                 \node[align=center, font=\nodefont] at (-2.8, -2.8) {
-    %                     Multiple Sclerosis
-    %                 };
-    %                 \node[align=center, font=\nodefont] at (-1.3, -3.2) {
-    %                     Parkinson's Disease
-    %                 };
-    %             }
+            }
+            \only<9>{
+                \node[draw=black,inner sep=2pt] (aggarwal) at (2, -3.5) {
+                    \includegraphics[width=4cm]{data/claude_2020.png}
+                };
+                % \node[] at (7.5, -2) {
+                %     \usebox{\claudedisorders}
+                % };
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    %             \onslide<14->{
-    %                 \node[align=center, font=\nodefont] at (1.9, -2.2) {
-    %                     Bipolar Disorder
-    %                 };
-    %                 \node[align=center, font=\nodefont] at (1.6, -2.6) {
-    %                     Schizophrenia
-    %                 };
-    %                 \node[align=center, font=\nodefont] at (2.8, -3.3) {
-    %                     Depressive disorders
-    %                 };
-    %             }
-    %             \onslide<15->{
-    %                 \draw[stealth-stealth] (-4, -4) -- (4, -4);
-    %             }
-    %             \only<15>{
-    %                 \node[anchor=east] at (-4, -4) {
-    %                     \small{More}
-    %                 };
-    %                 \node[anchor=west] at (4, -4) {
-    %                     \small{Less}
-    %                 };
-    %                 \node[anchor=north, font=\small] at (0, -4.1) {
-    %                     Knowledge about neuropathological basis
-    %                 };
-    %             }
-    %             \only<16>{
-    %                 \node[anchor=east] at (-4, -4) {
-    %                     \small{Less}
-    %                 };
-    %                 \node[anchor=west] at (4, -4) {
-    %                     \small{More}
-    %                 };
-    %                 \node[anchor=north, font=\small] at (0, -4.1) {
-    %                     Importance of psychopathology
-    %                 };
-    %             }
-    %         }
-    %         \onslide<17->{
-    %             \node[align=center] at (0, -0.5) {
-    %                 \textcolor{hiddencolour}{The role of neuroimaging beyond T1-weighted MRI in the}\\diagnosis and prediction \textcolor{hiddencolour}{of neuropsychiatric disorders}
-    %             };
-    %             \only<18>{
-    %                 \node[label=below:{\scriptsize{Generated by DALL-E 3}}] at (0, -4.2) {
-    %                     \includegraphics[width=5cm]{data/medical_consultancy.png}
-    %                 };
-    %             };
-    %             \only<19>{
-    %                 \node[label=below:{\labelsize{Vogel \& Black (2024)}}, inner sep=0pt, draw=black] at (0, -3.5) {
-    %                     \includegraphics[width=7cm]{data/diagnostic_predictions.jpeg}
-    %                 };
+    \newsavebox{\ttwostudies}
+    \sbox{\ttwostudies}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xtick={2016, 2018, 2020, 2022},
+                xticklabels={2016, 2018, 2020, 2022},
+                xlabel=\footnotesize{Year},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=2015.5,
+                xmax=2022.5
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        MS={mark=*,ms},
+                        PD={mark=*,pd}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/t2_studies.csv};
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (4)}}] at (axis cs: 2023, 51) {};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (11)}}] at (axis cs: 2023, 56) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (psych-citation) at (0, -7.65) {
-    %                     Vogel, A. C., \& Black, K. J. (2024). Brain Imaging in Routine Psychiatric Practice. Missouri Medicine, 121(1), 37
-    %                 };
+    \newsavebox{\msflair}
+    \sbox{\msflair}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                height=5cm,
+                width=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=1300,
+                xtick pos=bottom,
+                ytick pos=left
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{MS},
+                    mark=*,
+                    ms,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/t2_studies.csv};
+                \addplot[
+                    dashed,
+                    ms
+                ] coordinates {
+                    (0, 90.54)
+                    (1300, 90.54)
+                };
+                \node[anchor=north east, ms] at (axis cs: 1300, 90.54) {\footnotesize{90.54\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %             }
-    %             \onslide<20->{
-    %                 \only<20,25>{
-    %                     \node[inner sep=0pt] (bert) at (-2.8, -4)  {
-    %                         \includegraphics[width=3.5cm]{data/bert_coronal.png}
-    %                     };
-    %                 }
-    %                 \onslide<21-24>{
-    %                     \node[inner sep=0pt] (bert) at (-2.8, -4) {
-    %                         \includegraphics[width=3.5cm]{data/bert_coronal_marked.png}
-    %                     };
-    %                 }
-    %                 \only<22-23>{
-    %                     \node[] at (3.4, -4.3) {
-    %                         \scriptsize{Data from ADNI}
-    %                     };
-    %                     \node[font=\tiny, align=center, anchor=south] at (0, -7.75) {
-    %                         Jack Jr, C. R., Bernstein, M. A., Fox, N. C., Thompson, P., Alexander, G., Harvey, D., ... \& Weiner, M. W. (2008). The Alzheimer's disease\\neuroimaging initiative (ADNI): MRI methods. Journal of Magnetic Resonance Imaging: An Official Journal of the International\\Society for Magnetic Resonance in Medicine, 27(4), 685-691
-    %                     };
-    %                 }
-    %                 \only<22>{
-    %                     \node[anchor=south] at (3.66, -4.15) {
-    %                         \usebox{\casehippo}
-    %                     };
-    %                 }
-    %                 \only<23,24>{
-    %                     \node[anchor=south] at (3.66, -4.15) {
-    %                         \usebox{\hippo}
-    %                     };
-    %                 }
-    %                 \only<24>{
-    %                     \node[] at (3, -5.5) {
-    %                         \usebox{\hippoauc}
-    %                     };
-    %                 }
-    %                 \onslide<25->{
-    %                     \node[align=center,draw=gray,fill=gray!20, inner sep=5pt] (model) at (1.2, -4) {Predictive\\model};
-    %                     \node[align=center,text depth=0, anchor=west] (patient) at (3.3, -3.6) {Patient};
-    %                     \node[align=center,text depth=0, anchor=west] (control) at (3.3, -4.4) {Control};
+    \begin{frame}[t]{Other structural MRI modalities}
+        \centering
+        \only<1-11>{
+            \begin{tikzpicture}
+                \def\labelsize{\footnotesize}
 
-    %                     \draw[-stealth, thick] (bert) -- (model);
-    %                     \draw[-stealth, thick] (model.east) -- (patient.west);
-    %                     \draw[-stealth, thick] (model.east) -- (control.west);
-    %                 }
-    %             }
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
-    % \section{\large{Neuroimaging modalities for diagnostic predictions}}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
+                \only<1-8>{
+                    \node[anchor=west] (t1) at (0, -3.5) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/t1.jpg}
+                    };
+                    \node[anchor=south, inner sep=0pt] at (t1.north) {\labelsize{T1}};
+                }
+                \only<2-8>{
+                    \node[anchor=west] (t2) at ($ (t1.east) - (0.35, 0) $) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/t2.jpg}
+                    };
+                    \node[anchor=south, inner sep=0pt] at (t2.north) {\labelsize{T2}};
+                }
+                \only<3-8>{
+                    \node[anchor=west] (flair) at ($ (t2.east) - (0.35, 0) $) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/flair.jpg}
+                    };
+                    \node[anchor=south, inner sep=0pt] at (flair.north) {\labelsize{FLAIR}};
+                    \node[anchor=north] at ($ (t2.south) - (0, -0.15) $) {\scriptsize{Adapted from Shoeibi et al., 2021}};
+                    \only<3>{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Shoeibi, A., Khodatars, M., Jafari, M., Moridian, P., Rezaei, M., Alizadehsani, R., ... \& Acharya, U. R. (2021). Applications of deep learning\\techniques for automated multiple sclerosis detection using magnetic resonance imaging: A review. Computers in Biology and\\Medicine, 136, 104697
+                        };
+                    }
+                }
+                \only<4>{
+                    \node[] at (7.6, -3.2) {
+                        FLAIR lesion from MS patient
+                    };
+                }
+                \only<5>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\ttwostudies}
+                    };
+                };
+                \only<6>{
+                    \node[] at (7.6, -3.2) {
+                        FLAIR lesion from MS patient++
+                    };
+                }
+                \only<7>{
+                    \node[label=below:\scriptsize{De Angelis et al., 2019}, inner sep=0pt, draw=black] at (7.6, -3.2) {
+                        \includegraphics[width=4.5cm]{data/ms_criteria.png}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        De Angelis, F., Brownlee, W. J., Chard, D. T., \& Trip, S. A. (2019). New MS diagnostic criteria in practice. Practical Neurology, 19(1), 64-67
+                    };
+                }
+                \only<8>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\msflair}
+                    };
+                }
+                \only<9>{
+                    \node[inner sep=0pt, draw=black, label=below:\scriptsize{Storelli et al., 2022}, inner sep=0pt, draw=black] at (5, -3.2) {
+                        \includegraphics[width=10cm]{data/ms_human_vs_machine.png}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Storelli, L., Azzimonti, M., Gueye, M., Vizzino, C., Preziosa, P., Tedeschi, G., ... \& Rocca, M. A. (2022). A deep learning approach\\to predicting disease progression in multiple sclerosis using magnetic resonance imaging. Investigative Radiology, 57(7), 423-432
+                    };
+                }
+                \only<10-11>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Talai, A. S., Sedlacik, J., Boelmans, K., \& Forkert, N. D. (2021). Utility of multi-modal MRI for differentiating of Parkinson's\\disease and progressive supranuclear palsy using machine learning. Frontiers in Neurology, 12, 648548
+                    };
+                    \only<10>{
+                        \node[] at (5, -3.2) {
+                            \includegraphics[
+                                width=8cm,
+                                trim={0, 8cm, 0, 0},
+                                clip
+                            ]{data/pd_t2_r2.jpeg}
+                        };
+                    }
+                    \only<11>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=10cm]{data/pd_t2_accuracy.jpeg}
+                        };
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<12>{
+            \begin{itemize}
+                \setlength\itemsep{-0.3em}
+                \item \footnotesize{Non-T1 weighted structural MRI}
+                \begin{itemize}
+                    \item \scriptsize{High accuracies for classifying MS and PD (>90\%).}
+                    \item \scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}
+                    \item \scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}
+                \end{itemize}
+            \end{itemize}
+        }
+    \end{frame}
 
-    % \begin{frame}{Approach}
-    %     \begin{tikzpicture}
-    %         \node[anchor=east] at (0, 0) {
-    %             (Non-T1) Structural MRI
-    %         };
-    %         \node[anchor=east] at (0, -0.75) {
-    %             Diffusion MRI
-    %         };
-    %         \node[anchor=east] at (0, -1.5) {
-    %             Functional MRI
-    %         };
-    %         \node[anchor=east] at (0, -2.25) {
-    %             Molecular imaging
-    %         };
-    %         \node[anchor=east] at (0, -3) {
-    %             Elecrophysiology
-    %         };
+    \newsavebox{\dmristudies}
+    \sbox{\dmristudies}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Year},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=2004,
+                xmax=2022,
+                xtick={2005, 2010, 2015, 2020},
+                xticklabels={2005, 2010, 2015, 2020},
+                ymin=50,
+                ymax=100
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        DEM={mark=*,dem},
+                        SCZ={mark=*,scz},
+                        MDD={mark=*,mdd},
+                        BP={mark=*,bp},
+                        MS={mark=*,ms}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/dmri_studies.csv};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (1)}}] at (axis cs: 2023, 51) {};
+                \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (2)}}] at (axis cs: 2023, 56) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (6)}}] at (axis cs: 2023, 61) {};
+                \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (9)}}] at (axis cs: 2023, 66) {};
+                \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (10)}}] at (axis cs: 2023, 71) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %         \onslide<2->{
-    %             \node[anchor=east,rotate=45] at (1, -3.5) {Dementia};
-    %             \node[anchor=east,rotate=45] at (2, -3.5) {Multiple sclerosis};
-    %             \node[anchor=east,rotate=45] at (3, -3.5) {Parkinson's disease};
-    %             \node[anchor=east,rotate=45] at (4, -3.5) {Schizophrenia};
-    %             \node[anchor=east,rotate=45] at (5, -3.5) {Major depressive disorder};
-    %             \node[anchor=east,rotate=45] at (6, -3.5) {Bipolar disorder};
-    %         }
+    \newsavebox{\dmriscz}
+    \sbox{\dmriscz}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=0,
+                xmax=220,
+                xmax=900
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{SCZ},
+                    mark=*,
+                    scz,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/dmri_studies.csv};
+                \addplot[
+                    dashed,
+                    scz
+                ] coordinates {
+                    (0, 84.297)
+                    (900, 84.297)
+                };
+                \node[anchor=north east, scz] at (axis cs: 900, 84.297) {\footnotesize{84.29\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %         \onslide<3->{
-    %             \draw[] (0.5, 0.375) -- (0.5, -3.375);
-    %             \draw[] (1.5, 0.375) -- (1.5, -3.375);
-    %             \draw[] (2.5, 0.375) -- (2.5, -3.375);
-    %             \draw[] (3.5, 0.375) -- (3.5, -3.375);
-    %             \draw[] (4.5, 0.375) -- (4.5, -3.375);
-    %             \draw[] (5.5, 0.375) -- (5.5, -3.375);
-    %             \draw[] (6.5, 0.375) -- (6.5, -3.375);
+    \newsavebox{\dmridem}
+    \sbox{\dmridem}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=0,
+                xmax=900
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{DEM},
+                    mark=*,
+                    dem,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/dmri_studies.csv};
+                \addplot[
+                    dashed,
+                    dem
+                ] coordinates {
+                    (0, 90.09)
+                    (900, 90.09)
+                };
+                \node[anchor=north east, dem] at (axis cs: 900, 90.09) {\footnotesize{90.09\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %             \draw[] (0.5, 0.375) -- (6.5, 0.375);
-    %             \draw[] (0.5, -0.375) -- (6.5, -0.375);
-    %             \draw[] (0.5, -1.125) -- (6.5, -1.125);
-    %             \draw[] (0.5, -1.875) -- (6.5, -1.875);
-    %             \draw[] (0.5, -2.625) -- (6.5, -2.625);
-    %             \draw[] (0.5, -3.375) -- (6.5, -3.375);
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+    \begin{frame}[t]{Diffusion MRI}
+        \only<1-13>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, -7) {};
 
-    % \begin{frame}{Data}
-    %     \begin{tikzpicture}
-    %         \only<1-5>{
-    %             \node[draw=black,inner sep=2pt] (wolfers) at (0, 0) {
-    %                 \includegraphics[width=4cm]{data/wolfers_2015.png}
-    %             };
-    %             \onslide<2->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (arbabshirani) at ($ (wolfers.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/arbabshirani_2017.png}
-    %                 };
-    %             }
-    %             \onslide<3->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (rashid) at ($ (arbabshirani.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/rashid_2020.png}
-    %                 };
-    %             }
-    %             \onslide<4->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (quaak) at ($ (rashid.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/quaak_2021.png}
-    %                 };
-    %             }
-    %             \onslide<5->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] at  ($ (quaak.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/bardeci_2021.png}
-    %                 };
-    %             }
-    %         }
-    %         \only<6-8>{
-    %             \node[draw=black,inner sep=2pt] (ebrahim) at (0, -0.5) {
-    %                 \includegraphics[width=4cm]{data/ebrahimighahnavieh_2020.png}
-    %             };
-    %             \onslide<7->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (mirzaei) at ($ (ebrahim.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/mirzaei_2022.png}
-    %                 };
-    %             }
-    %             \onslide<8->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (fathi) at ($ (mirzaei.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/fathi_2022.png}
-    %                 };
-    %             }
-    %         }
-    %         \only<9,10>{
-    %             \node[draw=black,inner sep=2pt] (shoeibi) at (0, -1.2) {
-    %                 \includegraphics[width=4cm]{data/shoeibi_2021.png}
-    %             };
-    %             \onslide<10->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (aslam) at ($ (shoeibi.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/aslam_2022.png}
-    %                 };
-    %             }
-    %         }
-    %         \only<11>{
-    %             \node[draw=black,inner sep=2pt] (aggarwal) at (0, -2) {
-    %                 \includegraphics[width=4cm]{data/aggarwal_2023.png}
-    %             };
-    %         }
-    %         \only<12,13>{
-    %             \node[draw=black,inner sep=2pt] (filippis) at (0, -1.2) {
-    %                 \includegraphics[width=4cm]{data/filippis_2019.png}
-    %             };
-    %             \onslide<13->{
-    %                 \node[draw=black,inner sep=2pt, anchor=north] (verma) at ($ (filippis.south) - (0, 0.2) $) {
-    %                     \includegraphics[width=4cm]{data/verma_2023.png}
-    %                 };
-    %             }
-    %         }
-    %         \only<14>{
-    %             \node[draw=black,inner sep=2pt] (aggarwal) at (0, -2) {
-    %                 \includegraphics[width=4cm]{data/claude_2020.png}
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+                \only<1-3>{
+                    \node[] at (2, -3.5) {
+                        Explanation of DTI
+                    };
+                }
+                \only<2>{
+                    \node[] at (7.6, -3.2) {
+                        \usebox{\dmristudies}
+                    };
+                };
+                \only<3>{
+                    \node[] at (7.6, -3.2) {
+                        Lack of prediction studies
+                    };
+                }
+                \onslide<4-8>{
+                    \only<4>{
+                        \node[] at (5, -3.2) {
+                            \usebox{\dmriscz}
+                        };
+                    }
+                    \onslide<5->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                            Saglam, Y., Oz, A., Yildiz, G., Ermis, C., Kargin, O. A., Arslan, S., \& Karacetin, G. (2023). Can diffusion\\tensor imaging have a diagnostic utility to differentiate early-onset forms of bipolar disorder and schizophrenia:\\A neuroimaging study with explainable machine learning algorithms. Psychiatry Research: Neuroimaging, 335, 111696
+                        };
+                    }
+                    \only<5>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=5cm]{data/scz_bp_pipeline.png}
+                        };
+                    }
+                    \only<6>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=7cm]{data/scz_bp_dti.png}
+                        };
+                    }
+                    \only<7>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/scz_bp_performance.png}
+                        };
+                    }
+                    \only<8>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=7cm]{data/scz_bp_shap.png}
+                        };
+                    }
+                }
 
-    % \newsavebox{\ttwostudies}
-    % \sbox{\ttwostudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xtick={2016, 2018, 2020, 2022},
-    %             xticklabels={2016, 2018, 2020, 2022},
-    %             xlabel=Year,
-    %             ylabel=Accuracy,
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %             clip=false,
-    %             xmin=2015.5,
-    %             xmax=2022.5
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     MS={mark=*,color1},
-    %                     PD={mark=*,color4}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/t2_studies.csv};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+                \onslide<9->{
+                    \only<9>{
+                        \node[] at (5, -3.2) {
+                            \usebox{\dmridem}
+                        };
+                    }
+                    \onslide<10->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                                Sun, Y., Bi, Q., Wang, X., Hu, X., Li, H., Li, X., ... \& Han, Y. (2019). Prediction of conversion from amnestic\\mild cognitive impairment to Alzheimer's disease based on the brain structural connectome. Frontiers in neurology, 9, 1178
+                        };
 
-    % \begin{frame}{Other structural MRI modalities (T2, FLAIR)}
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \def\labelsize{\footnotesize}
+                    }
+                    \only<10>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/mci_conversion_overview.jpeg}
+                        };
+                    }
+                    \only<11>{
+                        \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                            \includegraphics[width=9cm]{data/mci_conversion_hubs.jpeg}
+                        };
+                    }
+                    \only<12-13>{
+                        \node[inner sep=0pt, draw=black] at (3, -3.2) {
+                            \includegraphics[
+                                height=5cm,
+                                trim={22.2cm, 0, 0, 0},
+                                clip
+                            ]{data/mci_conversion_connectivity.jpeg}
+                        };
+                        \only<13>{
+                            \node[inner sep=0pt, draw=black] at (7, -3.2) {
+                                \includegraphics[
+                                    height=5cm,
+                                    trim={22.2cm, 0, 0, 0},
+                                    clip
+                                ]{data/mci_conversion_regions.jpeg}
+                            };
+                        }
+                    }
+                }
+            \end{tikzpicture}
+        }
+        \only<14>{
+            \begin{itemize}
+                \setlength\itemsep{-0.3em}
+                \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\footnotesize{Non-T1 weighted structural MRI}}
+                \begin{itemize}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{High accuracies for classifying MS and PD (>90\%).}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}}
+                    \item[\textcolor{gray!50}{\textbullet}] \textcolor{gray!50}{\scriptsize{T2-weighted images used by Talai et al. for differential diagnosis of PD and PSP-RS.}}
+                \end{itemize}
+                \item \footnotesize{Diffusion MRI}
+                \begin{itemize}
+                    \item \scriptsize{Few prediction studies, mostly for mental disorders with various accuracies (60-100\%) and DEM (80-100\%)}
+                    \item \scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}
+                    \item \scriptsize{Used by Sun et al. to predict conversion from MCI to AD with 81\% accuracy}
+                \end{itemize}
+            \end{itemize}
+        }
+    \end{frame}
 
-    %         \node[draw=black] at (0, 0) {};
-    %         \node[draw=black] at (10, -7) {};
-    %         \onslide<1->{
-    %             \node[anchor=west] (t1) at (0, -3.5) {
-    %                 \includegraphics[
-    %                     height=1.7cm
-    %                 ]{data/t1.jpg}
-    %             };
-    %             \node[anchor=south, inner sep=0pt] at (t1.north) {\labelsize{T1}};
-    %         }
-    %         \onslide<2->{
-    %             \node[anchor=west] (t2) at ($ (t1.east) - (0.35, 0) $) {
-    %                 \includegraphics[
-    %                     height=1.7cm
-    %                 ]{data/t2.jpg}
-    %             };
-    %             \node[anchor=south, inner sep=0pt] at (t2.north) {\labelsize{T2}};
-    %         }
-    %         \onslide<3->{
-    %             \node[anchor=west] (flair) at ($ (t2.east) - (0.35, 0) $) {
-    %                 \includegraphics[
-    %                     height=1.7cm
-    %                 ]{data/flair.jpg}
-    %             };
-    %             \node[anchor=south, inner sep=0pt] at (flair.north) {\labelsize{FLAIR}};
-    %             \node[anchor=north] at ($ (t2.south) - (0, -0.15) $) {\scriptsize{Adapted from Shoeibi et al., 2021}};
-    %             \only<3>{
-    %                 \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
-    %                     Shoeibi, A., Khodatars, M., Jafari, M., Moridian, P., Rezaei, M., Alizadehsani, R., ... \& Acharya, U. R. (2021). Applications of deep learning\\techniques for automated multiple sclerosis detection using magnetic resonance imaging: A review. Computers in Biology and\\Medicine, 136, 104697
-    %                 };
-    %             }
-    %         }
-    %         \only<4>{
-    %             \node[] at (7.6, -3.2) {
-    %                 \includegraphics[width=4cm]{data/flair_lesion.jpeg}
-    %             };
-    %         }
-    %         \only<5>{
-    %             \node[] at (7.6, -3.2) {
-    %                 \usebox{\ttwostudies}
-    %             };
-    %         };
-    %         \only<6>{
-    %             \node[label=below:\scriptsize{De Angelis et al., 2019}, inner sep=0pt, draw=black] at (7.6, -3.2) {
-    %                 \includegraphics[width=4.5cm]{data/ms_criteria.png}
-    %             };
-    %             \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
-    %                 De Angelis, F., Brownlee, W. J., Chard, D. T., \& Trip, S. A. (2019). New MS diagnostic criteria in practice. Practical Neurology, 19(1), 64-67
-    %             };
-    %         }
-    %         \only<7>{
-    %             \node[] at (7.6, -3.2) {
-    %                 T2 use-case in PD: WML/Motoric problems
-    %             };
-    %         }
-    %         \only<8>{
-    %             \node[] at (7.6, -3.2) {
-    %                 T2 use-case in dementia: WML/Subtyping
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+    \newsavebox{\fmristudies}
+    \sbox{\fmristudies}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=Year,
+                ylabel=Accuracy,
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=2005,
+                xmax=2023,
+                xtick={2005, 2010, 2015, 2020},
+                xticklabels={2005, 2010, 2015, 2020},
+                ymin=50,
+                ymax=100
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        DEM={mark=*,dem},
+                        SCZ={mark=*,scz},
+                        MDD={mark=*,mdd},
+                        BP={mark=*,bp},
+                        MS={mark=*,ms},
+                        PD={mark=*,pd}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/fMRI_studies.csv};
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
+                \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
+                \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
+                \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \newsavebox{\dmristudies}
-    % \sbox{\dmristudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=Year,
-    %             ylabel=Accuracy,
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     AD={mark=*,color1},
-    %                     SCZ={mark=*,color3},
-    %                     MDD={mark=*,color5},
-    %                     BP={mark=*,color7}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/dMRI_studies.csv};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \begin{frame}{Functional Magnetic Resonance Imaging (fMRI)}
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7) {};
 
-    % \begin{frame}{Diffusion MRI (DTI?)}
-    %     \begin{tikzpicture}
-    %         \node[draw=black] at (0, 0) {};
-    %         \node[draw=black] at (10, -7) {};
+            \only<1-3>{
+                \node[] at (2, -3.5) {
+                    Explanation of fMRI
+                };
+            }
+            \only<2>{
+                \node[] at (7.6, -3.2) {
+                    Task vs rest
+                };
+            };
+            \only<3>{
+                \node[] at (7.6, -3.2) {
+                    \usebox{\fmristudies}
+                };
+            }
+            \only<4>{
+                \node[] at (5, -3.2) {
+                    fMRI use-case SCZ/treatment response
+                };
+            }
+            \only<5>{
+                \node[] at (5, -3.2) {
+                    fMRI use-case 2
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    %         \onslide<1->{
-    %             \node[] at (2, -3.5) {
-    %                 Explanation of DTI
-    %             };
-    %         }
-    %         \only<2>{
-    %             \node[] at (7.6, -3.2) {
-    %                 \usebox{\dmristudies}
-    %             };
-    %         };
-    %         \only<3>{
-    %             \node[] at (7.6, -3.2) {
-    %                 Lack of prediction studies
-    %             };
-    %         }
-    %         \only<4>{
-    %             \node[] at (7.6, -3.2) {
-    %                 DTI use case 1
-    %             };
-    %         }
-    %         \only<5>{
-    %             \node[] at (7.6, -3.2) {
-    %                 DTI use case 2
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
 
-    % \begin{frame}{Molecular imaging (PET/SPECT)}
-    %     % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9181385/#B45-ijms-23-06079
-    %     \begin{tikzpicture}
-    %         \node[draw=black] at (0, 0) {};
-    %         \node[draw=black] at (10, -7) {};
+    \newsavebox{\molstudies}
+    \sbox{\molstudies}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Year},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=2011,
+                xmax=2023,
+                ymin=50,
+                ymax=100,
+                xtick={2012, 2016, 2020},
+                xticklabels={2012, 2016, 2020},
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        DEM={mark=*,dem},
+                        PD={mark=*,pd},
+                        MDD={mark=*,mdd},
+                        SCZ={mark=*,scz},
+                        BP={mark=*,bp}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/molecular_studies.csv};
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (12)}}] at (axis cs: 2024, 51) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (23)}}] at (axis cs: 2024, 56) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    %         \onslide<1->{
-    %             \node[] at (2, -3.5) {
-    %                 Explanation of PET
-    %             };
-    %         }
-    %         \only<2>{
-    %             \node[] at (7.6, -3.2) {
-    %                 PET/SPECT in meta-analysis
-    %             };
-    %         };
-    %         \only<3>{
-    %             \node[] at (7.6, -3.2) {
-    %                 PET in AD
-    %             };
-    %         }
-    %         \only<4>{
-    %             \node[] at (7.6, -3.2) {
-    %                 SPECT in PD
-    %             };
-    %         }
-    %         \only<5>{
-    %             \node[] at (7.6, -3.2) {
-    %                 Mental disorders?
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+    \newsavebox{\moldem}
+    \sbox{\moldem}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=0,
+                xmax=3000
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{DEM},
+                    mark=*,
+                    dem,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/molecular_studies.csv};
+                \addplot[
+                    dashed,
+                    dem
+                ] coordinates {
+                    (0, 92.66)
+                    (3000, 92.66)
+                };
+                \node[anchor=north east, dem] at (axis cs: 3000, 92.66) {\footnotesize{92.66\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \newsavebox{\fmristudies}
-    % \sbox{\fmristudies}{%
-    %     \begin{tikzpicture}
-    %         \begin{axis}[
-    %             ymin=50,
-    %             ymax=100,
-    %             xlabel=Year,
-    %             ylabel=Accuracy,
-    %             width=5cm,
-    %             height=5cm,
-    %             every tick label/.append style={font=\footnotesize},
-    %             xtick pos=bottom,
-    %             ytick pos=left,
-    %         ]
-    %             \addplot[
-    %                 only marks,
-    %                 scatter,
-    %                 scatter/classes={
-    %                     AD={mark=*,color1},
-    %                     SCZ={mark=*,color3},
-    %                     MDD={mark=*,color5},
-    %                     BP={mark=*,color7}
-    %                 },
-    %                 scatter src=explicit symbolic,
-    %                 visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
-    %                 scatter/@pre marker code/.append style={
-    %                     /tikz/mark size=\perpointmarksize
-    %                 },
-    %                 opacity=0.75
-    %             ] table [
-    %                 x=year,
-    %                 y=accuracy,
-    %                 col sep=comma,
-    %                 meta=diagnosis
-    %             ] {data/fMRI_studies.csv};
-    %         \end{axis}
-    %     \end{tikzpicture}
-    % }
+    \newsavebox{\molpd}
+    \sbox{\molpd}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                width=5cm,
+                height=5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=0,
+                xmax=1600
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{PD},
+                    mark=*,
+                    pd,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/molecular_studies.csv};
+                \addplot[
+                    dashed,
+                    pd
+                ] coordinates {
+                    (0, 92.02)
+                    (1600, 92.02)
+                };
+                \node[anchor=north east, pd] at (axis cs: 1600, 92.02) {\footnotesize{92.02\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \begin{frame}{Functional Magnetic Resonance Imaging (fMRI)}
-    %     \begin{tikzpicture}
-    %         \node[draw=black] at (0, 0) {};
-    %         \node[draw=black] at (10, -7) {};
+    \newsavebox{\cascade}
+    \sbox{\cascade}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=0, ymax=1,
+                xmin=-15,
+                xmax=35,
+                height=8cm,
+                width=10cm
+            ]
+            \addplot[
+                domain=-15:35,
+                samples=100,
+                smooth,
+                color=blue
+            ] {1/(1+exp(-0.5*x))}; % First sigmoid
 
-    %         \onslide<1->{
-    %             \node[] at (2, -3.5) {
-    %                 Explanation of fMRI
-    %             };
-    %         }
-    %         \only<2>{
-    %             \node[] at (7.6, -3.2) {
-    %                 Task vs rest
-    %             };
-    %         };
-    %         \only<3>{
-    %             \node[] at (7.6, -3.2) {
-    %                 \usebox{\fmristudies}
-    %             };
-    %         }
-    %         \only<4>{
-    %             \node[] at (7.6, -3.2) {
-    %                 fMRI use-case 1
-    %             };
-    %         }
-    %         \only<5>{
-    %             \node[] at (7.6, -3.2) {
-    %                 fMRI use-case 2
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+            \addplot[
+                domain=-15:35,
+                samples=100,
+                smooth,
+                color=red
+            ] {1/(1+exp(-0.5*(x-6)))}; % Shifted right by 6
 
-    % \begin{frame}{Elecrophysiological mapping (EEG/MEG)}
-    % \end{frame}
+            \addplot[
+                domain=-15:35,
+                samples=100,
+                smooth,
+                color=green
+            ] {1/(1+exp(-0.5*(x-12)))}; % Shifted right by 12
 
-    % \begin{frame}{Alzheimer's disease}
-    %     \centering
-    %     \begin{itemize}
-    %         \item Pathological changes are apparent in a variety of neuroimaging modalities, to a level which can support individual diagnostics.
-    %         \item
-    %     \end{itemize}
-    %     \begin{tikzpicture}
-    %         %https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9181385/
-    %         \node[inner sep=0pt, draw=black] at (0, 0) {
-    %             \includegraphics[width=9cm]{data/AD_modalities.png}
-    %         };
-    %     \end{tikzpicture}
-    % \end{frame}
-    % \begin{frame}{Multiple sclerosis}
-    %     \begin{itemize}
-    %         \item Lesions apparent in T2-weighted and FLAIR images are used clinically to support diagnostics.
-    %         \item DTI reveals group-wise differences also in apparently healthy white matter.
-    %         \item A stereotypical trajectory that has been observed in patients using fMRI is heightened activation up until a point where it is no longer possible to compensate for structural damage, after which the activation generally resides.
-    %     \end{itemize}
-    % \end{frame}
-    % \begin{frame}{Parkinson's disease}
-    %     % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6280219/
-    %     % https://link.springer.com/article/10.1007/s12559-023-10175-y
-    %     \begin{itemize}
-    %         \item DTI has been shown useful for classifying patient subtypes and correlates with motor and cognitive function in PD patients.
-    %         \item fMRI has been shown useful for differentiating patient subtypes, supporting the notion of PD subtypes as network models.
-    %         \item PET imaging can be used to reveal subtypes
-    %     \end{itemize}
-    % \end{frame}
+            \addplot[
+                domain=-15:35,
+                samples=100,
+                smooth,
+                color=orange
+            ] {1/(1+exp(-0.5*(x-18)))}; % Shifted right by 18
+            \end{axis}
+        \end{tikzpicture}
+    }
 
-    % \begin{frame}{Bipolar disorder}
-    %     \begin{tikzpicture}
-    %         \only<1>{
-    %             % https://pubmed.ncbi.nlm.nih.gov/32108409/
-    %             \node[inner sep=0pt, draw=black] at (0, 0) {
-    %                 \includegraphics[width=8cm]{data/bp_accuracies.jpeg}
-    %             };
-    %         }
-    %         \only<2>{
-    %             % https://academic.oup.com/cercor/article/29/1/202/4653730?login=false
-    %             \node[inner sep=0pt, draw=black] at (0, 0) {
-    %                 \includegraphics[width=6cm]{data/bp_generalization.png}
-    %             };
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+    \begin{frame}[t]{Molecular imaging (PET/SPECT)}
+        % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9181385/#B45-ijms-23-06079
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7) {};
 
-    % \begin{frame}{Schizophrenia}
-    % \end{frame}
+            \only<1,2>{
+                \node[] at (2, -3.5) {
+                    Explanation of molecular
+                };
+            }
+            \only<2>{
+                \node[] at (7.6, -3.2) {
+                    \usebox{\molstudies}
+                };
+            }
+            \only<3>{
+                \node[] at (5, -3.2) {
+                    Explanation of PET
+                };
+            }
+            \only<4>{
+                \node[] at (7.6, -3.2) {
+                    \usebox{\moldem}
+                };
+            }
+            %https://alz.org/media/Documents/scientific-conferences/Figures-and-Tables-Clinical-Criteria-for-Staging-and-Diagnosis-for-Public-Comment-Draft-2.pdf?_gl=1*ltg2em*_ga*NDUxNDk5MDY3LjE3MTQ1MDcyNTA.*_ga_9JTEWVX24V*MTcxNDUwNzI1MC4xLjEuMTcxNDUwNzI3MC40MC4wLjA.*_ga_QSFTKCEH7C*MTcxNDUwNzI1MC4xLjEuMTcxNDUwNzI3MC40MC4wLjA.
+            \only<5-10>{
+                \only<5>{
+                    \node[] at (5, -3.75) {
+                        \usebox{\cascade}
+                    };
+                }
+                \only<6-9>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
+                    };
+                }
+                \only<6>{
+                    \node[anchor=west] at (0.4, -3.2) {
+                        \includegraphics[
+                            height=5cm,
+                            trim={0 0 23.6cm 0},
+                            clip
+                        ]{data/AD_pet_types.png}
+                    };
+                }
+                \only<7>{
+                    \node[anchor=west] at (0.4, -3.2) {
+                        \includegraphics[
+                            height=5cm,
+                            trim={0 0 15.9cm 0},
+                            clip
+                        ]{data/AD_pet_types.png}
+                    };
+                }
+                \only<8>{
+                    \node[anchor=west] at (0.4, -3.2) {
+                        \includegraphics[
+                            height=5cm,
+                            trim={0 0 7.85cm 0},
+                            clip
+                        ]{data/AD_pet_types.png}
+                    };
+                }
+                \only<9>{
+                    \node[anchor=west] at (0.4, -3.2) {
+                        \includegraphics[height=5cm]{data/AD_pet_types.png}
+                    };
+                }
+                \only<10>{
+                    \node[font=\scriptsize\itshape, align=left] at (5, -3.5) {
+                        "It is necessary to separate syndrome (clinically identified impairment) from biology (etiology)\\
+                        \\[-0.2cm]
+                        AD is defined by its biology with the following implications\\
+                        \\[-0.2cm]
+                        The disease is first evident with the appearance of β-amyloid plaques, and later neocortical\\tau tangles, while people are asymptomatic. Pathophysiologic mechanisms involved with\\processing and clearance of protein fragments may be involved very early in the disease\\process, but these are not yet well understood.\\
+                        \\[-0.2cm]
+                        In living people the disease is diagnosed by disease specific core biomarkers\\
+                        \\[-0.2cm]
+                        Unimpaired individuals with abnormal biomarker testing are at risk for symptoms due to AD.\\
+                        \\[-0.2cm]
+                        They are not at risk for a disease they already have.\\
+                        Symptoms are a result of the disease process and are not necessary to diagnose AD\\
+                        \\[-0.2cm]
+                        AD exists on a continuum not as discrete clinically defined entities\\
+                        \\[-0.2cm]
+                        Clinical syndromes commonly seen with AD may also be caused by disorders other than AD\\and therefore clinical presentation alone is not diagnostic of AD\\
+                        \\[-0.2cm]
+                        The same AD biology may result in different phenotypic presentations"\\
+                    };
 
-    % \begin{frame}{Major depressive disorder}
-    % \end{frame}
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
+                        Revised Criteria for Diagnosis and Staging of Alzheimer's Disease: Alzheimer’s Association Workgroup, http://alz.org/diagnosticcriteria
+                    };
+
+                    %
+                }
+            }
+            % \only<6>{
+            %     \node[] at (7.6, -3.2) {
+            %         \usebox{\molpd}
+            %     };
+            % }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Summary}
+        \begin{itemize}
+            \setlength\itemsep{-0.3em}
+            \item \footnotesize{Non-T1 weighted structural MRI}
+            \begin{itemize}
+                \item \scriptsize{High accuracies for classifying MS and PD (>90\%).}
+                \item \scriptsize{T2-weighted images used by Storelli et al. for predicting MS prognosis.}
+                \item \scriptsize{XXX used by YYY for ZZZ in PD.}
+            \end{itemize}
+            \item \footnotesize{Diffusion MRI}
+            \begin{itemize}
+                \item \scriptsize{Mostly used in mental disorders with various results (accuracies XX-YY), but also DEM (XX)}
+                \item \scriptsize{Used by Saglam et al. to differentially diagnose SCZ and BP with 80\% accuracy.}
+                \item \scriptsize{XXX used by YYY for ZZZ in DEM.}
+            \end{itemize}
+            \item \footnotesize{Functional MRI}
+            \begin{itemize}
+                \item \scriptsize{Widely used for all disorders, with varying results}
+                \item \scriptsize{Task-based fMRI used by YYY for ZZZ in SCZ.}
+                \item \scriptsize{Resting state fMRI used by Segal et al. to make diagnostic predictions at various biological levels.}
+            \end{itemize}
+            \item \footnotesize{Molecular imaging}
+            \begin{itemize}
+                \item \scriptsize{Mostly used in DEM and PD with high accuracies (~92\%).}
+                \item \scriptsize{PET used clinically to diagnose Alzheimer's disease.}
+                \item \scriptsize{SPECT used clinically to XXX Parkinson's disease.}
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
 
     \section{The future of neuroimaging-based prediction}
 
@@ -1542,6 +2086,14 @@
                     Diagnostic labels vs prognosis, treatment, differential
                 };
             }
+            \only<6>{
+                \node[draw=black, inner sep=0pt, label=below:{\scriptsize{Vogel \& Black (2024)}}] at (5, -3.5) {
+                    \includegraphics[width=4cm]{data/transdiagnostic.png}
+                };
+                \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (psych-citation) at (5, -7.65) {
+                    Vogel, A. C., \& Black, K. J. (2024). Brain Imaging in Routine Psychiatric Practice. Missouri Medicine, 121(1), 37
+                };
+            }
         \end{tikzpicture}
     \end{frame}
 
@@ -1850,33 +2402,4 @@
             \end{axis}
         \end{tikzpicture}
     \end{frame}
-
-    % \begin{frame}
-    %     \begin{tikzpicture}
-    %         %https://doi.org/10.1007/s40708-015-0019-x
-    %         \node[inner sep=0pt, draw=black] at (0, 0) {
-    %             \includegraphics[width=4cm]{data/multimodal_progress.png}
-    %         };
-    %     \end{tikzpicture}
-    % \end{frame}
-    % \begin{frame}{The role of prediction}
-    %     \centering
-    %     \begin{tikzpicture}
-    %         %https://doi.org/10.1038/s41380-022-01635-2
-    %         \node[inner sep=0pt, draw=black] at (0, 0) {
-    %             \includegraphics[width=4cm]{data/transdiagnostic.png}
-    %         };
-    %     \end{tikzpicture}
-    % \end{frame}
-
-
-    % \begin{frame}{Prediction versus interpretability}
-    %     \centering
-    %     \begin{tikzpicture}
-    %         %https://doi.org/10.1038/s41380-022-01635-2
-    %         \node[inner sep=0pt, draw=black] at (0, 0) {
-    %             \includegraphics[width=8cm]{data/prediction_vs_interpretability.png}
-    %         };
-    %     \end{tikzpicture}
-    % \end{frame}
 \end{document}
