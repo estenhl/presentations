@@ -235,7 +235,9 @@ def plot_t2(df: pd.DataFrame):
     df = df[df['modality'] == 'T2']
 
     for diagnosis in np.unique(df['diagnosis']):
-        print(f'T2 mean accuracy {diagnosis}: {np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"])}')
+        print(f'T2 mean accuracy {diagnosis}: '
+              f'{np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"])} '
+              f'({np.amax(df.loc[df["diagnosis"] == diagnosis, "sample"])})')
 
     df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv('data/t2_studies.csv', index=False)
 
@@ -384,7 +386,7 @@ print(Counter(df['diagnosis']))
 #plot_occurences(df)
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
-#plot_t2(df)
+plot_t2(df)
 #plot_dmri(df)
 #plot_molecular(df)
 #plot_fmri(df)
