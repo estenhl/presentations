@@ -86,8 +86,6 @@ def plot_occurences(df: pd.DataFrame):
     for modality in modalities:
         df[modality] = df['new_modality'].apply(lambda x: modality in x)
 
-    diagnosis = 'SCZ'
-    modality = 'fMRI'
     counts = {diagnosis: {modality: np.sum(df.loc[df['diagnosis'] == diagnosis, modality]) \
                           for modality in modalities} \
               for diagnosis in diagnoses}
@@ -95,8 +93,6 @@ def plot_occurences(df: pd.DataFrame):
                               index=diagnoses, columns=modalities)
     print(modalities)
     print(np.sum(modalities))
-
-
 
     #fig = px.bar(df, x='modality', y='count', color='diagnosis',
     #             title='Modalities')
@@ -356,9 +352,22 @@ def expand(df: pd.DataFrame):
     diagnosis_df = diagnosis_df[diagnosis_df['diagnosis'].apply(
         lambda x: x in known_diagnoses
     )]
+
+    for author in np.unique(diagnosis_df['source']):
+        for diagnosis in known_diagnoses:
+            rows = diagnosis_df.loc[(diagnosis_df['source'] == author) & \
+                                    (diagnosis_df['diagnosis'] == diagnosis)]
+
+            if len(rows) == 0:
+                diagnosis_df = pd.concat([diagnosis_df,
+                                          pd.DataFrame({'source': [author],
+                                                        'diagnosis': [diagnosis],
+                                                        'count': [0]})])
+
     diagnosis_df['id'] = diagnosis_df['diagnosis'].apply(
         lambda x: known_diagnoses.index(x)
     )
+
     diagnosis_df.to_csv('data/expanded_diagnoses.csv', index=False)
 
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
@@ -368,7 +377,7 @@ print(f'After dropping: {len(df)}')
 print(df[pd.isna(df['accuracy'])])
 print(Counter(df['modality']))
 print(Counter(df['diagnosis']))
-plot_occurences(df)
+#plot_occurences(df)
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
@@ -379,6 +388,6 @@ plot_occurences(df)
 #plot_per_disorder(df)
 #plot_multimodality(df)
 #plot_future(df)
-#expand(df)
+expand(df)
 
 
