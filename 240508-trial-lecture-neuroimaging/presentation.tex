@@ -2568,206 +2568,6 @@
         \end{tikzpicture}
     \end{frame}
 
-    \newcommand{\stickman}[2]{
-        \node[circle,fill,minimum size=5mm,#2] (head) at #1 {};
-        \node[rounded corners=2pt,minimum height=1.3cm,minimum width=0.4cm,fill,below = 1pt of head,#2] (body) {};
-        \draw[line width=1mm,round cap-round cap,#2] ([shift={(2pt,-1pt)}]body.north east) --++(-90:6mm);
-        \draw[line width=1mm,round cap-round cap,#2] ([shift={(-2pt,-1pt)}]body.north west)--++(-90:6mm);
-        \draw[thick,white,-round cap] (body.south) --++(90:5.5mm);
-    }
-
-    \newsavebox{\casecontrol}
-    \sbox{\casecontrol}{%
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7.5) {};
-            \stickman{(6,-1)}{red}
-            \stickman{(4,-1)}{blue}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\casecontrolaxis}
-    \sbox{\casecontrolaxis}{%
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7.5) {};
-            \stickman{(1,-1)}{blue}
-            \stickman{(9,-1)}{red}
-            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
-            \node[anchor=north] at (5, -3) {Symptom load};
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\casecontrolprognosis}
-    \sbox{\casecontrolprognosis}{%
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7.5) {};
-            \stickman{(1,-1)}{blue}
-            \stickman{(9,-1)}{red}
-            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
-            \node[anchor=north] at (5, -3) {Symptom load};
-            \stickman{(5.1,-4)}{red!50!blue}
-            \stickman{(5.9,-4)}{red!55!blue}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\casecontroltreatment}
-    \sbox{\casecontroltreatment}{%
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7.5) {};
-            \stickman{(1,-1)}{blue}
-            \stickman{(9,-1)}{red}
-            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
-            \node[anchor=north] at (5, -3) {Symptom load};
-            \stickman{(5.1,-4)}{red!50!blue}
-            \stickman{(5.9,-4)}{red!55!blue}
-
-            \stickman{(8.4,-4.2)}{red!90!blue}
-            \stickman{(7.6,-4.2)}{red!85!blue}
-        \end{tikzpicture}
-    }
-
-    \begin{frame}[t]{Challenges: Preprocessing and degrees of freedom}
-        \begin{tikzpicture}
-            \def\mriwidth{1.3cm}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7) {};
-
-            \onslide<1-2>{
-                \node[inner sep=0pt, outer sep=0pt] (input) at (1.2, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_orig.png}
-                };
-                \node[align=center,draw=gray,fill=gray!20, inner sep=5pt] (model) at (8.7, -3.5) {Predictive\\model};
-                \draw[-stealth] (input) -- (model);
-            }
-
-            \onslide<2>{
-                \node[inner sep=0pt, outer sep=0pt] (rotated) at (3, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_rotated.png}
-                };
-                \node[inner sep=0pt, outer sep=0pt] (mask) at (4.8, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_mask.png}
-                };
-                \node[inner sep=0pt, outer sep=0pt] (seg) at (6.6, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_seg.png}
-                };
-                \draw[-stealth] (input) -- (rotated);
-                \draw[-stealth] (rotated) -- (mask);
-                \draw[-stealth] (mask) -- (seg);
-            }
-
-            \only<3>{
-                \node[inner sep=0pt, draw=black, label=below:{\scriptsize{Nørgaard et al., 2020}}] at (5, -3.5) {
-                    \includegraphics[width=9cm]{data/nørgaard.jpeg}
-                };
-
-                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
-                    Nørgaard, M., Ganz, M., Svarer, C., Frokjaer, V. G., Greve, D. N., Strother, S. C., \& Knudsen, G. M. (2020). Different\\preprocessing strategies lead to different conclusions: a [11C] DASB-PET reproducibility study. Journal of Cerebral\\Blood Flow \& Metabolism, 40(9), 1902-1911
-                };
-            }
-
-            \only<4-5>{
-                \node[label=below:{\scriptsize{Adapted from Botvinik-Nezer et al., 2020}}] at (5, -2.7) {
-                    \usebox{\nezer}
-                };
-
-                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
-                    Botvinik-Nezer, R., Holzmeister, F., Camerer, C. F., Dreber, A., Huber, J., Johannesson, M., ... \& Rieck, J. R. (2020). Variability\\in the analysis of a single neuroimaging dataset by many teams. Nature, 582(7810), 84-88
-                };
-            }
-            \onslide<5>{
-                \node[minimum width=9cm, minimum height=6cm,fill=black!2,opacity=0.85] at (5, -2.7) {};
-                \node[fill=none,align=center] at (5, -3) {\textit{"On average across the 9 hypotheses, 20\% of teams reported}\\ \textit{a result that differed from the majority of teams. Given that}\\ \textit{the maximum possible variation is 50\%, the observed fraction}\\ \textit{of 20\% divergent results thus \textbf{falls midway between complete}}\\ \textit{\textbf{consistency across teams and completely random results},}\\ \textit{demonstrating that analytical choices have a major effect on}\\ \textit{reported results."}};
-            }
-            \only<6>{
-                \node[] at (5, -3.75) {
-                    \usebox{\single}
-                };
-            }
-            \only<7>{
-                \node[] at (5, -3.75) {
-                    \usebox{\normal}
-                };
-            }
-            \only<8>{
-                \node[] at (5, -3.75) {
-                    \usebox{\bias}
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
-
-    \begin{frame}{Challenges: Predictive targets}
-        \begin{tikzpicture}
-            \node[] at (0, 0) {};
-            \node[] at (10, -7) {};
-
-            \only<1-4>{
-                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
-                    Marquand, A. F., Rezek, I., Buitelaar, J., \& Beckmann, C. F. (2016). Understanding heterogeneity in clinical cohorts using normative\\models: beyond case-control studies. Biological psychiatry, 80(7), 552-561
-                };
-                \node[inner sep=0pt, anchor=north west] (a) at (1, 0) {
-                    \includegraphics[width=4cm]{data/marquand_a.png}
-                };
-                \only<1>{
-                    \draw[] (a.north west) -- (a.north east) -- (a.south east) -- (a.south west) -- cycle;
-                }
-            }
-            \onslide<2-4>{
-                \node[inner sep=0pt, anchor=west] (b) at (a.east) {
-                    \includegraphics[width=4cm]{data/marquand_b.png}
-                };
-                \only<2>{
-                    \draw[] (a.north west) -- (b.north east) -- (b.south east) -- (a.south west) -- cycle;
-                };
-            }
-            \onslide<3-4>{
-                \node[inner sep=0pt, anchor=north] (c) at (a.south) {
-                    \includegraphics[width=4cm]{data/marquand_c.png}
-                };
-                \only<3>{
-                    \draw[] (a.north west) -- (b.north east) -- (b.south east) -- (b.south west) -- (c.south east) -- (c.south west) -- cycle;
-                };
-            }
-            \only<4>{
-                \node[inner sep=0pt, anchor=north] (d) at (b.south) {
-                    \includegraphics[width=4cm]{data/marquand_d.png}
-                };
-                \draw[] (a.north west) -- (b.north east) -- (d.south east) -- (c.south west) -- cycle;
-
-            }
-            \only<5>{
-                \node[draw=black, inner sep=0pt, label=below:{\scriptsize{Vogel \& Black (2024)}}] at (5, -3.5) {
-                    \includegraphics[width=4cm]{data/transdiagnostic.png}
-                };
-                \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (psych-citation) at (5, -7.65) {
-                    Vogel, A. C., \& Black, K. J. (2024). Brain Imaging in Routine Psychiatric Practice. Missouri Medicine, 121(1), 37
-                };
-            }
-            \only<6>{
-                \node[] at (5, -3.5) {
-                    \usebox{\casecontrol}
-                };
-            }
-            \only<7>{
-                \node[] at (5, -3.5) {
-                    \usebox{\casecontrolaxis}
-                };
-            }
-            \only<8>{
-                \node[] at (5, -3.5) {
-                    \usebox{\casecontrolprognosis}
-                };
-            }
-            \only<9>{
-                \node[] at (5, -3.5) {
-                    \usebox{\casecontroltreatment}
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
 
     \newsavebox{\nezer}
     \sbox{\nezer}{%
@@ -2890,6 +2690,207 @@
             \end{axis}
         \end{tikzpicture}
     }
+
+    \begin{frame}[t]{Challenges: Preprocessing and degrees of freedom}
+        \begin{tikzpicture}
+            \def\mriwidth{1.3cm}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7) {};
+
+            \onslide<1-2>{
+                \node[inner sep=0pt, outer sep=0pt] (input) at (1.2, -3.5) {
+                    \includegraphics[width=\mriwidth]{data/preprocessing_orig.png}
+                };
+                \node[align=center,draw=gray,fill=gray!20, inner sep=5pt] (model) at (8.7, -3.5) {Predictive\\model};
+                \draw[-stealth] (input) -- (model);
+            }
+
+            \onslide<2>{
+                \node[inner sep=0pt, outer sep=0pt] (rotated) at (3, -3.5) {
+                    \includegraphics[width=\mriwidth]{data/preprocessing_rotated.png}
+                };
+                \node[inner sep=0pt, outer sep=0pt] (mask) at (4.8, -3.5) {
+                    \includegraphics[width=\mriwidth]{data/preprocessing_mask.png}
+                };
+                \node[inner sep=0pt, outer sep=0pt] (seg) at (6.6, -3.5) {
+                    \includegraphics[width=\mriwidth]{data/preprocessing_seg.png}
+                };
+                \draw[-stealth] (input) -- (rotated);
+                \draw[-stealth] (rotated) -- (mask);
+                \draw[-stealth] (mask) -- (seg);
+            }
+
+            \only<3>{
+                \node[inner sep=0pt, draw=black, label=below:{\scriptsize{Nørgaard et al., 2020}}] at (5, -3.5) {
+                    \includegraphics[width=9cm]{data/nørgaard.jpeg}
+                };
+
+                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
+                    Nørgaard, M., Ganz, M., Svarer, C., Frokjaer, V. G., Greve, D. N., Strother, S. C., \& Knudsen, G. M. (2020). Different\\preprocessing strategies lead to different conclusions: a [11C] DASB-PET reproducibility study. Journal of Cerebral\\Blood Flow \& Metabolism, 40(9), 1902-1911
+                };
+            }
+
+            \only<4-5>{
+                \node[label=below:{\scriptsize{Adapted from Botvinik-Nezer et al., 2020}}] at (5, -2.7) {
+                    \usebox{\nezer}
+                };
+
+                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
+                    Botvinik-Nezer, R., Holzmeister, F., Camerer, C. F., Dreber, A., Huber, J., Johannesson, M., ... \& Rieck, J. R. (2020). Variability\\in the analysis of a single neuroimaging dataset by many teams. Nature, 582(7810), 84-88
+                };
+            }
+            \onslide<5>{
+                \node[minimum width=9cm, minimum height=6cm,fill=black!2,opacity=0.85] at (5, -2.7) {};
+                \node[fill=none,align=center] at (5, -3) {\textit{"On average across the 9 hypotheses, 20\% of teams reported}\\ \textit{a result that differed from the majority of teams. Given that}\\ \textit{the maximum possible variation is 50\%, the observed fraction}\\ \textit{of 20\% divergent results thus \textbf{falls midway between complete}}\\ \textit{\textbf{consistency across teams and completely random results},}\\ \textit{demonstrating that analytical choices have a major effect on}\\ \textit{reported results."}};
+            }
+            \only<6>{
+                \node[] at (5, -3.75) {
+                    \usebox{\single}
+                };
+            }
+            \only<7>{
+                \node[] at (5, -3.75) {
+                    \usebox{\normal}
+                };
+            }
+            \only<8>{
+                \node[] at (5, -3.75) {
+                    \usebox{\bias}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \newcommand{\stickman}[2]{
+        \node[circle,fill,minimum size=5mm,#2] (head) at #1 {};
+        \node[rounded corners=2pt,minimum height=1.3cm,minimum width=0.4cm,fill,below = 1pt of head,#2] (body) {};
+        \draw[line width=1mm,round cap-round cap,#2] ([shift={(2pt,-1pt)}]body.north east) --++(-90:6mm);
+        \draw[line width=1mm,round cap-round cap,#2] ([shift={(-2pt,-1pt)}]body.north west)--++(-90:6mm);
+        \draw[thick,white,-round cap] (body.south) --++(90:5.5mm);
+    }
+
+    \newsavebox{\casecontrol}
+    \sbox{\casecontrol}{%
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7.5) {};
+            \stickman{(6,-1)}{red}
+            \stickman{(4,-1)}{blue}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casecontrolaxis}
+    \sbox{\casecontrolaxis}{%
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7.5) {};
+            \stickman{(1,-1)}{blue}
+            \stickman{(9,-1)}{red}
+            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
+            \node[anchor=north] at (5, -3) {Symptom load};
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casecontrolprognosis}
+    \sbox{\casecontrolprognosis}{%
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7.5) {};
+            \stickman{(1,-1)}{blue}
+            \stickman{(9,-1)}{red}
+            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
+            \node[anchor=north] at (5, -3) {Symptom load};
+            \stickman{(5.1,-4)}{red!50!blue}
+            \stickman{(5.9,-4)}{red!55!blue}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casecontroltreatment}
+    \sbox{\casecontroltreatment}{%
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, -7.5) {};
+            \stickman{(1,-1)}{blue}
+            \stickman{(9,-1)}{red}
+            \draw[stealth-stealth,very thick] (1, -3) -- (9, -3);
+            \node[anchor=north] at (5, -3) {Symptom load};
+            \stickman{(5.1,-4)}{red!50!blue}
+            \stickman{(5.9,-4)}{red!55!blue}
+
+            \stickman{(8.4,-4.2)}{red!90!blue}
+            \stickman{(7.6,-4.2)}{red!85!blue}
+        \end{tikzpicture}
+    }
+
+    \begin{frame}{Challenges: Predictive targets}
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (10, -7) {};
+
+            \only<1-4>{
+                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
+                    Marquand, A. F., Rezek, I., Buitelaar, J., \& Beckmann, C. F. (2016). Understanding heterogeneity in clinical cohorts using normative\\models: beyond case-control studies. Biological psychiatry, 80(7), 552-561
+                };
+                \node[inner sep=0pt, anchor=north west] (a) at (1, 0) {
+                    \includegraphics[width=4cm]{data/marquand_a.png}
+                };
+                \only<1>{
+                    \draw[] (a.north west) -- (a.north east) -- (a.south east) -- (a.south west) -- cycle;
+                }
+            }
+            \onslide<2-4>{
+                \node[inner sep=0pt, anchor=west] (b) at (a.east) {
+                    \includegraphics[width=4cm]{data/marquand_b.png}
+                };
+                \only<2>{
+                    \draw[] (a.north west) -- (b.north east) -- (b.south east) -- (a.south west) -- cycle;
+                };
+            }
+            \onslide<3-4>{
+                \node[inner sep=0pt, anchor=north] (c) at (a.south) {
+                    \includegraphics[width=4cm]{data/marquand_c.png}
+                };
+                \only<3>{
+                    \draw[] (a.north west) -- (b.north east) -- (b.south east) -- (b.south west) -- (c.south east) -- (c.south west) -- cycle;
+                };
+            }
+            \only<4>{
+                \node[inner sep=0pt, anchor=north] (d) at (b.south) {
+                    \includegraphics[width=4cm]{data/marquand_d.png}
+                };
+                \draw[] (a.north west) -- (b.north east) -- (d.south east) -- (c.south west) -- cycle;
+
+            }
+            \only<5>{
+                \node[draw=black, inner sep=0pt, label=below:{\scriptsize{Vogel \& Black (2024)}}] at (5, -3.5) {
+                    \includegraphics[width=4cm]{data/transdiagnostic.png}
+                };
+                \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (psych-citation) at (5, -7.65) {
+                    Vogel, A. C., \& Black, K. J. (2024). Brain Imaging in Routine Psychiatric Practice. Missouri Medicine, 121(1), 37
+                };
+            }
+            \only<6>{
+                \node[] at (5, -3.5) {
+                    \usebox{\casecontrol}
+                };
+            }
+            \only<7>{
+                \node[] at (5, -3.5) {
+                    \usebox{\casecontrolaxis}
+                };
+            }
+            \only<8>{
+                \node[] at (5, -3.5) {
+                    \usebox{\casecontrolprognosis}
+                };
+            }
+            \only<9>{
+                \node[] at (5, -3.5) {
+                    \usebox{\casecontroltreatment}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
 
     \newsavebox{\multimodalyear}
     \sbox{\multimodalyear}{%
