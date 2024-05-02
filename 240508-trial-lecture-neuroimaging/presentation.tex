@@ -1468,13 +1468,83 @@
         \end{tikzpicture}
     }
 
+    \newcommand{\drawwater}[3]{
+        % Draw oxygen
+        \node[draw, circle, fill=red, minimum size=3mm, inner sep=0pt] (#3) at (#1,#2) {};
+        % Calculate positions for hydrogen
+        \pgfmathsetmacro{\angleone}{random()*360}
+        \pgfmathsetmacro{\angletwo}{\angleone + 104.5} % 104.5 degrees is the angle in a water molecule
+        % Draw hydrogens
+        \node[draw, circle, fill=white, minimum size=1.5mm, inner sep=0pt] (H1) at ($(#3) + (\angleone:0.3)$) {};
+        \node[draw, circle, fill=white, minimum size=1.5mm, inner sep=0pt] (H2) at ($(#3) + (\angletwo:0.3)$) {};
+        % Connect hydrogens to oxygen
+        \draw (#3) -- (H1);
+        \draw (#3) -- (H2);
+    }
+
+    \newcommand{\drawdiffusion}[1]{
+        \begin{tikzpicture}
+            % Random seed for reproducibility
+            \pgfmathsetseed{6}
+
+            \drawwater{1}{3}{a}
+            \drawwater{1.5}{4}{b}
+            \drawwater{0.5}{2.5}{c}
+            \drawwater{0.75}{3.75}{d}
+            \drawwater{1.5}{3.5}{e}
+            \drawwater{2}{2.5}{f}
+            \drawwater{1.25}{2.25}{g}
+
+            \ifnum#1=2
+                \draw[-stealth] (a) -- ($ (a) + (-0.1, -0.5) $);
+                \draw[-stealth] (b) -- ($ (b) + (0.3, 0.4) $);
+                \draw[-stealth] (c) -- ($ (c) + (-0.2, -0.4) $);
+                \draw[-stealth] (d) -- ($ (d) + (-0.4, 0.2) $);
+                \draw[-stealth] (e) -- ($ (e) + (-0.5, 0.2) $);
+                \draw[-stealth] (f) -- ($ (f) + (0.3, 0.4) $);
+                \draw[-stealth] (g) -- ($ (g) + (0.0, -0.5) $);
+            \fi
+            \ifnum#1=3
+                \draw[-stealth] (a) -- ($ (a) + (-0.1, 0.5) $);
+                \draw[-stealth] (b) -- ($ (b) + (0.2, 0.45) $);
+                \draw[-stealth] (c) -- ($ (c) + (0.05, 0.5) $);
+                \draw[-stealth] (d) -- ($ (d) + (-0.2, 0.4) $);
+                \draw[-stealth] (e) -- ($ (e) + (-0.2, 0.4) $);
+                \draw[-stealth] (f) -- ($ (f) + (0.1, 0.4) $);
+                \draw[-stealth] (g) -- ($ (g) + (-0.2, 0.5) $);
+
+                \pgfmathsetmacro{\xmin}{0} % Minimum x-coordinate of the molecules
+                \pgfmathsetmacro{\xmax}{2.3}   % Maximum x-coordinate of the molecules
+
+                % Draw curving side boundaries
+                \draw[thick, name path=leftinner] plot [smooth] coordinates {(\xmin+0.1, 1.5) (\xmin-0.1, 3) (\xmin+0.1, 4.5)};
+                \draw[thick, name path=leftouter] plot [smooth] coordinates {(\xmin+0.2, 1.5) (\xmin, 3) (\xmin+0.2, 4.5)};
+                \draw[thick] plot [smooth] coordinates {(\xmax+0.2, 1.5) (\xmax, 3) (\xmax+0.2, 4.5)};
+                \draw[thick] plot [smooth] coordinates {(\xmax+0.3, 1.5) (\xmax+0.1, 3) (\xmax+0.3, 4.5)};
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\waterfree}
+    \sbox{\waterfree}{%
+        \drawdiffusion{1}
+    }
+    \newsavebox{\watermoving}
+    \sbox{\watermoving}{%
+        \drawdiffusion{2}
+    }
+    \newsavebox{\waterboundary}
+    \sbox{\waterboundary}{%
+        \drawdiffusion{3}
+    }
+
     \begin{frame}[t]{Diffusion MRI}
-        \only<1-14>{
+        \only<1-17>{
             \begin{tikzpicture}
                 \node[draw=black] at (0, 0) {};
                 \node[draw=black] at (10, -7) {};
 
-                \only<1-6>{
+                \only<1-9>{
                     \onslide<1->{
                         \node[anchor=west, inner sep=0pt, outer sep=0pt] (t1) at (0.5, -2.5) {
                             \includegraphics[
@@ -1482,21 +1552,36 @@
                             ]{data/dti_t1.png}
                         };
                     }
-                    \onslide<2->{
+                    \only<2>{
+                        \node[] at (7.5, -3.5) {
+                            \usebox{\waterfree}
+                        };
+                    }
+                    \only<3>{
+                        \node[] at (7.5, -3.5) {
+                            \usebox{\watermoving}
+                        };
+                    }
+                    \only<4>{
+                        \node[] at (7.5, -3.5) {
+                            \usebox{\waterboundary}
+                        };
+                    }
+                    \onslide<5->{
                         \node[anchor=west, inner sep=0pt, outer sep=0pt] (fa) at ($ (t1.east) - (0.05, 0) $) {
                             \includegraphics[
                                 height=2cm
                             ]{data/dti_fa.png}
                         };
                     }
-                    \onslide<3->{
+                    \onslide<6->{
                         \node[anchor=north, inner sep=0pt, outer sep=0pt] (md) at ($ (t1.south) + (0, 0.05) $) {
                             \includegraphics[
                                 height=2cm
                             ]{data/dti_md.png}
                         };
                     }
-                    \onslide<4->{
+                    \onslide<7->{
                         \node[anchor=west, inner sep=0pt, outer sep=0pt] (fa) at ($ (md.east) - (0.05, 0) $) {
                             \includegraphics[
                                 height=2cm
@@ -1504,12 +1589,12 @@
                         };
                     }
                 }
-                \only<5>{
+                \only<8>{
                     \node[] at (7.6, -3.6) {
                         \usebox{\dmristudies}
                     };
                 };
-                \only<6>{
+                \only<9>{
                     \node[] at (7.4, -3.43) {
                         \usebox{\dmripredictions}
                     };
@@ -1526,52 +1611,52 @@
                         \end{tabular}
                     };
                 }
-                \onslide<7-10>{
-                    \only<7>{
+                \onslide<10-13>{
+                    \only<10>{
                         \node[] at (5, -3.2) {
                             \usebox{\dmriscz}
                         };
                     }
-                    \onslide<8->{
+                    \onslide<11->{
                         \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
                             Saglam, Y., Oz, A., Yildiz, G., Ermis, C., Kargin, O. A., Arslan, S., \& Karacetin, G. (2023). Can diffusion\\tensor imaging have a diagnostic utility to differentiate early-onset forms of bipolar disorder and schizophrenia:\\A neuroimaging study with explainable machine learning algorithms. Psychiatry Research: Neuroimaging, 335, 111696
                         };
                     }
-                    \only<8>{
+                    \only<11>{
                         \node[inner sep=0pt, draw=black] at (5, -3.2) {
                             \includegraphics[width=5cm]{data/scz_bp_pipeline.png}
                         };
                     }
-                    \only<9>{
+                    \only<12>{
                         \node[inner sep=0pt, draw=black] at (5, -3.2) {
                             \includegraphics[width=7cm]{data/scz_bp_dti.png}
                         };
                     }
-                    \only<10>{
+                    \only<13>{
                         \node[inner sep=0pt, draw=black] at (5, -3.2) {
                             \includegraphics[width=9cm]{data/scz_bp_performance.png}
                         };
                     }
                 }
 
-                \onslide<11->{
-                    \only<11>{
+                \onslide<14->{
+                    \only<14>{
                         \node[] at (5, -3.2) {
                             \usebox{\dmridem}
                         };
                     }
-                    \only<12-14>{
+                    \only<15-17>{
                         \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
                                 Sun, Y., Bi, Q., Wang, X., Hu, X., Li, H., Li, X., ... \& Han, Y. (2019). Prediction of conversion from amnestic\\mild cognitive impairment to Alzheimer's disease based on the brain structural connectome. Frontiers in neurology, 9, 1178
                         };
 
                     }
-                    \only<12>{
+                    \only<15>{
                         \node[inner sep=0pt, draw=black] at (5, -3.2) {
                             \includegraphics[width=9cm]{data/mci_conversion_overview.jpeg}
                         };
                     }
-                    \only<13>{
+                    \only<16>{
                         \node[inner sep=0pt, draw=black] at (5, -3.2) {
                             \includegraphics[
                                 height=5cm,
@@ -1580,7 +1665,7 @@
                             ]{data/mci_conversion_regions.jpeg}
                         };
                     }
-                    \only<14>{
+                    \only<17>{
                         \node[inner sep=0pt, draw=black] at (5, -1.2) {
                             \includegraphics[width=7cm]{data/pd_t2_accuracy.jpeg}
                         };
@@ -1597,7 +1682,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<15>{
+        \only<18>{
             \vspace{\summarytop}
             \begin{itemize}[itemsep=\summaryouteritems]
                 \item[\textcolor{gray!50}{\textbullet}] {\footnotesize \textcolor{gray!50}{(Non T1-weighted) structural MRI (T2/FLAIR)}}
