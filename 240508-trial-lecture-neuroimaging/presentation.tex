@@ -1907,13 +1907,105 @@
         \end{tikzpicture}
     }
 
+    \newcommand{\drawarcs}[2]{
+        \foreach \radius in {0.2, 0.4, 0.6} {
+            % Adjust starting and ending angles to center the arc around the direction
+            \draw[red, very thick, opacity=0.5] (#1) ++(#2-60:\radius) arc (#2-60:#2+60:\radius);
+        }
+    }
+
+    \newcommand{\molschematic}[1]{
+        \begin{tikzpicture}
+            \pgfmathsetseed{3} % Seed for reproducibility, remove or change for different patterns
+
+            % Drawing the diagonal separation
+            \fill[gray!50] (0,0) -- (6,0) -- (0,3) -- cycle; % Gray matter
+            \fill[gray!20] (0,3) -- (6,0) -- (6,3) -- cycle; % White matter
+
+            % Neurons in gray matter
+            \foreach \i in {1,...,240} {
+                \pgfmathsetmacro{\x}{rand*3 + 3} % generate x within 0 to 6
+                \pgfmathsetmacro{\y}{rand*1.5 + 1.5} % generate y within 0 to 3
+                % Ensuring neurons are within the gray triangle
+                \pgfmathparse{\y < -0.5*\x + 3 ? 1 : 0}
+                \ifnum\pgfmathresult>0
+                    \fill [black, opacity=0.5] (\x, \y) circle (0.12);
+                \fi
+            }
+
+            % Neurons in white matter
+            \foreach \i in {1,...,40} {
+                \pgfmathsetmacro{\x}{rand*3 + 3} % generate x within 0 to 6
+                \pgfmathsetmacro{\y}{rand*1.5 + 1.5} % adjust y to properly randomize within the higher triangle
+                % Ensuring neurons are within the white triangle
+                \pgfmathparse{\y > -0.5*\x + 3 ? 1 : 0}
+                \ifnum\pgfmathresult>0
+                    \fill [black, opacity=0.5] (\x, \y) circle (0.12);
+                \fi
+            }
+
+            \ifnum#1>1
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (1, 0.95) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (1.5, 1.9) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (4, 0.8) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (3.5, 2.5) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (5.1, 2.8) {};
+            \fi
+            \ifnum#1=3
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (3, 2.9) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.9, 2.85) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.97, 3.05) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.75, 3.03) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.85, 2.7) {};
+            \fi
+            \ifnum#1>3
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (a) at (1.05, 1.01) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (b) at (1.56, 1.98) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (c) at (3.95, 0.88) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (d) at (3.42, 2.53) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (e) at (5.0, 2.82) {};
+            \fi
+            \ifnum#1>4
+                \drawarcs{a}{180} % First node, signal goes leftwards (180 degrees)
+                \drawarcs{b}{90}  % Second node, signal goes upwards (90 degrees)
+                \drawarcs{c}{270} % Third node, signal goes downwards (270 degrees)
+                \drawarcs{d}{90}  % Fourth node, signal goes upwards (90 degrees)
+                \drawarcs{e}{90}  % Fifth node, signal goes upwards (90 degrees)
+            \fi
+        \end{tikzpicture}
+    }
+    \newsavebox{\tone}
+    \sbox{\tone}{%
+        \molschematic{1}
+    }
+
+    \newsavebox{\tonemolecules}
+    \sbox{\tonemolecules}{%
+        \molschematic{2}
+    }
+
+    \newsavebox{\tonetracer}
+    \sbox{\tonetracer}{%
+        \molschematic{3}
+    }
+
+    \newsavebox{\tonebind}
+    \sbox{\tonebind}{%
+        \molschematic{4}
+    }
+
+    \newsavebox{\tonesignal}
+    \sbox{\tonesignal}{%
+        \molschematic{5}
+    }
+
     \begin{frame}[t]{Molecular imaging (PET/SPECT)}
-        \only<1-17>{
+        \only<1-21>{
             \begin{tikzpicture}
                 \node[draw=black] at (0, 0) {};
                 \node[draw=black] at (10, -7) {};
 
-                \only<1-4>{
+                \only<1-6>{
                     \node[] at (2, -3.5) {
                         \includegraphics[
                             width=2.5cm,
@@ -1922,7 +2014,32 @@
                         ]{data/fdg_t1.png}
                     };
                 }
-                \only<3-4>{
+                \only<2>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tone}
+                    };
+                }
+                \only<3>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonemolecules}
+                    };
+                }
+                \only<4>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonetracer}
+                    };
+                }
+                \only<5>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonebind}
+                    };
+                }
+                \only<6>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonesignal}
+                    };
+                }
+                \only<7-8>{
                     \node[] at (2, -3.5) {
                         \includegraphics[
                             width=2.5cm,
@@ -1931,28 +2048,28 @@
                         ]{data/fdg_t1.png}
                     };
                 }
-                \only<4>{
+                \only<8>{
                     \node[] at (7.2, -3.6) {
                         \usebox{\molstudies}
                     };
                 }
-                \only<5>{
+                \only<9>{
                     \node[] at (5, -3.6) {
                         \usebox{\moldem}
                     };
                 }
-                \only<6-11>{
-                    \only<6>{
+                \only<10-15>{
+                    \only<10>{
                         \node[] at (5, -3.75) {
                             \usebox{\cascade}
                         };
                     }
-                    \only<7-10>{
+                    \only<11-14>{
                         \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
                             Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
                         };
                     }
-                    \only<7>{
+                    \only<11>{
                         \node[anchor=west] at (0.4, -3.2) {
                             \includegraphics[
                                 height=5cm,
@@ -1961,7 +2078,7 @@
                             ]{data/AD_pet_types.png}
                         };
                     }
-                    \only<8>{
+                    \only<12>{
                         \node[anchor=west] at (0.4, -3.2) {
                             \includegraphics[
                                 height=5cm,
@@ -1970,7 +2087,7 @@
                             ]{data/AD_pet_types.png}
                         };
                     }
-                    \only<9>{
+                    \only<13>{
                         \node[anchor=west] at (0.4, -3.2) {
                             \includegraphics[
                                 height=5cm,
@@ -1979,12 +2096,12 @@
                             ]{data/AD_pet_types.png}
                         };
                     }
-                    \only<10>{
+                    \only<14>{
                         \node[anchor=west] at (0.4, -3.2) {
                             \includegraphics[height=5cm]{data/AD_pet_types.png}
                         };
                     }
-                    \only<11>{
+                    \only<15>{
                         \node[font=\scriptsize\itshape, align=left] at (5.2, -3.5) {
                             "It is necessary to separate syndrome (clinically identified impairment) from biology\\(etiology)\\
                             \\[-0.2cm]
@@ -2011,13 +2128,13 @@
                         };
                     }
                 }
-                \only<12-18>{
-                    \only<12>{
+                \only<16-22>{
+                    \only<16>{
                         \node[] at (5, -3.5) {
                             \usebox{\molpd}
                         };
                     }
-                    \only<13,14>{
+                    \only<17,18>{
                         \node[inner sep=0pt, outer sep=0pt] (pet) at (5, -2.2) {
                             \includegraphics[
                                 width=3cm,
@@ -2030,7 +2147,7 @@
                         };
 
                     }
-                    \only<14>{
+                    \only<18>{
                         \node[inner sep=0pt, anchor=north, outer sep=0pt] at ($ (pet.south) + (0, 0.05) $){
                             \includegraphics[
                                 width=3cm,
@@ -2039,21 +2156,21 @@
                             ]{data/PD_SPECT.jpg}
                         };
                     }
-                    \onslide<15->{
+                    \onslide<19->{
                         \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.5) {
                             Adams, M. P., Rahmim, A., \& Tang, J. (2021). Improved motor outcome prediction in Parkinson's disease\\applying deep learning to DaTscan SPECT images. Computers in Biology and Medicine, 132, 104312
                         };
-                        \only<15>{
+                        \only<19>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=4.5cm]{data/PD_SPECT_images.jpg}
                             };
                         }
-                        \only<16>{
+                        \only<20>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=7cm]{data/PD_SPECT_model.jpg}
                             };
                         }
-                        \only<17>{
+                        \only<21>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=8cm]{data/PD_SPECT_results.jpg}
                             };
@@ -2062,7 +2179,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<18>{
+        \only<22>{
             \vspace{\summarytop}
             \begin{itemize}[itemsep=\summaryouteritems]
                 \item[\textcolor{gray!50}{\textbullet}] {\footnotesize \textcolor{gray!50}{(Non T1-weighted) structural MRI (T2/FLAIR)}}
