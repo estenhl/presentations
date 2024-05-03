@@ -1,12 +1,17 @@
 import nibabel as nib
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage.io import imsave
 
 from mpl_toolkits.mplot3d import Axes3D
 
 
 # Example data
 data = nib.load('/Applications/freesurfer/7.3.1/subjects/bert/mri/T1.mgz').get_fdata()
+
+imsave('data/bert_y.png', np.rot90(data[:,128].astype(np.uint8), 3))
+imsave('data/bert_z.png', np.rot90(data[:,:,128].astype(np.uint8), 3))
+
 
 # Plot
 fig = plt.figure()
@@ -42,10 +47,16 @@ colormap = plt.cm.gray
 # Prepare face colors with an alpha channel
 facecolors = colormap(norm(data))
 alpha = np.ones(data.shape, dtype=bool)
-alpha[16:, :16, 16:] = False
+alpha[mid_x:, :mid_y, mid_z:] = False
 
 ax.voxels(alpha, facecolors=facecolors, shade=False)
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('z')
-plt.show()
+
+#ax.view_init(elev=10, azim=-80)
+ax.axis('off')
+#plt.show()
+plt.savefig('data/3d_bert.png', transparent=True)
+
+
