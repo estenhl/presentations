@@ -216,19 +216,21 @@ def plot_modality(df: pd.DataFrame, modality: str, modalities: str):
         )
 
     df = df[df['modality'].apply(lambda x: modality in x)]
+    df['multimodal'] = df['modality'].apply(lambda x: len(x) > 1).astype(int)
     print(f'Found {len(df)} {modality} studies: {Counter(df["diagnosis"])}')
 
-    df[['year', 'sample', 'diagnosis', 'accuracy']].to_csv(f'data/{modality}_studies.csv', index=False)
+    df[['year', 'sample', 'diagnosis', 'accuracy', 'multimodal']].to_csv(f'data/{modality}_studies.csv', index=False)
 
     for diagnosis in np.unique(df['diagnosis']):
         print(f'{modality} mean accuracy {diagnosis}: '
               f'{np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"]):.2f} '
               f'({np.amax(df.loc[df["diagnosis"] == diagnosis, "sample"])})')
 
-
-
 def plot_t2(df: pd.DataFrame):
     plot_modality(df, 'T2', ['FLAIR'])
+
+def plot_ms(df: pd.DataFrame):
+    pass
 
 def plot_dmri(df: pd.DataFrame):
     plot_modality(df, 'dMRI', ['DTI'])
@@ -381,13 +383,14 @@ print(Counter(df['diagnosis']))
 #plot_accuracy_by_size(df)
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
-#plot_dmri(df)
+#plot_ms(df)
+plot_dmri(df)
 #plot_molecular(df)
-#plot_fmri(df)
+plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
 #plot_multimodality(df)
 #plot_future(df)
-expand(df)
+#expand(df)
 
 
