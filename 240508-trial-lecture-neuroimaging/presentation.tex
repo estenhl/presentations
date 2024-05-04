@@ -1530,7 +1530,7 @@
             \begin{tikzpicture}
                 \node[draw=black] at (0, 0) {};
                 \node[draw=black] at (10, -7) {};
-                \only<1-2,4-5>{
+                \only<1>{
                     \node[anchor=west] at (1, -3.5) {
                         \includegraphics[
                             height=3cm,
@@ -1539,7 +1539,7 @@
                         ]{data/smri_fmri.png}
                     };
                 }
-                \only<2,4-5>{
+                \only<2,4>{
                     \node[anchor=west] at (1, -3.5) {
                         \includegraphics[
                             height=3cm,
@@ -1691,13 +1691,156 @@
         }
     }
 
-    \newsavebox{\moldem}
-    \sbox{\moldem}{%
-        \disordermodalityplot{DEM}{molecular imaging}{molecular_studies.csv}{92.66}{2900}{dem}{2900}
+    \newcommand{\moldemplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=2900,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={DEM classification studies using molecular imaging}
+            ]
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    discard if not={pet}{0},
+                    mark=*,
+                    gray,
+                    opacity=0.25,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ad_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    gray,
+                    opacity=0.25,
+                ] coordinates {
+                    (0, 91.63)
+                    (2900, 91.63)
+                };
+                \node[anchor=north east, gray] at (axis cs: 2900, 91.63) {\footnotesize{91.63\%}};
+            \fi
+                \addplot[
+                    only marks,
+                    discard if not={pet}{1},
+                    mark=*,
+                    dem,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ad_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    dem
+                ] coordinates {
+                    (0, 92.66)
+                    (2900, 92.66)
+                };
+                \node[anchor=south east, dem] at (axis cs: 2900, 92.66) {\footnotesize{92.66\%}};
+
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\moldempet}
+    \sbox{\moldempet}{%
+        \moldemplot{1}
     }
 
-    \newsavebox{\molpd}
-    \sbox{\molpd}{%
+    \newsavebox{\moldemall}
+    \sbox{\moldemall}{%
+        \moldemplot{2}
+    }
+
+    \newcommand{\molpdplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=1650,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={PD classification studies using molecular imaging}
+            ]
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    discard if not={pet}{0},
+                    mark=*,
+                    gray,
+                    opacity=0.25,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/pd_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    gray,
+                    opacity=0.25,
+                ] coordinates {
+                    (0, 92.81)
+                    (1650, 92.81)
+                };
+                \node[anchor=south east, gray] at (axis cs: 1450, 92.81) {\footnotesize{92.81\%}};
+            \fi
+                \addplot[
+                    only marks,
+                    discard if not={pet}{1},
+                    mark=*,
+                    pd,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/pd_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    pd
+                ] coordinates {
+                    (0, 92.02)
+                    (1650, 92.02)
+                };
+                \node[anchor=north east, pd] at (axis cs: 1650, 92.02) {\footnotesize{92.02\%}};
+
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\molpdpet}
+    \sbox{\molpdpet}{%
+        \molpdplot{1}
+    }
+
+    \newsavebox{\molpdall}
+    \sbox{\molpdall}{%
+        \molpdplot{2}
+    }
+
+    \newsavebox{\molpdspect}
+    \sbox{\molpdspect}{%
         \disordermodalityplot{PD}{molecular imaging}{molecular_studies.csv}{92.02}{1650}{pd}{1650}
     }
 
@@ -1797,7 +1940,8 @@
     }
 
     \begin{frame}[t]{Molecular imaging}
-        \only<1-21>{
+        \def\petwidth{1.9cm}
+        \only<1-24>{
             \begin{tikzpicture}
                 \node[] at (0, 0) {};
                 \node[] at (10, -7) {};
@@ -1850,49 +1994,38 @@
                         \usebox{\molstudies}
                     };
                 }
-                \only<9>{
-                    \node[] at (5, -3.6) {
-                        \usebox{\moldem}
-                    };
-                }
-                \only<10-13>{
+                \only<9-12>{
                     \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
                         Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
                     };
-                }
-                \only<10>{
-                    \node[anchor=west] at (0.4, -3.2) {
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (smri) at (0.4, -3.2) {
                         \includegraphics[
-                            height=5cm,
-                            trim={0 0 23.6cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
+                            height=5cm
+                        ]{data/AD_pet_types_smri.png}
                     };
                 }
-                \only<11>{
-                    \node[anchor=west] at (0.4, -3.2) {
+                \only<10-12>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (amyloid) at ($ (smri.east) - (0.05, 0) $) {
                         \includegraphics[
-                            height=5cm,
-                            trim={0 0 15.9cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
+                            height=5cm
+                        ]{data/AD_pet_types_amyloid.png}
+                    };
+                }
+                \only<11-12>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (tau) at ($ (amyloid.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=5cm
+                        ]{data/AD_pet_types_tau.png}
                     };
                 }
                 \only<12>{
-                    \node[anchor=west] at (0.4, -3.2) {
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (fdg) at ($ (tau.east) - (0.05, 0) $) {
                         \includegraphics[
-                            height=5cm,
-                            trim={0 0 7.85cm 0},
-                            clip
-                        ]{data/AD_pet_types.png}
+                            height=5cm
+                        ]{data/AD_pet_types_fdg.png}
                     };
                 }
                 \only<13>{
-                    \node[anchor=west] at (0.4, -3.2) {
-                        \includegraphics[height=5cm]{data/AD_pet_types.png}
-                    };
-                }
-                \only<14>{
                     \node[font=\scriptsize\itshape, align=left] at (5.2, -3.5) {
                         "It is necessary to separate syndrome (clinically identified impairment) from biology\\(etiology)\\
                         \\[-0.2cm]
@@ -1918,13 +2051,34 @@
                         Revised Criteria for Diagnosis and Staging of Alzheimer's Disease: Alzheimer’s Association Workgroup, alz.org/diagnosticcriteria
                     };
                 }
-                \only<15-21>{
-                    \only<15>{
-                        \node[] at (5, -3.5) {
-                            \usebox{\molpd}
-                        };
-                    }
-                    \only<16,17>{
+
+                \only<14>{
+                    \node[] at (5, -3.6) {
+                        \usebox{\moldempet}
+                    };
+                }
+                \only<15>{
+                    \node[] at (5, -3.6) {
+                        \usebox{\moldemall}
+                    };
+                }
+                \only<16-17>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Rogeau, A., Hives, F., Bordier, C., Lahousse, H., Roca, V., Lebouvier, T., ... \& Lopes, R. (2024). A 3D convolutional neural network to\\classify subjects as Alzheimer's disease, frontotemporal dementia or healthy controls using brain 18F-FDG PET. NeuroImage, 120530
+                };
+                }
+                \only<16>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                        \includegraphics[width=7cm]{data/ad_diff_model.jpg}
+                    };
+                }
+                \only<17>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                        \includegraphics[width=8cm]{data/ad_diff_results.png}
+                    };
+                }
+                \only<18-25>{
+                    \only<18,19>{
                         \node[inner sep=0pt, outer sep=0pt] (pet) at (5, -2.2) {
                             \includegraphics[
                                 width=3cm,
@@ -1937,7 +2091,7 @@
                         };
 
                     }
-                    \only<17>{
+                    \only<19>{
                         \node[inner sep=0pt, anchor=north, outer sep=0pt] at ($ (pet.south) + (0, 0.05) $){
                             \includegraphics[
                                 width=3cm,
@@ -1946,21 +2100,31 @@
                             ]{data/PD_SPECT.jpg}
                         };
                     }
-                    \onslide<18->{
-                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
-                            Adams, M. P., Rahmim, A., \& Tang, J. (2021). Improved motor outcome prediction in Parkinson's disease\\applying deep learning to DaTscan SPECT images. Computers in Biology and Medicine, 132, 104312
+                    \only<20>{
+                        \node[] at (5, -3.5) {
+                            \usebox{\molpdpet}
                         };
-                        \only<18>{
+                    }
+                    \only<21>{
+                        \node[] at (5, -3.5) {
+                            \usebox{\molpdall}
+                        };
+                    }
+                    \onslide<22->{
+                        \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                            Adams, M. P., Rahmim, A., \& Tang, J. (2021). Improved motor outcome prediction in Parkinson's disease applying\\deep learning to DaTscan SPECT images. Computers in Biology and Medicine, 132, 104312
+                        };
+                        \only<22>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=4.5cm]{data/PD_SPECT_images.jpg}
                             };
                         }
-                        \only<19>{
+                        \only<23>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=7cm]{data/PD_SPECT_model.jpg}
                             };
                         }
-                        \only<20>{
+                        \only<24>{
                             \node[inner sep=0pt, draw=black] at (5, -3.75) {
                                 \includegraphics[width=8cm]{data/PD_SPECT_results.jpg}
                             };
@@ -1975,7 +2139,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<21>{
+        \only<25>{
             \vspace{\summarytop}
             \begin{itemize}[itemsep=\summaryouteritems]
                 \item[\textcolor{gray!50}{\textbullet}] {\footnotesize \textcolor{gray!50}{(Non T1-weighted) structural MRI (T2/FLAIR)}}

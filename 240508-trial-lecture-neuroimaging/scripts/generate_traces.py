@@ -226,6 +226,8 @@ def plot_modality(df: pd.DataFrame, modality: str, modalities: str):
               f'{np.mean(df.loc[df["diagnosis"] == diagnosis, "accuracy"]):.2f} '
               f'({np.amax(df.loc[df["diagnosis"] == diagnosis, "sample"])})')
 
+    print(df[df['diagnosis'].apply(lambda x: 'DEM' in x)])
+
 def plot_t2(df: pd.DataFrame):
     plot_modality(df, 'T2', ['FLAIR'])
 
@@ -374,6 +376,24 @@ def expand(df: pd.DataFrame):
 
     diagnosis_df.to_csv('data/expanded_diagnoses.csv', index=False)
 
+def plot_dem_mol(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+    df = df[df['diagnosis'] == 'DEM']
+    df['pet'] = df['modality'].apply(lambda x: 'PET' in x or 'SPECT' in x).astype(int)
+    df[['year', 'sample', 'accuracy', 'pet']].to_csv('data/ad_pet_studies.csv', index=False)
+    print(Counter(df['pet']))
+    print(f'PET: {np.mean(df.loc[df["pet"] == 1, "accuracy"]):.2f}')
+    print(f'No PET: {np.mean(df.loc[df["pet"] == 0, "accuracy"]):.2f}')
+
+def plot_pd_mol(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+    df = df[df['diagnosis'] == 'PD']
+    df['pet'] = df['modality'].apply(lambda x: 'PET' in x or 'SPECT' in x).astype(int)
+    df[['year', 'sample', 'accuracy', 'pet']].to_csv('data/pd_pet_studies.csv', index=False)
+    print(Counter(df['pet']))
+    print(f'PET: {np.mean(df.loc[df["pet"] == 1, "accuracy"]):.2f}')
+    print(f'No PET: {np.mean(df.loc[df["pet"] == 0, "accuracy"]):.2f}')
+
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
 print(f'Originally: {len(df)}')
 df = df.drop_duplicates(['author', 'year', 'diagnosis', 'modality'])
@@ -387,12 +407,14 @@ print(Counter(df['diagnosis']))
 #plot_t2(df)
 #plot_ms(df)
 #plot_dmri(df)
-#plot_molecular(df)
+plot_molecular(df)
 #plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
 #plot_multimodality(df)
-plot_future(df)
+#plot_future(df)
 #expand(df)
+#plot_dem_mol(df)
+plot_pd_mol(df)
 
 
