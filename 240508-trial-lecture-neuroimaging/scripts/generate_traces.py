@@ -312,26 +312,28 @@ def plot_future(df: pd.DataFrame):
 
     cs = ['red', 'blue']
 
+    years = sorted(np.unique(df['year']))
+    accuracies = [np.round(np.mean(df.loc[df['year'] == y, 'accuracy']), 2) \
+                  for y in years]
+    print('\n'.join(list([str(x) for x in zip(years, accuracies)])))
+
     for i, method in enumerate(np.unique(df['method'])):
-        print(i)
         print(method)
         subset = df[df['method'] == method]
-        model = LinearRegression()
-        model.fit(subset[['year']], subset['accuracy'])
+        accuracies = [np.round(np.mean(subset.loc[subset['year'] == y, 'accuracy']), 2) \
+                  for y in years]
+        print('\n'.join(list([str(x) for x in zip(years, accuracies)])))
         plt.scatter(subset['year'], subset['accuracy'], c=cs[i], label=method)
-        plt.plot([2005, 2020], model.predict([[2005], [2020]]), c=cs[i])
 
-        print(f'{method}: {model.intercept_:.3f}, {model.coef_[0]:.3f}')
         subset.to_csv(f'data/{method}_accuracies.csv')
 
     plt.show()
 
-    model = LinearRegression()
-    model.fit(df[['year']], df['sample'])
-    print(f'Samples: {model.intercept_:.3f}, {model.coef_[0]:.3f}')
     df.to_csv('data/samples_per_year.csv', index=False)
     plt.scatter(df['year'], df['sample'])
-    plt.plot([2005, 2020], model.predict([[2005], [2020]]))
+    means = [np.round(np.mean(df.loc[df['year'] == y, 'sample']), 2) \
+             for y in years]
+    print('\n'.join(list([str(x) for x in zip(years, means)])))
     plt.show()
 
 def expand(df: pd.DataFrame):
@@ -384,13 +386,13 @@ print(Counter(df['diagnosis']))
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
 #plot_ms(df)
-plot_dmri(df)
+#plot_dmri(df)
 #plot_molecular(df)
-plot_fmri(df)
+#plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
 #plot_multimodality(df)
-#plot_future(df)
+plot_future(df)
 #expand(df)
 
 
