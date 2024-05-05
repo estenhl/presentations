@@ -394,6 +394,20 @@ def plot_pd_mol(df: pd.DataFrame):
     print(f'PET: {np.mean(df.loc[df["pet"] == 1, "accuracy"]):.2f}')
     print(f'No PET: {np.mean(df.loc[df["pet"] == 0, "accuracy"]):.2f}')
 
+def plot_ms_t2(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+    df = df[df['diagnosis'] == 'MS']
+    df['ttwo'] = df['modality'].apply(lambda x: 'T2' in x or 'FLAIR' in x).astype(int)
+    df[['year', 'sample', 'accuracy', 'ttwo']].to_csv('data/ms_t2_studies.csv', index=False)
+    print(Counter(df['ttwo']))
+    print(f'T2: {np.mean(df.loc[df["ttwo"] == 1, "accuracy"]):.2f}')
+    print(f'No T2: {np.mean(df.loc[df["ttwo"] == 0, "accuracy"]):.2f}')
+
+def plot_multi_dmri(df: pd.DataFrame):
+    df = standardize(df, diagnoses=True)
+    df = df[df['modality'].apply(lambda x: 'DTI' in x or 'dMRI' in x)]
+    print(df)
+
 df = pd.read_csv('scripts/data/trial_lecture_data.csv')
 print(f'Originally: {len(df)}')
 df = df.drop_duplicates(['author', 'year', 'diagnosis', 'modality'])
@@ -406,8 +420,8 @@ print(Counter(df['diagnosis']))
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
 #plot_ms(df)
-#plot_dmri(df)
-plot_molecular(df)
+plot_dmri(df)
+#plot_molecular(df)
 #plot_fmri(df)
 #plot_boxplots(df)
 #plot_per_disorder(df)
@@ -415,6 +429,8 @@ plot_molecular(df)
 #plot_future(df)
 #expand(df)
 #plot_dem_mol(df)
-plot_pd_mol(df)
+#plot_pd_mol(df)
+#plot_ms_t2(df)
+#plot_multi_dmri(df)
 
 
