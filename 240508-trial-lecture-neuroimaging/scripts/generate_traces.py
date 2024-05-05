@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter1d
 
 from collections import Counter
 from functools import reduce
@@ -322,8 +323,10 @@ def plot_future(df: pd.DataFrame):
     for i, method in enumerate(np.unique(df['method'])):
         print(method)
         subset = df[df['method'] == method]
-        accuracies = [np.round(np.mean(subset.loc[subset['year'] == y, 'accuracy']), 2) \
-                  for y in years]
+        accuracies = np.round([np.mean(subset.loc[subset['year'] == y, 'accuracy']) \
+                      for y in years], 2)
+        non_nan_idx = np.where(~np.isnan(accuracies))
+        accuracies[non_nan_idx] = gaussian_filter1d(accuracies[non_nan_idx], 3)
         print('\n'.join(list([str(x) for x in zip(years, accuracies)])))
         plt.scatter(subset['year'], subset['accuracy'], c=cs[i], label=method)
 
@@ -335,6 +338,7 @@ def plot_future(df: pd.DataFrame):
     plt.scatter(df['year'], df['sample'])
     means = [np.round(np.mean(df.loc[df['year'] == y, 'sample']), 2) \
              for y in years]
+    means = gaussian_filter1d(means, 3)
     print('\n'.join(list([str(x) for x in zip(years, means)])))
     plt.show()
 
@@ -420,17 +424,17 @@ print(Counter(df['diagnosis']))
 #plot_accuracy_by_modality(df)
 #plot_t2(df)
 #plot_ms(df)
-plot_dmri(df)
+#plot_dmri(df)
 #plot_molecular(df)
 #plot_fmri(df)
-#plot_boxplots(df)
-#plot_per_disorder(df)
+plot_boxplots(df)
+plot_per_disorder(df)
 #plot_multimodality(df)
 #plot_future(df)
 #expand(df)
 #plot_dem_mol(df)
 #plot_pd_mol(df)
-#plot_ms_t2(df)
+#plot_future(df)
 #plot_multi_dmri(df)
 
 
