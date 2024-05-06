@@ -910,8 +910,8 @@
 
     \begin{frame}[t]{Approach}
         \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, -7) {};
+            \node[] at (0, 0) {};
+            \node[] at (10, -7) {};
 
             \only<1-6>{
                 \only<1-2>{
@@ -1209,13 +1209,20 @@
                 ] {data/ms_t2_studies.csv};
                 \addplot[
                     dashed,
-                    gray,
-                    opacity=0.25,
+                    gray
                 ] coordinates {
                     (0, 92.57)
                     (160, 92.57)
                 };
                 \node[anchor=south east, gray] at (axis cs: 160, 92.57) {\footnotesize{92.57\%}};
+                \node[anchor=south east] (otherlabel) at (axis cs: 146, 52) {
+                    \small{Other}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{T2/FLAIR}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (0.2, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (0.2, 0) $) {};
             \fi
                 \addplot[
                     only marks,
@@ -1303,6 +1310,14 @@
                     y=accuracy,
                     col sep=comma,
                 ] {data/t2_studies.csv};
+                \node[anchor=south east] (otherlabel) at (axis cs: 158, 52) {
+                    \small{Multimodal}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{T2/FLAIR}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (2, 0) $) {};
+                \node[circle, draw=gray, fill=gray!75, inner sep=2pt] at ($ (otherlabel.west) - (2, 0) $) {};
             \end{axis}
         \end{tikzpicture}
     }
@@ -1312,8 +1327,8 @@
             \begin{tikzpicture}
                 \def\labelsize{\footnotesize}
 
-                \node[draw=black] at (0, 0) {};
-                \node[draw=black] at (10, -7) {};
+                \node[] at (0, 0) {};
+                \node[] at (10, -7) {};
                 \only<1-4>{
                     \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
                         Preson D. C., (2006), MRI Basics, https://case.edu/med/neurology/NR/MRI\%20Basics
@@ -2030,12 +2045,20 @@
                 \addplot[
                     dashed,
                     gray,
-                    opacity=0.25,
                 ] coordinates {
                     (0, 91.63)
                     (2900, 91.63)
                 };
                 \node[anchor=north east, gray] at (axis cs: 2900, 91.63) {\footnotesize{91.63\%}};
+
+                \node[anchor=south east] (otherlabel) at (axis cs: 2860, 52) {
+                    \small{Other}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{PET}
+                };
+                \node[circle, draw=dem, fill=dem!75, inner sep=2pt] at ($ (spectlabel.west) - (3, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (3, 0) $) {};
             \fi
                 \addplot[
                     only marks,
@@ -2103,13 +2126,20 @@
                 ] {data/pd_pet_studies.csv};
                 \addplot[
                     dashed,
-                    gray,
-                    opacity=0.25,
+                    gray
                 ] coordinates {
                     (0, 92.81)
                     (1650, 92.81)
                 };
                 \node[anchor=south east, gray] at (axis cs: 1450, 92.81) {\footnotesize{92.81\%}};
+                \node[anchor=south east] (otherlabel) at (axis cs: 1600, 52) {
+                    \small{Other}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{SPECT}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (3, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (3, 0) $) {};
             \fi
                 \addplot[
                     only marks,
@@ -2438,7 +2468,7 @@
         }
     \end{frame}
 
-    \section{An overview of neuroimaging for diagnostic predictions}
+    \section{\large{The role of neuroimaging for diagnostic predictions}}
 
     \newsavebox{\accuracyplots}
     \sbox{\accuracyplots}{%
@@ -2467,14 +2497,14 @@
             \addplot[] coordinates { (1.595, 93.4) (2.405, 93.4) };
             \addplot[] coordinates { (2.595, 95.15) (3.405, 95.15) };
             \addplot[] coordinates { (3.595, 81.42) (4.405, 81.42) };
-            \addplot[] coordinates { (4.595, 80.47) (5.405, 80.47) };
+            \addplot[] coordinates { (4.595, 85) (5.405, 85) };
             \addplot[] coordinates { (5.595, 76.35) (6.405, 76.35) };
             \node[anchor=south] at (axis cs: 1, 92.5) {92.5\%};
             \node[anchor=south] at (axis cs:2, 93.4) {93.4\%};
             \node[anchor=south] at (axis cs:3, 95.15) {95.15\%};
             \node[anchor=south] at (axis cs:4, 81.42) {80.47\%};
             \node[anchor=south] at (axis cs:5, 85) {85\%};
-            \node[anchor=south] at (axis cs:6, 68.2) {76.35\%};
+            \node[anchor=south] at (axis cs:6, 76.35) {76.35\%};
             \end{axis}
         \end{tikzpicture}
     }
@@ -3033,52 +3063,6 @@
         \end{tikzpicture}
     }
 
-    \begin{frame}[t]{Challenges: Researcher degrees of freedom}
-        \centering
-        \begin{tikzpicture}
-            \def\mriwidth{1.3cm}
-            \node[] at (0, 0) {};
-            \node[] at (10, -7) {};
-
-            \onslide<1-2>{
-                \node[inner sep=0pt, outer sep=0pt] (input) at (1.2, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_orig.png}
-                };
-                \node[align=center,draw=gray,fill=gray!20, inner sep=5pt] (model) at (8.7, -3.5) {Predictive\\model};
-                \draw[-stealth] (input) -- (model);
-            }
-
-            \onslide<2>{
-                \node[inner sep=0pt, outer sep=0pt] (rotated) at (3, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_rotated.png}
-                };
-                \node[inner sep=0pt, outer sep=0pt] (mask) at (4.8, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_mask.png}
-                };
-                \node[inner sep=0pt, outer sep=0pt] (seg) at (6.6, -3.5) {
-                    \includegraphics[width=\mriwidth]{data/preprocessing_seg.png}
-                };
-                \draw[-stealth] (input) -- (rotated);
-                \draw[-stealth] (rotated) -- (mask);
-                \draw[-stealth] (mask) -- (seg);
-            }
-
-            \only<3-4>{
-                \node[label=below:{\scriptsize{Adapted from Botvinik-Nezer et al., 2020}}] at (5, -2.7) {
-                    \usebox{\nezer}
-                };
-
-                \node[font=\tiny, align=center, anchor=south] at (5, -7.65) {
-                    Botvinik-Nezer, R., Holzmeister, F., Camerer, C. F., Dreber, A., Huber, J., Johannesson, M., ... \& Rieck, J. R. (2020). Variability\\in the analysis of a single neuroimaging dataset by many teams. Nature, 582(7810), 84-88
-                };
-            }
-            \onslide<4>{
-                \node[minimum width=9cm, minimum height=6cm,fill=black!2,opacity=0.85] at (5, -2.7) {};
-                \node[fill=none,align=center] at (5, -3) {\textit{"On average across the 9 hypotheses, 20\% of teams reported}\\ \textit{a result that differed from the majority of teams. Given that}\\ \textit{the maximum possible variation is 50\%, the observed fraction}\\ \textit{of 20\% divergent results thus \textbf{falls midway between complete}}\\ \textit{\textbf{consistency across teams and completely random results},}\\ \textit{demonstrating that analytical choices have a major effect on}\\ \textit{reported results."}};
-            }
-        \end{tikzpicture}
-    \end{frame}
-
     \begin{frame}{Opportunities: Larger datasets}
         \centering
         \begin{tikzpicture}
@@ -3150,11 +3134,12 @@
                 xmax=2023,
                 ymin=0,
                 xlabel=Year,
-                ylabel={Sample size},
+                ylabel={Accuracy},
                 set layers,
                 mark layer=axis tick labels,
                 xtick pos=bottom,
                 ytick pos=left,
+                ymin=50,
                 ymax=100,
                 xtick={2000, 2010, 2020},
                 xticklabels={2000, 2010, 2020}
@@ -3165,7 +3150,7 @@
                         mark=*,
                         mark options={fill=mlcolor},
                         mark size=3pt,
-                        opacity=0.05
+                        opacity=0.1
                     ] table [
                         col sep=comma,
                         x=year,
@@ -3198,7 +3183,7 @@
                         mark=*,
                         mark options={fill=dlcolor},
                         mark size=3pt,
-                        opacity=0.05
+                        opacity=0.1
                     ] table [
                         col sep=comma,
                         x=year,
@@ -3219,8 +3204,14 @@
                         (2021, 92.04712571880303)
                         (2022, 92.22651609009779)
                     };
+
+                    \node[anchor=south east] (dllabel) at (axis cs: 2007, 52) {\small{Deep learning}};
+                    \draw[dlcolor, very thick] (dllabel.west) -- ($ (dllabel.west) - (1.5, 0) $);
+                    \node[anchor=south west] (mllabel) at ($ (dllabel.north west) - (0, 15) $) {\small{Machine learning}};
+                    \draw[mlcolor, very thick] (mllabel.west) -- ($ (mllabel.west) - (1.5, 0) $);
                 }
             \end{axis}
         \end{tikzpicture}
     \end{frame}
+    \section{Thank you for you attention}
 \end{document}
