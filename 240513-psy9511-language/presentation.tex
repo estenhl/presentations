@@ -1,0 +1,1609 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+
+\usepackage[export]{adjustbox}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\usepgfplotslibrary{fillbetween}
+
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=white,
+    urlcolor=blue!80
+}
+
+\definecolor{uiored}{HTML}{DD0000}
+\definecolor{uiolightred}{HTML}{FB6666}
+\definecolor{uioredtone}{HTML}{FEE0E0}
+\definecolor{uioblue}{HTML}{3E31D6}
+\definecolor{uiolightblue}{HTML}{86A4F7}
+\definecolor{uioblueone}{HTML}{E6ECFF}
+\definecolor{uiogreen}{HTML}{2EC483}
+\definecolor{uiolightgreen}{HTML}{6CE1AB}
+\definecolor{uiogreentone}{HTML}{CEFFDF}
+\definecolor{uioorange}{HTML}{FEA11B}
+\definecolor{uiolightorange}{HTML}{FDCB87}
+\definecolor{uioorangetone}{HTML}{FFE8D4}
+\definecolor{uioyellow}{HTML}{FFFEA7}
+\definecolor{uiogray}{HTML}{B2B3B7}
+
+\colorlet{mainbackground}{uiored}
+
+\setbeamercolor{frametitle}{bg=mainbackground, fg=white}
+\setbeamercolor{title separator}{fg=mainbackground}
+\setbeamercolor{progress bar in section page}{fg=white, bg=uiogray}
+
+\def\logowidth{4cm}
+
+\makeatletter
+\setbeamertemplate{section page}
+{
+  \begingroup
+
+    \vspace{4.3cm}
+    {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
+    {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
+
+    \vspace*{3.1cm}
+    \begin{center}
+        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
+    \end{center}
+
+  \endgroup
+}
+\makeatother
+
+\AtBeginSection{
+  {
+    \setbeamercolor{background canvas}{bg=uiored}
+    \setbeamercolor{section title}{fg=white}
+    \frame[plain,c,noframenumbering]{\sectionpage}
+    \setbeamercolor{background canvas}{bg=black!2}
+  }
+}
+
+
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.45cm]current page.south east); % Draw filled rectangle
+
+            % Logo
+            \node[anchor=west, yshift=0.225cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
+
+            % Title and subtitle
+            \node[align=center, yshift=0.225cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.05cm]\textcolor{white}{\insertsubtitle}};
+
+            % Page number
+            \node[anchor=east, yshift=0.225cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
+        \end{tikzpicture}
+    \fi
+}
+
+\lstdefinestyle{Core}{
+    identifierstyle=\color[RGB]{0, 0, 0},
+    stringstyle=\color[RGB]{205, 49, 49},
+    showstringspaces=false,
+    breaklines,
+    xleftmargin=3pt,
+    xrightmargin=3pt,
+    framesep=3pt,
+    aboveskip=-1.5pt,
+    belowskip=-0.5pt,
+    showlines=true,
+}
+
+\lstdefinestyle{RInput}{
+    style=Core,
+    language=R,
+    keywordstyle=\color[RGB]{17, 115, 187},
+    commentstyle=\color[RGB]{0, 128, 0},
+    identifierstyle=\color[RGB]{0, 0, 0},
+    stringstyle=\color[RGB]{205, 49, 49},
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    frame=single,
+    rulecolor=\color[RGB]{0, 0, 0},
+}
+
+\lstdefinestyle{PythonInput}{
+    style=Core,
+    language=Python,
+    keywordstyle=\color[RGB]{26, 13, 171},
+    commentstyle=\color[RGB]{0, 128, 0},
+    backgroundcolor=\color[RGB]{245, 245, 245},
+    rulecolor=\color[RGB]{192, 192, 192},
+    frame=tblr,
+}
+
+\lstdefinestyle{ROutput}{
+    style=Core,
+    language=R,
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    commentstyle=\color[HTML]{009900},
+    stringstyle=\color[HTML]{0000FF},
+    keywordstyle=\color[HTML]{000000},
+    numberstyle=\tiny\color[HTML]{000000},
+    breakatwhitespace=true,
+    frame=single,
+    rulecolor=\color{black},
+}
+
+\lstdefinestyle{PythonOutput}{
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    rulecolor=\color[RGB]{192, 192, 192},
+    frame=single,
+    numbers=none,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    keywordstyle=\color[RGB]{255, 0, 0},
+    morekeywords={AttributeError}
+}
+
+\newcommand{\PythonInputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[blue,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-3pt,
+                yshift=-3pt
+                ]north west:In{[}#1{]}:},
+    ] (#3) at #2 {
+    \begin{lstlisting}[
+        style=PythonInput,
+        linewidth=#4,
+        basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+        numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+    ]^^J
+        #6
+    \end{lstlisting}
+    };
+}
+
+\newcommand{\PythonOutputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[red,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-6pt,
+                yshift=-11pt
+                ]north west:Out{[}#1{]}:}
+    ] (pythonoutput) (#3) at #2 {
+        \begin{lstlisting}[
+            style=PythonOutput,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #6
+        \end{lstlisting}
+    };
+}
+
+\newcommand{\RInputNode}[5]{
+    \node[
+        minimum width=#3,
+        text width=#3,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        draw=black,
+        anchor=north west
+    ] (#2) at #1 {
+        \begin{lstlisting}[
+            style=RInput,
+            linewidth=\textwidth,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #5
+        \end{lstlisting}
+    };
+}
+
+\title{PSY9511: Seminar 8}
+\subtitle{Sequence modelling (with an emphasis on language)}
+\author{Esten H. Leonardsen}
+\date{13.05.24}
+
+\titlegraphic{
+	\centering
+	\vspace{7.7cm}
+	\includegraphics[width=\logowidth]{data/uio_logo_full.png}
+}
+
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}
+
+    \begin{frame}{Overview}
+        \begin{enumerate}
+            \item Introduction and motivation
+            \item Preprocessing
+            \item Bag of words
+            \item Vectorization
+            \item Recurrent neural networks
+            \item Transformers
+        \end{enumerate}
+    \end{frame}
+
+    \newcommand{\drawsmiley}[1]{
+        \begin{tikzpicture}[scale=0.35]
+            % Draw the grid and fill specified cells for the smiley
+            \foreach \x in {0,...,9} {
+                \foreach \y in {0,...,9} {
+                    % Initialize as white
+                    \ifnum#1=1
+                        \fill[white] (\x,\y) rectangle (\x+1,\y+1);
+                    \fi
+                    \ifnum#1>1
+                        \fill[black!2] (\x,\y) rectangle (\x+1,\y+1);
+                    \fi
+                }
+            }
+
+            \ifnum#1=3
+                \foreach \x in {2,...,5} {
+                    \foreach \y in {4,...,8} {
+                        \fill[white] (\x,\y) rectangle (\x+1,\y+1);
+                    }
+                }
+            \fi
+
+            \fill[black] (3,6) rectangle (4,7);
+
+            \ifnum#1=1
+                \fill[black] (6,6) rectangle (7,7);
+                \fill[black] (3,4) rectangle (4,5);
+                \fill[black] (6,4) rectangle (7,5);
+                \fill[black] (4,3) rectangle (6,4);
+
+                % Outline
+                \fill[black] (1,2) rectangle (2,8);
+                \fill[black] (8,2) rectangle (9,8);
+                \fill[black] (2,1) rectangle (8,2);
+                \fill[black] (2,8) rectangle (8,9);
+
+                \draw[gray, very thin] (0,0) grid (10,10);
+            \fi
+
+            \ifnum#1=3
+                \fill[black] (3,4) rectangle (4,5);
+
+                % Outline
+                \fill[black] (1,4) rectangle (2,8);
+                \fill[black] (2,8) rectangle (6,9);
+
+                \draw[gray, very thin] (1,4) grid (6,9);
+            \fi
+
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\smiley}
+    \sbox{\smiley}{%
+        \drawsmiley{1}
+    }
+
+    \newsavebox{\eye}
+    \sbox{\eye}{%
+        \drawsmiley{2}
+    }
+
+    \newsavebox{\context}
+    \sbox{\context}{%
+        \drawsmiley{3}
+    }
+
+    \newcommand{\labelnode}[3]{
+        \node[text depth=0, text height=0,font=\footnotesize] (#3) at #1 {
+            #2
+        };
+    }
+
+    \newcommand{\drawsentence}[1]{
+        \begin{tikzpicture}
+            \def\verticalsep{0.7}
+            \node[draw=black] at (-1.1, 0.5) {};
+            \node[draw=black] at (8.2, -6) {};
+
+            \node[anchor=west, text depth=0, text height=0] (movie) at (0.65, 0) {
+                movie
+            };
+
+            \ifnum#1>1
+                \node[anchor=west, text depth=0, text height=0] (the) at (0, 0) {
+                    The
+                };
+                \node[anchor=west, text depth=0, text height=0] (was) at (1.67, 0) {
+                    was
+                };
+
+                \ifnum#1<4
+                    \node[anchor=west, text depth=0, text height=0] (great) at (2.33, 0) {
+                        great
+                    };
+                \fi
+                \ifnum#1>4
+                    \node[anchor=west, text depth=0, text height=0] (great) at (2.33, 0) {
+                        great
+                    };
+                \fi
+
+                \node[anchor=west, text depth=0, text height=0] (comma) at (3.13, 0) {
+                    ,
+                };
+                \node[anchor=west, text depth=0, text height=0] (the2) at (3.25, 0) {
+                    the
+                };
+                \node[anchor=west, text depth=0, text height=0] (actors) at (3.83, 0) {
+                    actors
+                };
+                \node[anchor=west, text depth=0, text height=0] (were) at (4.85, 0) {
+                    were
+                };
+
+                \ifnum#1<3
+                    \node[anchor=west, text depth=0, text height=0] (awesome) at (5.67, 0) {
+                        awesome
+                    };
+                \fi
+                \ifnum#1>4
+                    \node[anchor=west, text depth=0, text height=0] (awesome) at (5.67, 0) {
+                        awesome
+                    };
+                \fi
+
+                \node[anchor=west, text depth=0, text height=0] (period) at (7.13, 0) {
+                    .
+                };
+            \fi
+
+            \ifnum#1>4
+                \ifnum#1<7
+                    \node[text depth=0] at (3.6, -6) {\textbf{\textit{Tokenization}}};
+                \fi
+            \fi
+
+            \ifnum#1=5
+                \labelnode{($ (the.south) - (0.15, \verticalsep) $)}{\textcolor{red}{"the"}}{thelabel}
+                \labelnode{($ (the.south) - (0.52, \verticalsep) $)}{[}{open}
+                \labelnode{($ (period.south) - (-0.45, \verticalsep) $)}{]}{close}
+            \fi
+            \ifnum#1>5
+                \labelnode{($ (the.south) - (0.15, \verticalsep) $)}{"the"}{thelabel}
+                \labelnode{($ (the.south) - (1, \verticalsep) $)}{[}{open}
+                \labelnode{($ (period.south) - (-1, \verticalsep) $)}{]}{close}
+            \fi
+            \ifnum#1>4
+                \labelnode{($ (movie.south) - (0.15, \verticalsep) $)}{"movie"}{movielabel}
+                \labelnode{($ (was.south) - (0.15, \verticalsep) $)}{"was"}{waslabel}
+                \labelnode{($ (great.south) - (0.15, \verticalsep) $)}{"great"}{greatlabel}
+                \labelnode{($ (comma.south) - (0, \verticalsep) $)}{","}{commalabel}
+                \labelnode{($ (the2.south) - (-0.15, \verticalsep) $)}{"the"}{the2label}
+                \labelnode{($ (actors.south) - (-0.15, \verticalsep) $)}{"actors"}{actorslabel}
+                \labelnode{($ (were.south) - (-0.15, \verticalsep) $)}{"were"}{werelabel}
+                \labelnode{($ (awesome.south) - (-0.15, \verticalsep) $)}{"awesome"}{awesomelabel}
+                \labelnode{($ (period.south) - (-0.3, \verticalsep) $)}{"."}{periodlabel}
+
+                \draw[-stealth] (the) -- ($ (thelabel.north) + (0, 0.15) $);
+                \draw[-stealth] (movie) -- ($ (movielabel.north) + (0, 0.15) $);
+                \draw[-stealth] (was) -- ($ (waslabel.north) + (0, 0.15) $);
+                \draw[-stealth] (great) -- ($ (greatlabel.north) + (0, 0.15) $);
+                \draw[-stealth] (comma) -- ($ (commalabel.north) + (0, 0.15) $);
+                \draw[-stealth] (the2) -- ($ (the2label.north) + (0, 0.15) $);
+                \draw[-stealth] (actors) -- ($ (actorslabel.north) + (0, 0.15) $);
+                \draw[-stealth] (were) -- ($ (werelabel.north) + (0, 0.15) $);
+                \draw[-stealth] (awesome) -- ($ (awesomelabel.north) + (0, 0.15) $);
+                \draw[-stealth] (period) -- ($ (periodlabel.north) + (0, 0.15) $);
+
+                \ifnum#1=6
+                    \labelnode{($ (the.south) - (0.75, \verticalsep) $)}{\textcolor{red}{<s>}}{start}
+                    \labelnode{($ (period.south) - (-0.75, \verticalsep) $)}{\textcolor{red}{<e>}}{end}
+                \fi
+
+                \ifnum#1>6
+                    \labelnode{($ (the.south) - (0.75, \verticalsep) $)}{<s>}{start}
+                    \labelnode{($ (period.south) - (-0.75, \verticalsep) $)}{<e>}{end}
+                \fi
+
+                \ifnum#1=7
+                    \node[text depth=0] at (3.6, -6) {\textbf{\textit{Stemming}}};
+                    \labelnode{($ (actorslabel.south) - (0, \verticalsep) $)}{\textcolor{red}{"actor"}}{actorsstem}
+                    \labelnode{($ (open.south) - (0, \verticalsep) $)}{[}{openstem}
+                    \labelnode{($ (start.south) - (0, \verticalsep) $)}{<s>}{startstem}
+                    \labelnode{($ (thelabel.south) - (0, \verticalsep) $)}{"The"}{thestem}
+                    \labelnode{($ (movielabel.south) - (0, \verticalsep) $)}{"movie"}{moviestem}
+                    \labelnode{($ (waslabel.south) - (0, \verticalsep) $)}{"was"}{wasstem}
+                    \labelnode{($ (greatlabel.south) - (0, \verticalsep) $)}{"great"}{greatstem}
+                    \labelnode{($ (commalabel.south) - (0, \verticalsep) $)}{","}{commastem}
+                    \labelnode{($ (the2label.south) - (-0, \verticalsep) $)}{"the"}{the2stem}
+                    \labelnode{($ (werelabel.south) - (0, \verticalsep) $)}{"were"}{werestem}
+                    \labelnode{($ (awesomelabel.south) - (0, \verticalsep) $)}{"awesome"}{awesomestem}
+                    \labelnode{($ (periodlabel.south) - (0, \verticalsep) $)}{"."}{periodstem}
+                    \labelnode{($ (end.south) - (0, \verticalsep) $)}{<e>}{endstem}
+                    \labelnode{($ (close.south) - (0, \verticalsep) $)}{]}{closestem}
+
+                    \draw[-stealth] (start) -- ($ (startstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (thelabel) -- ($ (thestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (movielabel) -- ($ (moviestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (waslabel) -- ($ (wasstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (greatlabel) -- ($ (greatstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (commalabel) -- ($ (commastem.north) + (0, 0.15) $);
+                    \draw[-stealth] (the2label) -- ($ (the2stem.north) + (0, 0.15) $);
+                    \draw[-stealth] (actorslabel) -- ($ (actorsstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (werelabel) -- ($ (werestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (awesomelabel) -- ($ (awesomestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (periodlabel) -- ($ (periodstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (end) -- ($ (endstem.north) + (0, 0.15) $);
+                \fi
+
+                \ifnum#1=8
+                    \node[text depth=0] at (3.6, -6) {\textbf{\textit{Lemmatization}}};
+                    \labelnode{($ (actorslabel.south) - (0, \verticalsep) $)}{\textcolor{red}{"actor"}}{actorsstem}
+                    \labelnode{($ (open.south) - (0, \verticalsep) $)}{[}{openstem}
+                    \labelnode{($ (start.south) - (0, \verticalsep) $)}{<s>}{startstem}
+                    \labelnode{($ (thelabel.south) - (0, \verticalsep) $)}{"The"}{thestem}
+                    \labelnode{($ (movielabel.south) - (0, \verticalsep) $)}{"movie"}{moviestem}
+                    \labelnode{($ (waslabel.south) - (0, \verticalsep) $)}{"was"}{wasstem}
+                    \labelnode{($ (greatlabel.south) - (0, \verticalsep) $)}{"great"}{greatstem}
+                    \labelnode{($ (commalabel.south) - (0, \verticalsep) $)}{","}{commastem}
+                    \labelnode{($ (the2label.south) - (-0, \verticalsep) $)}{"the"}{the2stem}
+                    \labelnode{($ (werelabel.south) - (0, \verticalsep) $)}{\textcolor{red}{"was"}}{werestem}
+                    \labelnode{($ (awesomelabel.south) - (0, \verticalsep) $)}{\textcolor{red}{"great"}}{awesomestem}
+                    \labelnode{($ (periodlabel.south) - (0, \verticalsep) $)}{"."}{periodstem}
+                    \labelnode{($ (end.south) - (0, \verticalsep) $)}{<e>}{endstem}
+                    \labelnode{($ (close.south) - (0, \verticalsep) $)}{]}{closestem}
+
+                    \draw[-stealth] (start) -- ($ (startstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (thelabel) -- ($ (thestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (movielabel) -- ($ (moviestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (waslabel) -- ($ (wasstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (greatlabel) -- ($ (greatstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (commalabel) -- ($ (commastem.north) + (0, 0.15) $);
+                    \draw[-stealth] (the2label) -- ($ (the2stem.north) + (0, 0.15) $);
+                    \draw[-stealth] (actorslabel) -- ($ (actorsstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (werelabel) -- ($ (werestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (awesomelabel) -- ($ (awesomestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (periodlabel) -- ($ (periodstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (end) -- ($ (endstem.north) + (0, 0.15) $);
+                \fi
+
+                \ifnum#1=9
+                    \node[text depth=0] at (3.6, -6) {\textbf{\textit{Stopword removal}}};
+                    \labelnode{($ (open.south) - (0, \verticalsep) $)}{[}{openstem}
+                    \labelnode{($ (start.south) - (0, \verticalsep) $)}{<s>}{startstem}
+                    \labelnode{($ (movielabel.south) - (0, \verticalsep) $)}{"movie"}{moviestem}
+                    \labelnode{($ (greatlabel.south) - (0, \verticalsep) $)}{"great"}{greatstem}
+                    \labelnode{($ (commalabel.south) - (0, \verticalsep) $)}{","}{commastem}
+                    \labelnode{($ (actorslabel.south) - (0, \verticalsep) $)}{"actor"}{actorsstem}
+                    \labelnode{($ (awesomelabel.south) - (0, \verticalsep) $)}{"awesome"}{awesomestem}
+                    \labelnode{($ (periodlabel.south) - (0, \verticalsep) $)}{"."}{periodstem}
+                    \labelnode{($ (end.south) - (0, \verticalsep) $)}{<e>}{endstem}
+                    \labelnode{($ (close.south) - (0, \verticalsep) $)}{]}{closestem}
+
+                    \draw[-stealth] (start) -- ($ (startstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (movielabel) -- ($ (moviestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (greatlabel) -- ($ (greatstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (commalabel) -- ($ (commastem.north) + (0, 0.15) $);
+                    \draw[-stealth] (actorslabel) -- ($ (actorsstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (awesomelabel) -- ($ (awesomestem.north) + (0, 0.15) $);
+                    \draw[-stealth] (periodlabel) -- ($ (periodstem.north) + (0, 0.15) $);
+                    \draw[-stealth] (end) -- ($ (endstem.north) + (0, 0.15) $);
+                \fi
+
+                \ifnum#1>9
+                    \ifnum#1<12
+                        \node[font=\small] (dictionary) at (3.8, -3) {
+                            ["," "." <e> <s> "actors" "awesome" "great" "movie" "the" "was" "were"]
+                        };
+
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (4.55, -0.2) $) {
+                            \textcolor{red}{0}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (4.23, -0.2) $) {
+                            \textcolor{red}{1}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (3.77, -0.2) $) {
+                            \textcolor{red}{2}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (3.2, -0.2) $) {
+                            \textcolor{red}{3}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (2.3, -0.2) $) {
+                            \textcolor{red}{4}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (0.9, -0.2) $) {
+                            \textcolor{red}{5}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (-0.4, -0.2) $) {
+                            \textcolor{red}{6}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (-1.5, -0.2) $) {
+                            \textcolor{red}{7}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (-2.45, -0.2) $) {
+                            \textcolor{red}{8}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (-3.35, -0.2) $) {
+                            \textcolor{red}{9}
+                        };
+                        \node[anchor=north, font=\footnotesize] at ($ (dictionary.south) - (-4.2, -0.2) $) {
+                            \textcolor{red}{10}
+                        };
+                    \fi
+                    \ifnum#1>10
+                        \node[text depth=0] at (3.6, -6) {\textbf{\textit{Integer encoding}}};
+                        \labelnode{($ (open.south) - (0, \verticalsep) $)}{[}{openstem}
+                        \labelnode{($ (start.south) - (0, \verticalsep) $)}{3}{startstem}
+                        \labelnode{($ (thelabel.south) - (0, \verticalsep) $)}{8}{thestem}
+                        \labelnode{($ (movielabel.south) - (0, \verticalsep) $)}{7}{moviestem}
+                        \labelnode{($ (waslabel.south) - (0, \verticalsep) $)}{9}{wasstem}
+                        \labelnode{($ (greatlabel.south) - (0, \verticalsep) $)}{6}{greatstem}
+                        \labelnode{($ (commalabel.south) - (0, \verticalsep) $)}{0}{commastem}
+                        \labelnode{($ (the2label.south) - (-0, \verticalsep) $)}{8}{the2stem}
+                        \labelnode{($ (actorslabel.south) - (0, \verticalsep) $)}{4}{actorsstem}
+                        \labelnode{($ (werelabel.south) - (0, \verticalsep) $)}{10}{werestem}
+                        \labelnode{($ (awesomelabel.south) - (0, \verticalsep) $)}{5}{awesomestem}
+                        \labelnode{($ (periodlabel.south) - (0, \verticalsep) $)}{1}{periodstem}
+                        \labelnode{($ (end.south) - (0, \verticalsep) $)}{2}{endstem}
+                        \labelnode{($ (close.south) - (0, \verticalsep) $)}{]}{closestem}
+
+                        \draw[-stealth] (start) -- ($ (startstem.north) + (0, 0.15) $);
+                        \draw[-stealth] (thelabel) -- ($ (thestem.north) + (0, 0.15) $);
+                        \draw[-stealth] (movielabel) -- ($ (moviestem.north) + (0, 0.15) $);
+                        \draw[-stealth] (waslabel) -- ($ (wasstem.north) + (0, 0.15) $);
+                        \draw[-stealth] (greatlabel) -- ($ (greatstem.north) + (0, 0.15) $);
+                        \draw[-stealth] (commalabel) -- ($ (commastem.north) + (0, 0.15) $);
+                        \draw[-stealth] (the2label) -- ($ (the2stem.north) + (0, 0.15) $);
+                        \draw[-stealth] (actorslabel) -- ($ (actorsstem.north) + (0, 0.15) $);
+                        \draw[-stealth] (werelabel) -- ($ (werestem.north) + (0, 0.15) $);
+                        \draw[-stealth] (awesomelabel) -- ($ (awesomestem.north) + (0, 0.15) $);
+                        \draw[-stealth] (periodlabel) -- ($ (periodstem.north) + (0, 0.15) $);
+                        \draw[-stealth] (end) -- ($ (endstem.north) + (0, 0.15) $);
+                    \fi
+                \fi
+            \fi
+
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\onlymovie}
+    \sbox{\onlymovie}{%
+        \drawsentence{1}
+    }
+    \newsavebox{\sentence}
+    \sbox{\sentence}{%
+        \drawsentence{2}
+    }
+    \newsavebox{\sentencewithgaps}
+    \sbox{\sentencewithgaps}{%
+        \drawsentence{3}
+    }
+    \newsavebox{\sentencewithmanygaps}
+    \sbox{\sentencewithmanygaps}{%
+        \drawsentence{4}
+    }
+    \newsavebox{\tokenizedsentence}
+    \sbox{\tokenizedsentence}{%
+        \drawsentence{5}
+    }
+    \newsavebox{\startendsentence}
+    \sbox{\startendsentence}{%
+        \drawsentence{6}
+    }
+    \newsavebox{\stemmedsentence}
+    \sbox{\stemmedsentence}{%
+        \drawsentence{7}
+    }
+    \newsavebox{\lemmatizedsentence}
+    \sbox{\lemmatizedsentence}{%
+        \drawsentence{8}
+    }
+    \newsavebox{\prunedsentence}
+    \sbox{\prunedsentence}{%
+        \drawsentence{9}
+    }
+    \newsavebox{\sentencedictionary}
+    \sbox{\sentencedictionary}{%
+        \drawsentence{10}
+    }
+    \newsavebox{\encodingsentence}
+    \sbox{\encodingsentence}{%
+        \drawsentence{11}
+    }
+    \newsavebox{\encodedsentence}
+    \sbox{\encodedsentence}{%
+        \drawsentence{12}
+    }
+
+    \begin{frame}{Introduction}
+        \centering
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, 7) {};
+
+            \only<2-4,7-8>{
+                \node[] at (3, 2) {
+                    {\footnotesize
+                        \begin{tabular}{|c|c|c|c|}
+                            \hline
+                            Age&Sex&Education&Salary \\ \hline
+                            25 & Male & 12 & 40,000 \\ \hline
+                            30 & Female & 16 & 65,000 \\ \hline
+                            35 & Male & 14 & 55,000 \\ \hline
+                            40 & Female & 18 & 80,000 \\ \hline
+                            45 & Male & 16 & 75,000 \\ \hline
+                        \end{tabular}
+                    }
+                };
+            }
+            \only<3-4,7,11,14>{
+                \node[] at (8, 2) {
+                    \usebox{\smiley}
+                };
+            }
+            \only<4-7,15,17-21,26-27>{
+                \node[anchor=north] at (5.3, 6.7) {
+                    \usebox{\sentence}
+                };
+            }
+            \only<5-6>{
+                \node[inner sep=0pt, draw=black] at (5, 4) {
+                    \includegraphics[width=5cm]{data/soundwaves.png}
+                };
+            }
+            \only<6>{
+                \node[inner sep=0pt, draw=black] at (5, 1.5) {
+                    \includegraphics[width=8cm]{data/eeg.jpeg}
+                };
+            }
+            \only<9-10>{
+                \node[] at (0.84, 2.98) {
+                    \footnotesize{Age}
+                };
+                \node[] at (0.84, 1.82) {
+                    \footnotesize{35}
+                };
+            }
+            \only<10>{
+                \node[] at (1.93, 3.02) {
+                    \footnotesize{Sex}
+                };
+                \node[] at (1.93, 1.83) {
+                    \footnotesize{Male}
+                };
+
+            }
+            \only<12>{
+                \node[] at (8, 2) {
+                    \usebox{\eye}
+                };
+            }
+            \only<13>{
+                \node[] at (8, 2) {
+                    \usebox{\context}
+                };
+            }
+            \only<16>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\onlymovie}
+                };
+            }
+            \only<18-19>{
+                \node[] (pos) at (5, 4) {
+                    \textcolor{green}{Positive}
+                };
+                \node[] (neg) at (5, 3) {
+                    \textcolor{red}{Negative}
+                };
+            };
+            \only<19>{
+                \node[] at (5, 0.9) {
+                    The movie was awful, the actors were horrible.
+                };
+                \node[minimum width=0.95cm, minimum height=0.35cm, draw=red, thick] (awful) at (4.2, 0.92) {};
+                \node[minimum width=1.35cm, minimum height=0.35cm, draw=red, thick] (horrible) at (7.95, 0.92) {};
+                \node[minimum width=0.88cm, minimum height=0.35cm, draw=green, thick] (great) at (4.2, 6.05) {};
+                \node[minimum width=1.56cm, minimum height=0.35cm, draw=green, thick] (awesome) at (7.89, 6.05) {};
+
+                \draw[green, -stealth] (great) -- (pos);
+                \draw[green, -stealth] (awesome) -- (pos);
+                \draw[red, -stealth] (awful) -- (neg);
+                \draw[red, -stealth] (horrible) -- (neg);
+            }
+            \only<20-21>{
+                \node[] at (5, 4) {
+                    La película fue genial, las actores fueron increíbles.
+                };
+            }
+            \only<21>{
+                \draw[-stealth] (1.75, 5.9) -- (1.25, 4.2);
+                \draw[-stealth] (2.6, 5.9) -- (2.1, 4.2);
+                \draw[-stealth] (3.5, 5.9) -- (3, 4.2);
+                \draw[-stealth] (4.3, 5.9) -- (3.8, 4.2);
+                \draw[-stealth] (4.96, 5.9) -- (4.7, 4.2);
+                \draw[-stealth] (5.8, 5.9) -- (5.65, 4.2);
+                \draw[-stealth] (6.75, 5.9) -- (6.8, 4.2);
+                \draw[-stealth] (7.95, 5.9) -- (8.2, 4.2);
+            }
+            \only<22,25>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentencewithgaps}
+                };
+            }
+            \only<22,24-25>{
+                \draw[thick] (7.1, 5.9) -- (8.6, 5.9);
+            }
+            \only<23>{
+                \draw[thick] (1.5, 5.9) -- (8.6, 5.9);
+            }
+            \only<24>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentencewithmanygaps}
+                };
+                \draw[thick] (3.8, 5.9) -- (4.6, 5.9);
+            }
+            \only<27>{
+                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.2, 6.07) {};
+                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.89, 6.07) {};
+                \draw[-stealth] (great) to [out=315, in=225] (awesome);
+            }
+            \only<28>{
+                \node[align=center, anchor=north] at (5.1, 6.3) {
+                    The movie was great, we saw it at the new\\Cinema in the city center, the actors were awesome.
+                };
+                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
+                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (8.35, 5.55) {};
+            }
+            \only<29>{
+                \node[align=center, anchor=north] at (5.1, 6.3) {
+                    The movie was great, we saw it at the new\\
+                    Cinema in the city center, right down by the\\
+                    restaurant where we went for my birthday that\\
+                    one year, the one where the clown was\\
+                    inside the cake, the actors were awesome.
+                };
+                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
+                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.6, 4.1) {};
+            }
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}[fragile]{Preprocessing}
+        \centering
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, 7) {};
+
+            \only<1>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentence}
+                };
+            }
+            \only<2>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\tokenizedsentence}
+                };
+            }
+            \only<3-4>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\startendsentence}
+                };
+            }
+            \only<4>{
+                \PythonInputNode{1}{(1.05, 4.9)}{import}{0.9\textwidth}{7}{
+from nltk.tokenize import word_tokenize^^J
+^^J
+tokens = word_tokenize(s)^^J
+tokens = [token.lower() for token in tokens]^^J
+tokens = ['<s>'] + tokens + ['<e>']^^J
+print(tokens)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 3)}{out}{0.79\textwidth}{7}{
+                    ['<s>', 'the', 'movie', 'was', 'great', ',', 'the', 'actors',^^J
+                     'were', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<5-6>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\stemmedsentence}
+                };
+            }
+            \only<6>{
+
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.stem.snowball import SnowballStemmer^^J
+^^J
+stemmer = SnowballStemmer('english')^^J
+stemmed = [stemmer.stem(token) for token in tokens]^^J
+stemmed^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'the', 'movi', 'was', 'great', ',', 'the', 'actor', ^^J
+'were', 'awesom', '.', '<e>']^^J
+                }
+            }
+            \only<7-8>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\lemmatizedsentence}
+                };
+            }
+            \only<8>{
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.stem import WordNetLemmatizer^^J
+^^J
+lemmatizer = WordNetLemmatizer()^^J
+lemmatized = [lemmatizer.lemmatize(token) for token in tokens]^^J
+print(lemmatized)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'the', 'movie', 'wa', 'great', ',', 'the', 'actor',^^J
+'were', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<9-10>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\prunedsentence}
+                };
+            }
+            \only<10>{
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.corpus import stopwords^^J
+^^J
+pruned = [token for token in tokens if not token in stopwords.words('english')]^^J
+print(pruned)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'movie', 'great', ',', 'actors', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<11>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentencedictionary}
+                };
+            }
+            \only<12>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\encodingsentence}
+                };
+            }
+            \only<13>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\encodedsentence}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \newsavebox{\wordcounts}
+    \sbox{\wordcounts}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar,
+                ymin=0,
+                ymax=3,
+                height=5cm,
+                width=9cm,
+                xtick={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+                xticklabels={{","}, {"."}, <s>, <e>, "actors", "awesome", "great", "movie", "the", "was", "were"},
+                xticklabel style={font=\footnotesize, rotate=45, anchor=east},
+                yticklabel style={font=\footnotesize},
+                xlabel={\small{Token}},
+                ylabel={\small{Count}},
+                axis y line*=left,
+                axis x line*=bottom
+            ]
+                \addplot[fill=teal!50] coordinates {
+                    (0, 1)
+                    (1, 1)
+                    (2, 1)
+                    (3, 1)
+                    (4, 1)
+                    (5, 1)
+                    (6, 2)
+                    (7, 1)
+                    (8, 1)
+                    (9, 1)
+                    (10, 1)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \section{Bag of words}
+    \begin{frame}{Bag of words}
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, 7) {};
+
+            \only<1-5>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentence}
+                };
+            }
+
+            \only<2>{
+                \node[] at (5, 3) {
+                    \usebox{\wordcounts}
+                };
+            }
+
+            \only<3>{
+                \node[anchor=north west] at (0.2, 6) {
+                    {
+                        \scriptsize
+                        \setlength{\tabcolsep}{1.5pt}
+                        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+                            \hline
+                            ,&.&<s>&<e>&actors&awesome&great&movie&the&was&were\\
+                            \hline
+                            1&1&1&1&1&1&2&1&1&1&1\\
+                            \hline
+                        \end{tabular}
+                    }
+                };
+            }
+            \only<4,6>{
+                \node[anchor=north west] at (0.2, 6) {
+                    {
+                        \scriptsize
+                        \setlength{\tabcolsep}{1.5pt}
+                        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                            \hline
+                            ,&.&<s>&<e>&actors&awesome&awful&great&horrible&movie&the&was&were&sentiment\\
+                            \hline
+                            1&1&1&1&1&1&0&1&0&1&2&1&1&positive\\
+                            \hline
+                            1&1&1&1&1&0&1&0&1&1&2&1&1&negative\\
+                            \hline
+                        \end{tabular}
+                    }
+                };
+            }
+            \only<4-5>{
+                \node[] at (5, 4.2) {
+                    The movie was awful, the actors were horrible.
+                };
+            }
+            \only<5>{
+                \node[anchor=north west] at (0.2, 6) {
+                    {
+                        \scriptsize
+                        \setlength{\tabcolsep}{1.5pt}
+                        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                            \hline
+                            ,&.&<s>&<e>&actors&\textcolor{red}{awesome}&\textcolor{red}{awful}&\textcolor{red}{great}&\textcolor{red}{horrible}&movie&the&was&were&sentiment\\
+                            \hline
+                            1&1&1&1&1&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&1&2&1&1&positive\\
+                            \hline
+                            1&1&1&1&1&\textcolor{red}{0}&\textcolor{red}{1}&\textcolor{red}{0}&\textcolor{red}{1}&1&2&1&1&negative\\
+                            \hline
+                        \end{tabular}
+                    }
+                };
+            }
+            \only<6>{
+                \node[] at (5, 3.5) {
+                    $y=\beta_0 + \sum\limits_i \beta_iX_i$
+                };
+            }
+
+            \only<7>{
+                \node[] at (5, 3.5) {
+                    {\tiny
+                        \url{http://localhost:8888/notebooks/notebooks/Bag\%20of\%20words\%20demo.ipynb}
+                    }
+                };
+            }
+
+        \end{tikzpicture}
+    \end{frame}
+
+    \newcommand{\pointcloud}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=0.35,
+                xmax=0.7,
+                ymin=0.35,
+                ymax=0.7,
+                height=6cm,
+                width=6cm,
+                xmajorticks=false,
+                ymajorticks=false
+            ]
+
+            \ifnum#1=1
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=gray!80,
+                    opacity=0.75
+                ] coordinates {
+                    (0.5, 0.5)
+                    (0.52, 0.53)
+                    (0.48, 0.55)
+                    (0.45, 0.47)
+                    (0.57, 0.46)
+                    (0.53, 0.51)
+                    (0.47, 0.52)
+                    (0.49, 0.50)
+                    (0.51, 0.54)
+                    (0.5, 0.56)
+                    (0.55, 0.55)
+                    (0.58, 0.57)
+                    (0.54, 0.59)
+                    (0.52, 0.53)
+                    (0.57, 0.56)
+                    (0.59, 0.54)
+                    (0.56, 0.58)
+                    (0.60, 0.55)
+                    (0.53, 0.52)
+                    (0.56, 0.53)
+                };
+            \fi
+
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=blue!80,
+                    opacity=0.75
+                ] coordinates {
+                    (0.5, 0.5)
+                    (0.52, 0.53)
+                    (0.48, 0.55)
+                    (0.45, 0.47)
+                    (0.57, 0.46)
+                    (0.53, 0.51)
+                    (0.47, 0.52)
+                    (0.49, 0.50)
+                    (0.51, 0.54)
+                    (0.5, 0.56)
+                };
+
+                \addplot[
+                    only marks,
+                    mark=*,
+                    color=red!80,
+                    opacity=0.75
+                ] coordinates {
+                    (0.55, 0.55)
+                    (0.58, 0.57)
+                    (0.54, 0.59)
+                    (0.52, 0.53)
+                    (0.57, 0.56)
+                    (0.59, 0.54)
+                    (0.56, 0.58)
+                    (0.60, 0.55)
+                    (0.53, 0.52)
+                    (0.56, 0.53)
+                };
+            \fi
+            \ifnum#1=3
+                \addplot[dashed] coordinates {
+                    (0.15,0.9)
+                    (0.75, 0.3)
+                };
+            \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\singlecloud}
+    \sbox{\singlecloud}{%
+        \pointcloud{1}
+    }
+    \newsavebox{\doublecloud}
+    \sbox{\doublecloud}{%
+        \pointcloud{2}
+    }
+    \newsavebox{\boundarycloud}
+    \sbox{\boundarycloud}{%
+        \pointcloud{3}
+    }
+
+    \newsavebox{\oppositevectors}
+    \sbox{\oppositevectors}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines=middle,
+                xmin=-1.2,
+                xmax=1.2,
+                ymin=-1.2,
+                ymax=1.2,
+                axis line style={
+                    draw=gray!50,
+                    stealth-stealth
+                },
+                tick label style={
+                    font=\small,
+                    gray!50
+                },
+                clip=false
+            ]
+                \node[circle, fill=blue, label=above:\footnotesize{awesome}, opacity=0.5] at (axis cs: 1, 0) {};
+                \node[circle, fill=blue, label=above:\footnotesize{wonderful}, opacity=0.5] at (axis cs: 0, 1) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \begin{frame}{Bag of words: Disadvantages}
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, 7) {};
+
+            \only<1>{
+                \node[] at (5, 3.5) {
+                    \usebox{\singlecloud}
+                };
+            }
+            \only<2>{
+                \node[] at (5, 3.5) {
+                    \usebox{\doublecloud}
+                };
+            }
+            \only<3>{
+                \node[] at (5, 3.5) {
+                    \usebox{\boundarycloud}
+                };
+            }
+            \only<4-9>{
+                \node[anchor=north west] at (0.5, 6) {
+                    Dataset: ["This is awesome", "This is wonderful"]
+                };
+            }
+            \only<5-9>{
+                \node[anchor=north west] at (0.5, 5.4) {
+                    Tokens: [["this" "is" "awesome"], ["this" "is" "wonderful"]]
+                };
+            }
+            \only<6-9>{
+                \node[anchor=north west] at (0.5, 4.8) {
+                    Pruned: [["awesome"], ["wonderful"]]
+                };
+            }
+            \only<7-9>{
+                \node[anchor=north west] at (0.5, 4.2) {
+                    Dictionary: ["awesome", "wonderful"]
+                };
+            }
+            \only<8-9>{
+                \node[anchor=north west] at (0.5, 3.6) {
+                    Encoded:
+                    \begin{tabular}{|c|c|}
+                        \hline
+                        awesome&wonderful\\
+                        \hline
+                        1&0\\
+                        \hline
+                        0&1\\
+                        \hline
+                    \end{tabular}
+                };
+            }
+            \only<9>{
+                \node[anchor=north west] at (0.5, 1.8) {
+                    Vectors: [[1, 0], [0, 1]]
+                };
+            }
+            \onslide<10->{
+                \node[] at (5, 3.5) {
+                    \usebox{\oppositevectors}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \section{Embeddings}
+
+    \newcommand{\wordtovec}[1]{
+        \begin{tikzpicture}
+            \def\nodesize{12pt}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (8, 4) {};
+
+            \ifnum#1<5
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n00) at (2, 2) {};
+
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n10) at (4, 3) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n11) at (4, 2.5) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n12) at (4, 2) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n13) at (4, 1.5) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n14) at (4, 1) {};
+
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n20) at (6, 2.5) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n21) at (6, 2) {};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n22) at (6, 1.5) {};
+
+                \draw[] (n00) -- (n10);
+                \draw[] (n00) -- (n11);
+                \draw[] (n00) -- (n12);
+                \draw[] (n00) -- (n13);
+                \draw[] (n00) -- (n14);
+
+                \draw[] (n10) -- (n20);
+                \draw[] (n10) -- (n21);
+                \draw[] (n10) -- (n22);
+                \draw[] (n11) -- (n20);
+                \draw[] (n11) -- (n21);
+                \draw[] (n11) -- (n22);
+                \draw[] (n12) -- (n20);
+                \draw[] (n12) -- (n21);
+                \draw[] (n12) -- (n22);
+                \draw[] (n13) -- (n20);
+                \draw[] (n13) -- (n21);
+                \draw[] (n13) -- (n22);
+                \draw[] (n14) -- (n20);
+                \draw[] (n14) -- (n21);
+                \draw[] (n14) -- (n22);
+            \fi
+
+            \ifnum#1>2
+                \node[anchor=west] at (n20.east) {\footnotesize{the}};
+                \node[anchor=west] at (n21.east) {\footnotesize{movie}};
+                \node[anchor=west] at (n22.east) {\footnotesize{was}};
+            \fi
+
+            \ifnum#1=2
+                \node[anchor=east] at (n00.west) {\footnotesize{awesome}};
+            \fi
+            \ifnum#1=3
+                \node[anchor=east] at (n00.west) {\footnotesize{wonderful}};
+            \fi
+            \ifnum#1>4
+                \node[anchor=east] at (n00.west) {\footnotesize{fantastic}};
+            \fi
+
+            \ifnum#1>4
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n00) at (2, 2) {\textcolor{white}{\footnotesize{3}}};
+
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n10) at (4, 3) {\textcolor{white}{\footnotesize{0.5}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n11) at (4, 2.5) {\textcolor{white}{\footnotesize{0.2}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n12) at (4, 2) {\textcolor{white}{\footnotesize{-1.1}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n13) at (4, 1.5) {\textcolor{white}{\footnotesize{0.7}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n14) at (4, 1) {\textcolor{white}{\footnotesize{0.4}}};
+
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n20) at (6, 2.5) {\textcolor{white}{\footnotesize{2}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n21) at (6, 2) {\textcolor{white}{\footnotesize{7}}};
+                \node[circle, draw=black, fill=teal!50, minimum size=\nodesize, inner sep=0pt] (n22) at (6, 1.5) {\textcolor{white}{\footnotesize{8}}};
+
+                \draw[] (n00) -- (n10);
+                \draw[] (n00) -- (n11);
+                \draw[] (n00) -- (n12);
+                \draw[] (n00) -- (n13);
+                \draw[] (n00) -- (n14);
+
+                \draw[] (n10) -- (n20);
+                \draw[] (n10) -- (n21);
+                \draw[] (n10) -- (n22);
+                \draw[] (n11) -- (n20);
+                \draw[] (n11) -- (n21);
+                \draw[] (n11) -- (n22);
+                \draw[] (n12) -- (n20);
+                \draw[] (n12) -- (n21);
+                \draw[] (n12) -- (n22);
+                \draw[] (n13) -- (n20);
+                \draw[] (n13) -- (n21);
+                \draw[] (n13) -- (n22);
+                \draw[] (n14) -- (n20);
+                \draw[] (n14) -- (n21);
+                \draw[] (n14) -- (n22);
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\wordtovecmodel}
+    \sbox{\wordtovecmodel}{%
+        \wordtovec{1}
+    }
+
+    \newsavebox{\wordtovecawesome}
+    \sbox{\wordtovecawesome}{%
+        \wordtovec{2}
+    }
+    \newsavebox{\wordtovecwonderful}
+    \sbox{\wordtovecwonderful}{%
+        \wordtovec{3}
+    }
+    \newsavebox{\wordtovecfantastic}
+    \sbox{\wordtovecfantastic}{%
+        \wordtovec{4}
+    }
+    \newsavebox{\wordtoveccomputation}
+    \sbox{\wordtoveccomputation}{%
+        \wordtovec{5}
+    }
+
+    \newcommand{\wordspace}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines=middle,
+                xmin=-1.2,
+                xmax=1.2,
+                ymin=-1.2,
+                ymax=1.2,
+                axis line style={
+                    draw=gray!50,
+                    stealth-stealth
+                },
+                tick label style={
+                    font=\small,
+                    gray!50
+                },
+                clip=false
+            ]
+                \ifnum#1=1
+                    \node[circle, fill=blue, label=above:\footnotesize{awesome}, opacity=0.5] at (axis cs: 1, 0) {};
+                    \node[circle, fill=blue, label=below:\footnotesize{wonderful}, opacity=0.5] at (axis cs: 0.9, -0.2) {};
+                \fi
+                \ifnum#1>1
+                    \node[circle, fill=blue, label=above:\footnotesize{king}, opacity=0.5] (king) at (axis cs: 1, 1) {};
+                    \node[circle, fill=blue, label=below:\footnotesize{queen}, opacity=0.5] (queen) at (axis cs: 0.7, 0.7) {};
+
+                    \ifnum#1>2
+                        \draw[-stealth, draw=gray!50, line width=2pt] (king) -- node[below, rotate=42] {\tiny{sex}} (queen);
+                    \fi
+
+                    \ifnum#1>3
+                        \node[circle, fill=blue, label=above:\footnotesize{prince}, opacity=0.5] (prince) at (axis cs: 0, 1) {};
+                        \node[circle, fill=blue, label=below:\footnotesize{princess}, opacity=0.5] (princess) at (axis cs: -0.3, 0.7) {};
+                        \draw[-stealth, draw=gray!50, line width=2pt] (prince) -- node[below, rotate=42] {\tiny{sex}} (princess);
+                    \fi
+
+                    \ifnum#1=5
+                        \draw[-stealth, draw=gray!50, line width=2pt] (king) -- node[below] {\tiny{heir}} (prince);
+                        \draw[-stealth, draw=gray!50, line width=2pt] (queen) -- node[below] {\tiny{heir}} (princess);
+                    \fi
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\similarwords}
+    \sbox{\similarwords}{%
+        \wordspace{1}
+    }
+    \newsavebox{\kingqueen}
+    \sbox{\kingqueen}{%
+        \wordspace{2}
+    }
+    \newsavebox{\kingqueenrelation}
+    \sbox{\kingqueenrelation}{%
+        \wordspace{3}
+    }
+    \newsavebox{\princeprincess}
+    \sbox{\princeprincess}{%
+        \wordspace{4}
+    }
+    \newsavebox{\heirs}
+    \sbox{\heirs}{%
+        \wordspace{5}
+    }
+
+    \newcommand{\meanvectors}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines=middle,
+                xmin=-1.2,
+                xmax=1.2,
+                ymin=-1.2,
+                ymax=1.2,
+                axis line style={
+                    draw=gray!50,
+                    stealth-stealth
+                },
+                tick label style={
+                    font=\small,
+                    gray!50
+                },
+                clip=false
+            ]
+                \ifnum#1<4
+                    \node[circle, fill=gray, label=above:\footnotesize{the}, opacity=0.25] at (axis cs: 0.8, -0.2) {};
+                    \node[circle, fill=gray, label=above:\footnotesize{movie}, opacity=0.25] at (axis cs: 1.1, -0.4) {};
+                    \node[circle, fill=gray, label=above:\footnotesize{was}, opacity=0.25] at (axis cs: 0.5, 0.3) {};
+                \fi
+                \ifnum#1<3
+                    \node[circle, fill=gray, label=above:\footnotesize{awesome}, opacity=0.25] at (axis cs: 1, 0) {};
+                \fi
+                \ifnum#1=2
+                    \node[circle, fill=blue, opacity=0.5] at (axis cs: 0.85, -0.1) {};
+                \fi
+
+                \ifnum#1=3
+                    \node[circle, fill=gray, label=above:\footnotesize{horrible}, opacity=0.25] at (axis cs: -1, 0.5) {};
+                    \node[circle, fill=red, opacity=0.5] at (axis cs: 0.35, 0.05) {};
+                \fi
+                \ifnum#1=4
+                    \node[circle, fill=red, opacity=0.75] at (axis cs: 0.35, 0.05) {};
+                    \node[circle, fill=blue, opacity=0.75] at (axis cs: 0.85, -0.1) {};
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\firstmean}
+    \sbox{\firstmean}{%
+        \meanvectors{1}
+    }
+    \newsavebox{\firstmeanmean}
+    \sbox{\firstmeanmean}{%
+        \meanvectors{2}
+    }
+    \newsavebox{\secondmean}
+    \sbox{\secondmean}{%
+        \meanvectors{3}
+    }
+    \newsavebox{\bothmeans}
+    \sbox{\bothmeans}{%
+        \meanvectors{4}
+    }
+
+    \begin{frame}{Word2vec}
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, 7) {};
+
+                \only<1-6>{
+                    \node[align=left] at (5, 6) {
+                        The movie was awesome.\\
+                        The movie was wonderful.\\
+                        The movie was fantastic.\\
+                    };
+                }
+
+                \only<1>{
+                    \node[] at (5, 3) {
+                        \usebox{\wordtovecmodel}
+                    };
+                }
+                \only<2>{
+                    \node[] at (5, 3) {
+                        \usebox{\wordtovecawesome}
+                    };
+                }
+                \only<3>{
+                    \node[] at (5, 3) {
+                        \usebox{\wordtovecwonderful}
+                    };
+                }
+                \only<4>{
+                    \node[] at (5, 3) {
+                        \usebox{\wordtovecfantastic}
+                    };
+                }
+                \only<5-6>{
+                    \node[] at (5, 3) {
+                        \usebox{\wordtoveccomputation}
+                    };
+                }
+                \only<6>{
+                    \node[draw=red, minimum width=0.6cm, minimum height=2.55cm, very thick] at (4.95, 3) {};
+                    \node[] at (5, 1.2) {
+                        fantastic=[0.5, 0.2, -1.1, 0.7, 0.4]
+                    };
+                }
+                \only<7>{
+                    \node[] at (5, 3) {
+                        \usebox{\similarwords}
+                    };
+                }
+                \only<8>{
+                    \node[align=left] at (5, 3) {
+                        The movie was awesome.\\
+                        The food was awesome.\\
+                        The book was awesome.\\
+                    };
+                }
+                \only<9>{
+                    \node[] at (5, 3) {
+                        \usebox{\kingqueen}
+                    };
+                }
+                \only<10>{
+                    \node[] at (5, 3) {
+                        \usebox{\kingqueenrelation}
+                    };
+                }
+                \only<11>{
+                    \node[] at (5, 3) {
+                        \usebox{\princeprincess}
+                    };
+                }
+                \only<12>{
+                    \node[] at (5, 3) {
+                        \usebox{\heirs}
+                    };
+                }
+                \only<13>{
+                    \node[align=left] at (5, 3) {
+                        {
+
+                            \setlength{\tabcolsep}{1.5pt}
+                            \begin{tabular}{cl}
+                                word2vec(queen)=&word2vec(king)\\
+                                &-word2vec(man)\\
+                                &+word2vec(woman)
+                            \end{tabular}
+                        }
+                    };
+                }
+                \only<14>{
+                    \node[] at (5, 3) {
+                        \usebox{\firstmean}
+                    };
+                }
+                \only<15>{
+                    \node[] at (5, 3) {
+                        \usebox{\firstmeanmean}
+                    };
+                }
+                \only<16>{
+                    \node[] at (5, 3) {
+                        \usebox{\secondmean}
+                    };
+                }
+                \only<17>{
+                    \node[] at (5, 3) {
+                        \usebox{\bothmeans}
+                    };
+                }
+                \only<18>{
+                    \node[] at (5, 3.5) {
+                        {\scriptsize
+                            \url{http://localhost:8888/notebooks/notebooks/Word2vec\%20demo.ipynb}
+                        }
+                    };
+                }
+            \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Word2vec: Disadvantages}
+        \centering
+        \begin{tikzpicture}
+        \only<2>{
+            \node[] at (0, 0) {
+                I think the movie was really good, but my friend said it was bad.
+            };
+            \node[] at (0, 0.5) {
+                =
+            };
+            \node[] at (0, 1) {
+                I think the movie was really bad, but my friend said it was good.
+            };
+        }
+        \end{tikzpicture}
+    \end{frame}
+
+    \section{Recurrent neural networks}
+
+    \section{Transformers}
+\end{document}

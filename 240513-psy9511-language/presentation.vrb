@@ -1,0 +1,104 @@
+\frametitle{Preprocessing}
+\centering
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (10, 7) {};
+
+            \only<1>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentence}
+                };
+            }
+            \only<2>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\tokenizedsentence}
+                };
+            }
+            \only<3-4>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\startendsentence}
+                };
+            }
+            \only<4>{
+                \PythonInputNode{1}{(1.05, 4.9)}{import}{0.9\textwidth}{7}{
+from nltk.tokenize import word_tokenize^^J
+^^J
+tokens = word_tokenize(s)^^J
+tokens = [token.lower() for token in tokens]^^J
+tokens = ['<s>'] + tokens + ['<e>']^^J
+print(tokens)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 3)}{out}{0.79\textwidth}{7}{
+                    ['<s>', 'the', 'movie', 'was', 'great', ',', 'the', 'actors',^^J
+                     'were', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<5-6>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\stemmedsentence}
+                };
+            }
+            \only<6>{
+
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.stem.snowball import SnowballStemmer^^J
+^^J
+stemmer = SnowballStemmer('english')^^J
+stemmed = [stemmer.stem(token) for token in tokens]^^J
+stemmed^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'the', 'movi', 'was', 'great', ',', 'the', 'actor', ^^J
+'were', 'awesom', '.', '<e>']^^J
+                }
+            }
+            \only<7-8>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\lemmatizedsentence}
+                };
+            }
+            \only<8>{
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.stem import WordNetLemmatizer^^J
+^^J
+lemmatizer = WordNetLemmatizer()^^J
+lemmatized = [lemmatizer.lemmatize(token) for token in tokens]^^J
+print(lemmatized)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'the', 'movie', 'wa', 'great', ',', 'the', 'actor',^^J
+'were', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<9-10>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\prunedsentence}
+                };
+            }
+            \only<10>{
+                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+from nltk.corpus import stopwords^^J
+^^J
+pruned = [token for token in tokens if not token in stopwords.words('english')]^^J
+print(pruned)^^J
+                }
+                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+['<s>', 'movie', 'great', ',', 'actors', 'awesome', '.', '<e>']^^J
+                }
+            }
+            \only<11>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\sentencedictionary}
+                };
+            }
+            \only<12>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\encodingsentence}
+                };
+            }
+            \only<13>{
+                \node[anchor=north] at (5, 7.2) {
+                    \usebox{\encodedsentence}
+                };
+            }
+        \end{tikzpicture}
