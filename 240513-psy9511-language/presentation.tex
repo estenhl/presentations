@@ -11,8 +11,11 @@
 
 \usepgfplotslibrary{fillbetween}
 
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
 \usetikzlibrary{patterns}
+\usetikzlibrary{positioning}
 
 \hypersetup{
     colorlinks=true,
@@ -645,262 +648,284 @@
 
     \begin{frame}{Introduction}
         \centering
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, 7) {};
+        \only<1-29>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, 7) {};
 
-            \only<2-4,7-8>{
-                \node[] at (3, 2) {
-                    {\footnotesize
-                        \begin{tabular}{|c|c|c|c|}
-                            \hline
-                            Age&Sex&Education&Salary \\ \hline
-                            25 & Male & 12 & 40,000 \\ \hline
-                            30 & Female & 16 & 65,000 \\ \hline
-                            35 & Male & 14 & 55,000 \\ \hline
-                            40 & Female & 18 & 80,000 \\ \hline
-                            45 & Male & 16 & 75,000 \\ \hline
-                        \end{tabular}
-                    }
-                };
-            }
-            \only<3-4,7,11,14>{
-                \node[] at (8, 2) {
-                    \usebox{\smiley}
-                };
-            }
-            \only<4-7,15,17-21,26-27>{
-                \node[anchor=north] at (5.3, 6.7) {
-                    \usebox{\sentence}
-                };
-            }
-            \only<5-6>{
-                \node[inner sep=0pt, draw=black] at (5, 4) {
-                    \includegraphics[width=5cm]{data/soundwaves.png}
-                };
-            }
-            \only<6>{
-                \node[inner sep=0pt, draw=black] at (5, 1.5) {
-                    \includegraphics[width=8cm]{data/eeg.jpeg}
-                };
-            }
-            \only<9-10>{
-                \node[] at (0.84, 2.98) {
-                    \footnotesize{Age}
-                };
-                \node[] at (0.84, 1.82) {
-                    \footnotesize{35}
-                };
-            }
-            \only<10>{
-                \node[] at (1.93, 3.02) {
-                    \footnotesize{Sex}
-                };
-                \node[] at (1.93, 1.83) {
-                    \footnotesize{Male}
-                };
+                \only<2-4,7-8>{
+                    \node[] at (3, 2) {
+                        {\footnotesize
+                            \begin{tabular}{|c|c|c|c|}
+                                \hline
+                                Age&Sex&Education&Salary \\ \hline
+                                25 & Male & 12 & 40,000 \\ \hline
+                                30 & Female & 16 & 65,000 \\ \hline
+                                35 & Male & 14 & 55,000 \\ \hline
+                                40 & Female & 18 & 80,000 \\ \hline
+                                45 & Male & 16 & 75,000 \\ \hline
+                            \end{tabular}
+                        }
+                    };
+                }
+                \only<3-4,7,11,14>{
+                    \node[] at (8, 2) {
+                        \usebox{\smiley}
+                    };
+                }
+                \only<4-7,15,17-21,26-27>{
+                    \node[anchor=north] at (5.3, 6.7) {
+                        \usebox{\sentence}
+                    };
+                }
+                \only<5-6>{
+                    \node[inner sep=0pt, draw=black] at (5, 4) {
+                        \includegraphics[width=5cm]{data/soundwaves.png}
+                    };
+                }
+                \only<6>{
+                    \node[inner sep=0pt, draw=black] at (5, 1.5) {
+                        \includegraphics[width=8cm]{data/eeg.jpeg}
+                    };
+                }
+                \only<9-10>{
+                    \node[] at (0.84, 2.98) {
+                        \footnotesize{Age}
+                    };
+                    \node[] at (0.84, 1.82) {
+                        \footnotesize{35}
+                    };
+                }
+                \only<10>{
+                    \node[] at (1.93, 3.02) {
+                        \footnotesize{Sex}
+                    };
+                    \node[] at (1.93, 1.83) {
+                        \footnotesize{Male}
+                    };
 
-            }
-            \only<12>{
-                \node[] at (8, 2) {
-                    \usebox{\eye}
+                }
+                \only<12>{
+                    \node[] at (8, 2) {
+                        \usebox{\eye}
+                    };
+                }
+                \only<13>{
+                    \node[] at (8, 2) {
+                        \usebox{\context}
+                    };
+                }
+                \only<16>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\onlymovie}
+                    };
+                }
+                \only<18-19>{
+                    \node[] (pos) at (5, 4) {
+                        \textcolor{green}{Positive}
+                    };
+                    \node[] (neg) at (5, 3) {
+                        \textcolor{red}{Negative}
+                    };
                 };
-            }
-            \only<13>{
-                \node[] at (8, 2) {
-                    \usebox{\context}
-                };
-            }
-            \only<16>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\onlymovie}
-                };
-            }
-            \only<18-19>{
-                \node[] (pos) at (5, 4) {
-                    \textcolor{green}{Positive}
-                };
-                \node[] (neg) at (5, 3) {
-                    \textcolor{red}{Negative}
-                };
-            };
-            \only<19>{
-                \node[] at (5, 0.9) {
-                    The movie was awful, the actors were horrible.
-                };
-                \node[minimum width=0.95cm, minimum height=0.35cm, draw=red, thick] (awful) at (4.2, 0.92) {};
-                \node[minimum width=1.35cm, minimum height=0.35cm, draw=red, thick] (horrible) at (7.95, 0.92) {};
-                \node[minimum width=0.88cm, minimum height=0.35cm, draw=green, thick] (great) at (4.2, 6.05) {};
-                \node[minimum width=1.56cm, minimum height=0.35cm, draw=green, thick] (awesome) at (7.89, 6.05) {};
+                \only<19>{
+                    \node[] at (5, 0.9) {
+                        The movie was awful, the actors were horrible.
+                    };
+                    \node[minimum width=0.95cm, minimum height=0.35cm, draw=red, thick] (awful) at (4.2, 0.92) {};
+                    \node[minimum width=1.35cm, minimum height=0.35cm, draw=red, thick] (horrible) at (7.95, 0.92) {};
+                    \node[minimum width=0.88cm, minimum height=0.35cm, draw=green, thick] (great) at (4.2, 6.05) {};
+                    \node[minimum width=1.56cm, minimum height=0.35cm, draw=green, thick] (awesome) at (7.89, 6.05) {};
 
-                \draw[green, -stealth] (great) -- (pos);
-                \draw[green, -stealth] (awesome) -- (pos);
-                \draw[red, -stealth] (awful) -- (neg);
-                \draw[red, -stealth] (horrible) -- (neg);
-            }
-            \only<20-21>{
-                \node[] at (5, 4) {
-                    La película fue genial, las actores fueron increíbles.
-                };
-            }
-            \only<21>{
-                \draw[-stealth] (1.75, 5.9) -- (1.25, 4.2);
-                \draw[-stealth] (2.6, 5.9) -- (2.1, 4.2);
-                \draw[-stealth] (3.5, 5.9) -- (3, 4.2);
-                \draw[-stealth] (4.3, 5.9) -- (3.8, 4.2);
-                \draw[-stealth] (4.96, 5.9) -- (4.7, 4.2);
-                \draw[-stealth] (5.8, 5.9) -- (5.65, 4.2);
-                \draw[-stealth] (6.75, 5.9) -- (6.8, 4.2);
-                \draw[-stealth] (7.95, 5.9) -- (8.2, 4.2);
-            }
-            \only<22,25>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\sentencewithgaps}
-                };
-            }
-            \only<22,24-25>{
-                \draw[thick] (7.1, 5.9) -- (8.6, 5.9);
-            }
-            \only<23>{
-                \draw[thick] (1.5, 5.9) -- (8.6, 5.9);
-            }
-            \only<24>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\sentencewithmanygaps}
-                };
-                \draw[thick] (3.8, 5.9) -- (4.6, 5.9);
-            }
-            \only<27>{
-                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.2, 6.07) {};
-                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.89, 6.07) {};
-                \draw[-stealth] (great) to [out=315, in=225] (awesome);
-            }
-            \only<28>{
-                \node[align=center, anchor=north] at (5.1, 6.3) {
-                    The movie was great, we saw it at the new\\Cinema in the city center, the actors were awesome.
-                };
-                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
-                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (8.35, 5.55) {};
-            }
-            \only<29>{
-                \node[align=center, anchor=north] at (5.1, 6.3) {
-                    The movie was great, we saw it at the new\\
-                    Cinema in the city center, right down by the\\
-                    restaurant where we went for my birthday that\\
-                    one year, the one where the clown was\\
-                    inside the cake, the actors were awesome.
-                };
-                \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
-                \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.6, 4.1) {};
-            }
+                    \draw[green, -stealth] (great) -- (pos);
+                    \draw[green, -stealth] (awesome) -- (pos);
+                    \draw[red, -stealth] (awful) -- (neg);
+                    \draw[red, -stealth] (horrible) -- (neg);
+                }
+                \only<20-21>{
+                    \node[] at (5, 4) {
+                        La película fue genial, las actores fueron increíbles.
+                    };
+                }
+                \only<21>{
+                    \draw[-stealth] (1.75, 5.9) -- (1.25, 4.2);
+                    \draw[-stealth] (2.6, 5.9) -- (2.1, 4.2);
+                    \draw[-stealth] (3.5, 5.9) -- (3, 4.2);
+                    \draw[-stealth] (4.3, 5.9) -- (3.8, 4.2);
+                    \draw[-stealth] (4.96, 5.9) -- (4.7, 4.2);
+                    \draw[-stealth] (5.8, 5.9) -- (5.65, 4.2);
+                    \draw[-stealth] (6.75, 5.9) -- (6.8, 4.2);
+                    \draw[-stealth] (7.95, 5.9) -- (8.2, 4.2);
+                }
+                \only<22,25>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\sentencewithgaps}
+                    };
+                }
+                \only<22,24-25>{
+                    \draw[thick] (7.1, 5.9) -- (8.6, 5.9);
+                }
+                \only<23>{
+                    \draw[thick] (1.5, 5.9) -- (8.6, 5.9);
+                }
+                \only<24>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\sentencewithmanygaps}
+                    };
+                    \draw[thick] (3.8, 5.9) -- (4.6, 5.9);
+                }
+                \only<27>{
+                    \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.2, 6.07) {};
+                    \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.89, 6.07) {};
+                    \draw[-stealth] (great) to [out=315, in=225] (awesome);
+                }
+                \only<28>{
+                    \node[align=center, anchor=north] at (5.1, 6.3) {
+                        The movie was great, we saw it at the new\\Cinema in the city center, the actors were awesome.
+                    };
+                    \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
+                    \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (8.35, 5.55) {};
+                }
+                \only<29>{
+                    \node[align=center, anchor=north] at (5.1, 6.3) {
+                        The movie was great, we saw it at the new\\
+                        Cinema in the city center, right down by the\\
+                        restaurant where we went for my birthday that\\
+                        one year, the one where the clown was\\
+                        inside the cake, the actors were awesome.
+                    };
+                    \node[minimum width=0.88cm, minimum height=0.35cm, draw=black, thick] (great) at (4.62, 6.02) {};
+                    \node[minimum width=1.56cm, minimum height=0.35cm, draw=black, thick] (awesome) at (7.6, 4.1) {};
+                }
 
-        \end{tikzpicture}
+            \end{tikzpicture}
+        }
+        \only<30>{
+            Language modelling: Using the innate structure in language to create better models
+            \begin{itemize}
+                \item Classification: Predict a class for a full sequence (sentiment analysis)
+                \item Sequence-to-sequence: Predict a sequence from another sequence (translation)
+                \item Generative: Predict the next token in a sequence of words
+            \end{itemize}
+        }
     \end{frame}
 
     \begin{frame}[fragile]{Preprocessing}
         \centering
-        \begin{tikzpicture}
-            \node[draw=black] at (0, 0) {};
-            \node[draw=black] at (10, 7) {};
+        \only<1-13>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, 7) {};
 
-            \only<1>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\sentence}
-                };
-            }
-            \only<2>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\tokenizedsentence}
-                };
-            }
-            \only<3-4>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\startendsentence}
-                };
-            }
-            \only<4>{
-                \PythonInputNode{1}{(1.05, 4.9)}{import}{0.9\textwidth}{7}{
-from nltk.tokenize import word_tokenize^^J
-^^J
-tokens = word_tokenize(s)^^J
-tokens = [token.lower() for token in tokens]^^J
-tokens = ['<s>'] + tokens + ['<e>']^^J
-print(tokens)^^J
+                \only<1>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\sentence}
+                    };
                 }
-                \PythonOutputNode{1}{(1.16, 3)}{out}{0.79\textwidth}{7}{
-                    ['<s>', 'the', 'movie', 'was', 'great', ',', 'the', 'actors',^^J
-                     'were', 'awesome', '.', '<e>']^^J
+                \only<2>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\tokenizedsentence}
+                    };
                 }
-            }
-            \only<5-6>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\stemmedsentence}
-                };
-            }
-            \only<6>{
+                \only<3-4>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\startendsentence}
+                    };
+                }
+                \only<4>{
+                    \PythonInputNode{1}{(1.05, 4.9)}{import}{0.9\textwidth}{7}{
+    from nltk.tokenize import word_tokenize^^J
+    ^^J
+    tokens = word_tokenize(s)^^J
+    tokens = [token.lower() for token in tokens]^^J
+    tokens = ['<s>'] + tokens + ['<e>']^^J
+    print(tokens)^^J
+                    }
+                    \PythonOutputNode{1}{(1.16, 3)}{out}{0.79\textwidth}{7}{
+                        ['<s>', 'the', 'movie', 'was', 'great', ',', 'the', 'actors',^^J
+                        'were', 'awesome', '.', '<e>']^^J
+                    }
+                }
+                \only<5-6>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\stemmedsentence}
+                    };
+                }
+                \only<6>{
 
-                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
-from nltk.stem.snowball import SnowballStemmer^^J
-^^J
-stemmer = SnowballStemmer('english')^^J
-stemmed = [stemmer.stem(token) for token in tokens]^^J
-stemmed^^J
+                    \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+    from nltk.stem.snowball import SnowballStemmer^^J
+    ^^J
+    stemmer = SnowballStemmer('english')^^J
+    stemmed = [stemmer.stem(token) for token in tokens]^^J
+    stemmed^^J
+                    }
+                    \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+    ['<s>', 'the', 'movi', 'was', 'great', ',', 'the', 'actor', ^^J
+    'were', 'awesom', '.', '<e>']^^J
+                    }
                 }
-                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
-['<s>', 'the', 'movi', 'was', 'great', ',', 'the', 'actor', ^^J
-'were', 'awesom', '.', '<e>']^^J
+                \only<7-8>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\lemmatizedsentence}
+                    };
                 }
-            }
-            \only<7-8>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\lemmatizedsentence}
-                };
-            }
-            \only<8>{
-                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
-from nltk.stem import WordNetLemmatizer^^J
-^^J
-lemmatizer = WordNetLemmatizer()^^J
-lemmatized = [lemmatizer.lemmatize(token) for token in tokens]^^J
-print(lemmatized)^^J
+                \only<8>{
+                    \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+    from nltk.stem import WordNetLemmatizer^^J
+    ^^J
+    lemmatizer = WordNetLemmatizer()^^J
+    lemmatized = [lemmatizer.lemmatize(token) for token in tokens]^^J
+    print(lemmatized)^^J
+                    }
+                    \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+    ['<s>', 'the', 'movie', 'wa', 'great', ',', 'the', 'actor',^^J
+    'were', 'awesome', '.', '<e>']^^J
+                    }
                 }
-                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
-['<s>', 'the', 'movie', 'wa', 'great', ',', 'the', 'actor',^^J
-'were', 'awesome', '.', '<e>']^^J
+                \only<9-10>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\prunedsentence}
+                    };
                 }
-            }
-            \only<9-10>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\prunedsentence}
-                };
-            }
-            \only<10>{
-                \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
-from nltk.corpus import stopwords^^J
-^^J
-pruned = [token for token in tokens if not token in stopwords.words('english')]^^J
-print(pruned)^^J
+                \only<10>{
+                    \PythonInputNode{1}{(1.05, 4.3)}{import}{0.9\textwidth}{7}{
+    from nltk.corpus import stopwords^^J
+    ^^J
+    pruned = [token for token in tokens if not token in stopwords.words('english')]^^J
+    print(pruned)^^J
+                    }
+                    \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
+    ['<s>', 'movie', 'great', ',', 'actors', 'awesome', '.', '<e>']^^J
+                    }
                 }
-                \PythonOutputNode{1}{(1.16, 2.7)}{out}{0.79\textwidth}{7}{
-['<s>', 'movie', 'great', ',', 'actors', 'awesome', '.', '<e>']^^J
+                \only<11>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\sentencedictionary}
+                    };
                 }
-            }
-            \only<11>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\sentencedictionary}
-                };
-            }
-            \only<12>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\encodingsentence}
-                };
-            }
-            \only<13>{
-                \node[anchor=north] at (5, 7.2) {
-                    \usebox{\encodedsentence}
-                };
-            }
-        \end{tikzpicture}
+                \only<12>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\encodingsentence}
+                    };
+                }
+                \only<13>{
+                    \node[anchor=north] at (5, 7.2) {
+                        \usebox{\encodedsentence}
+                    };
+                }
+            \end{tikzpicture}
+        }
+        \only<14>{
+            Language preprocessing: Highlighting important parts of a sentence while hiding redundancies
+            \begin{itemize}
+                \item Tokenization: Splitting text into tokens
+                \item Stemming: Removing redundant suffixes
+                \item Lemmatization: Mapping words to common lemmas
+                \item Stopword removal: Removing non-informative words
+                \item Integer encoding: Turning words into numbers
+            \end{itemize}
+        }
     \end{frame}
 
     \newsavebox{\wordcounts}
@@ -1025,6 +1050,14 @@ print(pruned)^^J
             }
 
         \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Bag of words}
+        Bag of words: Model language by using word counts (or frequencies)
+        \begin{itemize}
+            \item Main advantage: Simple, useful when a few key words are sufficient to determine the correct prediction
+            \item Main disadvantage: Does not understand word similarities
+        \end{itemize}
     \end{frame}
 
     \newcommand{\pointcloud}[1]{
@@ -1589,7 +1622,6 @@ print(pruned)^^J
     \begin{frame}{Word2vec: Disadvantages}
         \centering
         \begin{tikzpicture}
-        \only<2>{
             \node[] at (0, 0) {
                 I think the movie was really good, but my friend said it was bad.
             };
@@ -1599,11 +1631,405 @@ print(pruned)^^J
             \node[] at (0, 1) {
                 I think the movie was really bad, but my friend said it was good.
             };
-        }
         \end{tikzpicture}
     \end{frame}
 
+    \begin{frame}{Word2vec}
+        Word2vec: Model words by vectors that encode their semantic content
+        \begin{itemize}
+            \item Main advantage: Models semantic meaning, allowing us to do mathematics with language
+            \item Main disadvantage: Does not consider the structure innate to language
+        \end{itemize}
+    \end{frame}
+
     \section{Recurrent neural networks}
+
+    \newcommand{\rnn}[1]{
+        \begin{tikzpicture}
+            \node[draw=black] at (0, 0) {};
+            \node[draw=black] at (8, 5) {};
+
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n00) at (1, 4) {};
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n01) at (1.857, 4) {};
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n02) at (2.714, 4) {};
+            \ifnum#1<3
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n03) at (3.571, 4) {};
+            \fi
+            \ifnum#1=3
+                \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n03) at (3.571, 4) {};
+            \fi
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n04) at (4.429, 4) {};
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n05) at (5.286, 4) {};
+            \ifnum#1<3
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n06) at (6.143, 4) {};
+            \fi
+            \ifnum#1=3
+                \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n06) at (6.143, 4) {};
+            \fi
+            \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n07) at (7, 4) {};
+
+            \ifnum#1=1
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n10) at (2, 2.5) {};
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n11) at (3.33, 2.5) {};
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n12) at (4.66, 2.5) {};
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n13) at (6, 2.5) {};
+
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n20) at (4, 1) {};
+
+                \draw[-stealth] (n00) -- (n10);
+                \draw[-stealth] (n00) -- (n11);
+                \draw[-stealth] (n00) -- (n12);
+                \draw[-stealth] (n00) -- (n13);
+                \draw[-stealth] (n01) -- (n10);
+                \draw[-stealth] (n01) -- (n11);
+                \draw[-stealth] (n01) -- (n12);
+                \draw[-stealth] (n01) -- (n13);
+                \draw[-stealth] (n02) -- (n10);
+                \draw[-stealth] (n02) -- (n11);
+                \draw[-stealth] (n02) -- (n12);
+                \draw[-stealth] (n02) -- (n13);
+                \draw[-stealth] (n03) -- (n10);
+                \draw[-stealth] (n03) -- (n11);
+                \draw[-stealth] (n03) -- (n12);
+                \draw[-stealth] (n03) -- (n13);
+                \draw[-stealth] (n04) -- (n10);
+                \draw[-stealth] (n04) -- (n11);
+                \draw[-stealth] (n04) -- (n12);
+                \draw[-stealth] (n04) -- (n13);
+                \draw[-stealth] (n05) -- (n10);
+                \draw[-stealth] (n05) -- (n11);
+                \draw[-stealth] (n05) -- (n12);
+                \draw[-stealth] (n05) -- (n13);
+                \draw[-stealth] (n06) -- (n10);
+                \draw[-stealth] (n06) -- (n11);
+                \draw[-stealth] (n06) -- (n12);
+                \draw[-stealth] (n06) -- (n13);
+                \draw[-stealth] (n07) -- (n10);
+                \draw[-stealth] (n07) -- (n11);
+                \draw[-stealth] (n07) -- (n12);
+                \draw[-stealth] (n07) -- (n13);
+
+                \draw[-stealth] (n10) -- (n20);
+                \draw[-stealth] (n11) -- (n20);
+                \draw[-stealth] (n12) -- (n20);
+                \draw[-stealth] (n13) -- (n20);
+            \fi
+
+            \ifnum#1>1
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n10) at (1.425, 3) {};
+                \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n12) at (4.857, 3) {};
+                \ifnum#1<3
+                    \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n11) at (3.142, 3) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n13) at (6.5715, 3) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n20) at (2.2835, 2) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n21) at (5.714, 2) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=teal!50, circle, draw=black] (n30) at (4, 1) {};
+                    \draw[-stealth] (n03) -- (n11);
+                    \draw[-stealth] (n06) -- (n13);
+                    \draw[-stealth] (n11) -- (n20);
+                    \draw[-stealth] (n13) -- (n21);
+                    \draw[-stealth] (n20) -- (n30);
+                    \draw[-stealth] (n21) -- (n30);
+                \fi
+                \ifnum#1=3
+                    \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n11) at (3.142, 3) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n13) at (6.5715, 3) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n20) at (2.2835, 2) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n21) at (5.714, 2) {};
+                    \node[inner sep=0pt, minimum size=11pt, fill=red!50, circle, draw=red] (n30) at (4, 1) {};
+                    \draw[-stealth,red] (n03) -- (n11);
+                    \draw[-stealth,red] (n06) -- (n13);
+                    \draw[-stealth,red] (n11) -- (n20);
+                    \draw[-stealth,red] (n13) -- (n21);
+                    \draw[-stealth,red] (n20) -- (n30);
+                    \draw[-stealth,red] (n21) -- (n30);
+                \fi
+
+                \draw[-stealth] (n00) -- (n10);
+                \draw[-stealth] (n01) -- (n10);
+                \draw[-stealth] (n02) -- (n11);
+                \draw[-stealth] (n04) -- (n12);
+                \draw[-stealth] (n05) -- (n12);
+                \draw[-stealth] (n07) -- (n13);
+
+                \draw[-stealth] (n10) -- (n20);
+                \draw[-stealth] (n12) -- (n21);
+
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\rnnann}
+    \sbox{\rnnann}{%
+        \rnn{1}
+    }
+    \newsavebox{\rnncnn}
+    \sbox{\rnncnn}{%
+        \rnn{2}
+    }
+    \newsavebox{\rnnhighlightedcnn}
+    \sbox{\rnnhighlightedcnn}{%
+        \rnn{3}
+    }
+
+    \newcommand{\drawrnn}[1]{
+        \begin{tikzpicture}
+            % We start by placing the blocks
+            \node[] at (0, 2.3) {};
+            \node [
+                rectangle,
+                minimum width=4cm,
+                minimum height=3cm,fill=gray!20,
+                rounded corners=0.3cm,
+                draw=gray!50,
+                label=above:{\small{RNN cell}},
+                anchor=north
+            ] (rnn) at (0, 0) {};
+            \node[anchor=east] at ($ (rnn.north west) - (1, 0.75) $) (stprev){\footnotesize{$state_{t-1}$}};
+            \node[anchor=north] at ($ (rnn.south west) - (-1.5, 0.75) $) (it){\footnotesize{$input_{t}$}};
+            \node[anchor=west] at ($ (rnn.north east) - (-1, 0.75) $) (st){\footnotesize{$state_{t}$}};
+            \node[circle, draw=black,fill=teal!50, text depth=0] (join) at ($ (rnn.north west) - (-1.5, 0.75) $) {$+$};
+            \node[fill=orange!50,draw=black] (f) at ($ (join.east) + (1, 0) $) {$f$};
+            \node[fill=orange!50, draw=black] (fs) at ($ (join) - (1, 0) $) {$f_s$};
+            \node[fill=orange!50, draw=black] (fi) at ($ (join) - (0, 1) $) {$f_i$};
+            \draw[-] (stprev) -- (fs);
+            \draw[-stealth] (fs) -- (join);
+            \draw[-] (it) -- (fi);
+            \draw[-stealth] (fi) -- (join);
+            \draw[-] (join) -- (f);
+            \draw[-stealth] (f) -- (st);
+
+            \ifnum#1=2
+                \draw[-stealth] (st) to [in=90, out=90] (stprev);
+            \fi
+            \ifnum#1=3
+                \node[anchor=north west] (out) at ($ (st.south west) + (0, -1) $) {\footnotesize{$output_i$}};
+                \draw[] ($ (f) + (0.5, 0) $) to [out=0, in=90] ($ (f) + (0.75, -0.5) $);
+                \draw[-stealth] ($ (f) + (0.75, -0.5) $) to [out=270, in=180] (out);
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\rnncell}
+    \sbox{\rnncell}{%
+        \drawrnn{1}
+    }
+
+    \newsavebox{\rnnrecursive}
+    \sbox{\rnnrecursive}{%
+        \drawrnn{2}
+    }
+    \newsavebox{\rnnoutput}
+    \sbox{\rnnoutput}{%
+        \drawrnn{3}
+    }
+
+    \newsavebox{\lstmcell}
+    \sbox{\lstmcell}{%
+        \begin{tikzpicture}
+            % Define styles
+            \tikzset{
+                block/.style={rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=4em},
+                gate/.style={circle, draw, fill=red!30, minimum size=1cm, inner sep=0pt},
+                line/.style={draw, -latex'}
+            }
+
+            % Place nodes
+            \node[block] (cell) {LSTM Cell};
+            \node[gate, left=of cell, xshift=-1cm] (forget) {Forget};
+            \node[gate, below=of forget] (input) {Input};
+            \node[gate, above=of forget] (output) {Output};
+            \node[gate, right=of cell, xshift=1cm] (state) {State};
+
+            % Draw connections
+            \draw[line] (forget) -- node[midway, above] {$f_t$} (cell);
+            \draw[line] (input) -- node[midway, left] {$i_t$} (cell);
+            \draw[line] (cell) -- node[midway, above] {$c_t$} (state);
+            \draw[line] (output) -| node[near start, above] {$o_t$} (state);
+
+            % Connection for previous and next cell states
+            \node[below=of cell] (prev_ct) {$c_{t-1}$};
+            \node[above=of state] (next_ct) {$c_{t}$};
+            \draw[line] (prev_ct) -- (cell);
+            \draw[line] (state) -- (next_ct);
+
+            % Input and output connections
+            \node[below=of input] (xt) {$x_{t}$};
+            \node[above=of output] (ht) {$h_{t}$};
+            \draw[line] (xt) -- (input);
+            \draw[line] (output) -- (ht);
+
+        \end{tikzpicture}
+    }
+
+    \begin{frame}{Recurrent neural networks}
+        \only<1-19>{
+            \begin{tikzpicture}
+                \node[draw=black] at (0, 0) {};
+                \node[draw=black] at (10, 7) {};
+
+                \only<1-2,4-5,7-12>{
+                    \node[] at (5, 6) {
+                        I think the movie had a great plot
+                    };
+                }
+                \only<2>{
+                    \draw[-stealth] (2.42, 5.85) -- (2, 4.7);
+                    \draw[-stealth] (2.97, 5.85) -- (2.83, 4.7);
+                    \draw[-stealth] (3.7, 5.85) -- (3.65, 4.7);
+                    \draw[-stealth] (4.6, 5.85) -- (4.52, 4.7);
+                    \draw[-stealth] (5.45, 5.85) -- (5.38, 4.7);
+                    \draw[-stealth] (5.93, 5.85) -- (6.2, 4.7);
+                    \draw[-stealth] (6.5, 5.85) -- (7.05, 4.7);
+                    \draw[-stealth] (7.3, 5.85) -- (7.9, 4.7);
+                }
+                \only<2-3>{
+                    \node[] at (5, 3) {
+                        \usebox{\rnnann}
+                    };
+                    \only<2>{
+                        \node[] (out) at (4.95, 0.6) {Positive};
+                    }
+                    \only<3>{
+                        \node[] (out) at (4.95, 0.6) {?};
+                    }
+                    \draw[-stealth] (4.95, 1.3) -- (out);
+                }
+                \only<3>{
+                    \node[] at (5, 6) {
+                        The movie had a great plot I think
+                    };
+                    \draw[-stealth] (2.6, 5.85) -- (2, 4.7);
+                    \draw[-stealth] (3.5, 5.85) -- (2.83, 4.7);
+                    \draw[-stealth] (4.35, 5.85) -- (3.65, 4.7);
+                    \draw[-stealth] (4.85, 5.85) -- (4.52, 4.7);
+                    \draw[-stealth] (5.45, 5.85) -- (5.38, 4.7);
+                    \draw[-stealth] (6.25, 5.85) -- (6.2, 4.7);
+                    \draw[-stealth] (6.7, 5.85) -- (7.05, 4.7);
+                    \draw[-stealth] (7.3, 5.85) -- (7.9, 4.7);
+                }
+                \only<5>{
+                    \node[] at (5, 3) {
+                        \usebox{\rnncnn}
+                    };
+
+                    \draw[-stealth] (2.42, 5.85) -- (2, 4.7);
+                    \draw[-stealth] (2.97, 5.85) -- (2.83, 4.7);
+                    \draw[-stealth] (3.7, 5.85) -- (3.65, 4.7);
+                    \draw[-stealth] (4.6, 5.85) -- (4.52, 4.7);
+                    \draw[-stealth] (5.45, 5.85) -- (5.38, 4.7);
+                    \draw[-stealth] (5.93, 5.85) -- (6.2, 4.7);
+                    \draw[-stealth] (6.5, 5.85) -- (7.05, 4.7);
+                    \draw[-stealth] (7.3, 5.85) -- (7.9, 4.7);
+
+                    \draw[-stealth] (4.95, 1.3) -- (out);
+                    \node[] (out) at (4.95, 0.6) {Positive};
+                }
+                \only<6>{
+                    \node[] at (5, 6) {
+                        I think the \textcolor{red}{movie} had a \textcolor{red}{great} plot
+                    };
+                    \draw[-stealth] (2.42, 5.85) -- (2, 4.7);
+                    \draw[-stealth] (2.97, 5.85) -- (2.83, 4.7);
+                    \draw[-stealth] (3.7, 5.85) -- (3.65, 4.7);
+                    \draw[-stealth, red] (4.6, 5.85) -- (4.52, 4.7);
+                    \draw[-stealth] (5.45, 5.85) -- (5.38, 4.7);
+                    \draw[-stealth] (5.93, 5.85) -- (6.2, 4.7);
+                    \draw[-stealth, red] (6.5, 5.85) -- (7.05, 4.7);
+                    \draw[-stealth] (7.3, 5.85) -- (7.9, 4.7);
+                    \node[] at (5, 3) {
+                        \usebox{\rnnhighlightedcnn}
+                    };
+
+                    \draw[-stealth,red] (4.95, 1.3) -- (out);
+                    \node[red] (out) at (4.95, 0.6) {Positive};
+                }
+                \only<8-12>{
+                    \onslide<8->{
+                        \node[fill=gray!25,draw=gray!50] (s0) at (1, 3) {...};
+                        \draw[-stealth] (2.42, 5.85) -- (s0.north);
+                    }
+                    \onslide<9->{
+                        \node[fill=gray!25,draw=gray!50] (s1) at (2.14, 3) {...};
+                        \draw[-stealth] (2.97, 5.85) -- (s1.north);
+                        \draw[-stealth] (s0) -- (s1);
+                    }
+                    \onslide<10->{
+                        \node[fill=gray!25,draw=gray!50] (s2) at (3.28, 3) {...};
+                        \draw[-stealth] (3.7, 5.85) -- (s2.north);
+                        \draw[-stealth] (s1) -- (s2);
+                    }
+                    \only<11-12>{
+                        \node[fill=gray!25,draw=gray!50] (s3) at (4.42, 3) {...};
+                        \node[fill=gray!25,draw=gray!50] (s4) at (5.57, 3) {...};
+                        \node[fill=gray!25,draw=gray!50] (s5) at (6.71, 3) {...};
+                        \node[fill=gray!25,draw=gray!50] (s6) at (7.85, 3) {...};
+                        \node[fill=gray!25,draw=gray!50] (s7) at (9, 3) {...};
+                        \draw[-stealth] (4.6, 5.85) -- (s3.north);
+                        \draw[-stealth] (5.45, 5.85) -- (s4.north);
+                        \draw[-stealth] (5.93, 5.85) -- (s5.north);
+                        \draw[-stealth] (6.5, 5.85) -- (s6.north);
+                        \draw[-stealth] (7.3, 5.85) -- (s7.north);
+                        \draw[-stealth] (s2) -- (s3);
+                        \draw[-stealth] (s3) -- (s4);
+                        \draw[-stealth] (s4) -- (s5);
+                        \draw[-stealth] (s5) -- (s6);
+                        \draw[-stealth] (s6) -- (s7);
+                    }
+                    \only<12>{
+                        \node[] (out) at (9, 2) {Positive};
+                        \draw[-stealth] (s7) -- (out);
+                    }
+                }
+                \only<13>{
+                    \node[] at (5, 3.5) {
+                        \usebox{\rnncell}
+                    };
+                }
+                \only<14>{
+                    \node[] at (5, 3.5) {
+                        \usebox{\rnnrecursive}
+                    };
+                }
+                \only<15>{
+                    \node[] at (5, 3.5) {
+                        Blackboard demo!
+                    };
+                }
+                \only<16>{
+                    \node[] at (5, 3.5) {
+                        \usebox{\rnnoutput}
+                    };
+                }
+                \only<17>{
+                    \node[] at (5, 3.5) {
+                        More blackboard demo!
+                    };
+                }
+                \only<18>{
+                    \node[] at (5, 3.5) {
+                        LSTM Cell
+                    };
+
+                }
+                \only<19>{
+                    \node[] at (5, 3.5) {
+                        {\tiny
+                            \url{https://colab.research.google.com/drive/1MHTzUMViR8vKGOI-VbZR0CYzsJMkSrJw}
+                        }
+                    };
+                }
+            \end{tikzpicture}
+        }
+        \only<20>{
+            RNNs: Models sequences by recursively considering what it has seen so far, and what the new input token is
+            \begin{itemize}
+                \item Main advantage: Is able to encompass both long- and short-term dependencies
+                \item Main disadvantage: In practice it is hard to weigh long-term versus short-term
+            \end{itemize}
+        }
+    \end{frame}
+
 
     \section{Transformers}
 \end{document}
