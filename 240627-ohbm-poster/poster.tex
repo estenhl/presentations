@@ -3,7 +3,6 @@
 \usepackage[size=a1,orientation=landscape, scale=1.3]{beamerposter}
 
 \usepackage{adjustbox}
-\usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
 \usepackage{caption}
 \usepackage{color}
 \usepackage{enumitem}
@@ -57,21 +56,6 @@
 \definecolor{PARK}{HTML}{A600FF}
 \definecolor{SCZ}{HTML}{FF00BF}
 \definecolor{HC}{HTML}{7F7F7F}
-
-\begin{filecontents}{\jobname.bib}
-    @article{franke_ten_2019,
-        title = {Ten Years of {BrainAGE} as a Neuroimaging Biomarker of Brain Aging: What Insights Have We Gained?},
-        volume = {10},
-        issn = {1664-2295},
-        url = {https://www.frontiersin.org/article/10.3389/fneur.2019.00789},
-        shorttitle = {Ten Years of {BrainAGE} as a Neuroimaging Biomarker of Brain Aging},
-        journaltitle = {Frontiers in Neurology},
-        author = {Franke, Katja and Gaser, Christian},
-        date = {2019}
-    }
-\end{filecontents}
-
-\bibliography{\jobname.bib}
 
 \begin{document}
     \newcommand{\convside}[6]{
@@ -132,18 +116,17 @@
     }
 
     \newcommand{\cnn}[2]{
-        \cnnarrow{(#1 - 5, #2 - 1)}{(#1+0.5, #2 - 1)}
-        \convlayer{#1}{#2}{0.33cm}{4.5cm}{6}{3}
-        \cnnarrow{(#1 + 2.325, #2 - 1)}{(#1+5.5, #2 - 1)}
-        \convlayer{#1 + 5}{#2-0.5}{0.33cm}{3cm}{4}{5}
-        \cnnarrow{(#1 + 7.5, #2 - 1)}{(#1+10, #2 - 1)}
+        \convlayer{#1}{#2-0.25}{0.33cm}{4.5cm}{6}{3}
+        \cnnarrow{(#1 + 1.95, #2 - 1)}{(#1+5.5, #2 - 1)}
+        \convlayer{#1 + 5}{#2-0.625}{0.33cm}{3cm}{4}{5}
+        \cnnarrow{(#1 + 7.225, #2 - 1)}{(#1+10, #2 - 1)}
         \convlayer{#1 + 9.6}{#2-1}{0.33cm}{1.5cm}{2}{7}
-        \cnnarrow{(#1 + 12.25, #2 - 1)}{(#1+14.5, #2 - 1)}
-        \draw[thick, dashed] (#1 - 0.8, #2 + 3) --
-                            (#1 + 13.1, #2 + 3) --
-                            (#1 + 13.1, #2 - 4.5) --
-                            (#1 - 0.8, #2 - 4.5) -- cycle;
-        \node[anchor=south] at (#1 + 6.35, #2 + 3) {
+        \cnnarrow{(#1 + 12.125, #2 - 1)}{(#1+14, #2 - 1)}
+        \draw[thick, dashed] (#1 - 0.5, #2 + 2.7) --
+                            (#1 + 12.9, #2 + 2.7) --
+                            (#1 + 12.9, #2 - 4.7) --
+                            (#1 - 0.5, #2 - 4.7) -- cycle;
+        \node[anchor=south, text depth=0] at (#1 + 6.2, #2 + 2.75) {
             \textbf{\large{Convolutional neural network}}
         };
     }
@@ -176,18 +159,18 @@
     }
 
     \newcommand{\lrp}[2]{
-        \cnnarrow{(#1 - 2.5, #2 - 1)}{(#1+0.5, #2 - 1)}
+        \cnnarrow{(#1 - 2.1, #2 - 1)}{(#1+0.5, #2 - 1)}
         \lrplayer{#1}{#2-1}{0.33cm}{1.5cm}{2}{7}
-        \cnnarrow{(#1 + 2.325, #2 - 1)}{(#1+5.5, #2 - 1)}
-        \lrplayer{#1 + 4.3}{#2-0.5}{0.33cm}{3cm}{4}{5}
-        \cnnarrow{(#1 + 7, #2 - 1)}{(#1+10, #2 - 1)}
-        \lrplayer{#1 + 9}{#2}{0.33cm}{4.5cm}{6}{3}
-        \cnnarrow{(#1 + 12.25, #2 - 1)}{(#1+15.5, #2 - 1)}
-        \draw[thick, dashed] (#1 - 0.8, #2 + 3) --
-                            (#1 + 12.7, #2 + 3) --
-                            (#1 + 12.7, #2 - 4.5) --
-                            (#1 - 0.8, #2 - 4.5) -- cycle;
-        \node[anchor=south] at (#1 + 6.35, #2 + 3) {
+        \cnnarrow{(#1 + 2.525, #2 - 1)}{(#1+5.5, #2 - 1)}
+        \lrplayer{#1 + 4.3}{#2-0.625}{0.33cm}{3cm}{4}{5}
+        \cnnarrow{(#1 + 6.525, #2 - 1)}{(#1+10, #2 - 1)}
+        \lrplayer{#1 + 9}{#2 - 0.25}{0.33cm}{4.5cm}{6}{3}
+
+        \draw[thick, dashed] (#1 - 0.5, #2 + 2.7) --
+                            (#1 + 12.4, #2 + 2.7) --
+                            (#1 + 12.4, #2 - 4.7) --
+                            (#1 - 0.5, #2 - 4.7) -- cycle;
+        \node[anchor=south, text depth=0] at (#1 + 5.95, #2 + 2.75) {
             \textbf{\large{Layerwise relevance propagation}}
         };
     }
@@ -357,18 +340,39 @@
         \def\nodesize{1cm}
         \def\predictfill{blue}
         \begin{tikzpicture}
-            \node[yslant=1] (input) at (5, -7.5) {
+            \node[yslant=1] (input) at (1.1, -7.5) {
                 \includegraphics[height=5cm]{data/mri.png}
             };
-            \node[yslant=1] (map) at (50, -7.5) {
-                \includegraphics[height=4cm]{data/heatmap.png}
+            \node[
+                anchor=south west,
+                align=center,
+                font=\normalfont\linespread{0.8}\selectfont
+            ] at ($ (input.east) - (0, 2.2) $) {
+                T1-weighted\\
+                structural MRI
             };
             \node[align=center,font=\large\linespread{0.8}\selectfont, text depth=0] (prediction) at (27.5, -7.5) {
-                Predicted\\brain age
+                Brain age gap
             };
 
+            \cnnarrow{(1.1, -7.5)}{(10.5, -7.5)}
             \cnn{10}{-6.5}
+
             \lrp{33}{-6.5}
+            \cnnarrow{(42.95, -7.5)}{(53, -7.5)}
+
+            \node[yslant=1] (map) at (53, -7.5) {
+                \includegraphics[height=4cm]{data/heatmap.png}
+            };
+            \node[
+                anchor=south east,
+                align=center,
+                font=\normalfont\linespread{0.8}\selectfont
+            ] at ($ (map.west) + (-0.5, 2.2) $) {
+                Individual\\
+                explanatory\\
+                heatmaps
+            };
 
             \node[anchor=north] (babox) at ($ (prediction) - (1.55, 5.5) $) {
                 \usebox{\badifferentiation}
@@ -382,14 +386,17 @@
             \node[anchor=south] at ($ (mapbox.north) + (0, -0.73) $) {
                 \textbf{\large{Case/control predictions}}
             };
-            \node[anchor=south] (correlations) at ($ (prediction.north) + (-1, 4) $) {
+            \node[anchor=south] (correlations) at ($ (prediction.north) + (-1, 3.7) $) {
                 \usebox{\performance}
             };
             \node[anchor=south] at ($ (correlations.north) + (1,-0.8) $) {
                 \textbf{\large{Model evaluation}}
             };
-            \node[anchor=west] (diagnoses) at (60, -7.5) {
+            \node[anchor=west] (diagnoses) at (63, -7.5) {
                 \usebox{\diagnoses}
+            };
+            \node[anchor=south] at ($ (diagnoses.north) + (0, -0.5) $) {
+                \textbf{\large{Average heatmaps}}
             };
 
             \analysisarrow{($ (prediction.south) - (0, 0.5) $)}{($ (babox.north) + (1.55, 0.4) $)}
@@ -475,7 +482,7 @@
         \begin{columns}
             \begin{column}{\sectionwidth}
                 \postersection{Introduction}{25cm}{
-                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has revealed older-appearing brains in patients with various conditions\cite{franke_ten_2019}. Although this phenomena is evident at the group-level, the abstract nature of BAG limits its utility for individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil concrete and precise visual patterns in the individual patient causing deviations in BAG, that are plausibly more clinically useful than the singular measure.
+                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has revealed older-appearing brains in patients with various conditions\textsuperscript{1}. Although this phenomena is evident at the group-level, the abstract nature of BAG limits its utility for individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil concrete and precise visual patterns in the individual patient causing deviations in BAG, that are plausibly more clinically useful than the singular measure.
                 }
             \end{column}
             \begin{column}{\sectionwidth}
@@ -485,15 +492,17 @@
             \end{column}
             \begin{column}{\sectionwidth}
                 \postersection{Results}{25cm}{
-                    Our model achieved satisfactory predictive performance in a held-out dataset (MAE=4.51) from scanning sites unseen by the model during training. Singular BAGs from our model allowed us to meaningfully discriminate patients from controls (mean AUC>0.5, p<0.05) for four out of nine conditions (DEM, MCI, MS, SCZ). The heatmaps yielded significantly improved predictions (mean AUC\textsubscript{map}>mean AUC\textsubscript{age}, p<0.05) for five out of nine disorders (BIP, DEM, MCI, MS, SCZ). Beyond MCI and DEM, the highlighted regions varied distinctly between the patient cohorts.
+                    Our model achieved satisfactory predictive performance in a held-out dataset (mean absolute error=4.51) from unknown scanners. Singular BAGs from our model allowed us to meaningfully discriminate patients from controls (mean AUC>0.5 in a nested cross-validation, p<0.05) for four out of nine diagnoses (DEM, MCI, MS, SCZ). The heatmaps yielded significantly improved predictions (mean AUC\textsubscript{map}>mean AUC\textsubscript{BAG}, p<0.05) for five out of nine diagnoses (BIP, DEM, MCI, MS, SCZ). Except MCI and DEM, the highlighted regions varied notably between conditions.
                 }
             \end{column}
             \begin{column}{\sectionwidth}
                 \begin{minipage}[t][25cm][t]{\textwidth}
-                    \postersection{Conclusion}{5cm}{
-                        XAI combined with brain age models produce high-dimensional information that outperforms singular BAGs for clinical predictive tasks.
+                    \postersection{Conclusion}{4.65cm}{
+                        Combining brain age models with XAI increases its utility for personalized clinical decision-making.
                     }
                     \postersection{References}{10cm}{
+                        1. Franke, K. \& Gaser, C. Ten Years of BrainAGE as a Neuroimaging Biomarker of Brain Aging: What Insights Have We Gained? \textit{Frontiers in Neurology}, 2019\\
+                        2. Martin S.A. et al. Interpretable machine learning for dementia: A systematic review. \textit{Alzheimer's Dementia}, 2023
                     }
                 \end{minipage}
             \end{column}
