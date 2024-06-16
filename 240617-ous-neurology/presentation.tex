@@ -1,0 +1,3003 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+
+\usepackage[export]{adjustbox}
+\usepackage{array}
+\usepackage{etoolbox}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikz}
+\usepackage{transparent}
+\usepackage{xcolor}
+
+\usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{statistics}
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{fadings}
+\usetikzlibrary{fillbetween}
+\usetikzlibrary{patterns}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.arrows}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=white,
+    urlcolor=blue!80
+}
+
+\definecolor{uiored}{HTML}{DD0000}
+\definecolor{uiolightred}{HTML}{FB6666}
+\definecolor{uioredtone}{HTML}{FEE0E0}
+\definecolor{uioblue}{HTML}{3E31D6}
+\definecolor{uiolightblue}{HTML}{86A4F7}
+\definecolor{uioblueone}{HTML}{E6ECFF}
+\definecolor{uiogreen}{HTML}{2EC483}
+\definecolor{uiolightgreen}{HTML}{6CE1AB}
+\definecolor{uiogreentone}{HTML}{CEFFDF}
+\definecolor{uioorange}{HTML}{FEA11B}
+\definecolor{uiolightorange}{HTML}{FDCB87}
+\definecolor{uioorangetone}{HTML}{FFE8D4}
+\definecolor{uioyellow}{HTML}{FFFEA7}
+\definecolor{uiogray}{HTML}{B2B3B7}
+
+\colorlet{mainbackground}{uiored}
+
+\setbeamercolor{frametitle}{bg=mainbackground, fg=white}
+\setbeamercolor{title separator}{fg=mainbackground}
+\setbeamercolor{progress bar in section page}{fg=white, bg=uiogray}
+
+\def\logowidth{4cm}
+
+\makeatletter
+\setbeamertemplate{section page}
+{
+  \begingroup
+
+    \vspace{4.3cm}
+    {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
+    {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
+
+    \vspace*{3.1cm}
+    \begin{center}
+        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
+    \end{center}
+
+  \endgroup
+}
+\makeatother
+
+\AtBeginSection{
+  {
+    \setbeamercolor{background canvas}{bg=uiored}
+    \setbeamercolor{section title}{fg=white}
+    \frame[plain,c,noframenumbering]{\sectionpage}
+    \setbeamercolor{background canvas}{bg=black!2}
+  }
+}
+
+
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.45cm]current page.south east); % Draw filled rectangle
+
+            % Logo
+            \node[anchor=west, yshift=0.225cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
+
+            % Title and subtitle
+            \node[align=center, yshift=0.225cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.05cm]\textcolor{white}{\insertsubtitle}};
+
+            % Page number
+            \node[anchor=east, yshift=0.225cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
+        \end{tikzpicture}
+    \fi
+}
+
+\subtitle{Diagnostisk prediksjon av nevrologiske sykdommer med kunstig intelligens og MR-data}
+\author{Esten H. Leonardsen}
+\date{17.06.24}
+
+\definecolor{color1}{HTML}{f94144}
+\definecolor{color2}{HTML}{f3722c}
+\definecolor{color3}{HTML}{f8961e}
+\definecolor{color4}{HTML}{f9c74f}
+\definecolor{color5}{HTML}{90be6d}
+\definecolor{color6}{HTML}{43aa8b}
+\definecolor{color7}{HTML}{577590}
+
+\colorlet{dem}{color1}
+\colorlet{ms}{color2}
+\colorlet{pd}{color3}
+\colorlet{scz}{color4}
+\colorlet{mdd}{color5}
+\colorlet{bp}{color6}
+
+
+\definecolor{studycolor1}{HTML}{f94144}
+\definecolor{studycolor2}{HTML}{f3722c}
+\definecolor{studycolor3}{HTML}{f9844a}
+\definecolor{studycolor4}{HTML}{f8961e}
+\definecolor{studycolor5}{HTML}{f9c74f}
+\definecolor{studycolor6}{HTML}{90be6d}
+\definecolor{studycolor7}{HTML}{43aa8b}
+\definecolor{studycolor8}{HTML}{4d908e}
+\definecolor{studycolor9}{HTML}{577590}
+\definecolor{studycolor10}{HTML}{f9c74f}
+\definecolor{studycolor11}{HTML}{4d908e}
+\definecolor{studycolor12}{HTML}{577590}
+\definecolor{studycolor13}{HTML}{277da1}
+
+\def\summarytop{-0.2cm}
+\def\summaryouteritems{-0.4em}
+\def\summaryinneritems{-0.3em}
+\def\summaryinnertop{-0.5em}
+
+\titlegraphic{
+	\centering
+	\vspace{7.7cm}
+	\includegraphics[width=\logowidth]{data/uio_logo_full.png}
+}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}
+
+    \begin{frame}{Oversikt}
+        \begin{enumerate}
+            \item Innledning: Bakgrunn og kontekst
+            \item State-of-the-art: Hvordan brukes MR-data for prediksjon av nevrologiske sykdommer i forskningen i dag?
+            \item Oppsummering: Utfordringer og muligheter for fremtiden
+        \end{enumerate}
+    \end{frame}
+
+    \newsavebox{\modalities}
+    \sbox{\modalities}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar,
+                height=5cm,
+                width=6cm,
+                bar width=0.8,
+                xmin=0.35,
+                xmax=4.65,
+                ymin=0,
+                xtick={1, 2, 3, 4},
+                xticklabels={Structural MRI, Functional MRI, Diffusion MRI, Molecular imaging},
+                x tick label style={
+                    rotate=45,anchor=east,
+                    font=\footnotesize
+                },
+                tick label style={
+                    font=\footnotesize
+                },
+                ylabel={\footnotesize{Publications}},
+                ymax=399,
+                axis y line*=left,
+                axis x line*=bottom,
+                xtick align=outside
+            ]
+                \addplot[fill=gray!80] coordinates {
+                    (1, 367)
+                    (2, 186)
+                    (3, 39)
+                    (4, 43)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newcommand{\stickman}[2]{
+        \node[circle,fill,minimum size=2.5mm,#2] (head) at #1 {};
+        \node[rounded corners=1pt,minimum height=0.65cm,minimum width=0.2cm,fill,below = 0.5pt of head,#2] (body) {};
+        \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(1pt,-0.5pt)}]body.north east) --++(-90:3mm);
+        \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(-1pt,-0.5pt)}]body.north west)--++(-90:3mm);
+        \draw[thick,white,-round cap] (body.south) --++(90:2.75mm);
+    }
+
+    \newcommand{\casecontrol}[1]{
+        \begin{tikzpicture}
+            \node[] at (-0.5, 0.2) {};
+            \node[] at (7.8, -6.4) {};
+
+            \ifnum#1<4
+                \stickman{(2.1, -0.8)}{red}
+                \stickman{(3.4, -1.7)}{red}
+                \stickman{(2.2, -2.3)}{red}
+                \stickman{(3.8, -1.2)}{red}
+                \stickman{(4.7, -2.1)}{red}
+                \stickman{(5.2, -1.1)}{red}
+                \stickman{(4.2, -0.5)}{red}
+
+                \stickman{(2.6, -2)}{blue}
+                \stickman{(4.0, -2.4)}{blue}
+                \stickman{(2.8, -0.9)}{blue}
+                \stickman{(4.6, -1)}{blue}
+                \stickman{(5.1, -2.0)}{blue}
+                \stickman{(3.3, -2.3)}{blue}
+                \stickman{(3.3, -0.5)}{blue}
+            \fi
+
+            \ifnum#1>1
+                \ifnum#1<4
+                    \stickman{(7, -3.2)}{red}
+                    \stickman{(7, -4.4)}{red}
+                    \stickman{(7, -5.6)}{red}
+                    \stickman{(6.5, -3.8)}{red}
+                    \stickman{(6.5, -5)}{red}
+                    \stickman{(7.5, -3.8)}{red}
+                    \stickman{(7.5, -5)}{red}
+                    \node[] at (7, -2.7) {\footnotesize{Pasienter}};
+
+                    \stickman{(0.2, -3.2)}{blue}
+                    \stickman{(0.2, -4.4)}{blue}
+                    \stickman{(0.2, -5.6)}{blue}
+                    \stickman{(-0.3, -3.8)}{blue}
+                    \stickman{(-0.3, -5)}{blue}
+                    \stickman{(0.7, -3.8)}{blue}
+                    \stickman{(0.7, -5)}{blue}
+                    \node[] at (0.2, -2.7) {\footnotesize{Kontroller}};
+
+                    \draw[-, line width=3pt, gray] (3.6, -3.4) -- (3.6, -4.8);
+                    \draw[stealth-stealth, line width=3pt, gray] (1.25, -4.75) -- (5.95, -4.75);
+                \fi
+            \fi
+
+            \ifnum#1=3
+                \node[align=center,font=\scriptsize\linespread{0.8}\selectfont,
+                draw=black, fill=white, inner sep=4pt] at (3.6, -4.8){
+                    Prediktiv\\modell
+                };
+            \fi
+            \ifnum#1=4
+                \node[align=center,font=\small\linespread{0.95}\selectfont] at (3.6, -4.2){
+                        \underline{Treffsikkerhet}\\
+                        50\%
+                };
+                    \stickman{(7, -3.2)}{red}
+                    \stickman{(7, -4.4)}{blue}
+                    \stickman{(7, -5.6)}{red}
+                    \stickman{(6.5, -3.8)}{red}
+                    \stickman{(6.5, -5)}{blue}
+                    \stickman{(7.5, -3.8)}{red}
+                    \stickman{(7.5, -5)}{blue}
+                    \node[] at (7, -2.7) {\footnotesize{Pasienter}};
+
+                    \stickman{(0.2, -3.2)}{red}
+                    \stickman{(0.2, -4.4)}{red}
+                    \stickman{(0.2, -5.6)}{blue}
+                    \stickman{(-0.3, -3.8)}{blue}
+                    \stickman{(-0.3, -5)}{red}
+                    \stickman{(0.7, -3.8)}{blue}
+                    \stickman{(0.7, -5)}{red}
+                    \node[] at (0.2, -2.7) {\footnotesize{Kontroller}};
+            \fi
+            \ifnum#1>4
+                \ifnum#1<6
+                    \node[align=center,font=\small\linespread{0.95}\selectfont] at (3.6, -4.2){
+                            \underline{Treffsikkerhet}\\
+                            100\%
+                    };
+
+                    \stickman{(7, -3.2)}{red}
+                    \stickman{(7, -4.4)}{red}
+                    \stickman{(7, -5.6)}{red}
+                    \stickman{(6.5, -3.8)}{red}
+                    \stickman{(6.5, -5)}{red}
+                    \stickman{(7.5, -3.8)}{red}
+                    \stickman{(7.5, -5)}{red}
+                \fi
+                \ifnum#1>5
+                    \stickman{(7, -3.2)}{red!75!blue}
+                    \stickman{(7, -4.4)}{red!50!blue}
+                    \stickman{(7, -5.6)}{red}
+                    \stickman{(6.5, -3.8)}{red!60!blue}
+                    \stickman{(6.5, -5)}{red!85!blue}
+                    \stickman{(7.5, -3.8)}{red!95!blue}
+                    \stickman{(7.5, -5)}{red!80!blue}
+                \fi
+                \node[] at (7, -2.7) {\footnotesize{Pasienter}};
+
+                \stickman{(0.2, -3.2)}{blue}
+                \stickman{(0.2, -4.4)}{blue}
+                \stickman{(0.2, -5.6)}{blue}
+                \stickman{(-0.3, -3.8)}{blue}
+                \stickman{(-0.3, -5)}{blue}
+                \stickman{(0.7, -3.8)}{blue}
+                \stickman{(0.7, -5)}{blue}
+                \node[] at (0.2, -2.7) {\footnotesize{Kontroller}};
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casecontrolgroup}
+    \sbox{\casecontrolgroup}{%
+        \casecontrol{1}
+    }
+    \newsavebox{\casecontrolgroups}
+    \sbox{\casecontrolgroups}{%
+        \casecontrol{2}
+    }
+    \newsavebox{\casecontrolmodel}
+    \sbox{\casecontrolmodel}{%
+        \casecontrol{3}
+    }
+    \newsavebox{\casecontrolbadacc}
+    \sbox{\casecontrolbadacc}{%
+        \casecontrol{4}
+    }
+    \newsavebox{\casecontrolgoodacc}
+    \sbox{\casecontrolgoodacc}{%
+        \casecontrol{5}
+    }
+    \newsavebox{\casecontrolpersonal}
+    \sbox{\casecontrolpersonal}{%
+        \casecontrol{6}
+    }
+
+    \begin{frame}[t]{Innledning}
+        \centering
+        \begin{tikzpicture}
+            \colorlet{hiddencolour}{black!20}
+
+            \def\labelsize{\scriptsize}
+
+            \node[] at (0, 0) {};
+            \node[] at (-5, 0) {};
+            \node[] at (5, -7) {};
+            \onslide<1>{
+                \node[align=center] at (0, -0.5) {
+                    Diagnostisk prediksjon av nevrologiske sykdommer\\med kunstig intelligens og MR-data
+                };
+            }
+            \only<2-4>{
+                \def\nodefont{\footnotesize}
+                \node[align=center] at (0, -0.5) {
+                    \textcolor{hiddencolour}{Diagnostisk prediksjon av} nevrologiske sykdommer\\\textcolor{hiddencolour}{med kunstig intelligens og MR-data}
+                };
+                \onslide<3->{
+                    \node[align=center, font=\nodefont] (ad) at (-2, -2) {
+                        Alzheimers sykdom (AD) og andre\\årsaker til demens (DEM)
+                    };
+                    \node[align=center, font=\nodefont] at (-2.8, -2.8) {
+                        Multippel sklerose (MS)
+                    };
+                    \node[align=center, font=\nodefont] (pd) at (-1.3, -3.2) {
+                        Parkinsons sykdom (PD)
+                    };
+                    \node[align=center, font=\nodefont] at (1.9, -5.2) {
+                        Bipolar lidelse (BP)
+                    };
+                    \node[align=center, font=\nodefont] at (1.6, -5.6) {
+                        Schizofreni (SCZ)
+                    };
+                    \node[align=center, font=\nodefont] at (2.8, -6.3) {
+                        Depressive lidelser, inkludert\\alvorlig depresjon (MDD)
+                    };
+                }
+                \only<4>{
+                    \draw[red] (-4.5, -1.5) -- (0.5, -1.5) -- (0.5, -3.5) -- (-4.5, -3.5) -- cycle;
+                }
+            }
+            \onslide<5->{
+                \node[align=center] at (0, -0.5) {
+                    Diagnostisk prediksjon \textcolor{hiddencolour}{av nevrologiske sykdommer}\\\textcolor{hiddencolour}{med} kunstig intelligens \textcolor{hiddencolour}{og MR-data}
+                };
+                \only<6>{
+                    \node[label=below:{\scriptsize{Generated by DALL-E 3}}] at (0, -4.2) {
+                        \includegraphics[width=5cm]{data/medical_consultancy.png}
+                    };
+                };
+                \only<7>{
+                    \node[] at (0, -4.2) {
+                        \usebox{\casecontrolgroup}
+                    };
+                }
+                \only<8>{
+                    \node[] at (0, -4.2) {
+                        \usebox{\casecontrolgroups}
+                    };
+                }
+                \only<9>{
+                    \node[] at (0, -4.2) {
+                        \usebox{\casecontrolmodel}
+                    };
+                }
+                \only<10>{
+                    \node[] at (0, -4.2) {
+                        \usebox{\casecontrolbadacc}
+                    };
+                }
+                \only<11>{
+                    \node[] at (0, -4.2) {
+                        \usebox{\casecontrolgoodacc}
+                    };
+                }
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \section{\large{Diagnostiske prediksjoner i forskningslitteraturen}}
+
+    \newcommand{\diagnosisplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar stacked,
+                xmin=-0.5,
+                xmax=5.5,
+                height=4cm,
+                width=5.7cm,
+                xlabel=\footnotesize{Diagnose},
+                ylabel=\footnotesize{Studies},
+                xtick={0, 1, 2, 3, 4, 5},
+                xticklabels={DEM, MS, PD, SCZ, MDD, BP},
+                ticklabel style = {font=\scriptsize, text depth=0},
+                xtick pos=bottom,
+                axis y line*=left,
+                axis x line*=bottom,
+                ymin=0,
+                ymax=280,
+                bar width=0.8
+            ]
+                \ifnum#1>0
+                    \addplot[
+                        fill=studycolor1
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 30)
+                        (4, 26)
+                        (5, 13)
+                    };
+                \fi
+                \ifnum#1>1
+                    \addplot[
+                        fill=studycolor2
+                    ] coordinates {
+                        (0, 106)
+                        (1, 0)
+                        (2, 0)
+                        (3, 67)
+                        (4, 20)
+                        (5, 8)
+                    };
+                \fi
+                \ifnum#1>2
+                    \addplot[
+                        fill=studycolor3
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 30)
+                        (4, 42)
+                        (5, 15)
+                    };
+                \fi
+                \ifnum#1>3
+                    \addplot[
+                        fill=studycolor4
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 23)
+                        (4, 2)
+                        (5, 1)
+                    };
+                \fi
+                \ifnum#1>4
+                    \addplot[
+                        fill=studycolor5
+                    ] coordinates {
+                        (0, 66)
+                        (1, 0)
+                        (2, 0)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>5
+                    \addplot[
+                        fill=studycolor6
+                    ] coordinates {
+                        (0, 21)
+                        (1, 0)
+                        (2, 0)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>6
+                    \addplot[
+                        fill=studycolor7
+                    ] coordinates {
+                        (0, 61)
+                        (1, 0)
+                        (2, 0)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>7
+                    \addplot[
+                        fill=studycolor8
+                    ] coordinates {
+                        (0, 0)
+                        (1, 11)
+                        (2, 0)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>8
+                    \addplot[
+                        fill=studycolor9
+                    ] coordinates {
+                        (0, 0)
+                        (1, 48)
+                        (2, 0)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>9
+                    \addplot[
+                        fill=studycolor9
+                    ] coordinates {
+                        (0, 1)
+                        (1, 0)
+                        (2, 25)
+                        (3, 0)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>10
+                    \addplot[
+                        fill=studycolor10
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 32)
+                        (4, 1)
+                        (5, 3)
+                    };
+                \fi
+                \ifnum#1>11
+                    \addplot[
+                        fill=studycolor11
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 24)
+                        (4, 0)
+                        (5, 0)
+                    };
+                \fi
+                \ifnum#1>12
+                    \addplot[
+                        fill=studycolor12
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 13)
+                        (4, 14)
+                        (5, 35)
+                    };
+                    \addplot[
+                        fill=studycolor13
+                    ] coordinates {
+                        (0, 0)
+                        (1, 0)
+                        (2, 0)
+                        (3, 5)
+                        (4, 18)
+                        (5, 47)
+                    };
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\wolfersdisorders}
+    \sbox{\wolfersdisorders}{%
+        \diagnosisplot{1}
+    }
+
+    \newsavebox{\arbabshiranidisorders}
+    \sbox{\arbabshiranidisorders}{%
+        \diagnosisplot{2}
+    }
+
+    \newsavebox{\rashiddisorders}
+    \sbox{\rashiddisorders}{%
+        \diagnosisplot{3}
+    }
+
+    \newsavebox{\quaakdisorders}
+    \sbox{\quaakdisorders}{%
+        \diagnosisplot{4}
+    }
+
+    \newsavebox{\demdisorders}
+    \sbox{\demdisorders}{%
+        \diagnosisplot{7}
+    }
+
+    \newsavebox{\msdisorders}
+    \sbox{\msdisorders}{%
+        \diagnosisplot{9}
+    }
+
+    \newsavebox{\pddisorders}
+    \sbox{\pddisorders}{%
+        \diagnosisplot{10}
+    }
+
+    \newsavebox{\sczdisorders}
+    \sbox{\sczdisorders}{%
+        \diagnosisplot{12}
+    }
+
+    \newsavebox{\mdddisorders}
+    \sbox{\mdddisorders}{%
+        \diagnosisplot{13}
+    }
+
+    \newcommand{\modalitystudies}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ybar stacked,
+                xmin=-0.5,
+                xmax=3.5,
+                height=4cm,
+                width=5.7cm,
+                xlabel=\footnotesize{Modalitet},
+                ylabel=\footnotesize{Antall studier},
+                xtick={0, 1, 2, 3},
+                xticklabels={sMRI,dMRI,fMRI,MOL},
+                ticklabel style = {font=\scriptsize, text depth=0},
+                xtick pos=bottom,
+                axis y line*=left,
+                axis x line*=bottom,
+                ymin=0,
+                ymax=420,
+                bar width=0.8
+            ]
+                \ifnum#1>0
+                    \addplot[
+                        fill=studycolor1
+                    ] coordinates {
+                        (0, 34)
+                        (1, 9)
+                        (2, 45)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>1
+                    \addplot[
+                        fill=studycolor2
+                    ] coordinates {
+                        (0, 169)
+                        (1, 21)
+                        (2, 53)
+                        (3, 13)
+                    };
+                \fi
+                \ifnum#1>2
+                    \addplot[
+                        fill=studycolor3
+                    ] coordinates {
+                        (0, 36)
+                        (1, 9)
+                        (2, 42)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>3
+                    \addplot[
+                        fill=studycolor4
+                    ] coordinates {
+                        (0, 7)
+                        (1, 0)
+                        (2, 18)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>4
+                    \addplot[
+                        fill=studycolor5
+                    ] coordinates {
+                        (0, 42)
+                        (1, 2)
+                        (2, 3)
+                        (3, 9)
+                    };
+                \fi
+                \ifnum#1>5
+                    \addplot[
+                        fill=studycolor6
+                    ] coordinates {
+                        (0, 27)
+                        (1, 0)
+                        (2, 1)
+                        (3, 4)
+                    };
+                \fi
+                \ifnum#1>6
+                    \addplot[
+                        fill=studycolor7
+                    ] coordinates {
+                        (0, 44)
+                        (1, 0)
+                        (2, 4)
+                        (3, 13)
+                    };
+                \fi
+                \ifnum#1>7
+                    \addplot[
+                        fill=studycolor8
+                    ] coordinates {
+                        (0, 11)
+                        (1, 0)
+                        (2, 0)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>8
+                    \addplot[
+                        fill=studycolor9
+                    ] coordinates {
+                        (0, 36)
+                        (1, 1)
+                        (2, 4)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>9
+                    \addplot[
+                        fill=studycolor9
+                    ] coordinates {
+                        (0, 12)
+                        (1, 0)
+                        (2,1)
+                        (3, 12)
+                    };
+                \fi
+                \ifnum#1>10
+                    \addplot[
+                        fill=studycolor10
+                    ] coordinates {
+                        (0, 9)
+                        (1, 0)
+                        (2, 29)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>11
+                    \addplot[
+                        fill=studycolor11
+                    ] coordinates {
+                        (0, 10)
+                        (1, 2)
+                        (2, 12)
+                        (3, 0)
+                    };
+                \fi
+                \ifnum#1>12
+                    \addplot[
+                        fill=studycolor12
+                    ] coordinates {
+                        (0, 30)
+                        (1, 4)
+                        (2, 28)
+                        (3, 0)
+                    };
+
+                    \addplot[
+                        fill=studycolor13
+                    ] coordinates {
+                        (0, 18)
+                        (1, 5)
+                        (2, 25)
+                        (3, 0)
+                    };
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\wolfersmodalities}
+    \sbox{\wolfersmodalities}{%
+        \modalitystudies{1}
+    }
+
+    \newsavebox{\arbabshiranimodalities}
+    \sbox{\arbabshiranimodalities}{%
+        \modalitystudies{2}
+    }
+
+    \newsavebox{\rashidmodalities}
+    \sbox{\rashidmodalities}{%
+        \modalitystudies{3}
+    }
+
+    \newsavebox{\quaakmodalities}
+    \sbox{\quaakmodalities}{%
+        \modalitystudies{4}
+    }
+
+    \newsavebox{\demmodalities}
+    \sbox{\demmodalities}{%
+        \modalitystudies{7}
+    }
+
+    \newsavebox{\msmodalities}
+    \sbox{\msmodalities}{%
+        \modalitystudies{9}
+    }
+
+    \newsavebox{\pdmodalities}
+    \sbox{\pdmodalities}{%
+        \modalitystudies{10}
+    }
+
+    \newsavebox{\sczmodalities}
+    \sbox{\sczmodalities}{%
+        \modalitystudies{12}
+    }
+
+    \newsavebox{\mddmodalities}
+    \sbox{\mddmodalities}{%
+        \modalitystudies{13}
+    }
+
+    \begin{frame}[t]{Datagrunnlag}
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (10, -7) {};
+
+            \only<1-6>{
+                \only<1-2>{
+
+                    \node[align=left, font=\footnotesize, anchor=west] at (0.5, -1.5) {
+                        Demens (DEM)\\
+                        Multippel sklerose (MS)\\
+                        Parkinsons sykdom (PD)\\
+                        Schizofreni (SCZ)\\
+                        Bipolar lidelse (BP)\\
+                        Alvorlig depresjon (MDD)
+                    };
+
+                    \node[] at (5.9725, -2.9575) {
+                        \scriptsize{DEM}
+                    };
+                    \node[] at (6.661, -2.96) {
+                        \scriptsize{MS}
+                    };
+                    \node[] at (7.347, -2.96) {
+                        \scriptsize{PD}
+                    };
+                    \node[] at (8.035, -2.963) {
+                        \scriptsize{SCZ}
+                    };
+                    \node[] at (8.72, -2.96) {
+                        \scriptsize{MDD}
+                    };
+                    \node[] at (9.405, -2.96) {
+                        \scriptsize{BP}
+                    };
+                    \node[] at (7.69, -3.42) {
+                        \footnotesize{Diagnose}
+                    };
+                }
+                \only<2>{
+                    \node[align=left, font=\footnotesize, anchor=west] at (0.5, -5.2) {
+                        Strukturell MR (sMRI)\\
+                        Diffusjons MR (dMRI)\\
+                        Funksjonell MR (fMRI)\\
+                        Molekylær avbildning (MOL)
+                    };
+                    \node[inner sep=0pt, outer sep=0pt] at (7.69, -6.93) {
+                        \footnotesize{Modality}
+                    };
+                    \node[] at (6.145, -6.455) {
+                        \scriptsize{sMRI}
+                    };
+                    \node[] at (7.175, -6.4585) {
+                        \scriptsize{dMRI}
+                    };
+                    \node[] at (8.205, -6.4585) {
+                        \scriptsize{fMRI}
+                    };
+                    \node[] at (9.235, -6.457) {
+                        \scriptsize{MOL}
+                    };
+                }
+                \only<3>{
+                    \node[draw=black,inner sep=2pt] (wolfers) at (2, -1.8) {
+                        \includegraphics[width=4cm]{data/wolfers_2015.png}
+                    };
+                    \node[draw=black,inner sep=2pt, anchor=north] (arbabshirani) at ($ (wolfers.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/arbabshirani_2017.png}
+                    };
+                    \node[draw=black,inner sep=2pt, anchor=north] (rashid) at ($ (arbabshirani.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/rashid_2020.png}
+                    };
+                    \node[draw=black,inner sep=2pt, anchor=north] (quaak) at ($ (rashid.south) - (0, 0.2) $) {
+                        \includegraphics[width=4cm]{data/quaak_2021.png}
+                    };
+
+                    \node[] at (7.2, -2) {
+                        \usebox{\quaakdisorders}
+                    };
+                    \node[] at (7.2, -5.5) {
+                        \usebox{\quaakmodalities}
+                    };
+                }
+            }
+            \only<4>{
+                \node[draw=black,inner sep=2pt] (ebrahim) at (2, -2.2) {
+                    \includegraphics[width=4cm]{data/ebrahimighahnavieh_2020.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (mirzaei) at ($ (ebrahim.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/mirzaei_2022.png}
+                };
+
+                \node[draw=black,inner sep=2pt, anchor=north] (fathi) at ($ (mirzaei.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/fathi_2022.png}
+                };
+                \node[] at (7.2, -2) {
+                    \usebox{\demdisorders}
+                };
+                \node[] at (7.2, -5.5) {
+                    \usebox{\demmodalities}
+                };
+            }
+            \only<5>{
+                \node[draw=black,inner sep=2pt] (shoeibi) at (2, -2.8) {
+                    \includegraphics[width=4cm]{data/shoeibi_2021.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (aslam) at ($ (shoeibi.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/aslam_2022.png}
+                };
+                \node[] at (7.2, -2) {
+                    \usebox{\msdisorders}
+                };
+                \node[] at (7.2, -5.5) {
+                    \usebox{\msmodalities}
+                };
+            }
+            \only<6>{
+                \node[draw=black,inner sep=2pt] (aggarwal) at (2, -3.5) {
+                    \includegraphics[width=4cm]{data/aggarwal_2023.png}
+                };
+                \node[] at (7.2, -2) {
+                    \usebox{\pddisorders}
+                };
+                \node[] at (7.2, -5.5) {
+                    \usebox{\pdmodalities}
+                };
+            }
+            \only<7>{
+                \node[draw=black,inner sep=2pt] (filippis) at (2, -2.8) {
+                    \includegraphics[width=4cm]{data/filippis_2019.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (verma) at ($ (filippis.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/verma_2023.png}
+                };
+                \node[] at (7.2, -2) {
+                    \usebox{\sczdisorders}
+                };
+                \node[] at (7.2, -5.5) {
+                    \usebox{\sczmodalities}
+                };
+
+            }
+            \only<8>{
+                \node[draw=black,inner sep=2pt] (claude) at (2, -2.86) {
+                    \includegraphics[width=4cm]{data/claude_2020.png}
+                };
+                \node[draw=black,inner sep=2pt, anchor=north] (verma) at ($ (claude.south) - (0, 0.2) $) {
+                    \includegraphics[width=4cm]{data/colombo.png}
+                };
+                \node[] at (7.2, -2) {
+                    \usebox{\mdddisorders}
+                };
+                \node[] at (7.2, -5.5) {
+                    \usebox{\mddmodalities}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \newcommand{\modalityplot}[5]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xtick=#2,
+                xticklabels=#2,
+                xlabel=\footnotesize{År},
+                ylabel=\footnotesize{Treffsikkerhet},
+                width=4.5cm,
+                height=4.5cm,
+                every tick label/.append style={font=\footnotesize},
+                xtick pos=bottom,
+                ytick pos=left,
+                clip=false,
+                xmin=#3,
+                xmax=#4
+            ]
+                \addplot[
+                    only marks,
+                    scatter,
+                    scatter/classes={
+                        DEM={mark=*,dem},
+                        MS={mark=*,ms},
+                        PD={mark=*,pd},
+                        SCZ={mark=*,scz},
+                        MDD={mark=*,mdd},
+                        BP={mark=*,bp}
+                    },
+                    scatter src=explicit symbolic,
+                    visualization depends on={ln(\thisrow{sample}*0.5) \as \perpointmarksize},
+                    scatter/@pre marker code/.append style={
+                        /tikz/mark size=\perpointmarksize
+                    },
+                    opacity=0.75
+                ] table [
+                    x=year,
+                    y=accuracy,
+                    col sep=comma,
+                    meta=diagnosis
+                ] {data/#1};
+                #5
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newcommand{\disordermodalityplot}[7]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Antall deltakere},
+                ylabel=\footnotesize{Treffsikkerhet},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=#5,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={#1 klassifikasjonsstudier med #2}
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{#1},
+                    mark=*,
+                    #6,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/#3};
+                \addplot[
+                    dashed,
+                    #6
+                ] coordinates {
+                    (0, #4)
+                    (#5, #4)
+                };
+                \node[anchor=north east, #6] at (axis cs: #7, #4) {\footnotesize{#4\%}};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\ttwostudies}
+    \sbox{\ttwostudies}{%
+        \modalityplot{t2_studies.csv}{{2016, 2018, 2020, 2022}}{2015.5}{2022.5}{
+            \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (4)}}] at (axis cs: 2023, 51) {};
+            \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (14)}}] at (axis cs: 2023, 56) {};
+        }
+    }
+
+    \newsavebox{\msflair}
+    \sbox{\msflair}{%
+        \disordermodalityplot{MS}{non-T1w sMRI}{t2_studies.csv}{92.42}{160}{ms}{145}
+    }
+
+    \newcommand{\ttwomsplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Antall deltakere},
+                ylabel=\footnotesize{Treffsikkerhet},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=160,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={MS klassifikasjonsstudier med (ikke T1-vektet) sMRI}
+            ]
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    discard if not={ttwo}{0},
+                    mark=*,
+                    gray,
+                    opacity=0.25,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ms_t2_studies.csv};
+                \addplot[
+                    dashed,
+                    gray
+                ] coordinates {
+                    (0, 92.57)
+                    (160, 92.57)
+                };
+                \node[anchor=south east, gray] at (axis cs: 160, 92.57) {\footnotesize{92.57\%}};
+                \node[anchor=south east] (otherlabel) at (axis cs: 146, 52) {
+                    \small{Andre}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{T2/FLAIR}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (0.2, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (0.2, 0) $) {};
+            \fi
+                \addplot[
+                    only marks,
+                    discard if not={ttwo}{1},
+                    mark=*,
+                    ms,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ms_t2_studies.csv};
+                \addplot[
+                    dashed,
+                    ms
+                ] coordinates {
+                    (0, 92.42)
+                    (1650, 92.42)
+                };
+                \node[anchor=north east, ms] at (axis cs: 145, 92.42) {\footnotesize{92.42\%}};
+
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\ttwomsttwo}
+    \sbox{\ttwomsttwo}{%
+        \ttwomsplot{1}
+    }
+
+    \newsavebox{\ttwomstall}
+    \sbox{\ttwomstall}{%
+        \ttwomsplot{2}
+    }
+
+    \newsavebox{\multimodalms}
+    \sbox{\multimodalms}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Antall deltakere},
+                ylabel=\footnotesize{Treffsikkerhet},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=160,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={MS klassifikasjonsstudier med (ikke T1-vektet) sMRI}
+            ]
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{MS},
+                    discard if not={multimodal}{0},
+                    mark=*,
+                    ms,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/t2_studies.csv};
+                \addplot[
+                    dashed,
+                    ms
+                ] coordinates {
+                    (0,92.42)
+                    (160, 92.42)
+                };
+                \node[anchor=north east, ms] at (axis cs: 145, 92.42) {\footnotesize{92.42\%}};
+                \addplot[
+                    only marks,
+                    discard if not={diagnosis}{MS},
+                    discard if not={multimodal}{1},
+                    mark=*,
+                    gray,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/t2_studies.csv};
+                \node[anchor=south east] (otherlabel) at (axis cs: 158, 52) {
+                    \small{Multimodale}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{T2/FLAIR}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (2, 0) $) {};
+                \node[circle, draw=gray, fill=gray!75, inner sep=2pt] at ($ (otherlabel.west) - (2, 0) $) {};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \begin{frame}[t]{Strukturelle MR modaliteter (sMRI)}
+        \only<1-10>{
+            \begin{tikzpicture}
+                \def\labelsize{\footnotesize}
+
+                \node[] at (0, 0) {};
+                \node[] at (10, -7) {};
+                \only<1>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Preson D. C., (2006), MRI Basics, https://case.edu/med/neurology/NR/MRI\%20Basics
+                    };
+                }
+                \only<1-5>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (t1) at (0, -3.5) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/t1.png}
+                    };
+                }
+                \only<1-5>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (t2) at ($ (t1.east) $) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/t2.png}
+                    };
+                }
+                \only<1-5>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (flair) at ($ (t2.east) $) {
+                        \includegraphics[
+                            height=1.7cm
+                        ]{data/flair.png}
+                    };
+                }
+                \only<2>{
+                    \node[anchor=west] at (5, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={0 2.8cm 5.6cm 0.2cm},
+                            clip
+                        ]{data/FLAIR_lesion_segmented.jpeg}
+                    };
+                }
+                \only<3>{
+                    \node[] at (7.1, -3.6) {
+                        \usebox{\ttwostudies}
+                    };
+                };
+                \only<4>{
+                    \node[anchor=west] at (5, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={0 2.8cm 3.7cm 0.2cm},
+                            clip
+                        ]{data/FLAIR_lesion_segmented.jpeg}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Weeda, M. M., Brouwer, I., de Vos, M. L., de Vries, M. S., Barkhof, F., Pouwels, P. J. W., \& Vrenken, H. (2019). Comparing\\lesion segmentation methods in multiple sclerosis: Input from one manually delineated subject is sufficient for accurate\\lesion segmentation. NeuroImage: Clinical, 24, 102074
+                    };
+                }
+                \only<5>{
+                    \node[inner sep=0pt, draw=black] at (7.6, -3.2) {
+                        \includegraphics[width=4.5cm]{data/ms_criteria.png}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        De Angelis, F., Brownlee, W. J., Chard, D. T., \& Trip, S. A. (2019). New MS diagnostic criteria in practice. Practical Neurology,\\19(1), 64-67
+                    };
+                }
+                \only<6>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\ttwomsttwo}
+                    };
+                }
+                \only<7>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\ttwomstall}
+                    };
+                }
+                \only<8>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\multimodalms}
+                    };
+                }
+                \only<9-10>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Storelli, L., Azzimonti, M., Gueye, M., Vizzino, C., Preziosa, P., Tedeschi, G., ... \& Rocca, M. A. (2022). A deep learning\\approach to predicting disease progression in multiple sclerosis using magnetic resonance imaging. Investigative Radiology,\\57(7), 423-432
+                    };
+                }
+                \only<9>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.5) {
+                        \includegraphics[width=7.5cm]{data/storelli_model.jpeg}
+                    };
+                }
+                \only<10>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.5) {
+                        \includegraphics[width=9cm]{data/storelli_results.png}
+                    };
+                    \node[minimum width=0.3cm, minimum height=0.18cm, draw=red, inner sep=0pt, thick] at (7.42, -2.475) {};
+                    \node[minimum width=0.3cm, minimum height=0.18cm, draw=red, inner sep=0pt, thick] at (7.42, -3.575) {};
+                }
+            \end{tikzpicture}
+        }
+        \only<11>{
+            \vfill
+            Strukturelle (ikke T1-vektede) MR-bilder: Avbilder stabile egenskaper ved hjernevev.
+            \begin{itemize}
+                \item[\textbullet] {\small Mest brukt i studier som klassifiserer MS og PD, med høy treffsikkerhet (gjennomsnittlig $\sim$90\%).}
+                \item[\textbullet] {\small T2 relatert til MS grunnet modalitetens evne til å fange opp karakteristiske lesjoner.}
+                \item[\textbullet] {\small Maskinlæringsmodeller trent på T1 og T2-vektede bilder kan predikere prognose bedre enn menneskelige eksperter (Storelli et al).}
+            \end{itemize}
+            \vfill
+        }
+    \end{frame}
+
+    \newsavebox{\dmristudies}
+    \sbox{\dmristudies}{%
+        \modalityplot{dmri_studies.csv}{{2005, 2010, 2015, 2020}}{2005}{2022}{
+            \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (1)}}] at (axis cs: 2023, 51) {};
+            \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2023, 56) {};
+            \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (6)}}] at (axis cs: 2023, 61) {};
+            \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (9)}}] at (axis cs: 2023, 66) {};
+            \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (10)}}] at (axis cs: 2023, 71) {};
+        }
+    }
+
+    \newsavebox{\dmridisorders}
+    \sbox{\dmridisorders}{%
+    \begin{tikzpicture}
+        \begin{axis}[
+            ymin=50,
+            ymax=100,
+            xlabel=\footnotesize{Antall deltakere},
+            ylabel=\footnotesize{Treffsikkerhet},
+            height=6cm,
+            width=8cm,
+            every tick label/.append style={font=\footnotesize},
+            xmin=0,
+            xmax=320,
+            xtick pos=bottom,
+            ytick pos=left,
+            title={Klassifikasjon av psykiske lidelser med dMRI}
+        ]
+            \addplot[
+                only marks,
+                discard if not={diagnosis}{SCZ},
+                mark=*,
+                scz,
+                opacity=0.75,
+                mark size=3pt
+            ] table [
+                x=sample,
+                y=accuracy,
+                col sep=comma,
+            ] {data/dmri_studies.csv};
+            \addplot[
+                dashed,
+                scz
+            ] coordinates {
+                (0, 84.2)
+                (320, 84.2)
+            };
+            \node[anchor=north east, scz] at (axis cs: 300, 84.2) {\footnotesize{SCZ: 84.30\%}};
+            \addplot[
+                only marks,
+                discard if not={diagnosis}{MDD},
+                mark=*,
+                mdd,
+                opacity=0.75,
+                mark size=3pt
+            ] table [
+                x=sample,
+                y=accuracy,
+                col sep=comma,
+            ] {data/dmri_studies.csv};
+            \addplot[
+                dashed,
+                mdd
+            ] coordinates {
+                (0, 84.38)
+                (320, 84.38)
+            };
+            \node[anchor=south east, mdd] at (axis cs: 300, 84.38) {\footnotesize{MDD: 84.38\%}};
+            \addplot[
+                only marks,
+                discard if not={diagnosis}{BP},
+                mark=*,
+                bp,
+                opacity=0.75,
+                mark size=3pt
+            ] table [
+                x=sample,
+                y=accuracy,
+                col sep=comma,
+            ] {data/dmri_studies.csv};
+            \addplot[
+                dashed,
+                bp
+            ] coordinates {
+                (0, 79.32)
+                (320, 79.32)
+            };
+            \node[anchor=north east, bp] at (axis cs: 300, 79.32) {\footnotesize{BP: 79.32\%}};
+        \end{axis}
+    \end{tikzpicture}
+    }
+
+    \newsavebox{\dmripredictions}
+    \sbox{\dmripredictions}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=2000,
+                xmax=2024,
+                ymin=0,
+                height=4.75cm,
+                width=5.75cm,
+                xlabel=\footnotesize{Year},
+                ylabel=\footnotesize{Publikasjoner i Pubmed},
+                every tick label/.append style={font=\footnotesize},
+                xtick={2000, 2010, 2020},
+                xticklabels={2000, 2010, 2020},
+                xtick pos=bottom,
+                ytick pos=left
+            ]
+                \addplot[
+                    very thick,
+                    color1
+                ] table [
+                    x=Year,
+                    y=Count,
+                    col sep=comma
+                ] {data/dmri_ml.csv};
+                \addplot[
+                    thick,
+                    color3
+                ] table [
+                    x=Year,
+                    y=Count,
+                    col sep=comma
+                ] {data/fmri_ml.csv};
+                \addplot[
+                    thick,
+                    color5
+                ] table [
+                    x=Year,
+                    y=Count,
+                    col sep=comma
+                ] {data/smri_ml.csv};
+                \addplot[
+                    thick,
+                    color7
+                ] table [
+                    x=Year,
+                    y=Count,
+                    col sep=comma
+                ] {data/pet_ml.csv};
+                \node[anchor=west, text depth=0, inner sep=2pt] (mol) at (axis cs: 2002, 580) {\scriptsize{MOL}};
+                \draw[thick, color7] ($ (mol.west) - (1.5, 0) $) -- (mol.west);
+                \node[anchor=west, text depth=0, inner sep=2pt] (smri) at (axis cs: 2002, 540) {\scriptsize{sMRI}};
+                \draw[thick, color5] ($ (smri.west) - (1.5, 0) $) -- (smri.west);
+                \node[anchor=west, text depth=0, inner sep=2pt] (fmri) at (axis cs: 2002, 500) {\scriptsize{fMRI}};
+                \draw[thick, color3] ($ (fmri.west) - (1.5, 0) $) -- (fmri.west);
+                \node[anchor=west, text depth=0, inner sep=2pt] (dmri) at (axis cs: 2002, 460) {\scriptsize{dMRI}};
+                \draw[very thick, color1] ($ (dmri.west) - (1.5, 0) $) -- (dmri.west);
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newcommand{\drawwater}[3]{
+        % Draw oxygen
+        \node[draw, circle, fill=red, minimum size=3mm, inner sep=0pt] (#3) at (#1,#2) {};
+        % Calculate positions for hydrogen
+        \pgfmathsetmacro{\angleone}{random()*360}
+        \pgfmathsetmacro{\angletwo}{\angleone + 104.5} % 104.5 degrees is the angle in a water molecule
+        % Draw hydrogens
+        \node[draw, circle, fill=white, minimum size=1.5mm, inner sep=0pt] (H1) at ($(#3) + (\angleone:0.3)$) {};
+        \node[draw, circle, fill=white, minimum size=1.5mm, inner sep=0pt] (H2) at ($(#3) + (\angletwo:0.3)$) {};
+        % Connect hydrogens to oxygen
+        \draw (#3) -- (H1);
+        \draw (#3) -- (H2);
+    }
+
+    \newcommand{\drawdiffusion}[1]{
+        \begin{tikzpicture}[scale=0.9]
+            % Random seed for reproducibility
+            \pgfmathsetseed{6}
+
+            \drawwater{1}{3}{a}
+            \drawwater{1.5}{4}{b}
+            \drawwater{0.5}{2.5}{c}
+            \drawwater{0.75}{3.75}{d}
+            \drawwater{1.5}{3.5}{e}
+            \drawwater{2}{2.5}{f}
+            \drawwater{1.25}{2.25}{g}
+            \node[] at (-0.5, 1.25) {};
+            \node[] at (3, 5) {};
+
+            \ifnum#1=2
+                \draw[-stealth] (a) -- ($ (a) + (-0.1, -0.5) $);
+                \draw[-stealth] (b) -- ($ (b) + (0.3, 0.4) $);
+                \draw[-stealth] (c) -- ($ (c) + (-0.2, -0.4) $);
+                \draw[-stealth] (d) -- ($ (d) + (-0.4, 0.2) $);
+                \draw[-stealth] (e) -- ($ (e) + (-0.5, 0.2) $);
+                \draw[-stealth] (f) -- ($ (f) + (0.3, 0.4) $);
+                \draw[-stealth] (g) -- ($ (g) + (0.0, -0.5) $);
+            \fi
+            \ifnum#1=3
+                \draw[-stealth] (a) -- ($ (a) + (-0.1, 0.5) $);
+                \draw[-stealth] (b) -- ($ (b) + (0.2, 0.45) $);
+                \draw[-stealth] (c) -- ($ (c) + (0.05, 0.5) $);
+                \draw[-stealth] (d) -- ($ (d) + (-0.2, 0.4) $);
+                \draw[-stealth] (e) -- ($ (e) + (-0.2, 0.4) $);
+                \draw[-stealth] (f) -- ($ (f) + (0.1, 0.4) $);
+                \draw[-stealth] (g) -- ($ (g) + (-0.2, 0.5) $);
+
+                \pgfmathsetmacro{\xmin}{0} % Minimum x-coordinate of the molecules
+                \pgfmathsetmacro{\xmax}{2.3}   % Maximum x-coordinate of the molecules
+
+                % Draw curving side boundaries
+                \draw[thick, name path=leftinner] plot [smooth] coordinates {(\xmin+0.1, 1.5) (\xmin-0.1, 3) (\xmin+0.1, 4.5)};
+                \draw[thick, name path=leftouter] plot [smooth] coordinates {(\xmin+0.2, 1.5) (\xmin, 3) (\xmin+0.2, 4.5)};
+                \draw[thick] plot [smooth] coordinates {(\xmax+0.2, 1.5) (\xmax, 3) (\xmax+0.2, 4.5)};
+                \draw[thick] plot [smooth] coordinates {(\xmax+0.3, 1.5) (\xmax+0.1, 3) (\xmax+0.3, 4.5)};
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\waterfree}
+    \sbox{\waterfree}{%
+        \drawdiffusion{1}
+    }
+    \newsavebox{\watermoving}
+    \sbox{\watermoving}{%
+        \drawdiffusion{2}
+    }
+    \newsavebox{\waterboundary}
+    \sbox{\waterboundary}{%
+        \drawdiffusion{3}
+    }
+
+    \begin{frame}[t]{Diffusjons MR (dMRI)}
+        \only<1-7>{
+            \begin{tikzpicture}
+                \node[] at (0, 0) {};
+                \node[] at (10, -7) {};
+
+                \onslide<1-6>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (t1) at (0.5, -2.5) {
+                        \includegraphics[
+                            height=2cm
+                        ]{data/dti_t1.png}
+                    };
+                }
+                \only<2-3>{
+                    \node[] at (6.5, -2) {
+                        \usebox{\waterboundary}
+                    };
+                }
+                \only<3>{
+                    \node[inner sep=0pt, draw=black] at (6.5, -5.5) {
+                        \includegraphics[width=4cm]{data/axon.jpeg}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Queensland Brains Institute, Axons: the cable transmission of neurons,\\https://qbi.uq.edu.au/brain/brain-anatomy/axons-cable-transmission-neurons
+                    };
+                }
+                \onslide<4-6>{
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (fa) at ($ (t1.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=2cm
+                        ]{data/dti_fa.png}
+                    };
+                    \node[anchor=north, inner sep=0pt, outer sep=0pt] (md) at ($ (t1.south) + (0, 0.05) $) {
+                        \includegraphics[
+                            height=2cm
+                        ]{data/dti_md.png}
+                    };
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (fa) at ($ (md.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=2cm
+                        ]{data/dti_tract.png}
+                    };
+                }
+                \only<5>{
+                    \node[] at (7.6, -3.6) {
+                        \usebox{\dmristudies}
+                    };
+                };
+                \only<6>{
+                    \node[] at (7.4, -3.43) {
+                        \usebox{\dmripredictions}
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] at (5, -7.65) {
+                        \begin{tabular}{rl}
+                            MOL:&((molecular[Title] AND imaging[Title]) OR PET[Title] OR SPECT[Title]) AND (machine learning OR ML \\
+                            &OR deep learning OR DL OR prediction)"\\
+                            sMRI:&((structural[Title] AND MRI[Title]) OR sMRI[Title] OR T1[Title] OR T2[Title]) AND (machine learning OR ML\\
+                            &OR deep learning OR DL OR prediction)\\
+                            fMRI:&((functional[Title] AND MRI[Title]) OR fMRI[Title]) AND (machine learning OR ML OR deep learning OR DL\\
+                            &OR prediction)\\
+                            dMRI:&((diffusion[Title] AND MRI[Title]) OR dMRI[Title] OR DTI[Title]) AND (machine learning OR ML OR deep learning\\
+                            &OR DL OR prediction)\\
+                        \end{tabular}
+                    };
+                }
+                \only<7>{
+                    \node[] at (5, -3.2) {
+                        \usebox{\dmridisorders}
+                    };
+                }
+
+            \end{tikzpicture}
+        }
+        \only<8>{
+            \vfill
+            Diffusjons MR: Avbilder nervebaner og deres integritet.
+            \begin{itemize}
+                \item[\textbullet] {\small Vanskelig å finne prediksjonsstudier, de fleste fokuserer på å produsere biologisk innsikt.}
+                \item[\textbullet] {\small Flest studier for psykiske lidelser, spesielt SCZ og MDD, med høy gjennomsnittlig treffsikkerhet ($\sim$85\%) men stor spredning (60-100\%).}
+            \end{itemize}
+            \vfill
+        }
+    \end{frame}
+
+    \newsavebox{\fmristudies}
+    \sbox{\fmristudies}{%
+        \modalityplot{fmri_studies.csv}{{2005, 2010, 2015, 2020}}{2005}{2023}{
+                \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (1)}}] at (axis cs: 2024, 51) {};
+                \node[circle,anchor=south west, draw=ms, fill=ms!75,inner sep=2pt,label=right:{\footnotesize{MS (4)}}] at (axis cs: 2024, 56) {};
+                \node[circle,anchor=south west, draw=bp, fill=bp!75,inner sep=2pt,label=right:{\footnotesize{BP (5)}}] at (axis cs: 2024, 61) {};
+                \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (12)}}] at (axis cs: 2024, 66) {};
+                \node[circle,anchor=south west, draw=mdd, fill=mdd!75,inner sep=2pt,label=right:{\footnotesize{MDD (34)}}] at (axis cs: 2024, 71) {};
+                \node[circle,anchor=south west, draw=scz, fill=scz!75,inner sep=2pt,label=right:{\footnotesize{SCZ (96)}}] at (axis cs: 2024, 76) {};
+        }
+    }
+
+    \newsavebox{\mddfmri}
+    \sbox{\mddfmri}{%
+        \disordermodalityplot{MDD}{fMRI}{fmri_studies.csv}{81.99}{380}{mdd}{380}
+    }
+
+    \newcommand{\casecontrolplot}[1]{
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (8, -5) {};
+
+            \stickman{(0.5, -2.5)}{blue}
+            \stickman{(7.5, -2.5)}{red}
+
+            \ifnum#1>1
+                \node [
+                    double arrow,
+                    left color=blue,
+                    right color=red,
+                    single arrow head extend=3pt,
+                    transform shape,
+                    minimum height=2cm,
+                    text width=6.45cm,
+                    anchor=west
+                ] at (0.5, -3.75){};
+                \node[white] at (4, -3.75) {\scriptsize{Symptom-alvorlighet}};
+
+                \stickman{(1.5, -2.5)}{red!14!blue}
+                \stickman{(6.5, -2.5)}{red!84!blue}
+                \ifnum#1=2
+                    \stickman{(2.5, -2.5)}{red!28!blue}
+                    \stickman{(3.5, -2.5)}{red!42!blue}
+                    \stickman{(4.5, -2.5)}{red!56!blue}
+                    \stickman{(5.5, -2.5)}{red!70!blue}
+                \fi
+                \ifnum#1=3
+                    \stickman{(2.5, -2.5)}{red!28!blue!25!white}
+                    \stickman{(3.5, -2.5)}{red!42!blue!25!white}
+                    \stickman{(4.5, -2.5)}{red!56!blue!25!white}
+                    \stickman{(5.5, -2.5)}{red!70!blue!25!white}
+                \fi
+            \fi
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\casecontrolmdd}
+    \sbox{\casecontrolmdd}{%
+        \casecontrolplot{1}
+    }
+
+    \newsavebox{\dimensionalmdd}
+    \sbox{\dimensionalmdd}{%
+        \casecontrolplot{2}
+    }
+    \newsavebox{\simplemdd}
+    \sbox{\simplemdd}{%
+        \casecontrolplot{3}
+    }
+
+    \begin{frame}[t]{Funksjonell MR}
+        \only<1-9>{
+            \begin{tikzpicture}
+                \node[] at (0, 0) {};
+                \node[] at (10, -7) {};
+                \only<1>{
+                    \node[anchor=west] at (0, -2.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] (first) at (0, -2.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (0.5, -3.0) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (0.5, -3.0) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1.5, -4) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (1.5, -4) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[anchor=west] at (2, -4.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={75 210 590 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+
+                    \node[anchor=west] (last) at (2, -4.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+
+                    \draw[-stealth] ($ (first.north east) + (0.5, -0.13) $) -- ($ (last.north east) + (0.5, -0.13) $) node[midway, above, rotate=315] {tid};
+                }
+                \only<2>{
+                    \node[anchor=west] at (1, -3.5) {
+                        \includegraphics[
+                            height=3cm,
+                            trim={595 210 80 70},
+                            clip
+                        ]{data/smri_fmri.png}
+                    };
+                    \node[] at (7.6, -3.6) {
+                        \usebox{\fmristudies}
+                    };
+                }
+                \only<3-4>{
+                    \node[] at (5, -3.6) {
+                        \usebox{\mddfmri}
+                    };
+                }
+                \only<4>{
+                    \node[circle, draw=red, thick, fill=none, inner sep=5pt] at (8.4, -5.68) {};
+                }
+
+                \only<4-6>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Sundermann, B., Feder, S., Wersching, H., Teuber, A., Schwindt, W., Kugel, H., ... \& Pfleiderer, B. (2017). Diagnostic classification of\\unipolar depression based on resting-state functional connectivity MRI: effects of generalization to a diverse sample. Journal\\of Neural Transmission, 124, 589-605
+                    };
+                }
+
+                \only<5>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                        \includegraphics[width=5cm]{data/fmri_depression_pipeline.png}
+                    };
+                    \node[minimum width=2.85cm, minimum height=0.3cm, draw=red, inner sep=0pt, thick] at (5.67, -6.26) {};
+                }
+                \only<6>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.2) {
+                        \includegraphics[width=9cm]{data/fmri_depression_results.png}
+                    };
+                    \node[minimum width=1.5cm, minimum height=0.45cm, draw=red, inner sep=0pt, thick] at (1.27, -2.2) {};
+                    \draw[thick, red] (1.8, -2.67) -- (4.25, -2.67) {};
+                    \node[minimum width=0.3cm, minimum height=0.2cm, draw=red, inner sep=0pt, thick] at (6.425, -4.265) {};
+                }
+                \only<7>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\casecontrolmdd}
+                    };
+                }
+                \only<8>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\dimensionalmdd}
+                    };
+                }
+                \only<9>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\simplemdd}
+                    };
+                }
+            \end{tikzpicture}
+        }
+        \only<10>{
+            \vfill
+            Funksjonell MR: Et indirekte mål av hjerneaktivitet over tid.
+            \begin{itemize}
+                \item[\textbullet] {\small Mange prediktive studier å finne, flest for psykiske lidelser.}
+                \item[\textbullet] {\small Generelt høy gjennomsnittlig treffsikkerhet (80-85\%), men stor spredning (50-100\%).}
+                \item[\textbullet] {\small Sundermann et al. hadde problemer med å klassifisere heterogene MDD-pasienter, men fikk til å detektere pasientene med alvorligst symptomer (til en viss grad).}
+            \end{itemize}
+            \vfill
+        }
+    \end{frame}
+
+    \newsavebox{\molstudies}
+    \sbox{\molstudies}{%
+        \modalityplot{molecular_studies.csv}{{2014, 2018, 2022}}{2011}{2023}{
+            \node[circle,anchor=south west, draw=pd, fill=pd!75,inner sep=2pt,label=right:{\footnotesize{PD (12)}}] at (axis cs: 2024, 51) {};
+            \node[circle,anchor=south west, draw=dem, fill=dem!75,inner sep=2pt,label=right:{\footnotesize{DEM (23)}}] at (axis cs: 2024, 56) {};
+        }
+    }
+
+    \newcommand{\moldemplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=2900,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={DEM klassifikasjonsstudier med molekylær avbildning}
+            ]
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    discard if not={pet}{0},
+                    mark=*,
+                    gray,
+                    opacity=0.25,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ad_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    gray,
+                ] coordinates {
+                    (0, 91.63)
+                    (2900, 91.63)
+                };
+                \node[anchor=north east, gray] at (axis cs: 2900, 91.63) {\footnotesize{91.63\%}};
+
+                \node[anchor=south east] (otherlabel) at (axis cs: 2860, 52) {
+                    \small{Andre}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{PET}
+                };
+                \node[circle, draw=dem, fill=dem!75, inner sep=2pt] at ($ (spectlabel.west) - (3, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (3, 0) $) {};
+            \fi
+                \addplot[
+                    only marks,
+                    discard if not={pet}{1},
+                    mark=*,
+                    dem,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/ad_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    dem
+                ] coordinates {
+                    (0, 92.66)
+                    (2900, 92.66)
+                };
+                \node[anchor=south east, dem] at (axis cs: 2900, 92.66) {\footnotesize{92.66\%}};
+
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\moldempet}
+    \sbox{\moldempet}{%
+        \moldemplot{1}
+    }
+
+    \newsavebox{\moldemall}
+    \sbox{\moldemall}{%
+        \moldemplot{2}
+    }
+
+    \newcommand{\molpdplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                ymin=50,
+                ymax=100,
+                xlabel=\footnotesize{Sample size},
+                ylabel=\footnotesize{Accuracy},
+                height=6cm,
+                width=8cm,
+                every tick label/.append style={font=\footnotesize},
+                xmin=0,
+                xmax=1650,
+                xtick pos=bottom,
+                ytick pos=left,
+                title={PD klassifikasjonsstudier med molekylær avbildning}
+            ]
+            \ifnum#1>1
+                \addplot[
+                    only marks,
+                    discard if not={pet}{0},
+                    mark=*,
+                    gray,
+                    opacity=0.25,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/pd_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    gray
+                ] coordinates {
+                    (0, 92.81)
+                    (1650, 92.81)
+                };
+                \node[anchor=south east, gray] at (axis cs: 1450, 92.81) {\footnotesize{92.81\%}};
+                \node[anchor=south east] (otherlabel) at (axis cs: 1600, 52) {
+                    \small{Andre}
+                };
+                \node[anchor=south west] (spectlabel) at ($ (otherlabel.north west) - (0, 10) $) {
+                    \small{SPECT}
+                };
+                \node[circle, draw=pd, fill=pd!75, inner sep=2pt] at ($ (spectlabel.west) - (3, 0) $) {};
+                \node[circle, draw=gray!50, fill=gray!25, inner sep=2pt] at ($ (otherlabel.west) - (3, 0) $) {};
+            \fi
+                \addplot[
+                    only marks,
+                    discard if not={pet}{1},
+                    mark=*,
+                    pd,
+                    opacity=0.75,
+                    mark size=3pt
+                ] table [
+                    x=sample,
+                    y=accuracy,
+                    col sep=comma,
+                ] {data/pd_pet_studies.csv};
+                \addplot[
+                    dashed,
+                    pd
+                ] coordinates {
+                    (0, 92.02)
+                    (1650, 92.02)
+                };
+                \node[anchor=north east, pd] at (axis cs: 1650, 92.02) {\footnotesize{92.02\%}};
+
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \newsavebox{\molpdpet}
+    \sbox{\molpdpet}{%
+        \molpdplot{1}
+    }
+
+    \newsavebox{\molpdall}
+    \sbox{\molpdall}{%
+        \molpdplot{2}
+    }
+
+    \newsavebox{\molpdspect}
+    \sbox{\molpdspect}{%
+        \disordermodalityplot{PD}{molecular imaging}{molecular_studies.csv}{92.02}{1650}{pd}{1650}
+    }
+
+    \newcommand{\drawarcs}[2]{
+        \foreach \radius in {0.2, 0.4, 0.6} {
+            % Adjust starting and ending angles to center the arc around the direction
+            \draw[red, very thick, opacity=0.5] (#1) ++(#2-60:\radius) arc (#2-60:#2+60:\radius);
+        }
+    }
+
+    \newcommand{\molschematic}[1]{
+        \begin{tikzpicture}
+            \pgfmathsetseed{3} % Seed for reproducibility, remove or change for different patterns
+
+            % Drawing the diagonal separation
+            \fill[gray!50] (0,0) -- (6,0) -- (0,3) -- cycle; % Gray matter
+            \fill[gray!20] (0,3) -- (6,0) -- (6,3) -- cycle; % White matter
+
+            \node[] at (-1, -1) {};
+            \node[] at (7, 4) {};
+
+            % Neurons in gray matter
+            \foreach \i in {1,...,240} {
+                \pgfmathsetmacro{\x}{rand*3 + 3} % generate x within 0 to 6
+                \pgfmathsetmacro{\y}{rand*1.5 + 1.5} % generate y within 0 to 3
+                % Ensuring neurons are within the gray triangle
+                \pgfmathparse{\y < -0.5*\x + 3 ? 1 : 0}
+                \ifnum\pgfmathresult>0
+                    \fill [black, opacity=0.5] (\x, \y) circle (0.12);
+                \fi
+            }
+
+            % Neurons in white matter
+            \foreach \i in {1,...,40} {
+                \pgfmathsetmacro{\x}{rand*3 + 3} % generate x within 0 to 6
+                \pgfmathsetmacro{\y}{rand*1.5 + 1.5} % adjust y to properly randomize within the higher triangle
+                % Ensuring neurons are within the white triangle
+                \pgfmathparse{\y > -0.5*\x + 3 ? 1 : 0}
+                \ifnum\pgfmathresult>0
+                    \fill [black, opacity=0.5] (\x, \y) circle (0.12);
+                \fi
+            }
+
+            \ifnum#1>1
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (1, 0.95) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (1.5, 1.9) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (4, 0.8) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (3.5, 2.5) {};
+                \node[fill=green, minimum size=4pt, circle, inner sep=0pt] at (5.1, 2.8) {};
+            \fi
+            \ifnum#1=3
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (3, 2.9) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.9, 2.85) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.97, 3.05) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.75, 3.03) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] at (2.85, 2.7) {};
+            \fi
+            \ifnum#1>3
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (a) at (1.05, 1.01) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (b) at (1.56, 1.98) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (c) at (3.95, 0.88) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (d) at (3.42, 2.53) {};
+                \node[fill=red, minimum size=4pt, circle, inner sep=0pt] (e) at (5.0, 2.82) {};
+            \fi
+            \ifnum#1>4
+                \drawarcs{a}{180} % First node, signal goes leftwards (180 degrees)
+                \drawarcs{b}{90}  % Second node, signal goes upwards (90 degrees)
+                \drawarcs{c}{270} % Third node, signal goes downwards (270 degrees)
+                \drawarcs{d}{90}  % Fourth node, signal goes upwards (90 degrees)
+                \drawarcs{e}{90}  % Fifth node, signal goes upwards (90 degrees)
+            \fi
+        \end{tikzpicture}
+    }
+    \newsavebox{\tone}
+    \sbox{\tone}{%
+        \molschematic{1}
+    }
+
+    \newsavebox{\tonemolecules}
+    \sbox{\tonemolecules}{%
+        \molschematic{2}
+    }
+
+    \newsavebox{\tonetracer}
+    \sbox{\tonetracer}{%
+        \molschematic{3}
+    }
+
+    \newsavebox{\tonebind}
+    \sbox{\tonebind}{%
+        \molschematic{4}
+    }
+
+    \newsavebox{\tonesignal}
+    \sbox{\tonesignal}{%
+        \molschematic{5}
+    }
+
+    \begin{frame}[t]{Molekylær avbildning}
+        \def\petwidth{1.9cm}
+        \only<1-15>{
+            \begin{tikzpicture}
+                \node[] at (0, 0) {};
+                \node[] at (10, -7) {};
+
+                \only<1-6>{
+                    \node[] at (2, -3.5) {
+                        \includegraphics[
+                            width=2.5cm,
+                            trim={4cm 3cm 60cm 6cm},
+                            clip
+                        ]{data/fdg_t1.png}
+                    };
+                }
+                \only<2>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tone}
+                    };
+                }
+                \only<3>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonemolecules}
+                    };
+                }
+                \only<4>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonetracer}
+                    };
+                }
+                \only<5>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonebind}
+                    };
+                }
+                \only<6>{
+                    \node[] at (7, -3.5) {
+                        \usebox{\tonesignal}
+                    };
+                }
+                \only<7-8>{
+                    \node[] at (2, -3.5) {
+                        \includegraphics[
+                            width=2.5cm,
+                            trim={60cm 3cm 4cm 6cm},
+                            clip
+                        ]{data/fdg_t1.png}
+                    };
+                }
+                \only<8>{
+                    \node[] at (7.2, -3.6) {
+                        \usebox{\molstudies}
+                    };
+                }
+                \only<9>{
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Chételat, G., Arbizu, J., Barthel, H., Garibotto, V., Lammertsma, A. A., Law, I., ... \& Drzezga, A. (2021). Finding our way through the\\labyrinth of dementia biomarkers. European journal of nuclear medicine and molecular imaging, 48, 2320-2324
+                    };
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt] (smri) at (0.4, -3.2) {
+                        \includegraphics[
+                            height=5cm
+                        ]{data/AD_pet_types_smri.png}
+                    };
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (amyloid) at ($ (smri.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=5cm
+                        ]{data/AD_pet_types_amyloid.png}
+                    };
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (tau) at ($ (amyloid.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=5cm
+                        ]{data/AD_pet_types_tau.png}
+                    };
+                    \node[anchor=west, inner sep=0pt, outer sep=0pt, fill=black, minimum width=\petwidth] (fdg) at ($ (tau.east) - (0.05, 0) $) {
+                        \includegraphics[
+                            height=5cm
+                        ]{data/AD_pet_types_fdg.png}
+                    };
+                }
+                \only<10>{
+                    \node[] at (5, -3.6) {
+                        \usebox{\moldempet}
+                    };
+                }
+                \only<11>{
+                    \node[] at (5, -3.6) {
+                        \usebox{\moldemall}
+                    };
+                }
+
+                \only<12>{
+                    \node[font=\scriptsize\itshape, align=left] at (5.2, -3.5) {
+                        "It is necessary to separate syndrome (clinically identified impairment) from biology\\(etiology)\\
+                        \\[-0.2cm]
+                        \textbf{AD is defined by its biology} with the following implications\\
+                        \\[-0.2cm]
+                        \textbf{The disease is first evident with the appearance of β-amyloid plaques, and later}\\\textbf{neocortical tau tangles}, while people are asymptomatic. Pathophysiologic mechanisms\\involved with processing and clearance of protein fragments may be involved very early\\in the disease process, but these are not yet well understood.\\
+                        \\[-0.2cm]
+                        In living people the disease is diagnosed by disease specific core biomarkers\\
+                        \\[-0.2cm]
+                        Unimpaired individuals with abnormal biomarker testing are at risk for symptoms due to\\AD.\\
+                        \\[-0.2cm]
+                        They are not at risk for a disease they already have.\\
+                        \\[-0.2cm]
+                        Symptoms are a result of the disease process and are not necessary to diagnose AD\\
+                        \\[-0.2cm]
+                        AD exists on a continuum not as discrete clinically defined entities\\
+                        \\[-0.2cm]
+                        Clinical syndromes commonly seen with AD may also be caused by disorders other than\\AD and therefore clinical presentation alone is not diagnostic of AD\\
+                        \\[-0.2cm]
+                        The same AD biology may result in different phenotypic presentations"\\
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Revised Criteria for Diagnosis and Staging of Alzheimer's Disease: Alzheimer’s Association Workgroup, alz.org/diagnosticcriteria
+                    };
+                }
+                \only<13>{
+                    \node[inner sep=0pt, draw=black] at (5, -3.75) {
+                        \includegraphics[width=8cm]{data/ad_diff_results.png}
+                    };
+                    \node[red,align=center,font=\scriptsize\linespread{0.8}\selectfont] at (8.64, -3.62) {
+                        \underline{acc}\\
+                        89.8\%
+                    };
+                    \node[red,align=center,font=\scriptsize\linespread{0.8}\selectfont] at (8.64, -5.65) {
+                        \underline{acc}\\
+                        69.5\%
+                    };
+                    \node[font=\tiny, anchor=south,align=center, inner sep=1pt] (ms-citation) at (5, -7.65) {
+                        Rogeau, A., Hives, F., Bordier, C., Lahousse, H., Roca, V., Lebouvier, T., ... \& Lopes, R. (2024). A 3D convolutional neural network to\\classify subjects as Alzheimer's disease, frontotemporal dementia or healthy controls using brain 18F-FDG PET. NeuroImage, 120530
+                    };
+               }
+                \only<14>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\molpdpet}
+                    };
+                }
+                \only<15>{
+                    \node[] at (5, -3.5) {
+                        \usebox{\molpdall}
+                    };
+                }
+            \end{tikzpicture}
+        }
+        \only<16>{
+            \vfill
+            Molekylær avbildning: Lokaliserer og kvantifiserer tilstedeværelsen av spesifikke molekyler og partikler
+            \begin{itemize}
+                \item[\textbullet] {\small Brukt i studier for å klassifisere PD og DEM med gode resultater (treffsikkerhet >90\%), men (noe overraskende) ikke bedre enn andre modaliteter.}
+                \item[\textbullet] {\small PET er et naturlig valg for å finne patologi relatert til AD, og kan brukes for å differensialdiagnostisere underliggende sykdom ved demens bedre enn mennesker (Rogeau et al).}
+                \item[\textbullet] {\small SPECT nyttig for å karakterisere degenerasjon av dopamin-produserende celler i PD.}
+            \end{itemize}
+            \vfill
+        }
+    \end{frame}
+
+    \section{Utfordringer og muligheter}
+
+    \newsavebox{\accuracyplots}
+    \sbox{\accuracyplots}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                boxplot/draw direction = y,
+                width=10cm,
+                height=7cm,
+                xmin=0.4,
+                xmax=6.6,
+                ymin=50,
+                ymax=100,
+                xtick={1,2,3,4,5,6},
+                xticklabels={DEM,MS,PD,SCZ,MDD,BP},
+                ylabel=Treffsikkerhet,
+                axis y line*=left,
+                xlabel=Diagnose,
+                axis x line*=bottom,
+                clip=false,
+                xtick style={draw=none},
+                ymajorgrids=true,
+                ytick style={draw=none},
+            ]
+            % DEM
+            \addplot[] coordinates { (0.595, 92.5) (1.405, 92.5) };
+            \addplot[] coordinates { (1.595, 93.4) (2.405, 93.4) };
+            \addplot[] coordinates { (2.595, 95.15) (3.405, 95.15) };
+            \addplot[] coordinates { (3.595, 81.42) (4.405, 81.42) };
+            \addplot[] coordinates { (4.595, 80.47) (5.405, 80.47) };
+            \addplot[] coordinates { (5.595, 76.35) (6.405, 76.35) };
+            \node[anchor=south] at (axis cs: 1, 92.5) {92.5\%};
+            \node[anchor=south] at (axis cs:2, 93.4) {93.4\%};
+            \node[anchor=south] at (axis cs:3, 95.15) {95.15\%};
+            \node[anchor=south] at (axis cs:4, 81.42) {81.42\%};
+            \node[anchor=south] at (axis cs:5, 80.47) {80.47\%};
+            \node[anchor=south] at (axis cs:6, 76.35) {76.35\%};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\boxplots}
+    \sbox{\boxplots}{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                boxplot/draw direction = y,
+                width=10cm,
+                height=7cm,
+                xmin=0.4,
+                xmax=6.6,
+                ymin=50,
+                ymax=100,
+                xtick={1,2,3,4,5,6},
+                xticklabels={DEM,MS,PD,SCZ,MDD,BP},
+                ylabel=Treffsikkerhet,
+                axis y line*=left,
+                xlabel=Diagnose,
+                axis x line*=bottom,
+                clip=false,
+                xtick style={draw=none},
+                ymajorgrids=true,
+                ytick style={draw=none},
+            ]
+            % DEM
+            \addplot[red] coordinates { (0.595, 92.5) (1.405, 92.5) };
+            \addplot+[
+                boxplot prepared={
+                median=92.5,
+                upper quartile=97.25,
+                lower quartile=88.94,
+                upper whisker=100,
+                lower whisker=76.46
+                },
+                draw=black,
+                fill=color1,
+                solid
+            ] coordinates {};
+
+            % MS
+            \addplot+[
+                boxplot prepared={
+                median=93.4,
+                upper quartile=98.31,
+                lower quartile=87.94,
+                upper whisker=100,
+                lower whisker=75
+                },
+                draw=black,
+                fill=color2,
+                solid
+            ] coordinates {};
+
+            % PD
+            \addplot+[
+                boxplot prepared={
+                median=95.15,
+                upper quartile=97.07,
+                lower quartile=89.15,
+                upper whisker=100,
+                lower whisker=77.26
+                },
+                draw=black,
+                fill=color3,
+                solid
+            ] coordinates {};
+
+            % SCZ
+            \addplot+[
+                boxplot prepared={
+                median=81.42,
+                upper quartile=90.03,
+                lower quartile=75,
+                upper whisker=100,
+                lower whisker=62
+                },
+                draw=black,
+                fill=color4,
+                solid
+            ] coordinates {};
+
+            % MDD
+            \addplot+[
+                boxplot prepared={
+                median=80.47,
+                upper quartile=90.8,
+                lower quartile=71.97,
+                upper whisker=99,
+                lower whisker=50.55
+                },
+                draw=black,
+                fill=color5,
+                solid
+            ] coordinates {};
+
+            % BP
+            \addplot+[
+                boxplot prepared={
+                median=76.35,
+                upper quartile=82.03,
+                lower quartile=65.15,
+                upper whisker=100,
+                lower whisker=55.9
+                },
+                draw=black,
+                fill=color6,
+                solid
+            ] coordinates {};
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\sizeplots}
+    \sbox{\sizeplots}{%
+        \begin{tikzpicture}
+            \begin{groupplot}[
+                group style={
+                    group size=3 by 2,
+                    horizontal sep=0.25cm,
+                    group name=plots,
+                    vertical sep=1.35cm
+                },
+                height=3.9cm,
+                width=4.4cm,
+                ymin=50,
+                ymax=100,
+                ticklabel style = {font=\footnotesize},
+                xmin=0,
+                x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
+                y label style={at={(axis description cs:-0.15,.5)},anchor=south},
+            ]
+                \nextgroupplot[
+                    ylabel={\footnotesize{Treffsikkerhet}},
+                    ymajorgrids=true,
+                    ytick style={draw=none},
+                    xmax=4700
+                ]
+                    \addplot[
+                        color1,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/DEM_accuracy_sample.csv};
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=1600
+                ]
+                    \addplot[
+                        color2,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/MS_accuracy_sample.csv};
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=1700
+                ]
+                    \addplot[
+                        color3,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/PD_accuracy_sample.csv};
+
+                \nextgroupplot[
+                    ylabel={\footnotesize{Treffsikkerhet}},
+                    ytick style={draw=none},
+                    ymajorgrids=true,
+                    xmax=1250
+                ]
+                    \addplot[
+                        color4,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/SCZ_accuracy_sample.csv};
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=395,
+                    xlabel=\footnotesize{Antall deltakere}
+                ]
+                    \addplot[
+                        color5,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/MDD_accuracy_sample.csv};
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=3300
+                ]
+                    \addplot[
+                        color6,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/BP_accuracy_sample.csv};
+                \end{groupplot}
+            \node[anchor=south] at (plots c1r1.north) {\textbf{\footnotesize{DEM}}};
+            \node[anchor=south] at (plots c2r1.north) {\textbf{\footnotesize{MS}}};
+            \node[anchor=south] at (plots c3r1.north) {\textbf{\footnotesize{PD}}};
+            \node[anchor=south] at (plots c1r2.north) {\textbf{\footnotesize{SCZ}}};
+            \node[anchor=south] at (plots c2r2.north) {\textbf{\footnotesize{MDD}}};
+            \node[anchor=south] at (plots c3r2.north) {\textbf{\footnotesize{BP}}};
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\trendplots}
+    \sbox{\trendplots}{%
+        \begin{tikzpicture}
+            \begin{groupplot}[
+                group style={
+                    group size=3 by 2,
+                    horizontal sep=0.25cm,
+                    group name=plots,
+                    vertical sep=1.35cm
+                },
+                height=3.9cm,
+                width=4.4cm,
+                ymin=50,
+                ymax=100,
+                ticklabel style = {font=\footnotesize},
+                xmin=0,
+                x label style={at={(axis description cs:0.5,-0.15)},anchor=north},
+                y label style={at={(axis description cs:-0.15,.5)},anchor=south},
+            ]
+                \nextgroupplot[
+                    ylabel={\footnotesize{Treffsikkerhet}},
+                    ymajorgrids=true,
+                    ytick style={draw=none},
+                    xmax=4700
+                ]
+                    \addplot[
+                        color1,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/DEM_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 91.0895) (4700, 91.0895+4500*0.0014)
+                    };
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=1600
+                ]
+                    \addplot[
+                        color2,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/MS_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 92.5003) (1600, 92.5003+1600*0.0019)
+                    };
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=1700
+                ]
+                    \addplot[
+                        color3,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/PD_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 92.9322) (1700, 92.9322+1700*-0.0011)
+                    };
+
+                \nextgroupplot[
+                    ylabel={\footnotesize{Treffsikkerhet}},
+                    ytick style={draw=none},
+                    ymajorgrids=true,
+                    xmax=1250
+                ]
+                    \addplot[
+                        color4,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/SCZ_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 83.2200) (1700, 83.2200+1250*-0.006)
+                    };
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=395,
+                    xlabel=\footnotesize{Antall deltakere}
+                ]
+                    \addplot[
+                        color5,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/MDD_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 85.7010) (1700, 85.7010+395*-0.055)
+                    };
+
+                \nextgroupplot[
+                    ymajorticks=false,
+                    ymajorgrids=true,
+                    xmax=3300
+                ]
+                    \addplot[
+                        color6,
+                        only marks,
+                        opacity=0.5
+                    ] table [
+                        x=sample,
+                        y=accuracy,
+                        col sep=comma
+                    ] {data/BP_accuracy_sample.csv};
+                    \addplot[black, thick] coordinates {
+                        (0, 73.0650) (3300, 73.0650+3300*-0.0052)
+                    };
+                \end{groupplot}
+            \node[anchor=south] at (plots c1r1.north) {\textbf{\footnotesize{DEM}}};
+            \node[anchor=south] at (plots c2r1.north) {\textbf{\footnotesize{MS}}};
+            \node[anchor=south] at (plots c3r1.north) {\textbf{\footnotesize{PD}}};
+            \node[anchor=south] at (plots c1r2.north) {\textbf{\footnotesize{SCZ}}};
+            \node[anchor=south] at (plots c2r2.north) {\textbf{\footnotesize{MDD}}};
+            \node[anchor=south] at (plots c3r2.north) {\textbf{\footnotesize{BP}}};
+        \end{tikzpicture}
+    }
+
+    \begin{frame}{Utfordringer: Prediktiv verdi}
+        \begin{tikzpicture}
+            \node[] at (0, 0) {};
+            \node[] at (10, -7) {};
+
+            \only<1>{
+                \node[] at (5, -3.5) {
+                    \usebox{\accuracyplots}
+                };
+            }
+            \only<2>{
+                \node[] at (5, -3.5) {
+                    \usebox{\boxplots}
+                };
+            }
+            \only<3>{
+                \node[] at (5, -3.5) {
+                    \usebox{\sizeplots}
+                };
+            }
+            \only<4>{
+                \node[] at (5, -3.5) {
+                    \usebox{\trendplots}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Utfordringer: Generalisering}
+        \centering
+        \begin{tikzpicture}
+            \onslide<1->{
+                \node[font=\tiny, align=center, anchor=south] at (5, -7.7) {
+                    Matsuo, K., Harada, K., Fujita, Y., Okamoto, Y., Ota, M., Narita, H., ... \& Watanabe, Y. (2019). Distinctive neuroanatomical\\substrates for depression in bipolar disorder versus major depressive disorder. Cerebral Cortex, 29(1), 202-214
+                };
+                \only<1,2>{
+                    \node[inner sep=0pt, draw=black, anchor=west] at (2, -3) {
+                        \includegraphics[
+                            height=6cm
+                        ]{data/bp_generalization_before.png}
+                    };
+                }
+                \onslide<3->{
+                    \node[inner sep=0pt, draw=black,anchor=west] at (2, -3) {
+                        \includegraphics[
+                            height=6cm
+                        ]{data/bp_generalization.png}
+                    };
+                }
+                \onslide<2->{
+                    \node[red] (insample) at (1, -3.66) {88.1\%};
+                    \draw[-stealth,red,thick] ($ (insample.east) + (0.63, 0) $) -- (insample);
+                }
+                \only<4>{
+                    \node[red] (outofsample) at (9.06, -5.5) {58.3\%};
+                    \draw[-stealth,red,thick] ($ (outofsample.west) - (0.63, 0) $) -- (outofsample);
+                }
+
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Muligheter: Større datasett}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=1995,
+                xmax=2023,
+                ymin=0,
+                ymax=3100,
+                xlabel=År,
+                ylabel={Antall deltakere},
+                set layers,
+                mark layer=axis tick labels,
+                xtick={2000, 2010, 2020},
+                xticklabels={2000, 2010, 2020},
+                xtick pos=bottom,
+                ytick pos=left,
+            ]
+                \addplot[
+                    only marks,
+                    mark=*,
+                    mark options={fill=color4},
+                    mark size=3pt,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=year,
+                    y=sample
+                ] {data/samples_per_year.csv};
+                \addplot[
+                    very thick
+                ] coordinates {
+                    (1995, 62.866179758263954)
+                    (1996, 63.55597682129154)
+                    (1997, 65.0383575971712)
+                    (1998, 67.39102573131072)
+                    (2001, 70.51983645842249)
+                    (2002, 74.14435940479996)
+                    (2004, 77.97361072532048)
+                    (2005, 81.96061312297496)
+                    (2006, 86.44172179393793)
+                    (2007, 92.06220402463063)
+                    (2008, 99.53790039691876)
+                    (2009, 109.4474514877954)
+                    (2010, 122.20483730372334)
+                    (2011, 138.2017765547833)
+                    (2012, 157.95619580086614)
+                    (2013, 182.0261878879818)
+                    (2014, 210.58063365935192)
+                    (2015, 242.79381335322466)
+                    (2016, 276.4693645568202)
+                    (2017, 308.3024837393616)
+                    (2018, 334.86525372355095)
+                    (2019, 353.8957691780963)
+                    (2020, 365.1800825950711)
+                    (2021, 370.4338549634431)
+                    (2022, 372.1705093608878)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Muligheter: Bedre metoder}
+        \colorlet{mlcolor}{color1}
+        \colorlet{dlcolor}{color7}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=1995,
+                xmax=2023,
+                ymin=0,
+                xlabel=År,
+                ylabel={Treffsikkerhet},
+                set layers,
+                mark layer=axis tick labels,
+                xtick pos=bottom,
+                ytick pos=left,
+                ymin=50,
+                ymax=100,
+                xtick={2000, 2010, 2020},
+                xticklabels={2000, 2010, 2020}
+            ]
+                \only<1>{
+                    \addplot[
+                        only marks,
+                        mark=*,
+                        mark options={fill=mlcolor},
+                        mark size=3pt,
+                        opacity=0.1
+                    ] table [
+                        col sep=comma,
+                        x=year,
+                        y=accuracy
+                    ] {data/ML_accuracies.csv};
+                    \addplot[
+                        very thick,
+                        mlcolor
+                    ] coordinates {
+                        (2007, 84.15435407572299)
+                        (2008, 84.06127198749056)
+                        (2009, 83.83154622834549)
+                        (2010, 83.42736225445749)
+                        (2011, 82.87546624601107)
+                        (2012, 82.2583793049431)
+                        (2013, 81.69501812690794)
+                        (2014, 81.31683663077997)
+                        (2015, 81.2396141487279)
+                        (2016, 81.53868364862613)
+                        (2017, 82.23096049946417)
+                        (2018, 83.2597184280308)
+                        (2019, 84.49039396353267)
+                        (2020, 85.7224170666793)
+                        (2021, 86.72359055600339)
+                        (2022, 87.28597251234463)
+                    };
+
+                    \addplot[
+                        only marks,
+                        mark=*,
+                        mark options={fill=dlcolor},
+                        mark size=3pt,
+                        opacity=0.1
+                    ] table [
+                        col sep=comma,
+                        x=year,
+                        y=accuracy
+                    ] {data/DL_accuracies.csv};
+                    \addplot[
+                        very thick,
+                        dlcolor
+                    ] coordinates {
+                        (2013, 85.14555940846526)
+                        (2014, 86.60114320534603)
+                        (2015, 87.99562325622804)
+                        (2016, 89.15993710942075)
+                        (2017, 90.05766456531254)
+                        (2018, 90.74082687320853)
+                        (2019, 91.28171815799755)
+                        (2020, 91.72010454084813)
+                        (2021, 92.04712571880303)
+                        (2022, 92.22651609009779)
+                    };
+
+                    \node[anchor=south east] (dllabel) at (axis cs: 1997, 52) {\small{Dyp læring}};
+                    \draw[dlcolor, very thick] (dllabel.west) -- ($ (dllabel.west) - (1.5, 0) $);
+                    \node[anchor=south west] (mllabel) at ($ (dllabel.north west) - (0, 15) $) {\small{Tradisjonell maskinlæring}};
+                    \draw[mlcolor, very thick] (mllabel.west) -- ($ (mllabel.west) - (1.5, 0) $);
+                }
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Oppsummering}
+        \small{En oversikt over hvordan kunstig intelligens og MR-data brukes i forsningslitteraturen for å predikere nevrologiske* sykdommer.}
+        \begin{itemize}
+            \item \footnotesize{En bred litteratur med studier som predikerer forskjellige utfall innen forskjellige tilstander med forskjellige typer MR-data.}
+            \item \footnotesize{DEM og SCZ er de vanligste diagnosene å predikere.}
+            \item \footnotesize{Strukturell og funksjonell MR de vanligste modalitetene.}
+            \item \footnotesize{Generelt høy treffsikkerhet for DEM, MS, and PD (90\%+)}
+            \item \footnotesize{Lavere, men forsatt potensielt klinisk brukbare resultater for SCZ, BP, MDD ($\sim$80\%).}
+            \item \footnotesize{\textbf{Studier peker i vidt forskjellige retninger}, slik at litteraturen er vanskelig å tolke.}
+            \item \footnotesize{\textbf{Bildemodaliteter som teoretisk er tett knyttet opp mot spesifikke sykdommer utkonkurrerer ikke andre modaliteter.}}
+            \item \footnotesize{Større datasett og bedre metoder vil forhåpentligvis gi en mer enhetlig litteratur.}
+        \end{itemize}
+    \end{frame}
+
+    \section{Takk for meg!}
+
+    \begin{frame}{Takk for meg!}
+        \centering
+        estenhl@uio.no
+    \end{frame}
+\end{document}
