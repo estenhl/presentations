@@ -118,7 +118,9 @@
     }
 
     \newcommand{\cnnarrow}[2]{
-        \draw[-stealth, line width=5pt, opacity=0.5] #1 -- #2;
+        \begin{scope}[transparency group, opacity=0.5]
+            \draw[-stealth, line width=5pt] #1 -- #2;
+        \end{scope}
     }
 
     \newcommand{\cnn}[2]{
@@ -182,7 +184,7 @@
     }
 
     \newcommand{\analysisarrow}[2]{
-        \draw[-stealth, line width=15pt] #1 -- #2;
+        \draw[-stealth, line width=10pt] #1 -- #2;
     }
 
     \newcommand{\auctrace}[4]{
@@ -374,14 +376,33 @@
         \def\nodesize{1cm}
         \def\predictfill{blue}
         \begin{tikzpicture}
-            \node[yslant=1] (input) at (1.1, -7.5) {
-                \includegraphics[height=4cm]{data/mri.png}
+            \def\mridepth{2}
+            \node[yslant=1, inner sep=0pt] (input) at (3, -7.5) {
+                \includegraphics[width=2.5cm, height=4.25cm]{data/mri.png}
             };
+            \draw[fill=black] (input.north east) --
+                ($ (input.north east) - (\mridepth, 0) $) --
+                ($ (input.north west) - (\mridepth, 0) $) --
+                (input.north west) -- cycle;
+            \draw[fill=black] (input.north west) --
+                ($ (input.north west) - (\mridepth, 0) $) --
+                ($ (input.south west) - (\mridepth, 0) $) --
+                (input.south west) -- cycle;
+            \draw[] (input.north east) --
+                ($ (input.north east) + (\mridepth, 0) $) --
+                ($ (input.north west) + (\mridepth, 0) $) --
+                (input.north west) -- cycle;
+            \draw[]  ($ (input.north west) + (\mridepth, 0) $) --
+                ($ (input.south west) + (\mridepth, 0) $) --
+                (input.south west);
+            \draw[] ($ (input.north east) + (\mridepth, 0) $) --
+                ($ (input.south east) + (\mridepth, 0) $) --
+                ($ (input.south west) + (\mridepth, 0) $);
             \node[
-                anchor=south west,
+                anchor=south,
                 align=center,
                 font=\normalfont\linespread{0.8}\selectfont
-            ] at ($ (input.east) - (0, 1.8) $) {
+            ] at ($ (input.north east) - (0, 0) $) {
                 T1-weighted\\
                 structural MRI
             };
@@ -389,20 +410,38 @@
                 Brain age gap
             };
 
-            \cnnarrow{(1.1, -7.5)}{(10.5, -7.5)}
+            \cnnarrow{(5.1, -7.5)}{(10.5, -7.5)}
             \cnn{10}{-6.5}
 
             \lrp{33}{-6.5}
-            \cnnarrow{(42.95, -7.5)}{(53, -7.5)}
+            \cnnarrow{(43.94, -7.5)}{(53, -7.5)}
 
-            \node[yslant=1] (map) at (53, -7.5) {
-                \includegraphics[height=4cm]{data/heatmap.png}
+            \node[yslant=1, inner sep=0pt] (map) at (52, -7.5) {
+                \includegraphics[width=2.5cm, height=4.25cm]{data/heatmap.png}
             };
+            \draw[fill=black] (map.north east) --
+                ($ (map.north east) - (\mridepth, 0) $) --
+                ($ (map.north west) - (\mridepth, 0) $) --
+                (map.north west) -- cycle;
+            \draw[fill=black] (map.north west) --
+                ($ (map.north west) - (\mridepth, 0) $) --
+                ($ (map.south west) - (\mridepth, 0) $) --
+                (map.south west) -- cycle;
+            \draw[] (map.north east) --
+                ($ (map.north east) + (\mridepth, 0) $) --
+                ($ (map.north west) + (\mridepth, 0) $) --
+                (map.north west) -- cycle;
+            \draw[]  ($ (map.north west) + (\mridepth, 0) $) --
+                ($ (map.south west) + (\mridepth, 0) $) --
+                (map.south west);
+            \draw[] ($ (map.north east) + (\mridepth, 0) $) --
+                ($ (map.south east) + (\mridepth, 0) $) --
+                ($ (map.south west) + (\mridepth, 0) $);
             \node[
-                anchor=south east,
+                anchor=south,
                 align=center,
                 font=\normalfont\linespread{0.8}\selectfont
-            ] at ($ (map.west) + (-0.5, 1.8) $) {
+            ] at (map.north east) {
                 Explanatory\\
                 heatmaps
             };
@@ -434,8 +473,8 @@
 
             \analysisarrow{($ (prediction.south) - (0, 0.5) $)}{($ (babox.north) + (1.55, 0.4) $)}
             \analysisarrow{($ (prediction.north) + (0, 0.5) $)}{($ (correlations.south) + (1, 0.2) $)}
-            \analysisarrow{($ (map.south) - (0, 0.5) $)}{($ (mapbox.north) + (0.42, 0.6) $)}
-            \analysisarrow{($ (map.east) + (1, -1.92) $)}{($ (diagnoses.west) + (0, 0) $)}
+            \analysisarrow{($ (map.south) - (0, 1.27) $)}{($ (mapbox.north) + (0.42, 0.6) $)}
+            \analysisarrow{($ (map) + (2, 0) $)}{($ (diagnoses.west) + (0, 0) $)}
 
         \end{tikzpicture}
     }
@@ -461,16 +500,28 @@
         \begin{beamercolorbox}[sep=0em,wd=\textwidth]{title}
             \begin{columns}
                 \begin{column}{0.2\textwidth}
+                    \hspace{1.2cm}
+                    \includegraphics[height=8cm]{data/uio.png}
                 \end{column}
                 \begin{column}{0.6\textwidth}
-                    \centering\\[2.5cm]
+                    \centering\\[2.3cm]
                     \fontsize{60}{70}{
-                        \textbf{Increasing the sensitivity of brain age modelling}\\[0.5cm]
+                        \textbf{Increasing the expressitivity of brain age models}\\[0.8cm]
                         \textbf{with explainable artificial intelligence}
                     }
-                    \vspace{2.5cm}
+                    \vspace{2.3cm}
                 \end{column}
                 \begin{column}{0.2\textwidth}
+                    \hfill
+                    \begin{minipage}{0.6\textwidth}
+                        \centering
+                        Noone here? Scan this and\\[-0.2cm]
+                        I will come running!\\[0.5cm]
+                        \includegraphics[height=4cm]{data/qr.png}\\
+                        Or send me an email:\\[-0.2cm]
+                        estenhl@uio.no
+                    \end{minipage}
+                    \hspace{1.2cm}
                 \end{column}
             \end{columns}
         \end{beamercolorbox}
@@ -531,7 +582,7 @@
             \begin{column}{\sectionwidth}
                 \begin{minipage}[t][25cm][t]{\textwidth}
                     \postersection{Conclusion}{6.53cm}{
-                        Enhancing brain age models with XAI techniques  introduces a new, derived, data modality that is more sensitive towards subtle aberrations in neuroimaging data than a singular brain age prediction.
+                        Enhancing brain age models with XAI techniques  introduces a new, derived, data modality that is more expressive of subtle aberrations in neuroimaging data than a singular brain age prediction.
                     }
                     \postersection{References}{10cm}{
                         1. Franke, K. \& Gaser, C. Ten Years of BrainAGE as a Neuroimaging Biomarker of Brain Aging: What Insights Have We Gained? \textit{Frontiers in Neurology}, 2019\\
@@ -544,9 +595,8 @@
 \end{document}
 
 % TODO:
-% Better title
-% UiO-logo
-% QR-code
 % Mean AUCs in plot
-% New MRI/heatmap
 % Better LRP colouring
+% 3D MRI
+% Nicer arrows
+
