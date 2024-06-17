@@ -212,7 +212,7 @@
                             (#1 + 12.4, #2 - 4.7) --
                             (#1 - 0.5, #2 - 4.7) -- cycle;
         \node[anchor=south, text depth=0] at (#1 + 5.95, #2 + 2.75) {
-            \textbf{\large{Layerwise relevance propagation}}
+            \textbf{\large{Layer-wise relevance propagation}}
         };
     }
 
@@ -236,11 +236,21 @@
         ] {data/clinical_predictions/#1/aucs.csv};
     }
 
-    \newcommand{\meantrace}[2]{
-        \addplot[black, thick, dashed] coordinates {
-            (#1-0.2, #2)
-            (#1+0.2, #2)
+    \newcommand{\meantrace}[3]{
+        \def\padding{0.25}
+        \addplot[black, very thick, dashed] coordinates {
+            (#1-\padding, #2)
+            (#1+\padding, #2)
         };
+        \ifnum#3=1
+            \node[anchor=west, inner sep=0pt, font=\small] at (axis cs: #1+\padding, #2) {#2};
+        \fi
+        \ifnum#3=2
+            \node[anchor=east, inner sep=0pt, font=\small] at (axis cs: #1-\padding, #2) {#2};
+        \fi
+        \ifnum#3=3
+            \node[anchor=west, inner sep=2pt, font=\small, draw=black, fill=white] at (axis cs: #1+\padding, #2) {#2};
+        \fi
     }
 
     \newcommand{\differentiationplot}[3]{
@@ -260,7 +270,8 @@
                 xticklabels={ADHD, ANX, ASD, BIP, DEM, MCI, MDD, MS, SCZ},
                 xtick pos=bottom,
                 axis line style ={black},
-                clip=false
+                clip=false,
+                clip mode=individual
             ]
                 \addplot[gray] coordinates {
                     (0, 0.75)
@@ -284,6 +295,11 @@
                     \auctrace{MDD}{6.5}{delta}{gray}
                     \auctrace{MS}{7.5}{delta}{MS}
                     \auctrace{SCZ}{8.5}{delta}{SCZ}
+
+                    \meantrace{4.5}{0.75}{1}
+                    \meantrace{5.5}{0.58}{1}
+                    \meantrace{7.5}{0.64}{2}
+                    \meantrace{8.5}{0.57}{3}
 
                     \node[
                         circle,
@@ -314,6 +330,12 @@
                     \auctrace{MDD}{6.5}{maps}{gray}
                     \auctrace{MS}{7.5}{maps}{MS}
                     \auctrace{SCZ}{8.5}{maps}{SCZ}
+
+                    \meantrace{3.5}{0.60}{1}
+                    \meantrace{4.5}{0.81}{2}
+                    \meantrace{5.5}{0.62}{2}
+                    \meantrace{7.5}{0.87}{2}
+                    \meantrace{8.5}{0.65}{2}
                 \fi
             \end{axis}
         \end{tikzpicture}
@@ -546,7 +568,7 @@
                 \begin{column}{0.6\textwidth}
                     \centering\\[2.3cm]
                     \fontsize{60}{70}{
-                        \textbf{Increasing the expressitivity of brain age models}\\[0.8cm]
+                        \textbf{Increasing the expressivity of brain age models}\\[0.8cm]
                         \textbf{with explainable artificial intelligence}
                     }
                     \vspace{2.3cm}
@@ -606,7 +628,7 @@
         \begin{columns}
             \begin{column}{\sectionwidth}
                 \postersection{Introduction}{25cm}{
-                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has gained popularity as a biomarker of generalized brain health. A multitude of studies have revealed older-appearing brains in patients with various conditions\textsuperscript{1}. However, while a discrepancy can be evident at the group-level, the abstract and summarizing nature of BAG limits its utility for precise, individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil brain regions causing deviations in BAG in the individual patient, providing a data modality that is plausibly more useful than the singular measure\textsuperscript{2}.
+                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has gained popularity as a biomarker of generalized brain health. A multitude of studies have revealed older-appearing brains in patients with various conditions\textsuperscript{1}. However, while a discrepancy can be evident at the group level, the abstract and summarizing nature of BAG limits its utility for precise, individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil brain regions causing deviations in BAG in the individual patient, providing a data modality that is plausibly more useful than the singular measure\textsuperscript{2}.
                 }
             \end{column}
             \begin{column}{\sectionwidth}
