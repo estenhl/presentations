@@ -97,7 +97,7 @@
         \foreach \i in {0,...,\iterations} {
             \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
             \convside{#1}{#2+\i*-0.75}{#3}{#4/#5}{black!\hue}{n\i0}
-            \convtop{($ (n00.north west) + (0.5*\i*#4/#5, 0.5*\i*#4/#5) $)}{#3}{0.5*#4/#5}{black!\hue}
+            %\convtop{($ (n00.north west) + (0.5*\i*#4/#5, 0.5*\i*#4/#5) $)}{#3}{0.5*#4/#5}{black!\hue}
 
             \foreach \j in {0,...,\iterations} {
                 \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
@@ -105,6 +105,10 @@
                     \pgfmathsetmacro{\innerhue}{\hue}
                 \fi
                 \convfront{($ (n00.north east) + (0.5*\j*#4/#5, 0.5*\j*#4/#5 - \i*#4/#5) $)}{0.5*#4/#5}{black!\innerhue}
+
+                \ifnum\i=0
+                    \convtop{($ (n\i0.north west) + (0.5*\j*#4/#5, 0.5*\j*#4/#5) $)}{#3}{0.5*#4/#5}{black!\innerhue}
+                \fi
             }
         }
     }
@@ -140,20 +144,49 @@
     }
 
     \newcommand{\lrpchannel}[5]{
-        \def\huemin{0}
-        \def\huemax{100}
+        \def\huemin{30}
+        \def\huemax{210}
         \pgfmathsetmacro{\iterations}{#5-1}
         \foreach \i in {0,...,\iterations} {
-            \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
-            \convside{#1}{#2+\i*-0.75}{#3}{#4/#5}{red!\hue!black}{n\i0}
-            \convtop{($ (n00.north west) + (0.5*\i*#4/#5, 0.5*\i*#4/#5) $)}{#3}{0.5*#4/#5}{red!\hue!black}
+            \pgfmathsetmacro{\red}{int(random(-200, 100))}
+            \pgfmathsetmacro{\blue}{int(random(-200, 100))}
+            \colorlet{fillcolor}{black}
+            \ifnum\red>\blue
+                \ifnum\red>0
+                    \colorlet{fillcolor}{red!\red!black}
+                \fi
+            \fi
+            \ifnum\blue>\red
+                \ifnum\blue>0
+                    \colorlet{fillcolor}{blue!\blue!black}
+                \fi
+            \fi
+            \convside{#1}{#2+\i*-0.75}{#3}{#4/#5}{fillcolor}{n\i0}
+            %\convtop{($ (n00.north west) + (0.5*\i*#4/#5, 0.5*\i*#4/#5) $)}{#3}{0.5*#4/#5}{fillcolor}
 
             \foreach \j in {0,...,\iterations} {
-                \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
-                \ifnum\j=0
-                    \pgfmathsetmacro{\innerhue}{\hue}
+                \pgfmathsetmacro{\innerred}{int(random(-200, 100))}
+                \pgfmathsetmacro{\innerblue}{int(random(-200, 100))}
+                \colorlet{innerfillcolor}{black}
+                \ifnum\innerred>\innerblue
+                    \ifnum\innerred>0
+                        \colorlet{innerfillcolor}{red!\innerred!black}
+                    \fi
                 \fi
-                \convfront{($ (n00.north east) + (0.5*\j*#4/#5, 0.5*\j*#4/#5 - \i*#4/#5) $)}{0.5*#4/#5}{red!\innerhue!black}
+                \ifnum\innerblue>\innerred
+                    \ifnum\innerblue>0
+                        \colorlet{innerfillcolor}{blue!\innerblue!black}
+                    \fi
+                \fi
+
+                \ifnum\j=0
+                    \colorlet{innerfillcolor}{fillcolor}
+                \fi
+
+                \convfront{($ (n00.north east) + (0.5*\j*#4/#5, 0.5*\j*#4/#5 - \i*#4/#5) $)}{0.5*#4/#5}{innerfillcolor}
+                \ifnum\i=0
+                    \convtop{($ (n\i0.north west) + (0.5*\j*#4/#5, 0.5*\j*#4/#5) $)}{#3}{0.5*#4/#5}{innerfillcolor}
+                \fi
             }
         }
     }
@@ -364,9 +397,11 @@
                 \includegraphics[width=\mriwidth]{data/averages/SCZ/diff.png}
             };
 
+            \node[fill=black, minimum width=3*\mriwidth, minimum height=1cm] at (ANX.north) {};
+
             \def\textsep{0.6}
             \foreach \diagnosis in {ADHD, ANX, ASD, BIP, DEM, MCI, MDD, MS, SCZ} {
-                \node[minimum width=\mriwidth, fill=black, anchor=south, text=white] at ($ (\diagnosis.north) - (0, \textsep) $) {\diagnosis};
+                \node[minimum width=\mriwidth, anchor=south, text=white] at ($ (\diagnosis.north) - (0, \textsep) $) {\diagnosis};
             }
         \end{tikzpicture}
     }
@@ -464,10 +499,10 @@
             \node[anchor=south] at ($ (correlations.north) + (1,-0.8) $) {
                 \textbf{\large{Model evaluation}}
             };
-            \node[anchor=west] (diagnoses) at (63, -7.5) {
+            \node[anchor=west, inner sep=0pt] (diagnoses) at (63, -7.5) {
                 \usebox{\diagnoses}
             };
-            \node[anchor=south] at ($ (diagnoses.north) + (0, -0.5) $) {
+            \node[anchor=south] at ($ (diagnoses.north) + (0, -0.2) $) {
                 \textbf{\large{Average heatmaps}}
             };
 
@@ -475,6 +510,11 @@
             \analysisarrow{($ (prediction.north) + (0, 0.5) $)}{($ (correlations.south) + (1, 0.2) $)}
             \analysisarrow{($ (map.south) - (0, 1.27) $)}{($ (mapbox.north) + (0.42, 0.6) $)}
             \analysisarrow{($ (map) + (2, 0) $)}{($ (diagnoses.west) + (0, 0) $)}
+
+            \node[draw=black, left color=blue, right color=red, minimum height=0.5cm, minimum width=15cm] (colorbar) at ($ (diagnoses.south) - (0.12, 1.5) $) {};
+            \node[anchor=north west, text depth=0] at (colorbar.south west) {Younger};
+            \node[anchor=north east, text depth=0] at (colorbar.south east) {Older};
+            \node[anchor=south, outer sep=0pt] at ($ (colorbar.north) - (0, 0.1) $) {\textbf{Regional appearance}};
 
         \end{tikzpicture}
     }
@@ -596,7 +636,4 @@
 
 % TODO:
 % Mean AUCs in plot
-% Better LRP colouring
-% 3D MRI
-% Nicer arrows
 
