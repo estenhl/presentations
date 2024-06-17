@@ -9,6 +9,7 @@
 \usepackage{filecontents}
 \usepackage{graphicx}
 \usepackage{lipsum}
+\usepackage{multirow}
 \usepackage{pgfmath}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
@@ -20,6 +21,7 @@
 
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
+\usetikzlibrary{shadings}
 
 % Define the theme
 \usetheme{metropolis}
@@ -56,6 +58,10 @@
 \definecolor{PARK}{HTML}{A600FF}
 \definecolor{SCZ}{HTML}{FF00BF}
 \definecolor{HC}{HTML}{7F7F7F}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
 
 \begin{document}
     \newcommand{\convside}[6]{
@@ -195,6 +201,13 @@
         ] {data/clinical_predictions/#1/aucs.csv};
     }
 
+    \newcommand{\meantrace}[2]{
+        \addplot[black, thick, dashed] coordinates {
+            (#1-0.2, #2)
+            (#1+0.2, #2)
+        };
+    }
+
     \newcommand{\differentiationplot}[3]{
         \begin{tikzpicture}
             \begin{axis}[
@@ -211,7 +224,8 @@
                 xtick={0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5},
                 xticklabels={ADHD, ANX, ASD, BIP, DEM, MCI, MDD, MS, SCZ},
                 xtick pos=bottom,
-                axis line style ={black}
+                axis line style ={black},
+                clip=false
             ]
                 \addplot[gray] coordinates {
                     (0, 0.75)
@@ -235,6 +249,25 @@
                     \auctrace{MDD}{6.5}{delta}{gray}
                     \auctrace{MS}{7.5}{delta}{MS}
                     \auctrace{SCZ}{8.5}{delta}{SCZ}
+
+                    \node[
+                        circle,
+                        fill=gray!60,
+                        draw=black!60,
+                        inner sep=0.24cm
+                    ] (insigmarker) at (axis cs: 9.35, 0.19) {};
+                    \node[anchor=west] at (insigmarker.east) {p>0.05};
+                    \node[
+                        circle,
+                        draw=black!60,
+                        inner sep=0.24cm,
+                        anchor=north,
+                        upper left=DEM,
+                        upper right=MCI,
+                        lower left=MS,
+                        lower right=SCZ
+                    ] (sigmarker) at ($ (insigmarker.south) + (0, -2) $) {};
+                    \node[anchor=west] at (sigmarker.east) {p<0.05};
                 \fi
                 \ifnum#1=2
                     \auctrace{ADHD}{0.5}{maps}{gray}
@@ -289,6 +322,7 @@
                     x=prediction,
                     y=age
                 ] {data/brain_age_predictions.csv};
+                \node[anchor=south east] at (axis cs: 100, 0) {\textbf{MAE=4.51}};
 
             \end{axis}
         \end{tikzpicture}
@@ -341,13 +375,13 @@
         \def\predictfill{blue}
         \begin{tikzpicture}
             \node[yslant=1] (input) at (1.1, -7.5) {
-                \includegraphics[height=5cm]{data/mri.png}
+                \includegraphics[height=4cm]{data/mri.png}
             };
             \node[
                 anchor=south west,
                 align=center,
                 font=\normalfont\linespread{0.8}\selectfont
-            ] at ($ (input.east) - (0, 2.2) $) {
+            ] at ($ (input.east) - (0, 1.8) $) {
                 T1-weighted\\
                 structural MRI
             };
@@ -368,9 +402,8 @@
                 anchor=south east,
                 align=center,
                 font=\normalfont\linespread{0.8}\selectfont
-            ] at ($ (map.west) + (-0.5, 2.2) $) {
-                Individual\\
-                explanatory\\
+            ] at ($ (map.west) + (-0.5, 1.8) $) {
+                Explanatory\\
                 heatmaps
             };
 
@@ -473,32 +506,32 @@
             \end{columns}
         \end{beamercolorbox}
 
-        \vspace{0.5cm}
+        \vspace{0.4cm}
         \begin{center}
             \usebox{\overview}
         \end{center}
-        \vspace{1cm}
+        \vspace{0.4cm}
 
         \begin{columns}
             \begin{column}{\sectionwidth}
                 \postersection{Introduction}{25cm}{
-                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has revealed older-appearing brains in patients with various conditions\textsuperscript{1}. Although this phenomena is evident at the group-level, the abstract nature of BAG limits its utility for individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil concrete and precise visual patterns in the individual patient causing deviations in BAG, that are plausibly more clinically useful than the singular measure.
+                    The brain age gap (BAG), a neuroimaging-derived measure encoding the difference between the apparent and chronological age of the brain, has gained popularity as a biomarker of generalized brain health. A multitude of studies have revealed older-appearing brains in patients with various conditions\textsuperscript{1}. However, while a discrepancy can be evident at the group-level, the abstract and summarizing nature of BAG limits its utility for precise, individualized clinical decision-making. Explainable artificial intelligence (XAI) can unveil brain regions causing deviations in BAG in the individual patient, providing a data modality that is plausibly more useful than the singular measure\textsuperscript{2}.
                 }
             \end{column}
             \begin{column}{\sectionwidth}
                 \postersection{Methods}{25cm}{
-                    We trained a convolutional neural network to predict BAG using 80,007 structural magnetic resonance images from 67,881 participants. On top of the model we implemented layer-wise relevance propagation, a post-hoc XAI technique for explaining decision made by a model. This allowed us to procure heatmaps highlighting regions underlying a deviating BAG in individual participants. Finally, we investigated how these regions differed between participants, and whether their content could support clinical decision-making across nine conditions (Table 1).
+                    We trained a convolutional neural network to predict BAG using 80,007 structural magnetic resonance images from 67,881 participants. On top of the model we implemented layer-wise relevance propagation to procure heatmaps highlighting regions underlying a deviating BAG in individual participants. Finally, we investigated whether these heatmaps could support clinical decision-making across nine conditions: Attention-deficit/hyperactivity disorder (ADHD), anxiety disorders (ANX), autism spectrum disorder (ASD), bipolar disorder (BIP), dementia (DEM), mild cognitive impairment (MCI), major depressive disorder (MDD), multiple sclerosis (MS) and schizophrenia (SCZ).
                 }
             \end{column}
             \begin{column}{\sectionwidth}
                 \postersection{Results}{25cm}{
-                    Our model achieved satisfactory predictive performance in a held-out dataset (mean absolute error=4.51) from unknown scanners. Singular BAGs from our model allowed us to meaningfully discriminate patients from controls (mean AUC>0.5 in a nested cross-validation, p<0.05) for four out of nine diagnoses (DEM, MCI, MS, SCZ). The heatmaps yielded significantly improved predictions (mean AUC\textsubscript{map}>mean AUC\textsubscript{BAG}, p<0.05) for five out of nine diagnoses (BIP, DEM, MCI, MS, SCZ). Except MCI and DEM, the highlighted regions varied notably between conditions.
+                    Our model achieved satisfactory predictive performance in a held-out dataset (mean absolute error=4.51) from unknown scanners. Singular BAGs from our model allowed us to meaningfully discriminate patients from controls (mean area under the receiver operating curve (AUC)>0.5 in a nested 10-fold cross-validation, p<0.05) for four out of nine diagnoses (DEM, MCI, MS, SCZ). The heatmaps yielded significantly improved predictions (mean AUC\textsubscript{map}>mean AUC\textsubscript{BAG}, p<0.05) for five out of nine diagnoses (BIP, DEM, MCI, MS, SCZ). Visual inspection of average heatmaps per patient cohort revealed that the highlighted regions varied notably between conditions.
                 }
             \end{column}
             \begin{column}{\sectionwidth}
                 \begin{minipage}[t][25cm][t]{\textwidth}
-                    \postersection{Conclusion}{4.65cm}{
-                        Combining brain age models with XAI increases its utility for personalized clinical decision-making.
+                    \postersection{Conclusion}{6.53cm}{
+                        Enhancing brain age models with XAI techniques  introduces a new, derived, data modality that is more sensitive towards subtle aberrations in neuroimaging data than a singular brain age prediction.
                     }
                     \postersection{References}{10cm}{
                         1. Franke, K. \& Gaser, C. Ten Years of BrainAGE as a Neuroimaging Biomarker of Brain Aging: What Insights Have We Gained? \textit{Frontiers in Neurology}, 2019\\
@@ -509,3 +542,11 @@
         \end{columns}
     \end{frame}
 \end{document}
+
+% TODO:
+% Better title
+% UiO-logo
+% QR-code
+% Mean AUCs in plot
+% New MRI/heatmap
+% Better LRP colouring
