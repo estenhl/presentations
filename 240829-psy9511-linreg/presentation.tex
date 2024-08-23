@@ -203,9 +203,9 @@
 }
 
 \title{PSY9511: Seminar 4}
-\subtitle{Regression and classification}
+\subtitle{The basics of regression and classification}
 \author{Esten H. Leonardsen}
-\date{26.10.23}
+\date{29.05.2024}
 
 \titlegraphic{
 	\centering
@@ -217,5 +217,113 @@
 	\begin{frame}
 	 	\titlepage
 	\end{frame}
+
+    \begin{frame}[t]{Recap}
+        \only<1-4>{
+            \vspace{0.5cm}
+            \underline{What is statistical learning?}\\
+            \vspace{0.5cm}
+
+
+            \only<2>{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}
+            \only<3>{\textcolor{gray!20}{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
+            \only<4>{\small{\textcolor{gray!20}{\textbf{Inferentiental view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
+            \vspace{0.25cm}
+            \vspace{0.25cm}
+            \only<3>{\small{\textbf{Predictive view:} Finding a function $\hat{f}(X)$ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}
+            \only<4>{\small{\textcolor{gray!20}{\textbf{Predictive view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}}
+        }
+
+        \onslide<5->{
+            \centering
+            \begin{tikzpicture}
+                \begin{axis}[
+                    xtick pos=bottom,
+                    ytick pos=left,
+                    xmin=30,
+                    xmax=240,
+                    ymin=3,
+                    ymax=50,
+                    xlabel=Horsepower (x),
+                    ylabel=Miles per gallon (y),
+                    height=6.8cm,
+                    width=11cm
+                ]
+                    \addplot[
+                        only marks,
+                        opacity=0.6
+                    ] table [
+                        col sep=comma,
+                        x=horsepower,
+                        y=mpg
+                    ] {data/Auto.csv};
+                    \only<7>{
+                        \addplot[
+                            domain=30:240,
+                            samples=100,
+                            color=red,
+                            thick
+                        ] {39.93 - 0.1578*x};
+                    }
+                    \only<8>{
+                        \addplot[
+                            domain=30:240,
+                            samples=100,
+                            color=red,
+                            thick
+                        ] {23.44};
+                    }
+                    \only<9>{
+                        \addplot[
+                            domain=30:240,
+                            samples=100,
+                            color=red,
+                            thick
+                        ] {exp(3.86-0.0073*x)};
+                    }
+                \end{axis}
+            \end{tikzpicture}\\
+            \vspace{0.2cm}
+            \hspace{1.3cm}
+            \only<6>{
+                \textcolor{red}{$\hat{y}=\hat{f}(x)$}
+            }
+            \only<7>{
+                \textcolor{red}{$\hat{y}=39.93-0.1578x$}
+            }
+            \only<8>{
+                \textcolor{red}{$\hat{y}=23.44$}
+            }
+            \only<9>{
+                \textcolor{red}{$\hat{y}=e^{3.86-0.0073x}$}
+            }
+        }
+    \end{frame}
+
+    \begin{frame}[t]{Outline}
+        \underline{Plan for the day:}
+        \begin{itemize}
+            \item<2-> Different types of outputs $y$: Classification vs regression
+            \item<3-> Simple solutions to regression problems
+            \begin{itemize}
+                \item<4-> Linear regression
+                \item<4-> k nearest neighbours
+            \end{itemize}
+            \item<4-> Finding $\hat{f}(X)$: Training machine learning models
+            \item<5-> Simple solutions to classification problems
+            \begin{itemize}
+                \item<6-> Logistic regression
+                \item<6-> Generative models
+            \end{itemize}
+        \end{itemize}
+        \only<7>{
+            \underline{Plan for future lectures:}
+            \begin{itemize}
+                \item How do we evaluate how good our models are? (Lecture 3)
+                \item Complex solutions to regression and classification problems (Lecture 4 and onwards)
+            \end{itemize}
+        }
+    \end{frame}
+
 
 \end{document}
