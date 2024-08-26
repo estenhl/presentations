@@ -303,7 +303,7 @@
     \begin{frame}[t]{Outline}
         \underline{Plan for the day:}
         \begin{itemize}
-            \item<2-> Different types of outputs $y$: Classification vs regression
+            \item<2-> Different types of outputs $y$: Regression vs classification
             \item<3-> Simple solutions to regression problems
             \begin{itemize}
                 \item<4-> Linear regression
@@ -322,6 +322,154 @@
                 \item How do we evaluate how good our models are? (Lecture 3)
                 \item Complex solutions to regression and classification problems (Lecture 4 and onwards)
             \end{itemize}
+        }
+    \end{frame}
+
+    \begin{frame}{Regression vs classification}
+
+    \end{frame}
+
+    \begin{frame}[t]{Linear regression (via ordinary least squares)}
+        \begin{tikzpicture}
+            \begin{axis}[
+                xtick pos=bottom,
+                ytick pos=left,
+                xmin=30,
+                xmax=240,
+                ymin=3,
+                ymax=50,
+                xlabel=Horsepower (x),
+                ylabel=Miles per gallon (y),
+                height=6.8cm,
+                width=10.7cm
+            ]
+                \only<2-5>{
+                    \addplot[
+                        only marks,
+                        opacity=0.6
+                    ] table [
+                        col sep=comma,
+                        x=horsepower,
+                        y=mpg
+                    ] {data/Auto.csv};
+                }
+                \only<6-14>{
+                    \addplot[
+                        only marks,
+                        opacity=0.05
+                    ] table [
+                        col sep=comma,
+                        x=horsepower,
+                        y=mpg
+                    ] {data/Auto.csv};
+                    \addplot[
+                        only marks,
+                        opacity=0.8
+                    ] coordinates {
+                        (115, 28.9)
+                    };
+                }
+                \only<7-10>{
+                    \draw[dashed] (axis cs: 115, 3) -- (axis cs: 115, 50);
+                    \node[anchor=south, draw=black, fill=white, inner sep=2pt] at (axis cs: 115, 5) {\small{115}};
+                }
+                \only<3-14>{
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=red,
+                        thick
+                    ] {39.93 - 0.1578*x};
+                }
+                \only<10-14>{
+                    \addplot[
+                        only marks,
+                        red,
+                        opacity=0.6
+                    ] coordinates {
+                        (115, 21.78)
+                    };
+                }
+                \only<11-13>{
+                    \node[anchor=north] at (axis cs: 115, 21.78) {\small{$\hat{y}$}};
+                    \node[anchor=south] at (axis cs: 115, 28.9) {\small{$y$}};
+                }
+                \only<12>{
+                    \draw[] (axis cs: 115, 21.78) -- (axis cs: 115, 28.9);
+                    \node[anchor=west] at (axis cs: 115, 25.34) {\small{$|y-\hat{y}|$}};
+                }
+                \only<13>{
+                    \draw[] (axis cs: 115, 21.78) --
+                                                 (axis cs: 115, 28.9) --
+                                                 (axis cs: 134, 28.9) --
+                                                 (axis cs: 134, 21.78) -- cycle;
+                    \node[anchor=west] at (axis cs: 134, 25.34) {\small{$(y-\hat{y})^2$}};
+                }
+                \only<14>{
+                    \draw[] (axis cs: 115, 21.78) --
+                                                 (axis cs: 115, 28.9) --
+                                                 (axis cs: 134, 28.9) --
+                                                 (axis cs: 134, 21.78) -- cycle;
+                    \draw[] (axis cs: 60, 27) --
+                                                 (axis cs: 60, 30.462) --
+                                                 (axis cs: 69, 30.462) --
+                                                 (axis cs: 69, 27) -- cycle;
+                    \draw[] (axis cs: 75, 26) --
+                                                 (axis cs: 75, 28.095) --
+                                                 (axis cs: 81, 28.095) --
+                                                 (axis cs: 81, 26) -- cycle;
+                    \draw[] (axis cs: 165.3, 17.7) --
+                                                (axis cs: 165.3, 13.85) --
+                                                (axis cs: 176, 13.85) --
+                                                (axis cs: 176, 17.7) -- cycle;
+                    \draw[] (axis cs: 198, 15) --
+                                                (axis cs: 198, 8.68) --
+                                                (axis cs: 215, 8.68) --
+                                                (axis cs: 215, 15) -- cycle;
+
+                    \addplot[
+                        only marks,
+                        opacity=0.8
+                    ] coordinates {
+                        (60, 27)
+                        (75, 26)
+                        (165.3, 17.7)
+                        (198, 15)
+                    };
+                    \addplot[
+                        only marks,
+                        red,
+                        opacity=0.6
+                    ] coordinates {
+                        (60, 30.462)
+                        (75, 28.095)
+                        (165.3, 13.85)
+                        (198, 8.68)
+                    };
+                }
+                \only<4>{
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=blue,
+                        thick
+                    ] {36 - 0.1*x};
+                }
+
+            \end{axis}
+        \end{tikzpicture}\\
+        \centering
+        \only<3-7>{
+            \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578x$}\\
+        }
+        \only<4>{
+            \hspace{0.8cm}\textcolor{blue}{$\hat{y}=36-0.1x$}
+        }
+        \only<8>{
+            \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578*115$}\\
+        }
+        \only<9-10>{
+            \hspace{0.8cm}\textcolor{red}{$21.78=39.93-0.1578*115$}\\
         }
     \end{frame}
 
