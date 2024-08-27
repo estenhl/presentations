@@ -538,9 +538,12 @@
             \end{tikzpicture}
         }
         \only<7>{
-
+            Examples from psychology and neuroscience
         }
-        \only<8-9>{
+        \only<8>{
+            Ordinal regression
+        }
+        \only<9-10>{
             \centering
             \begin{tikzpicture}
                 \node[] at (-4.5, 1) {};
@@ -558,7 +561,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<10-11>{
+        \only<11-12>{
             \centering
             \begin{tikzpicture}
                 \node[] at (-5.5, 2) {};
@@ -584,7 +587,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<12>{
+        \only<13>{
             \begin{tikzpicture}
                 \node[anchor=west] at (0, 0) {
                     \includegraphics[
@@ -595,7 +598,7 @@
                 };
             \end{tikzpicture}
         }
-        \only<13>{
+        \only<14>{
             \begin{tikzpicture}
                 \node[anchor=west] at (0, 0) {
                     \includegraphics[height=4.5cm]{data/tumor.png}
@@ -1327,10 +1330,479 @@
         }
     \end{frame}
 
+    \newcommand{\knnplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=10cm,
+                height=6cm,
+                xmin=-0.2,
+                xmax=1.2,
+                ymin=-0.2,
+                ymax=1.2,
+                xmajorticks=false,
+                ymajorticks=false,
+                ylabel=y,
+                xlabel=x,
+                clip=false
+            ]
+                \ifnum#1=1
+                    \addplot[
+                        only marks,
+                        opacity=0.5,
+                        mark size=4pt
+                    ] coordinates {
+                        (0.000, -0.075)
+                        (0.105, 0.075)
+                        (0.211, 0.156)
+                        (0.316, 0.295)
+                        (0.421, 0.645)
+                        (0.526, 0.685)
+                        (0.684, 0.499)
+                        (0.789, 0.602)
+                        (0.895, 0.899)
+                        (1.000, 1.140)
+                    };
+                \fi
+                \ifnum#1>1
+                    \ifnum#1<4
+                        \addplot[
+                            only marks,
+                            opacity=0.1,
+                            mark size=4pt
+                        ] coordinates {
+                            (0.000, -0.075)
+                            (0.105, 0.075)
+                            (0.211, 0.156)
+                            (0.316, 0.295)
+                            (0.421, 0.645)
+                            (0.526, 0.685)
+                            (0.684, 0.499)
+                            (0.789, 0.602)
+                            (0.895, 0.899)
+                            (1.000, 1.140)
+                        };
+                        \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
+                        \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
+
+                        \ifnum#1=3
+                            \addplot[
+                                only marks,
+                                red,
+                                mark size=4pt,
+                                opacity=0.6
+                            ] coordinates {
+                                (0.6, 0.685)
+                            };
+                            \draw[-stealth,red] (axis cs: 0.60, 0.685) -- (axis cs: 0.55, 0.685);
+                        \fi
+                    \fi
+                \fi
+
+                \ifnum#1=4
+                    \addplot[
+                        only marks,
+                        opacity=0.5,
+                        mark size=4pt
+                    ] coordinates {
+                        (0.000, -0.075)
+                        (0.105, 0.075)
+                        (0.211, 0.156)
+                        (0.316, 0.295)
+                        (0.421, 0.645)
+                        (0.526, 0.685)
+                        (0.684, 0.499)
+                        (0.789, 0.602)
+                        (0.895, 0.899)
+                        (1.000, 1.140)
+                    };
+                    \addplot[dashed] coordinates {
+                        (-0.2, -0.075)
+                        (0.0525, -0.075)
+                        (0.0525, 0.075)
+                        (0.1575, 0.075)
+                        (0.1575, 0.156)
+                        (0.263, 0.156)
+                        (0.263, 0.295)
+                        (0.368, 0.295)
+                        (0.368, 0.645)
+                        (0.473, 0.645)
+                        (0.473, 0.685)
+                        (0.578, 0.685)
+                        (0.578, 0.499)
+                        (0.7375, 0.499)
+                        (0.7375, 0.602)
+                        (0.842, 0.602)
+                        (0.842, 0.899)
+                        (0.9475, 0.899)
+                        (0.9475, 1.140)
+                        (1.2, 1.140)
+                    };
+                \fi
+
+                \ifnum#1=5
+                    \addplot[
+                        only marks,
+                        opacity=0.1,
+                        mark size=4pt
+                    ] coordinates {
+                        (0.000, -0.075)
+                        (0.105, 0.075)
+                        (0.211, 0.156)
+                        (0.316, 0.295)
+                        (0.421, 0.645)
+                        (0.526, 0.685)
+                        (0.684, 0.499)
+                        (0.789, 0.602)
+                        (0.895, 0.899)
+                        (1.000, 1.140)
+                    };
+                    \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
+                    \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
+                    \addplot[
+                        only marks,
+                        red,
+                        mark size=4pt,
+                        opacity=0.6
+                    ] coordinates {
+                        (0.6, 0.592)
+                    };
+                    \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.55, 0.66);
+                    \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.65, 0.52);
+                \fi
+                \ifnum#1=6
+                    \addplot[
+                        only marks,
+                        opacity=0.5,
+                        mark size=4pt
+                    ] coordinates {
+                        (0.000, -0.075)
+                        (0.105, 0.075)
+                        (0.211, 0.156)
+                        (0.316, 0.295)
+                        (0.421, 0.645)
+                        (0.526, 0.685)
+                        (0.684, 0.499)
+                        (0.789, 0.602)
+                        (0.895, 0.899)
+                        (1.000, 1.140)
+                    };
+                    \addplot[dashed] coordinates {
+                        (-0.2, 0)
+                        (0.105, 0)
+                        (0.105, 0.115)
+                        (0.2105, 0.115)
+                        (0.2105, 0.225)
+                        (0.316, 0.225)
+                        (0.316, 0.47)
+                        (0.421, 0.47)
+                        (0.421, 0.665)
+                        (0.5525, 0.665)
+                        (0.5525, 0.592)
+                        (0.6575, 0.592)
+                        (0.6575, 0.55)
+                        (0.79, 0.55)
+                        (0.79, 0.7505)
+                        (0.894, 0.7505)
+                        (0.894, 1.01)
+                        (1.2, 1.01)
+
+
+                    };
+                \fi
+                \ifnum#1=7
+                \addplot[
+                    only marks,
+                    opacity=0.5,
+                    mark size=4pt
+                ] coordinates {
+                    (0.000, -0.075)
+                    (0.105, 0.075)
+                    (0.211, 0.156)
+                    (0.316, 0.295)
+                    (0.421, 0.645)
+                    (0.526, 0.685)
+                    (0.684, 0.499)
+                    (0.789, 0.602)
+                    (0.895, 0.899)
+                    (1.000, 1.140)
+                };
+                \addplot[dashed] coordinates {
+                    (-0.2, 0.4921)
+                    (1.2, 0.4921)
+                };
+            \fi
+
+            \addplot[] coordinates {
+                (-0.2, -0.2)
+                (1.2, 1.2)
+            };
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\knndata}
+    \sbox{\knndata}{
+        \knnplot{1}
+    }
+    \newsavebox{\knninput}
+    \sbox{\knninput}{
+        \knnplot{2}
+    }
+    \newsavebox{\knnpredone}
+    \sbox{\knnpredone}{
+        \knnplot{3}
+    }
+    \newsavebox{\knnformone}
+    \sbox{\knnformone}{
+        \knnplot{4}
+    }
+    \newsavebox{\knnpredtwo}
+    \sbox{\knnpredtwo}{
+        \knnplot{5}
+    }
+    \newsavebox{\knnformtwo}
+    \sbox{\knnformtwo}{
+        \knnplot{6}
+    }
+    \newsavebox{\knnall}
+    \sbox{\knnall}{
+        \knnplot{7}
+    }
+
     \begin{frame}{k nearest neighbours}
+        \begin{tikzpicture}
+            \node[draw=black] at (-5.25, -3) {};
+            \node[draw=black] at (5.25, 3) {};
+
+            \only<1-2>{
+                \node[anchor=west, align=left] at (-5, 1.5) {
+                    \underline{Linear regression:}\\[0.25cm]
+                    $\hat{f}(X)=\beta_0+\beta_1X_1+\beta_2X_2+\ldots+\beta_pX_p$
+                };
+
+                \node[anchor=west, align=left] at (-5, -1.5) {
+                    \underline{K-Nearest Neighbours:}\\[0.25cm]
+                    $\hat{f}(X)=\frac{1}{K}\sum\limits_{x_i \in \mathcal{N}}y_i$
+                };
+            }
+            \only<2>{
+                \node[rotate=45] at (0, 0) {
+                    \Huge{Blackboard!}
+                };
+            }
+            \only<3>{
+                \node[] at (0, 0) {
+                    \usebox{\knndata}
+                };
+            }
+            \only<4>{
+                \node[] at (0, 0) {
+                    \usebox{\knninput}
+                };
+            }
+            \only<5>{
+                \node[] at (0, 0) {
+                    \usebox{\knnpredone}
+                };
+            }
+            \only<6>{
+                \node[] at (0, 0) {
+                    \usebox{\knnformone}
+                };
+            }
+            \only<7>{
+                \node[] at (0, 0) {
+                    \usebox{\knnpredtwo}
+                };
+            }
+            \only<8>{
+                \node[] at (0, 0) {
+                    \usebox{\knnformtwo}
+                };
+            }
+            \only<9>{
+                \node[] at (0, 0) {
+                    \usebox{\knnall}
+                };
+            }
+            \only<10>{
+                \node[] at (0, 0) {
+                    Curse of dimensionality
+                };
+            }
+        \end{tikzpicture}
     \end{frame}
 
+    \newcommand{\logisticplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=5cm,
+                width=10cm,
+                ytick={0, 1},
+                ytick style={draw=none},
+                xtick pos=bottom,
+                xlabel=mpg (x),
+                ylabel=chevrolet (y),
+                ymin=-0.5,
+                ymax=1.5,
+                xmin=13,
+                xmax=38
+            ]
+                \addplot[
+                    only marks,
+                    fill=red,
+                    mark size=3pt
+                ] coordinates {
+                    (36, 1)
+                    (25, 1)
+                    (26, 1)
+                    (32, 1)
+                    (28, 1)
+                    (29, 1)
+                    (29.5, 1)
+                    (21, 1)
+                };
+                \addplot[
+                    only marks,
+                    fill=blue,
+                    mark size=3pt
+                ] coordinates {
+                    (15, 0)
+                    (17, 0)
+                    (21, 0)
+                    (14, 0)
+                    (14.5, 0)
+                    (16, 0)
+                    (19, 0)
+                    (24, 0)
+                    (27, 0)
+                };
+
+                \ifnum#1=2
+                    \addplot[
+                        domain=10:40,
+                        samples=100,
+                        color=red,
+                        thick
+                    ] {-0.87+0.06*x};
+                \fi
+                \ifnum#1=3
+                    \draw[dashed] (axis cs: 25.5, -0.5) -- (axis cs: 25.5, 1.5);
+                    \draw[] (axis cs: 25.5, 1) -- (axis cs: 38, 1);
+                    \draw[] (axis cs: 25.5, 0) -- (axis cs: 13, 0);
+                \fi
+                \ifnum#1=4
+                    \addplot[
+                        domain=13:38,
+                        samples=100,
+                        color=red,
+                        thick
+                    ] {exp(-10+0.42*x)/(1+exp(-10+0.42*x))};
+
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\logisticdata}
+    \sbox{\logisticdata}{
+        \logisticplot{1}
+    }
+    \newsavebox{\logisticlinear}
+    \sbox{\logisticlinear}{
+        \logisticplot{2}
+    }
+    \newsavebox{\logisticstep}
+    \sbox{\logisticstep}{
+        \logisticplot{3}
+    }
+    \newsavebox{\logisticlog}
+    \sbox{\logisticlog}{
+        \logisticplot{4}
+    }
+
     \begin{frame}{Logistic regression}
+        \begin{tikzpicture}
+            \node[draw=black] at (-5.25, -4) {};
+            \node[draw=black] at (5.25, 3) {};
+
+            \only<1-2>{
+                \node[] at (0, 0) {
+                    \begin{tabular}{ccc}
+                        \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
+                        36&Chevrolet&1\\
+                        15&Ford&0\\
+                        25&Chevrolet&1\\
+                        26&Chevrolet&1\\
+                        17&Ford&0\\
+                        15&Ford&0\\
+                        32&Chevrolet&1\\
+                        14&Ford&0\\
+                        14&Ford&0\\
+                        28&Chevrolet&1\\
+                    \end{tabular}
+                };
+            }
+            \only<1>{
+                \node[] at (0, -3.5) {
+                    $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
+                };
+            }
+            \only<2>{
+                \node[] at (0, -3.5) {
+                    $\widehat{\text{chevrolet}}=\beta_0+\beta_1\times\text{mpg}$
+                };
+            }
+            \only<3>{
+                \node[] at (0, 0) {
+                    \usebox{\logisticdata}
+                };
+            }
+            \only<4>{
+                \node[] at (0, 0) {
+                    \usebox{\logisticlinear}
+                };
+                \node[] at (0, -3) {
+                    $\widehat{\text{chevrolet}}=-0.87+0.06\times\text{mpg}$
+                };
+            }
+            \only<5>{
+                \node[] at (0, 0) {
+                    \usebox{\logisticstep}
+                };
+            }
+            \only<6>{
+                \node[] at (0, 0) {
+                    \usebox{\logisticlog}
+                };
+                \node[] at (0, -3) {
+                    $\widehat{\text{chevrolet}}=\dfrac{e^{-10.22+0.42\times\text{mpg}}}{1 + e^{-10.22+0.42\times\text{mpg}}}$
+                };
+            }
+            \only<7-10>{
+                \node[] at (0, 1) {
+                    $\hat{y}=\dfrac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$
+                };
+            }
+            \only<8-10>{
+
+                \node[align=center] at (0, 0) {
+                    1. Given that $0\leq\hat{y}\leq1$, we can interpret it\\as a probability: $\hat{y}=Pr(Y=1|X)$
+                };
+            }
+            \only<9-10>{
+                \node[align=center] at (0, -1.5) {
+                    2. The log-odds of belonging to the positive class is linear\\with respect to the coefficients: $log\left( \dfrac{p(X)}{1-p(X)} \right) = \beta_0+\beta_1x$
+                };
+            };
+            \only<10>{
+                \node[] at (0, -3) {
+                    3. Multiclass
+                };
+            }
+
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{Generative models}
