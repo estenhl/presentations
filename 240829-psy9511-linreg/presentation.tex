@@ -773,6 +773,171 @@
         \binaryplot{2}
     }
 
+    \newsavebox{\multilevel}
+    \savebox{\multilevel}{
+        \begin{tikzpicture}
+            \begin{axis}[
+                xmin=-0.5,
+                xmax=2.5,
+                xtick={0, 1, 2},
+                xticklabels={Ford, Chevrolet, Pontiac},
+                ylabel=mpg,
+                height=7cm,
+                width=7cm
+            ]
+                \addplot[
+                    only marks,
+                    fill=blue,
+                    opacity=0.6
+                ] coordinates {
+                    (-0.065, 18)
+                    (-0.080, 15)
+                    (-0.038, 18)
+                    (-0.139, 16)
+                    (0.028, 17)
+                    (-0.140, 15)
+                    (-0.149, 14)
+                    (0.137, 14)
+                    (0.043, 14)
+                    (-0.101, 15)
+                    (0.007, 15)
+                    (-0.145, 14)
+                    (-0.106, 15)
+                    (-0.013, 14)
+                    (-0.120, 24)
+                    (0.150, 22)
+                    (-0.166, 18)
+                    (-0.052, 21)
+                    (0.031, 27)
+                };
+                \addplot[
+                    only marks,
+                    fill=red,
+                    opacity=0.6
+                ] coordinates {
+                    (0.985, 38)
+                    (0.943, 36)
+                    (1.085, 36)
+                    (0.971, 36)
+                    (0.990, 34)
+                    (1.029, 38)
+                    (0.958, 32)
+                    (1.018, 38)
+                    (1.054, 25)
+                    (1.064, 38)
+                    (1.070, 26)
+                    (0.938, 22)
+                    (1.131, 32)
+                    (1.009, 36)
+                    (0.835, 27)
+                    (1.109, 27)
+                    (1.032, 44)
+                    (1.142, 32)
+                    (1.115, 28)
+                    (1.009, 31)
+                };
+                \addplot[
+                    only marks,
+                    fill=green,
+                    opacity=0.6
+                ] coordinates {
+                    (1.961, 30.200)
+                    (1.919, 28.200)
+                    (2.061, 28.200)
+                    (1.947, 28.200)
+                    (1.966, 26.200)
+                    (2.005, 30.200)
+                    (1.934, 24.200)
+                    (1.994, 30.200)
+                    (2.030, 17.200)
+                    (2.040, 30.200)
+                    (2.046, 18.200)
+                    (1.914, 14.200)
+                    (2.107, 24.200)
+                    (1.985, 28.200)
+                    (1.811, 19.200)
+                    (2.085, 19.200)
+                    (2.008, 36.200)
+                    (2.118, 24.200)
+                    (2.091, 20.200)
+                    (1.985, 23.200)
+                };
+
+                \draw[thick, dashed] (axis cs: -0.4, 17.158) -- (axis cs: 0.4, 17.158);
+                \node[anchor=south east, inner sep=1pt] at (axis cs: 0.4, 17.158) {\small{17.1}};
+                \draw[thick, dashed] (axis cs: 0.6, 32.8) -- (axis cs: 1.4, 32.8);
+                \node[anchor=south west, inner sep=1pt] at (axis cs: 0.6, 32.8) {\small{32.8}};
+                \draw[thick, dashed] (axis cs: 1.6, 25) -- (axis cs: 2.4, 25);
+                \node[anchor=south west, inner sep=1pt] at (axis cs: 1.6, 25) {\small{25.1}};
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newcommand{\combinationplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                xtick pos=bottom,
+                ytick pos=left,
+                xmin=30,
+                xmax=240,
+                ymin=3,
+                ymax=50,
+                xlabel=Horsepower,
+                ylabel=Miles per gallon,
+                height=6.5cm,
+                width=10.5cm
+            ]
+                \addplot[
+                    only marks,
+                    opacity=0.6
+                ] table [
+                    col sep=comma,
+                    x=horsepower,
+                    y=mpg
+                ] {data/Auto.csv};
+
+                \ifnum#1=1
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=red,
+                        thick
+                    ] {40 - 0.1566*x};
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=blue,
+                        thick
+                    ] {40 - 0.1566*x-1.85};
+                \fi
+                \ifnum#1=2
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=red,
+                        thick
+                    ] {40 - 0.1566*x};
+                    \addplot[
+                        domain=30:240,
+                        samples=100,
+                        color=blue,
+                        thick
+                    ] {38 - 0.13*x-1.85};
+                \fi
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\combinationbox}
+    \sbox{\combinationbox}{
+        \combinationplot{1}
+    }
+    \newsavebox{\interactionbox}
+    \sbox{\interactionbox}{
+        \combinationplot{2}
+    }
+
     \begin{frame}[t]{Linear regression (via ordinary least squares)}
         \only<1-16>{
             \begin{tikzpicture}
@@ -926,7 +1091,7 @@
                 \hspace{0.8cm}\textcolor{red}{$RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
             }
         }
-        \only<17-37>{
+        \only<17-45>{
             \begin{tikzpicture}
                 \node[] at (-5.25, -3) {};
                 \node[] at (5.25, 3) {};
@@ -1075,11 +1240,89 @@
                         $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{pontiac}$
                     };
                 }
-                % \only<34>{
-                %     \node[] at (0, 0) {
-                %         \usebox{\multiclass}
-                %     };
-                % }
+                \only<34>{
+                    \node[] at (0, 0) {
+                        Python dummy encoding
+                    };
+                }
+                \only<35>{
+                    \node[] at (0, 0) {
+                        \usebox{\multilevel}
+                    };
+                }
+                \only<36>{
+                    \node[] at (0, 0) {
+                        \begin{tabular}{ccc}
+                            \textbf{mpg}&\textbf{chevrolet}&\textbf{horsepower}\\
+                            36&1&130\\
+                            15&0&165\\
+                            25&1&150\\
+                            26&1&150\\
+                            17&0&140\\
+                            15&0&198\\
+                            32&1&220\\
+                            14&0&215\\
+                            14&0&225\\
+                            28&1&212\\
+                        \end{tabular}
+                    };
+                    \node[] at (0, -3.5) {
+                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
+                    };
+                }
+                \only<37>{
+                    \node[align=center] at (0, -3.8) {
+                        $\widehat{mpg}=
+                        \begin{cases}
+                            \beta_0+\beta_1+\beta_2\times\text{horsepower} & \text{if chevrolet}\\
+                            \beta_0+\beta_2\times\text{horsepower} & \text{else}\\
+                        \end{cases}$
+                    };
+
+                }
+                \only<38>{
+                    \node[] at (0, 0) {
+                        \usebox{\combinationbox}
+                    };
+                    \node[align=center] at (0, -3.8) {
+                        $\widehat{mpg}=
+                        \begin{cases}
+                            \textcolor{blue}{\beta_0+\beta_1+\beta_2\times\text{horsepower}} & \text{if chevrolet}\\
+                            \textcolor{red}{\beta_0+\beta_2\times\text{horsepower}} & \text{else}\\
+                        \end{cases}$
+                    };
+                }
+                \only<39-41>{
+                    \node[] at (0, 0) {
+                        \usebox{\interactionbox}
+                    };
+                }
+                \only<40>{
+                    \node[anchor=north] at (0, -3.4) {
+                        $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
+                    };
+                }
+                \only<41>{
+                    \node[align=center, anchor=north] at (0, -3.4) {
+                        $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$\\
+                        $+\beta_3\times\text{chevrolet}\times\text{horsepower}$
+                    };
+                }
+                \only<42>{
+                    \node[] at (0, 0) {
+                        Confidence intervals
+                    };
+                }
+                \only<43>{
+                    \node[] at (0, 0) {
+                        Evaluation
+                    };
+                }
+                \only<44>{
+                    \node[] at (0, 0) {
+                        Live coding
+                    };
+                }
             \end{tikzpicture}
         }
     \end{frame}
