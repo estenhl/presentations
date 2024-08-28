@@ -236,7 +236,7 @@
             \only<4>{\small{\textcolor{gray!20}{\textbf{Predictive view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}}
         }
 
-        \onslide<5->{
+        \only<5-9>{
             \centering
             \begin{tikzpicture}
                 \begin{axis}[
@@ -300,6 +300,9 @@
                 \textcolor{red}{$\hat{y}=e^{3.86-0.0073x}$}
             }
         }
+        \only<10>{
+            Bias-variance tradeoff
+        }
     \end{frame}
 
     \begin{frame}[t]{Outline}
@@ -308,10 +311,9 @@
             \item Different types of outputs $y$: Regression vs classification
             \item Linear regression: Restricting the scope of $\hat{f}(X)$
             \begin{itemize}
-                \item Finding $\hat{f}(X)$: Training machine learning models
                 \item Live coding
             \end{itemize}
-            \item k Nearest Neighbours
+            \item k-Nearest Neighbours
             \item Logistic regression: Extending linear regression to classification
             \begin{itemize}
                 \item Live coding
@@ -538,12 +540,37 @@
             \end{tikzpicture}
         }
         \only<7>{
-            Examples from psychology and neuroscience
+            Regression:
+            \begin{itemize}
+                \item Predicting reaction time of a cognitive task based on sleep scores
+                \item Predicting the age of an individual based on a brain scan
+                \item Predicting the anxiety scores based on questionnaire data
+            \end{itemize}
+            Classification:
+            \begin{itemize}
+                \item Predicting whether an individual is depressed based on cell phone usage data.
+                \item Predicting if a patient has dementia based on a brain scan
+                \item Predicting whether a patient is happy based on their facial expression
+            \end{itemize}
         }
-        \only<8>{
-            Ordinal regression
+        \only<8-9>{
+            \centering
+            \begin{tikzpicture}
+                \node[draw=black] at (-3, -3) {};
+                \node[draw=black] at (3, 3) {};
+
+                \node[] (l) at (0, 1.5) {Large};
+                \node[] (m) at (0, 0) {Medium};
+                \node[] (s) at (0, -1.5) {Small};
+
+                \only<9>{
+                    \draw[-stealth, line width=1mm] (-1, -1.5) -- (-1, 1.5);
+                    \draw[stealth-stealth] (l) -- (m) node[midway, right] {?};
+                    \draw[stealth-stealth] (m) -- (s) node[midway, right] {?};
+                }
+            \end{tikzpicture}
         }
-        \only<9-10>{
+        \only<10-11>{
             \centering
             \begin{tikzpicture}
                 \node[] at (-4.5, 1) {};
@@ -552,7 +579,7 @@
                     The quick brown fox jumps over the lazy
                 };
                 \draw[red] ($ (sentence.south east) + (0, 0.15) $) -- ($ (sentence.south east) + (1, 0.15) $);
-                \only<9>{
+                \only<11>{
                     \draw (2,-2) ellipse (1.8cm and 0.9cm);
                     \node[] at (3, -2.4) {\footnotesize{cat}};
                     \node[] at (1, -2.2) {\textbf{\footnotesize{dog}}};
@@ -561,7 +588,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<11-12>{
+        \only<12-13>{
             \centering
             \begin{tikzpicture}
                 \node[] at (-5.5, 2) {};
@@ -579,7 +606,7 @@
                 \draw[-Latex] (prompt) -- (model);
                 \draw[-Latex] (model) -- (output);
 
-                \only<11>{
+                \only<13>{
                     \node[draw=black, fill=red!50, inner sep=5pt, opacity=0.9] at (-2, -3) {};
                     \node[draw=black, fill=green!75, inner sep=5pt, opacity=0.9] (green) at (-1.9, -3.1) {};
                     \node[draw=black, fill=blue!25, inner sep=5pt, opacity=0.9] at (-1.8, -3.2) {};
@@ -587,7 +614,7 @@
                 }
             \end{tikzpicture}
         }
-        \only<13>{
+        \only<14>{
             \begin{tikzpicture}
                 \node[anchor=west] at (0, 0) {
                     \includegraphics[
@@ -598,12 +625,43 @@
                 };
             \end{tikzpicture}
         }
-        \only<14>{
+        \only<15>{
             \begin{tikzpicture}
                 \node[anchor=west] at (0, 0) {
                     \includegraphics[height=4.5cm]{data/tumor.png}
                 };
             \end{tikzpicture}
+        }
+        \only<16-17>{
+            \begin{tikzpicture}
+                \node[draw=black] at (-5.5, 3.5) {};
+                \node[draw=black] at (5, -3.5) {};
+                \node[] at (0, 0) {
+                    \includegraphics[width=5cm]{data/dog.png}
+                };
+                \draw[orange, thick] (-0.8, 1.4) -- (1.7, 1.4) -- (1.7, -1.8) -- (-0.8, -1.8) -- cycle;
+
+                \only<17>{
+                    \node[anchor=south, orange] at (0.45, 1.4) {Dog};
+                    \node[anchor=south, orange] at (-0.8, 1.4) {\footnotesize{(-0.8, 1.4)}};
+                    \node[anchor=south, orange] at (1.7, 1.4) {\footnotesize{(1.7, 1.4)}};
+                    \node[anchor=north, orange] at (-0.8, -1.8) {\footnotesize{(-0.8, -1.8)}};
+                    \node[anchor=north, orange] at (1.7, -1.8) {\footnotesize{(1.7, -1.8)}};
+                }
+
+            \end{tikzpicture}
+        }
+        \only<18-19>{
+            Speech generation
+        }
+        \only<20>{
+            Different types of outputs $y$ require us to use different mathematical formulations of the problem we want to solve.
+            \begin{itemize}
+                \item Problems with quantitative outputs are solved via regression, often by minimizing the mean squared error.
+                \item Problems with qualitative outputs are solved by classification, often by maximizing accuracy.
+                \item Ordinal regression falls between the two, with disjunct classes that can be ordered.
+                \item A variety of other types of problems can be seen as special cases of these two.
+            \end{itemize}
         }
     \end{frame}
 
@@ -941,6 +999,8 @@
         \combinationplot{2}
     }
 
+    \section{Linear regression (via ordinary least squares)}
+
     \begin{frame}[t]{Linear regression (via ordinary least squares)}
         \only<1-16>{
             \begin{tikzpicture}
@@ -1076,10 +1136,10 @@
                 \hspace{0.8cm}\textcolor{red}{$\hat{y}=\beta_0-\beta_1x$}\\
             }
             \only<3-7>{
-                \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578x$}\\
+                \hspace{0.75cm}\textcolor{red}{$\hat{y}=39.93-0.1578x$}\\
             }
             \only<4>{
-                \hspace{0.8cm}\textcolor{blue}{$\hat{y}=36-0.1x$}
+                \hspace{1.4cm}\textcolor{blue}{$\hat{y}=36-0.1x$}
             }
             \only<8>{
                 \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578*115$}\\
