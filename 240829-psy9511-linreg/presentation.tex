@@ -1969,7 +1969,7 @@
                 }
                 \only<10>{
                     \node[align=left] at (0, 0) {
-                        \underline{Blackboard}:\\
+                        \underline{Blackboard exercise}:\\
                         How does the bias-variance trade-off relate to the choice of $K$?
                     };
                 };
@@ -2091,86 +2091,136 @@
     \section{Logistic regression}
 
     \begin{frame}{Logistic regression}
-        \begin{tikzpicture}
-            \node[draw=black] at (-5.25, -4) {};
-            \node[draw=black] at (5.25, 3) {};
+        \only<1-20>{
+            \begin{tikzpicture}
+                \node[draw=black] at (-5.25, -4) {};
+                \node[draw=black] at (5.25, 3) {};
 
-            \only<1-2>{
-                \node[] at (0, 0) {
-                    \begin{tabular}{ccc}
-                        \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
-                        36&Chevrolet&1\\
-                        15&Ford&0\\
-                        25&Chevrolet&1\\
-                        26&Chevrolet&1\\
-                        17&Ford&0\\
-                        15&Ford&0\\
-                        32&Chevrolet&1\\
-                        14&Ford&0\\
-                        14&Ford&0\\
-                        28&Chevrolet&1\\
-                    \end{tabular}
-                };
-            }
-            \only<1>{
-                \node[] at (0, -3.5) {
-                    $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
-                };
-            }
-            \only<2>{
-                \node[] at (0, -3.5) {
-                    $\widehat{\text{chevrolet}}=\beta_0+\beta_1\times\text{mpg}$
-                };
-            }
-            \only<3>{
-                \node[] at (0, 0) {
-                    \usebox{\logisticdata}
-                };
-            }
-            \only<4>{
-                \node[] at (0, 0) {
-                    \usebox{\logisticlinear}
-                };
-                \node[] at (0, -3) {
-                    $\widehat{\text{chevrolet}}=-0.87+0.06\times\text{mpg}$
-                };
-            }
-            \only<5>{
-                \node[] at (0, 0) {
-                    \usebox{\logisticstep}
-                };
-            }
-            \only<6>{
-                \node[] at (0, 0) {
-                    \usebox{\logisticlog}
-                };
-                \node[] at (0, -3) {
-                    $\widehat{\text{chevrolet}}=\dfrac{e^{-10.22+0.42\times\text{mpg}}}{1 + e^{-10.22+0.42\times\text{mpg}}}$
-                };
-            }
-            \only<7-10>{
-                \node[] at (0, 1) {
-                    $\hat{y}=\dfrac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$
-                };
-            }
-            \only<8-10>{
-
-                \node[align=center] at (0, 0) {
-                    1. Given that $0\leq\hat{y}\leq1$, we can interpret it\\as a probability: $\hat{y}=Pr(Y=1|X)$
-                };
-            }
-            \only<9-10>{
-                \node[align=center] at (0, -1.5) {
-                    2. The log-odds of belonging to the positive class is linear\\with respect to the coefficients: $log\left( \dfrac{p(X)}{1-p(X)} \right) = \beta_0+\beta_1x$
-                };
-            };
-            \only<10>{
-                \node[] at (0, -3) {
-                    3. Multiclass
-                };
-            }
-
-        \end{tikzpicture}
+                \only<1-2>{
+                    \node[] at (0, 0) {
+                        \begin{tabular}{ccc}
+                            \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
+                            36&Chevrolet&1\\
+                            15&Ford&0\\
+                            25&Chevrolet&1\\
+                            26&Chevrolet&1\\
+                            17&Ford&0\\
+                            15&Ford&0\\
+                            32&Chevrolet&1\\
+                            14&Ford&0\\
+                            14&Ford&0\\
+                            28&Chevrolet&1\\
+                        \end{tabular}
+                    };
+                }
+                \only<1>{
+                    \node[] at (0, -3.5) {
+                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
+                    };
+                }
+                \only<2>{
+                    \node[] at (0, -3.5) {
+                        $\widehat{\text{chevrolet}}=\beta_0+\beta_1\times\text{mpg}$
+                    };
+                }
+                \only<3>{
+                    \node[] at (0, 0) {
+                        \usebox{\logisticdata}
+                    };
+                }
+                \only<4>{
+                    \node[] at (0, 0) {
+                        \usebox{\logisticlinear}
+                    };
+                    \node[] at (0, -3) {
+                        $\widehat{\text{chevrolet}}=-0.87+0.06\times\text{mpg}$
+                    };
+                }
+                \only<5>{
+                    \node[] at (0, 0) {
+                        \usebox{\logisticstep}
+                    };
+                }
+                \only<6>{
+                    \node[] at (0, 0) {
+                        \usebox{\logisticlog}
+                    };
+                    \node[] at (0, -3) {
+                        $\widehat{\text{chevrolet}}=\dfrac{e^{-10.22+0.42\times\text{mpg}}}{1 + e^{-10.22+0.42\times\text{mpg}}}$
+                    };
+                }
+                \only<7-20>{
+                    \node[] at (-0.9, 1) {
+                        $\hat{y}=$
+                    };
+                    \draw[] (-0.5, 1) -- (1.1, 1);
+                    \node[] at (-0.3, 0.75) {
+                        $1+$
+                    };
+                    \node[] at (0.45, 0.8) {
+                        $e^{\beta_0+\beta_1x}$
+                    };
+                    \node[] at (0.3, 1.2) {
+                        $e^{\beta_0+\beta_1x}$
+                    };
+                }
+                \only<8-13>{
+                    \node[anchor=east] at (0, -1) {
+                        $e^{\beta_0+\beta_1x} \rightarrow 0$
+                    };
+                }
+                \only<9-13>{
+                    \node[anchor=west] at (0, -1) {
+                        $\implies \hat{y} = 0$
+                    };
+                }
+                \only<10-13>{
+                    \node[anchor=east] at (0, -1.5) {
+                        $e^{\beta_0+\beta_1x} \rightarrow \infty$
+                    };
+                }
+                \only<11-13>{
+                    \node[anchor=west] at (0, -1.5) {
+                        $\implies \hat{y} = 1$
+                    };
+                }
+                \only<12-13>{
+                    \node[anchor=east] at (0, -2.5) {
+                        $0\leq\hat{y}\leq1$
+                    };
+                }
+                \only<13>{
+                    \node[anchor=west] at (0, -2.5) {
+                        $\implies\hat{y}=Pr(Y=1|X)$
+                    };
+                }
+                \only<15-16>{
+                    \node[] at (0, -1) {
+                        $log \left( \dfrac{p(X)}{1-p(X)} \right) = \beta_0+\beta_1x$
+                    };
+                }
+                \only<16>{
+                    \node[] at (0, -3) {
+                        "\textit{... counterintuitive and challenging to interpret.}" - James Jaccard
+                    };
+                }
+                \only<18-20>{
+                    \node[] at (0, 0) {
+                        More than one class?
+                    };
+                }
+                \only<19-20>{
+                    \node[] at (0, -2) {
+                        $Pr(Y=k|X=x)=\dfrac{e^{\beta_{0k}+\beta_{1k}x}}{\sum\limits_{l=1}^{K}e^{\beta_{0l}+\beta_{1l}x}}$
+                    };
+                }
+                \only<20>{
+                    \node[rotate=45] at (0, 0) {
+                        \Huge{Blackboard!}
+                    };
+                }
+            \end{tikzpicture}
+        }
     \end{frame}
 
     \begin{frame}{Generative models}
