@@ -12,6 +12,12 @@ y = df['mpg']
 model = LinearRegression()
 model.fit(X, y)
 print(f'Linear regression intercept: {model.intercept_}, coef: {model.coef_[0]}')
+preds = model.predict(X)
+residuals = pd.DataFrame({'residuals': y - preds, 'horsepower': df['horsepower']})
+residuals.to_csv('data/residuals.csv', index=False)
+
+plt.scatter(residuals['horsepower'], residuals['residuals'])
+plt.show()
 
 print(f'Constant intercept: {np.mean(y)}')
 

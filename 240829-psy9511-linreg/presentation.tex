@@ -5,6 +5,7 @@
 \usepackage[export]{adjustbox}
 \usepackage{array}
 \usepackage{bbm}
+\usepackage{emoji}
 \usepackage{etoolbox}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -183,6 +184,33 @@
     };
 }
 
+\newcommand{\PythonOutputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[red,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-6pt,
+                yshift=-11pt
+                ]north west:Out{[}#1{]}:}
+    ] (pythonoutput) (#3) at #2 {
+        \begin{lstlisting}[
+            style=PythonOutput,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #6
+        \end{lstlisting}
+    };
+}
+
 \newcommand{\RInputNode}[5]{
     \node[
         minimum width=#3,
@@ -301,7 +329,12 @@
             }
         }
         \only<10>{
-            Bias-variance tradeoff
+            \centering
+            \begin{tikzpicture}
+                \node[inner sep=0pt, draw=black] {
+                    \includegraphics[width=6cm]{data/bias-variance.png}
+                };
+            \end{tikzpicture}
         }
     \end{frame}
 
@@ -556,8 +589,8 @@
         \only<8-9>{
             \centering
             \begin{tikzpicture}
-                \node[draw=black] at (-3, -3) {};
-                \node[draw=black] at (3, 3) {};
+                \node[] at (-3, -3) {};
+                \node[] at (3, 3) {};
 
                 \node[] (l) at (0, 1.5) {Large};
                 \node[] (m) at (0, 0) {Medium};
@@ -634,8 +667,8 @@
         }
         \only<16-17>{
             \begin{tikzpicture}
-                \node[draw=black] at (-5.5, 3.5) {};
-                \node[draw=black] at (5, -3.5) {};
+                \node[] at (-5.5, 3.5) {};
+                \node[] at (5, -3.5) {};
                 \node[] at (0, 0) {
                     \includegraphics[width=5cm]{data/dog.png}
                 };
@@ -652,14 +685,26 @@
             \end{tikzpicture}
         }
         \only<18-19>{
-            Speech generation
+            \begin{tikzpicture}
+                \node[] at (-5.5, 3.5) {};
+                \node[] at (5, -3.5) {};
+
+                \node[inner sep=0pt, draw=black] at (0, 1) {
+                    \includegraphics[width=3.5cm]{data/robot.png}
+                };
+                \only<19>{
+                    \node[inner sep=0pt, draw=black] at (0, -2.5) {
+                        \includegraphics[width=5cm]{data/sound.png}
+                    };
+                }
+            \end{tikzpicture}
         }
         \only<20>{
             Different types of outputs $y$ require us to use different mathematical formulations of the problem we want to solve.
             \begin{itemize}
                 \item Problems with quantitative outputs are solved via regression, often by minimizing the mean squared error.
                 \item Problems with qualitative outputs are solved by classification, often by maximizing accuracy.
-                \item Ordinal regression falls between the two, with disjunct classes that can be ordered.
+                \item Ordinal regression falls between the two, with qualitative classes that have some kind of order.
                 \item A variety of other types of problems can be seen as special cases of these two.
             \end{itemize}
         }
@@ -700,15 +745,29 @@
     \sbox{\residuals}{
         \begin{tikzpicture}
             \begin{axis}[
-                % xmin=30,
-                % xmax=240,
-                % ymin=3,
-                % ymax=50,
+                xmin=30,
+                xmax=240,
+                ymin=-20,
+                ymax=20,
                 width=5.2cm,
                 height=5.2cm,
                 ylabel=$y-\hat{y}$,
                 xlabel=horsepower
             ]
+                \addplot[
+                    only marks,
+                    opacity=0.3
+                ] table [
+                    col sep=comma,
+                    x=horsepower,
+                    y=residuals
+                ] {data/residuals.csv};
+                \addplot[
+                    domain=30:240,
+                    samples=100,
+                    color=red,
+                    thick
+                ] {0};
             \end{axis}
         \end{tikzpicture}
     }
@@ -722,7 +781,7 @@
                 xlabel={Horsepower ($x_1$)},
                 ylabel={Weight ($x_2$)},
                 zlabel={Miles per gallon (y)},
-                view={45}{20}, % Adjust viewing angle colormap/cool,
+                view={25}{25}, % Adjust viewing angle colormap/cool,
                 xmin=30,
                 xmax=240,
                 ymin=1500,
@@ -730,25 +789,30 @@
                 zmin=3,
                 zmax=50,
                 xlabel style={sloped},
-                ylabel style={sloped}
+                ylabel style={sloped},
+                xmajorgrids=true,
+                ymajorgrids=true,
+                zmajorgrids=true,
+                xtick style={draw=none},
+                ytick style={draw=none},
+                ztick style={draw=none}
             ]
                 \addplot3[
+                    surf,
+                    samples=20,
+                    domain=30:240,
+                    y domain=1500:5000,
+                ] {45.64-0.04*x-0.005*y};
+                \addplot3[
                     only marks,
-                    mark size=2.5pt, % Size of each point
-                    opacity=0.5
+                    mark size=2.5pt,
+                    opacity=0.25
                 ] table [
                     x=horsepower,
                     y=weight,
                     z=mpg,
                     col sep=comma
                 ] {data/Auto.csv};
-                \addplot3[
-                    surf,
-                    opacity=0.5,
-                    samples=20,
-                    domain=30:240,
-                    y domain=1500:5000,
-                ] {45.64-0.04*x-0+.005*y}; % Replace this formula with your plane's equation
             \end{axis}
         \end{tikzpicture}
     }
@@ -999,6 +1063,78 @@
         \combinationplot{2}
     }
 
+    \newcommand{\cisplot}[1]{
+        \begin{tikzpicture}
+            \begin{axis}[
+                xtick pos=bottom,
+                ytick pos=left,
+                xmin=30,
+                xmax=240,
+                ymin=3,
+                ymax=50,
+                xlabel=Horsepower,
+                ylabel=Miles per gallon,
+                height=6.5cm,
+                width=10.5cm
+            ]
+                \addplot[
+                    domain=30:240,
+                    samples=100,
+                    color=red,
+                    thick
+                ] {40 - 0.1566*x};
+
+                \ifnum#1>1
+                    \addplot[
+                        only marks,
+                    ] coordinates {
+                        (105, 23.5)
+                    };
+                    \draw[|-|, dashed] (axis cs: 105, 17.5) -- (axis cs: 105, 29.5);
+                    \node[anchor=south, align=center, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 105, 29.5) {
+                        Prediction\\
+                        interval
+                    };
+                \fi
+
+                \ifnum#1>2
+                    \addplot[
+                        only marks,
+                        opacity=0.2
+                    ] coordinates {
+                        (140, 22)
+                        (140, 21)
+                        (140, 19)
+                        (140, 18)
+                        (140, 15)
+                    };
+
+                    \draw[|-|, densely dotted, red, thick] (axis cs: 140, 16) -- (axis cs: 140, 20);
+                    \node[anchor=south, align=center, red, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 140, 23) {
+                        Confidence\\
+                        interval
+                    };
+                \fi
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\cisdata}
+    \sbox{\cisdata}{
+        \cisplot{1}
+    }
+
+    \newsavebox{\cisprediction}
+    \sbox{\cisprediction}{
+        \cisplot{2}
+    }
+
+    \newsavebox{\cisconfidence}
+    \sbox{\cisconfidence}{
+        \cisplot{3}
+    }
+
     \section{Linear regression (via ordinary least squares)}
 
     \begin{frame}[t]{Linear regression (via ordinary least squares)}
@@ -1154,7 +1290,7 @@
                 \hspace{0.8cm}\textcolor{red}{$RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
             }
         }
-        \only<17-45>{
+        \only<17-47>{
             \begin{tikzpicture}
                 \node[] at (-5.25, -3) {};
                 \node[] at (5.25, 3) {};
@@ -1304,16 +1440,25 @@
                     };
                 }
                 \only<34>{
-                    \node[] at (0, 0) {
-                        Python dummy encoding
-                    };
+                    \PythonInputNode{1}{(-4, 2)}{pythonnode}{0.9\textwidth}{7}{
+                        import pandas as pd^^J
+                        ^^J
+                        df = pd.DataFrame(...)^^J
+                        print(f'Columns before: \{df.columns.values\}')^^J
+                        df = pd.get_dummies(df)^^J
+                        print(f'Columns after: \{df.columns.values\})^^J
+                    }
+                    \PythonOutputNode{1}{(-3.895, 0)}{out}{0.79\textwidth}{7}{
+                        Columns before: ['manufacturer']^^J
+                        Columns after: ['manufacturer_chevrolet' 'manufacturer_ford']^^J
+                    }
                 }
                 \only<35>{
                     \node[] at (0, 0) {
                         \usebox{\multilevel}
                     };
                 }
-                \only<36>{
+                \only<36-37>{
                     \node[] at (0, 0) {
                         \begin{tabular}{ccc}
                             \textbf{mpg}&\textbf{chevrolet}&\textbf{horsepower}\\
@@ -1329,9 +1474,11 @@
                             28&1&212\\
                         \end{tabular}
                     };
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
-                    };
+                    \only<36>{
+                        \node[] at (0, -3.5) {
+                            $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
+                        };
+                    }
                 }
                 \only<37>{
                     \node[align=center] at (0, -3.8) {
@@ -1373,20 +1520,79 @@
                 }
                 \only<42>{
                     \node[] at (0, 0) {
-                        Confidence intervals
+                        \usebox{\cisdata}
                     };
                 }
                 \only<43>{
                     \node[] at (0, 0) {
-                        Evaluation
+                        \usebox{\cisprediction}
                     };
                 }
                 \only<44>{
                     \node[] at (0, 0) {
-                        Live coding
+                        \usebox{\cisconfidence}
+                    };
+                }
+                \only<45>{
+                    \RInputNode{(-4.5, 2)}{in1}{0.8\textwidth}{7}{
+predict(fit, newdata=data.frame(horsepower=105),^^J
+{ }{ }{ }{ }{ }{ }{ }{ }interval='prediction', level=0.95)^^J
+                    }
+                    \RInputNode{(-4.5, 1)}{out1}{0.8\textwidth}{7}{
+{ }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
+1 23.535 17.158 29.912^^J
+                    }
+                    \RInputNode{(-4.5, -1)}{in2}{0.8\textwidth}{7}{
+predict(fit, newdata=data.frame(horsepower=105),^^J
+{ }{ }{ }{ }{ }{ }{ }{ }interval='confidence', level=0.95)^^J
+                    }
+                    \RInputNode{(-4.5, -2)}{out1}{0.8\textwidth}{7}{
+                        { }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
+                        1 23.535 23.023 24.047^^J
+                    }
+                }
+                \only<46>{
+                    \PythonInputNode{1}{(-4.5, 2)}{pythonnode}{0.95\textwidth}{7}{
+                        import statsmodels.api as sm^^J
+                        ^^J
+                        model = sm.OLS(df['mpg'], sm.add_constant(df[['horsepower']]))^^J
+                        fit = model.fit()^^J
+                        new_input = sm.add_constant(pd.DataFrame(\{'horsepower': [105, 106]\}))^^J
+                        intervals = fit.get_prediction(new_input).summary_frame()^^J
+                        print(intervals)^^J
+                    }
+                    \PythonOutputNode{1}{(-4.395, -0.5)}{out}{0.882\textwidth}{7}{
+                        mean   mean_se  mean_ci_lower  mean_ci_upper  obs_ci_lower  obs_ci_upper^^J
+                        0  24.467077  0.251262      23.973079      24.961075     14.809396     34.124758^^J
+                        1  31.096556  0.398740      30.312607      31.880505     21.419710     40.773402^^J
+                    }
+                }
+
+                \only<47>{
+                    \node[] at (0, 1) {
+                        \Huge{\emoji{partying-face}}
+                    };
+
+                    \node[] at (0, -1) {
+                        \scriptsize{\url{http://localhost:8888/notebooks/notebooks\%2FLinear\%20regression.ipynb}}
                     };
                 }
             \end{tikzpicture}
+        }
+        \only<48>{
+            Linear regression: The true workhorse of machine learning
+            \begin{itemize}
+                \item Models the relationship between (either singular or mulitple) inputs $X$ and (a continuous) output $y$ as a linear function
+                \begin{itemize}
+                    \item Inputs can be both continuous and categorical
+                \end{itemize}
+                \item A strict parametric form limits the expressivity of the model
+                \begin{itemize}
+                    \item More advanced terms can be explicitly added
+                    \item The strictness allows for further interpretation, such as confidence intervals
+                    \item \textbf{Makes the model human interpretable}
+                \end{itemize}
+            \end{itemize}
         }
     \end{frame}
 
@@ -1630,10 +1836,12 @@
         \knnplot{7}
     }
 
-    \begin{frame}{k nearest neighbours}
+    \section{K-Nearest Neighbours}
+
+    \begin{frame}{K-Nearest Neighbours}
         \begin{tikzpicture}
-            \node[draw=black] at (-5.25, -3) {};
-            \node[draw=black] at (5.25, 3) {};
+            \node[] at (-5.25, -3) {};
+            \node[] at (5.25, 3) {};
 
             \only<1-2>{
                 \node[anchor=west, align=left] at (-5, 1.5) {
