@@ -1,0 +1,53 @@
+\frametitle{Regularization: Out-of-sample testing}
+\begin{tikzpicture}
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:In{[}1{]}:}
+            ] (code) at (0, 0) {
+                \begin{lstlisting}[style=PythonStyle]
+import pandas as pd
+
+
+df = pd.read_csv('/Users/esten/Downloads/Auto.csv')
+train = df.iloc[:int(len(df) * 0.8)]
+validation = df.iloc[int(len(df) * 0.8):]
+
+print(f'Using {len(train)} samples for training')
+print(f'Using {len(validation)} samples for validation')
+                \end{lstlisting}
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                anchor=north,
+                label={[red,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3.5pt,
+                        text depth=0
+                        ]north west:Out{[}1{]}:}
+            ] (output) at ($ (code.south) - (0, 0.2) $) {
+                \begin{lstlisting}[style=PythonOutput]
+Using 317 samples for training
+Using 80 samples for validation
+                \end{lstlisting}
+            };
+        \end{tikzpicture}
