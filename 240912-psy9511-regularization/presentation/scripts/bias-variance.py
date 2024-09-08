@@ -37,3 +37,28 @@ for axis in ax.ravel():
     axis.set_ylim(-1, 1)
 
 plt.show()
+
+X = np.linspace(0, 10, 100)
+periodic = (np.cos(X) + 1) * 5
+noisy_periodic = periodic + np.random.normal(0, 2, 100)
+noisy_periodic2 = periodic + np.random.normal(0, 2, 100)
+
+plt.scatter(X, noisy_periodic)
+plt.plot(X, periodic)
+plt.show()
+
+noisy = X + np.random.normal(0, 1, 100)
+noisy2 = X + np.random.normal(0, 1, 100)
+
+plt.plot(X, noisy)
+plt.show()
+
+df = pd.DataFrame({
+    'X': X,
+    'periodic': periodic,
+    'noisy_periodic': noisy_periodic,
+    'noisy': noisy,
+    'noisy_periodic2': noisy_periodic2,
+    'noisy2': noisy2
+})
+df.to_csv('data/functions.csv', index=False)
