@@ -5,6 +5,7 @@
 
 % Load necessary packages
 \usepackage{array}
+\usepackage[backend=biber]{biblatex}
 \usepackage{caption}
 \usepackage{enumitem}
 \usepackage{graphicx}
@@ -15,6 +16,9 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{transparent}
+\usepackage{varwidth}
+
+\bibliography{poster}
 
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
@@ -40,7 +44,7 @@
 \setbeamersize{text margin left=0pt, text margin right=0pt}
 
 % Title and author information
-\title{Detecting structural brain aberrations in dementia patients\\[1cm]with explainable artificial intelligence}
+\title{Detecting Structural Brain Aberrations in Dementia Patients\\[1cm]with Explainable Artificial Intelligence}
 
 
 \definecolor{cb-green}{HTML}{4dac93}
@@ -49,6 +53,13 @@
 \def\verticalspace{0.61cm}
 
 \captionsetup[figure]{labelformat=empty}
+
+\tikzset{
+    max width/.style args={#1}{
+        execute at begin node={\begin{varwidth}{#1}},
+        execute at end node={\end{varwidth}}
+    }
+}
 
 \begin{document}
 
@@ -87,10 +98,61 @@
             \vspace{1cm}
         \end{beamercolorbox}
 
-
+        \vspace{1cm}
         \input{figures/overview.tex}
 
-        \vfill
+        \begin{columns}[t]
+            \begin{column}{.3\textwidth}
+                \begin{block}{Introduction}
+                    \parbox{\linewidth}{\justify
+With over 55 million people affected globally and a projected threefold increase in prevalence by 2050, dementia presents a paramount public health challenge for the coming decades. One of the arising needs is for technology and clinical methods to accurately characterize the disease in individual patients from a heterogeneous patient group. Deep learning applied to magnetic resonance imaging (MRI) scans have shown great promise for diagnosis and prognosis in dementia, but its clinical adoption is still limited. This can partially be attributed to the opaqueness of deep neural networks (DNNs), causing insufficient understanding of what underlies their decisions. Layerwise relevance propagation (LRP) is a technique for explaining the decision of DNNs by computing heatmaps that highlight regions of an image contributing to a prediction, potentially ameliorating concerns impeding their clinical use. Furthermore, the explanations procured by LRP are highly individualized and can shed light on the specific manifestation of the disease in the individual brain, information that could prove crucial for accurate diagnostics and treatment.
+                    }
+                \end{block}
+            \end{column}
+            \begin{column}{.3\textwidth}
+                \begin{block}{Methods}
+                    \parbox{\linewidth}{\justify
+We compiled structural MRI scans from a balanced set of 1708 dementia patients and healthy controls, and fit a simple fully convolutional network (SFCN) to differentiate between them. Next, we implemented LRP on top of the trained model to generate explanations in the form of heatmaps, to accompany and complement its predictions. We validated the heatmaps by comparing an average map compiled from all correctly predicted dementia patients with a statistical reference map., constructed by a GingerALE meta-analysis to reveal spatial locations with known structural changes in dementia patients based on 124 relevant publications. Following the validation, we employed the explainable pipeline in an exploratory analysis of 1256 patients with mild cognitive impairment (MCI). Here, we utilized its predictions and heatmaps to towards two clinically relevant tasks: to predict progression to dementia in the 5 years following the scan, and to investigate associations between spatial variability in the heatmaps and the structural abberations they encode, and impairments in specific cognitive domains.
+                    }
+                \end{block}
+
+            \end{column}
+            \begin{column}{.3\textwidth}
+                \begin{block}{Results}
+                    \parbox{\textwidth}{\justify
+                        \begin{itemize}[leftmargin=0em,labelindent=\parindent]
+                            \item[\textbullet] The best performing classifier was able to differentiate dementia patients from controls with an out-of-sample AUC of 0.9.
+                            \item[\textbullet] The average heatmap highly resembled the statistical reference map, yielding a normalized cross-correlation of 0.64 (Figure 2).
+                            \item[\textbullet] In MCI patients, information derived from the pipeline allowed us to predict progression within 5 years with an AUC of 0.9 (Figure 3).
+                            \item[\textbullet] Spatial patterns in the heatmaps were associated with distinct patterns of performance on neuropsychological tests.
+                        \end{itemize}
+                        \vspace{0.6cm}
+                        \input{figures/overlap.tex}
+                    }
+                \end{block}
+            \end{column}
+        \end{columns}
+
+        \begin{columns}[t]
+            \begin{column}{.6\textwidth}
+                \input{figures/prognosis.tex}
+            \end{column}
+            \begin{column}{.3\textwidth}
+                \vspace{1cm}
+                \begin{block}{Conclusion}
+                    \parbox{\textwidth}{\justify
+Our explainable pipeline for dementia-prediction allowed us to \textbf{precisely characterize the manifestation of dementia in the brains of individual patients}. Employing the pipeline in a sample of patients with MCI, we used information derived from the pipeline to \textbf{accurately predict progression of the disease}, and \textbf{reveal associations between brain heterogeneity and impairments in cognitive domains}. Our study presents an empirical foundation for how explainable artificial intelligence can support personalized diagnostics and prognostics of dementia.
+                    }
+                \end{block}
+                \begin{block}{Competing interests}
+                    \parbox{\textwidth}{\justify
+EHL is the CTO and a major shareholder in baba.vision, a company developing clinial decision support systems for neurological disorders. LTW, TW and YW are shareholders in baba.vision.
+                    }
+                \end{block}
+            \end{column}
+        \end{columns}
+
+        \vspace{0.5cm}
 
         \begin{beamercolorbox}[sep=0pt,wd=\textwidth]{title}
             \begin{tikzpicture}
@@ -107,46 +169,11 @@
         \end{beamercolorbox}
 
 
-        % \begin{columns}[t]
-        %     \begin{column}{.33\textwidth}
-        %         \begin{block}{Introduction}
-        %             \parbox{\linewidth}{\justify
-        % With over 55 million people affected globally and a projected threefold increase in prevalence by 2050,
-        % dementia presents a paramount public health challenge for the coming decades.
-        % Deep learning applied to magnetic resonance imaging (MRI) scans have shown great promise for diagnosis and prognosis in dementia, but its clinical adoption is limited. This is partially attributed
-        % to the opaqueness of deep neural networks (DNNs), causing insufficient understanding of what underlies their decisions.
-        % Layerwise relevance propagation (LRP) is a technique for explaining the decision of DNNs via heatmaps highlighting regions of an
-        % image contributing to the prediction, potentially ameliorating the distrust impeding their clinical use. Furthermore,
-        % the explanations procured by LRP are highly individualized and could shed light on the specific manifestation of the disease in the brain,
-        % information which could prove crucial for accurate diagnosis and treatment.
-        %             }
-        %         \end{block}
-        %     \end{column}
-        %     \begin{column}{.63\textwidth}
-        %         \input{figures/overview.tex}
-        %     \end{column}
-        % \end{columns}
-
         % \vspace{\verticalspace}
 
         % % First column
         % \begin{columns}[t]
-        % \begin{column}{.33\textwidth}
 
-        %     \begin{block}{Methods}
-        %         \parbox{\linewidth}{\justify
-        % We compiled structural MRI scans from a balanced set of 1708 dementia patients and healthy controls, and fit
-        % a simple fully convolutional network (SFCN) to differentiate between them. Next, we implemented LRP on top of the trained
-        % model to generate explanations in the form of heatmaps, accompanying its predictions. We validated the heatmaps by comparing an
-        % average map compiled from all true positives to a statistical reference map constructed with a GingerALE meta-analysis,
-        % containing spatial locations with observed deviations in dementia from 124 relevant publications. Following the validation, we employed the explainable pipeline
-        % in an exploratory analysis of 1256 patients with mild cognitive impairment (MCI). Here, we utilized its predictions and heatmaps
-        % to predict progression to dementia in the 5 years following the scan, and to investigate associations between spatial variability in the heatmaps
-        % and impairments in specific cognitive domains (Figure \ref{fig:outline}).
-        %         }
-        %     \end{block}
-
-        % \end{column}
 
         % % Second column
         % \begin{column}{.63\textwidth}
