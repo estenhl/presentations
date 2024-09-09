@@ -1,21 +1,42 @@
+% \documentclass[8pt]{beamer}
+
+% \usetheme{metropolis}
+
+% \usepackage[export]{adjustbox}
+% \usepackage{amsmath}
+% \usepackage{bbm}
+% \usepackage{emoji}
+% \usepackage{pgfplots}
+% \usepackage{hyperref}
+% \usepackage{listings}
+% \usepackage{tcolorbox}
+% \usepackage{xcolor}
+
+% \usepgfplotslibrary{groupplots}
+
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{calc}
 \documentclass[8pt]{beamer}
 
 \usetheme{metropolis}
 
 \usepackage[export]{adjustbox}
-\usepackage{amsmath}
+\usepackage{array}
 \usepackage{bbm}
 \usepackage{emoji}
-\usepackage{pgfplots}
+\usepackage{etoolbox}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{listings}
-\usepackage{tcolorbox}
+\usepackage{pgfplots}
+\usepackage{tikz}
 \usepackage{xcolor}
 
-\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{fillbetween}
 
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
+\usetikzlibrary{patterns}
 
 \hypersetup{
     colorlinks=true,
@@ -94,40 +115,9 @@
     \fi
 }
 
-\lstdefinestyle{RStyle}{
-    language=R,
-    basicstyle=\ttfamily\fontsize{5}{6}\selectfont,
-    keywordstyle=\color[RGB]{17, 115, 187},
-    commentstyle=\color[RGB]{0, 128, 0},
+\lstdefinestyle{Core}{
     identifierstyle=\color[RGB]{0, 0, 0},
     stringstyle=\color[RGB]{205, 49, 49},
-    numberstyle=\fontsize{5}{6}\selectfont\color[RGB]{128, 128, 128},
-    numbers=left,
-    numbersep=6pt,
-    backgroundcolor=\color[RGB]{255, 255, 255},
-    frame=single,
-    rulecolor=\color[RGB]{0, 0, 0},
-    showstringspaces=false,
-    breaklines,
-    xleftmargin=3pt,
-    xrightmargin=3pt,
-    framesep=3pt,
-    aboveskip=-1.5pt,
-    belowskip=-0.5pt,
-    showlines=true
-}
-
-\lstdefinestyle{PythonStyle}{
-    language=Python,
-    basicstyle=\ttfamily\fontsize{5}{6}\selectfont,
-    keywordstyle=\color[RGB]{26, 13, 171},
-    commentstyle=\color[RGB]{0, 128, 0},
-    identifierstyle=\color[RGB]{0, 0, 0},
-    stringstyle=\color[RGB]{205, 49, 49},
-    numberstyle=\fontsize{5}{6}\selectfont\color[RGB]{128, 128, 128},
-    frame=tblr,
-    backgroundcolor=\color[RGB]{245, 245, 245},
-    rulecolor=\color[RGB]{192, 192, 192},
     showstringspaces=false,
     breaklines,
     xleftmargin=3pt,
@@ -138,53 +128,132 @@
     showlines=true,
 }
 
-\lstdefinestyle{ROutput}{
+\lstdefinestyle{RInput}{
+    style=Core,
     language=R,
-    basicstyle=\ttfamily\fontsize{5}{6}\selectfont,
+    keywordstyle=\color[RGB]{17, 115, 187},
+    commentstyle=\color[RGB]{0, 128, 0},
+    identifierstyle=\color[RGB]{0, 0, 0},
+    stringstyle=\color[RGB]{205, 49, 49},
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    frame=single,
+    rulecolor=\color[RGB]{0, 0, 0},
+}
+
+\lstdefinestyle{PythonInput}{
+    style=Core,
+    language=Python,
+    keywordstyle=\color[RGB]{26, 13, 171},
+    commentstyle=\color[RGB]{0, 128, 0},
+    backgroundcolor=\color[RGB]{245, 245, 245},
+    rulecolor=\color[RGB]{192, 192, 192},
+    frame=tblr,
+}
+
+\lstdefinestyle{ROutput}{
+    style=Core,
+    language=R,
     backgroundcolor=\color[RGB]{255, 255, 255},
     commentstyle=\color[HTML]{009900},
     stringstyle=\color[HTML]{0000FF},
     keywordstyle=\color[HTML]{000000},
     numberstyle=\tiny\color[HTML]{000000},
     breakatwhitespace=true,
-    breaklines=true,
     frame=single,
     rulecolor=\color{black},
-    showstringspaces=false,
-    breaklines,
-    xleftmargin=3pt,
-    xrightmargin=3pt,
-    framesep=3pt,
-    aboveskip=-1.5pt,
-    belowskip=-0.5pt,
-    showlines=true
 }
 
 \lstdefinestyle{PythonOutput}{
-    basicstyle=\fontsize{5}{6}\selectfont,
     backgroundcolor=\color[RGB]{255, 255, 255},
     rulecolor=\color[RGB]{192, 192, 192},
     frame=single,
     numbers=none,
     showstringspaces=false,
-    breaklines=true,
     breakatwhitespace=true,
-    showstringspaces=false,
-    breaklines,
-    xleftmargin=3pt,
-    xrightmargin=3pt,
-    framesep=3pt,
-    aboveskip=-1.5pt,
-    belowskip=-0.5pt,
-    showlines=true,
     keywordstyle=\color[RGB]{255, 0, 0},
     morekeywords={AttributeError}
+}
+
+\newcommand{\PythonInputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[blue,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-3pt,
+                yshift=-3pt
+                ]north west:In{[}#1{]}:},
+    ] (#3) at #2 {
+    \begin{lstlisting}[
+        style=PythonInput,
+        linewidth=#4,
+        basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+        numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+    ]^^J
+        #6
+    \end{lstlisting}
+    };
+}
+
+\newcommand{\PythonOutputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[red,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-6pt,
+                yshift=-11pt
+                ]north west:Out{[}#1{]}:}
+    ] (pythonoutput) (#3) at #2 {
+        \begin{lstlisting}[
+            style=PythonOutput,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #6
+        \end{lstlisting}
+    };
+}
+
+\newcommand{\RInputNode}[5]{
+    \node[
+        minimum width=#3,
+        text width=#3,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        draw=black,
+        anchor=north west
+    ] (#2) at #1 {
+        \begin{lstlisting}[
+            style=RInput,
+            linewidth=\textwidth,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #5
+        \end{lstlisting}
+    };
 }
 
 \title{PSY9511: Seminar 3}
 \subtitle{Regularization and variable selection}
 \author{Esten H. Leonardsen}
-\date{07.09.23}
+\date{11.09.24}
 
 \begin{document}
 	\begin{frame}
@@ -644,11 +713,6 @@
             \end{tikzpicture}
         }
         \only<22>{
-            Model flexibility: Denotes the complexity of the approximated function $\hat{y}=\hat{f}(x)$.
-            \begin{itemize}
-                \item Informally: Wigglyness of the line
-                \item Formally: Number of parameters in the function (degrees of freedom)
-            \end{itemize}
             Bias and variance: Two ways the model can be bad
             \begin{itemize}
                 \item High bias: The model misses in \textit{systematic} ways
@@ -670,7 +734,7 @@
                 \only<23-24>{
                     \node[] at (3, 1) {\usebox{\linearfunction}};
                 }
-                \only<24-23>{
+                \only<24-25>{
                     \node[] at (-3, 1) {\usebox{\periodictest}};
                 }
                 \only<25>{
@@ -680,16 +744,6 @@
             \end{tikzpicture}
         }
         \only<26>{
-            Model flexibility: Denotes the complexity of the approximated function $\hat{y}=\hat{f}(x)$.
-            \begin{itemize}
-                \item Informally: Wigglyness of the line
-                \item Formally: Number of parameters in the function (degrees of freedom)
-            \end{itemize}
-            Bias and variance: Two ways the model can be bad
-            \begin{itemize}
-                \item High bias: The model misses in \textit{systematic} ways
-                \item High variance: The model misses in \textit{unsystematic} ways
-            \end{itemize}
             Underfitting and overfitting: Bias-variance trade-off in practice
             \begin{itemize}
                 \item Underfitting: The model is equally bad on training and test data \textit{due to not having captured the true relationship between inputs and outputs}
@@ -700,16 +754,341 @@
 
     \section{Assignment 2}
 
+    \begin{frame}{Assignment 2}
+        \only<1>{
+            \begin{itemize}
+                \item Download the Auto.csv dataset from the ISLP website.
+                \item Read the Auto.csv-dataset into memory.
+                \item In the horsepower-column, some values are missing. These are encoded with ‘?’. Remove these rows from the dataset.
+                \item Create a new column ‘muscle’. This column should contain a 1 for all muscle cars (e.g. cars that have above average horsepower) and 0 for the rest.
+                \item Split the dataset into a training set and a test set, by randomly drawing 80\% of the rows for the former and 20\% of the rows for the latter.
+            \end{itemize}
+            \vspace{0.5cm}
+            \url{http://localhost:8890/notebooks/notebooks/Assignment\%202.ipynb}
+        }
+        \only<2>{
+            \begin{itemize}
+                \item Fit a simple linear regression model using horsepower as the predictor and mpg as the outcome using the training data.
+                \item Create a scatter plot with horsepower on the x-axis and mpg on the y-axis using the testing data. Plot the regression line found by the model in the plot.
+                \item Use the model to generate predictions for the training set. Calculate and report the mean absolute error (MAE) of these predictions.
+                \item Use the model to generate predictions for the test set. Calculate and report the MAE of the predictions.
+                \item Reflection: Is the training and testing MAE is lower? Does this match your expectation? What would be the general pattern we expect here (e.g. one is lower than the other, they are the same, etc.), and why do we expect that?
+            \end{itemize}
+            \vspace{0.5cm}
+            \url{http://localhost:8890/notebooks/notebooks/Assignment\%202.ipynb}
+        }
+        \only<3>{
+            \begin{itemize}
+                \item Fit a multivariate linear regression model using horsepower, weight, displacement, and year as predictors and mpg as the outcome.
+                \item Print the intercept and coefficients of the model .
+                \item Use the model to generate predictions for the training set. Calculate and report the MAE of these predictions.
+                \item Use the model to generate predictions for the test set. Calculate and report the MAE of the predictions.
+                \item Reflection: Is the training MAE lower or higher than in the simple linear regression model? Does it have to be this way, or could it have been otherwise? What about the testing MAE?
+            \end{itemize}
+            \vspace{0.5cm}
+            \url{http://localhost:8890/notebooks/notebooks/Assignment\%202.ipynb}
+        }
+        \only<4>{
+            \begin{itemize}
+                \item Fit a logistic regression model using weight, displacement and year as predictors and our newly created muscle-column as the outcome. Why don’t we use horsepower as a predictor in this model?
+                \item Use the model to generate predictions for the training set. Calculate and report the accuracy of these predictions.
+                \item Use the model to generate predictions for the testing set. Calculate and report the accuracy of these predictions.
+            \end{itemize}
+            \vspace{0.5cm}
+            \url{http://localhost:8890/notebooks/notebooks/Assignment\%202.ipynb}
+        }
+    \end{frame}
+
     \begin{frame}{Assignment 2: Data splitting}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3) {};
+            \node[] at (5.25, 3) {};
+
+            \only<1-4>{
+                \PythonInputNode{1}{(-4, 3)}{pythonnode}{0.9\textwidth}{7}{
+                    import pandas as pd^^J
+                    ^^J
+                    ^^J
+                    df = pd.DataFrame(...)^^J
+                    train = df.sample(frac=0.8)^^J
+                    test = df.sample(frac=0.2)^^J
+                }
+            }
+            \only<5>{
+                \PythonInputNode{1}{(-4, 3)}{pythonnode}{0.9\textwidth}{7}{
+                    import pandas as pd^^J
+                    ^^J
+                    ^^J
+                    df = pd.DataFrame(...)^^J
+                    train = df.sample(frac=0.8)^^J
+                    test = df.drop(train.index)^^J
+                }
+            }
+
+            \newcommand{\datasetnode}[4]{
+                \node[
+                    minimum width=0.4cm,
+                    minimum height=1cm,
+                    draw=black,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    fill=####3,
+                    anchor=####4
+                ] (####1) at ####2 {};
+            }
+
+            \only<2-5>{
+                \datasetnode{n00}{(-3.43, 0)}{gray!20}{center}
+                \datasetnode{n01}{(n00.east)}{gray!20}{west}
+                \datasetnode{n02}{(n01.east)}{gray!20}{west}
+                \datasetnode{n03}{(n02.east)}{gray!20}{west}
+                \datasetnode{n04}{(n03.east)}{gray!20}{west}
+                \datasetnode{n05}{(n04.east)}{gray!20}{west}
+                \datasetnode{n06}{(n05.east)}{gray!20}{west}
+                \datasetnode{n07}{(n06.east)}{gray!20}{west}
+                \datasetnode{n08}{(n07.east)}{gray!20}{west}
+                \datasetnode{n09}{(n08.east)}{gray!20}{west}
+                \datasetnode{n10}{(n09.east)}{gray!20}{west}
+                \datasetnode{n11}{(n10.east)}{gray!20}{west}
+                \datasetnode{n12}{(n11.east)}{gray!20}{west}
+                \datasetnode{n13}{(n12.east)}{gray!20}{west}
+                \datasetnode{n14}{(n13.east)}{gray!20}{west}
+                \datasetnode{n15}{(n14.east)}{gray!20}{west}
+                \datasetnode{n16}{(n15.east)}{gray!20}{west}
+                \datasetnode{n17}{(n16.east)}{gray!20}{west}
+                \datasetnode{n18}{(n17.east)}{gray!20}{west}
+                \datasetnode{n19}{(n18.east)}{gray!20}{west}
+            }
+
+            \only<3-5>{
+                \datasetnode{t03}{($ (n03.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t11}{($ (n11.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t14}{($ (n14.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t16}{($ (n16.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t05}{($ (n05.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t12}{($ (n12.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t10}{($ (n10.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t18}{($ (n18.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t00}{($ (n00.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t17}{($ (n17.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t09}{($ (n09.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t19}{($ (n19.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t15}{($ (n15.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t06}{($ (n06.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t13}{($ (n13.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t04}{($ (n04.south) - (0, 0.5) $)}{green!60}{north}
+            }
+
+            \only<4>{
+                \datasetnode{v00}{($ (t00.south) - (0, 0.5) $)}{red!60}{north}
+                \datasetnode{v17}{($ (t17.south) - (0, 0.5) $)}{red!60}{north}
+                \datasetnode{v08}{($ (t09.south) - (0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v16}{($ (t16.south) - (0, 0.5) $)}{red!60}{north}
+            }
+            \only<5>{
+                \datasetnode{v01}{($ (t00.south) - (-0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v02}{($ (t03.south) - (0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v07}{($ (t06.south) - (-0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v08}{($ (t09.south) - (0.4, 0.5) $)}{red!60}{north}
+            }
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{Assignment 2: Random seeds}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3) {};
+            \node[] at (5.25, 3) {};
+
+            \only<1-3>{
+                \PythonInputNode{1}{(-4, 3)}{pythonnode}{0.9\textwidth}{7}{
+                    import pandas as pd^^J
+                    ^^J
+                    ^^J
+                    df = pd.DataFrame(...)^^J
+                    train = df.sample(frac=0.8)^^J
+                    test = df.drop(train.index)^^J
+                }
+            }
+            \only<4>{
+                \PythonInputNode{1}{(-4, 3)}{pythonnode}{0.9\textwidth}{7}{
+                    import pandas as pd^^J
+                    import numpy as np^^J
+                    np.random.seed(42)^^J
+                    df = pd.DataFrame(...)^^J
+                    train = df.sample(frac=0.8)^^J
+                    test = df.drop(train.index)^^J
+                }
+            }
+
+            \newcommand{\datasetnode}[4]{
+                \node[
+                    minimum width=0.4cm,
+                    minimum height=1cm,
+                    draw=black,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    fill=####3,
+                    anchor=####4
+                ] (####1) at ####2 {};
+            }
+
+            \datasetnode{n00}{(-3.43, 0)}{gray!20}{center}
+            \datasetnode{n01}{(n00.east)}{gray!20}{west}
+            \datasetnode{n02}{(n01.east)}{gray!20}{west}
+            \datasetnode{n03}{(n02.east)}{gray!20}{west}
+            \datasetnode{n04}{(n03.east)}{gray!20}{west}
+            \datasetnode{n05}{(n04.east)}{gray!20}{west}
+            \datasetnode{n06}{(n05.east)}{gray!20}{west}
+            \datasetnode{n07}{(n06.east)}{gray!20}{west}
+            \datasetnode{n08}{(n07.east)}{gray!20}{west}
+            \datasetnode{n09}{(n08.east)}{gray!20}{west}
+            \datasetnode{n10}{(n09.east)}{gray!20}{west}
+            \datasetnode{n11}{(n10.east)}{gray!20}{west}
+            \datasetnode{n12}{(n11.east)}{gray!20}{west}
+            \datasetnode{n13}{(n12.east)}{gray!20}{west}
+            \datasetnode{n14}{(n13.east)}{gray!20}{west}
+            \datasetnode{n15}{(n14.east)}{gray!20}{west}
+            \datasetnode{n16}{(n15.east)}{gray!20}{west}
+            \datasetnode{n17}{(n16.east)}{gray!20}{west}
+            \datasetnode{n18}{(n17.east)}{gray!20}{west}
+            \datasetnode{n19}{(n18.east)}{gray!20}{west}
+
+            \only<1-2,4>{
+                \datasetnode{t03}{($ (n03.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t11}{($ (n11.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t14}{($ (n14.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t16}{($ (n16.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t05}{($ (n05.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t12}{($ (n12.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t10}{($ (n10.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t18}{($ (n18.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t00}{($ (n00.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t17}{($ (n17.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t09}{($ (n09.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t19}{($ (n19.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t15}{($ (n15.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t06}{($ (n06.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t13}{($ (n13.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t04}{($ (n04.south) - (0, 0.5) $)}{green!60}{north}
+
+                \datasetnode{v01}{($ (t00.south) - (-0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v02}{($ (t03.south) - (0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v07}{($ (t06.south) - (-0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v08}{($ (t09.south) - (0.4, 0.5) $)}{red!60}{north}
+            }
+
+            \only<2,4>{
+                \node[] (outcome) at ($ (v08.east) + (3, 0) $) {MAE=3.5};
+                \draw[-stealth] ($ (v08.east) + (1, 0) $) -- (outcome);
+            }
+            \only<3>{
+                \datasetnode{t14}{($ (n14.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t16}{($ (n16.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t05}{($ (n05.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t12}{($ (n12.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t10}{($ (n10.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t18}{($ (n18.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t17}{($ (n17.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t09}{($ (n09.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t19}{($ (n19.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t15}{($ (n15.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t06}{($ (n06.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t13}{($ (n13.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t01}{($ (n01.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t02}{($ (n02.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t07}{($ (n07.south) - (0, 0.5) $)}{green!60}{north}
+                \datasetnode{t08}{($ (n08.south) - (0, 0.5) $)}{green!60}{north}
+
+                \datasetnode{v00}{($ (t01.south) - (0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v03}{($ (t02.south) - (-0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v04}{($ (t05.south) - (0.4, 0.5) $)}{red!60}{north}
+                \datasetnode{v11}{($ (t12.south) - (0.4, 0.5) $)}{red!60}{north}
+
+                \node[] (outcome) at ($ (v08.east) + (3, 0) $) {MAE=9.2};
+                \draw[-stealth] ($ (v08.east) + (1.5, 0) $) -- (outcome);
+            }
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{Assignment 2: Log-odds vs probability vs class}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3) {};
+            \node[] at (5.25, 3) {};
+
+            \only<1-3>{
+                \RInputNode{(-5, 2)}{in1}{0.95\textwidth}{7}{
+                    model <- glm(muscle ~ year + weight, data=df, family='binomial')^^J
+                    predict(model, df)
+                }
+            }
+            \only<2-3>{
+                \RInputNode{(-5, 1)}{in1}{0.95\textwidth}{7}{
+                    { }{ }{ }{ }{ }1{ }{ }{ }{ }{ }{ }2{ }{ }{ }{ }{ }{ }3{ }{ }{ }{ }{ }{ }4{ }{ }{ }{ }{ }{ }5{ }{ }{ }{ }{ }{ }6{ }{ }{ }{ }{ }{ }7{ }{ }{ }{ }{ }{ }8{ }{ }{ }{ }{ }{ }9{ }{ }{ }{ }{ }10{ }{ }{ }{ }{ }11^^J
+                    1.2460 1.9245 1.0019 0.9911 1.0485 4.2506 4.1465 4.5522 2.4889 1.4578 1.6223^^J
+                }
+            }
+            \only<3>{
+                \RInputNode{(-5, -0.3)}{in1}{0.95\textwidth}{7}{
+                    predict(model, df, type="response")^^J
+                }
+                \RInputNode{(-5, -1)}{in1}{0.95\textwidth}{7}{
+                    { }{ }{ }{ }{ }1{ }{ }{ }{ }{ }{ }2{ }{ }{ }{ }{ }{ }3{ }{ }{ }{ }{ }{ }4{ }{ }{ }{ }{ }{ }5{ }{ }{ }{ }{ }{ }6{ }{ }{ }{ }{ }{ }7{ }{ }{ }{ }{ }{ }8{ }{ }{ }{ }{ }{ }9{ }{ }{ }{ }{ }10{ }{ }{ }{ }{ }11^^J
+                    0.7766 0.8726 0.7314 0.7293 0.7405 0.9853 0.9844 0.9895 0.9233 0.8112 0.8352^^J
+                }
+            }
+            \only<4>{
+                \PythonInputNode{1}{(-4, 3)}{pythonnode}{0.9\textwidth}{7}{
+                    model = LogisticRegression()^^J
+                    model.fit(df[['year', 'weight']], df['muscle'])^^J
+                    model.predict(df[['year', 'weight']])^^J
+                }
+                \PythonOutputNode{1}{(-3.89, 2)}{pythonnode}{0.791\textwidth}{7}{
+                    array([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0])^^J
+                }
+
+                \PythonInputNode{1}{(-4, 0.5)}{pythonnode}{0.9\textwidth}{7}{
+                    model.predict_proba(df[['year', 'weight']])^^J
+                }
+
+                \PythonOutputNode{1}{(-3.89, 0.07)}{pythonnode}{0.791\textwidth}{7}{
+                    array([[0.14, 0.86], [0.08, 0.92], [0.17, 0.83], [0.18, 0.82]])^^J
+                }
+            }
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{Assignment 2: Eye test}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3) {};
+            \node[] at (5.25, 3) {};
+
+            \only<1-2>{
+                \RInputNode{(-5, 2.5)}{in1}{0.95\textwidth}{7}{
+                    model <- glm(muscle ~ year + weight, data=df, family='binomial')^^J
+                    predict(model, df)
+                }
+                \RInputNode{(-5, 1.5)}{in1}{0.95\textwidth}{7}{
+                    { }{ }{ }{ }{ }1{ }{ }{ }{ }{ }{ }2{ }{ }{ }{ }{ }{ }3{ }{ }{ }{ }{ }{ }4{ }{ }{ }{ }{ }{ }5{ }{ }{ }{ }{ }{ }6{ }{ }{ }{ }{ }{ }7{ }{ }{ }{ }{ }{ }8{ }{ }{ }{ }{ }{ }9{ }{ }{ }{ }{ }10{ }{ }{ }{ }{ }11^^J
+                    1.2460 1.9245 1.0019 0.9911 1.0485 4.2506 4.1465 4.5522 2.4889 1.4578 1.6223^^J
+                }
+            }
+
+            \only<2>{
+                \RInputNode{(-5, 0)}{in1}{0.95\textwidth}{7}{
+                    model <- lm(mpg ~ horsepower, df)^^J
+                    summary(model)^^J
+                }
+                \RInputNode{(-5, -1)}{in1}{0.95\textwidth}{7}{
+                    Coefficients:^^J
+                    Estimate Std. Error t value Pr(>|t|) ^^J
+                    (Intercept)    19.59412    0.96187  20.371  < 2e-16 ***^^J
+                    horsepower102   0.40588    4.08087   0.099 0.920840    ^^J
+                    horsepower103   0.70588    4.08087   0.173 0.862789    ^^J
+                    horsepower105   0.90588    1.49529   0.606 0.545091  ^^J
+                }
+            }
+
+        \end{tikzpicture}
     \end{frame}
 
     \section{Regularization}
@@ -732,157 +1111,120 @@
         \vfill
     \end{frame}
 
-%     \begin{frame}{Regularization: Motivation}
-%         \centering
-%         \vfill
-%         $y \sim$\textcolor{red} {$ \beta_0 + \beta_1 * x_1 + \beta_2 * x_2 + \beta_3 * x_3$}
-%         \vfill
-%     \end{frame}
+    \begin{frame}{Regularization: Motivation}
+        \centering
+        \vfill
+        $y \sim$\textcolor{red} {$ \beta_0 + \beta_1 * x_1 + \beta_2 * x_2 + \beta_3 * x_3$}
+        \vfill
+    \end{frame}
 
-%     \def\codewidth{0.9\textwidth}
-%     \begin{frame}[fragile]{Regularization: Out-of-sample testing}
-%         \begin{tikzpicture}
-%             \node[
-%                 minimum width=\codewidth,
-%                 text width=\codewidth,
-%                 align=left,
-%                 inner sep=0pt,
-%                 anchor=north,
-%                 label={[blue,
-%                         anchor=north east,
-%                         font=\ttfamily\fontsize{5}{6}\selectfont,
-%                         inner sep=0pt,
-%                         outer sep=0pt,
-%                         xshift=-3pt,
-%                         yshift=-3.5pt,
-%                         text depth=0
-%                         ]north west:In{[}1{]}:}
-%             ] (code) at (0, 0) {
-%                 \begin{lstlisting}[style=PythonStyle]
-% import pandas as pd
+    %\def\codewidth{0.9\textwidth}
+    \begin{frame}{Regularization: Out-of-sample testing}
+        \begin{tikzpicture}
+            \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{7}{
+                import pandas as pd^^J
+                ^^J
+                ^^J
+                df = pd.read_csv('/Users/esten/Downloads/Auto.csv')^^J
+                train = df.iloc[:int(len(df) * 0.8)]^^J
+                validation = df.iloc[int(len(df) * 0.8):]^^J
+                ^^J
+                print(f'Using {len(train)} samples for training')^^J
+                print(f'Using {len(validation)} samples for validation')^^J
+            }
+            \PythonOutputNode{1}{($ (code.south west) - (0.11, 0.2) $)}{output}{0.791\textwidth}{7}{
+                Using 317 samples for training^^J
+                Using 80 samples for validation^^J
+            }
+        \end{tikzpicture}
+    \end{frame}
 
+    \begin{frame}{Regularization: Methods}
+        \begin{enumerate}
+            \item Variable selection
+            \begin{enumerate}
+                \item[a.] Best subset selection
+                \item[b.] Forward stepwise selection
+                \item[c.] Backward stepwise selection
+            \end{enumerate}
+            \item Shrinkage
+            \begin{enumerate}
+                \item[a.] LASSO
+                \item[b.] Ridge Regression
+            \end{enumerate}
+            \item Dimensionality reduction
+            \begin{enumerate}
+                \item[a.] Principal Component Regression
+                \item[b.] Partial Least Squares
+            \end{enumerate}
+        \end{enumerate}
+    \end{frame}
 
-% df = pd.read_csv('/Users/esten/Downloads/Auto.csv')
-% train = df.iloc[:int(len(df) * 0.8)]
-% validation = df.iloc[int(len(df) * 0.8):]
+    \section{Variable selection}
 
-% print(f'Using {len(train)} samples for training')
-% print(f'Using {len(validation)} samples for validation')
-%                 \end{lstlisting}
-%             };
+    \begin{frame}{Variable selection: Motivation}
+        \centering
+        The number of predictors we are using in our model directly impacts model complexity.
+    \end{frame}
 
-%             \node[
-%                 minimum width=\codewidth,
-%                 text width=\codewidth,
-%                 align=left,
-%                 inner sep=0pt,
-%                 anchor=north,
-%                 label={[red,
-%                         anchor=north east,
-%                         font=\ttfamily\fontsize{5}{6}\selectfont,
-%                         inner sep=0pt,
-%                         outer sep=0pt,
-%                         xshift=-3pt,
-%                         yshift=-3.5pt,
-%                         text depth=0
-%                         ]north west:Out{[}1{]}:}
-%             ] (output) at ($ (code.south) - (0, 0.2) $) {
-%                 \begin{lstlisting}[style=PythonOutput]
-% Using 317 samples for training
-% Using 80 samples for validation
-%                 \end{lstlisting}
-%             };
-%         \end{tikzpicture}
-%     \end{frame}
+    \begin{frame}[t]{Variable selection: Outline} % Problem definition
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+    \end{frame}
 
-%     \begin{frame}{Regularization: Methods}
-%         \begin{enumerate}
-%             \item Variable selection
-%             \begin{enumerate}
-%                 \item[a.] Best subset selection
-%                 \item[b.] Forward stepwise selection
-%                 \item[c.] Backward stepwise selection
-%             \end{enumerate}
-%             \item Shrinkage
-%             \begin{enumerate}
-%                 \item[a.] LASSO
-%                 \item[b.] Ridge Regression
-%             \end{enumerate}
-%             \item Dimensionality reduction
-%             \begin{enumerate}
-%                 \item[a.] Principal Component Regression
-%                 \item[b.] Partial Least Squares
-%             \end{enumerate}
-%         \end{enumerate}
-%     \end{frame}
+    \begin{frame}[t]{Variable selection: Outline} % Motivation
+        \underline{Problem}\\
+        We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+        \vspace{0.25cm}
+        \underline{Motivation}\\
+        \begin{enumerate}
+            \item Reduce model complexity (overfitting)
+            \item Simplify interpretation
+        \end{enumerate}
+    \end{frame}
 
-%     \section{Variable selection}
+    % \begin{frame}[t]{Variable selection: Outline} % Variables
+    %     \underline{Problem}\\
+    %     We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
+    %     \vspace{0.25cm}
 
-%     \begin{frame}{Variable selection: Motivation}
-%         \centering
-%         The number of predictors we are using in our model directly impacts model complexity.
-%     \end{frame}
+    %     \centering
+    %     \begin{tikzpicture}
+    %         \begin{groupplot}[
+    %             group style={
+    %                 group size=3 by 2,
+    %                 horizontal sep=0.5cm
+    %             },
+    %             ticklabel style = {font=\tiny},
+    %             height=3.9cm,
+    %             width=3.9cm
+    %         ]
+    %             \newcommand{\autoplot}[1]{
+    %                 \nextgroupplot[
+    %                     title=\scriptsize{####1},
+    %                     every axis title/.style={at={(0.5,1.15)}}
+    %                 ]
+    %                     \addplot[
+    %                         only marks,
+    %                         mark=*,
+    %                         color=blue,
+    %                         opacity=0.25
+    %                     ] table[
+    %                         col sep=comma,
+    %                         y=mpg,
+    %                         x=####1
+    %                     ] {data/Auto.csv};
+    %             }
+    %             \autoplot{cylinders}
+    %             \autoplot{displacement}
+    %             \autoplot{horsepower}
+    %             \autoplot{weight}
+    %             \autoplot{acceleration}
+    %             \autoplot{year}
+    %         \end{groupplot}
 
-%     \begin{frame}[t]{Variable selection: Outline} % Problem definition
-%         \underline{Problem}\\
-%         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-%     \end{frame}
-
-%     \begin{frame}[t]{Variable selection: Outline} % Motivation
-%         \underline{Problem}\\
-%         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-%         \vspace{0.25cm}
-%         \underline{Motivation}\\
-%         \begin{enumerate}
-%             \item Reduce model complexity (overfitting)
-%             \item Simplify interpretation
-%         \end{enumerate}
-%     \end{frame}
-
-%     \def\codewidth{10cm}
-
-%     \begin{frame}[t]{Variable selection: Outline} % Variables
-%         \underline{Problem}\\
-%         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
-%         \vspace{0.25cm}
-
-%         \centering
-%         \begin{tikzpicture}
-%             \begin{groupplot}[
-%                 group style={
-%                     group size=3 by 2,
-%                     horizontal sep=0.5cm
-%                 },
-%                 ticklabel style = {font=\tiny},
-%                 height=3.9cm,
-%                 width=3.9cm
-%             ]
-%                 \newcommand{\autoplot}[1]{
-%                     \nextgroupplot[
-%                         title=\scriptsize{####1},
-%                         every axis title/.style={at={(0.5,1.15)}}
-%                     ]
-%                         \addplot[
-%                             only marks,
-%                             mark=*,
-%                             color=blue,
-%                             opacity=0.25
-%                         ] table[
-%                             col sep=comma,
-%                             y=mpg,
-%                             x=####1
-%                         ] {data/Auto.csv};
-%                 }
-%                 \autoplot{cylinders}
-%                 \autoplot{displacement}
-%                 \autoplot{horsepower}
-%                 \autoplot{weight}
-%                 \autoplot{acceleration}
-%                 \autoplot{year}
-%             \end{groupplot}
-
-%         \end{tikzpicture}
-%     \end{frame}
+    %     \end{tikzpicture}
+    % \end{frame}
 
 %     \begin{frame}[t]{Variable selection: Best subset selection} % Implementation
 %         \underline{Problem}\\
