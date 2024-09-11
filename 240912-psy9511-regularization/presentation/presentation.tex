@@ -1854,8 +1854,8 @@ while len(chosen_predictors) < len(predictors):^^J
         \definecolor{mse}{HTML}{cc79a7}
         \definecolor{variance}{HTML}{10a47b}
         \begin{tikzpicture}
-            \node[] at (-5.25, 3) {};
-            \node[] at (5.25, -3) {};
+            \node[] at (-5.25, 3.5) {};
+            \node[] at (5.25, -3.5) {};
 
             \only<1>{
                 \node[] at (0, 3) {
@@ -1946,7 +1946,7 @@ while len(chosen_predictors) < len(predictors):^^J
             \node[] at (5.25, 3) {};
 
             \only<1>{
-                \node[inner sep=0pt, anchor=west] (loss) at (-1, 0) {
+                \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
                     $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
                 };
                 \node[anchor=east, inner sep=0pt] at (loss.west) {
@@ -1954,7 +1954,7 @@ while len(chosen_predictors) < len(predictors):^^J
                 };
             }
             \only<2,5>{
-                \node[inner sep=0pt] (loss) at (0, 0) {
+                \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
                     $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
                 };
                 \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
@@ -1965,7 +1965,7 @@ while len(chosen_predictors) < len(predictors):^^J
                 };
             }
             \only<3>{
-                \node[inner sep=0pt] (loss) at (0, 0) {
+                \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
                     $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
                 };
                 \node[anchor=west, inner sep=0pt, draw=red] (ridge) at (loss.east) {
@@ -2010,8 +2010,8 @@ while len(chosen_predictors) < len(predictors):^^J
 
     \begin{frame}{Shrinkage: Feature standardization}
         \begin{tikzpicture}
-            \node[] at (-5.25, -3) {};
-            \node[] at (5.25, 3) {};
+            \node[] at (-5.4, -4) {};
+            \node[] at (5.4, 3) {};
 
             \only<1>{
                 \node[] at (0, 0) {
@@ -2060,7 +2060,7 @@ horsepower after: -0.00 (1.00)^^J
                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
             };
             \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+                $ + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
             };
             \node[anchor=east, inner sep=0pt] at (loss.west) {
                 $loss_{ridge}$
@@ -2088,8 +2088,8 @@ horsepower after: -0.00 (1.00)^^J
 
     \begin{frame}{Shrinkage: LASSO}
         \begin{tikzpicture}
-            \node[] at (-5.25, -3) {};
-            \node[] at (5.25, 3) {};
+            \node[] at (-5.25, -3.5) {};
+            \node[] at (5.25, 3.5) {};
 
             \only<1-2>{
                 \node[inner sep=0pt] (loss) at (0, 0) {
@@ -2127,11 +2127,11 @@ horsepower after: -0.00 (1.00)^^J
                 };
             }
             \only<3-5>{
-                \node[fill=white, draw=black, label=Ridge] at (-2.5, 1.5) {
-                    \includegraphics[width=4cm]{data/ridge.png}
+                \node[fill=white, draw=black, label=Ridge] at (-2.5, 1) {
+                    \includegraphics[width=3cm]{data/ridge.png}
                 };
-                \node[fill=white, draw=black, label=LASSO] at (2.5, 1.5) {
-                    \includegraphics[width=4cm]{data/lasso.png}
+                \node[fill=white, draw=black, label=LASSO] at (2.5, 1) {
+                    \includegraphics[width=3cm]{data/lasso.png}
                 };
 
                 \only<4>{
@@ -2155,7 +2155,7 @@ horsepower after: -0.00 (1.00)^^J
                 }
                 \only<5>{
                     \node[align=center,red,font=\bfseries] at (0, -2) {
-                        A coefficient of 0 does not mean the predictor has no association with the outcome!
+                        A coefficient of 0 does not mean the predictor has\\no association with the outcome!
                     };
                 }
             }
@@ -2170,7 +2170,7 @@ horsepower after: -0.00 (1.00)^^J
                 \node[anchor=south, text depth=0] at ($ (intuition.north east) - (2.3, 0) $) {Ridge};
                 \node[anchor=south, text depth=0] at ($ (intuition.north east) - (6.3, 0) $) {Lasso};
                 \node[font=\Huge\selectfont] at ($ (intuition.east) - (6.3, 0) $) {?};
-                \node[] at (0, -3.5) {
+                \node[] at (0, -3) {
                     \Large{Whiteboard!} \emoji{partying-face}
                 };
             }
@@ -2245,178 +2245,161 @@ horsepower after: -0.00 (1.00)^^J
         \footnotesize{\url{https://uio.instructure.com/courses/53357/assignments/118667?module_item_id=962921}}
     \end{frame}
 
-%     \begin{frame}[fragile]{Coding tips: Separation of concerns} % Spaghetti
-%         \centering
-%         \begin{tikzpicture}
-%             \node[
-%                 minimum width=\codewidth,
-%                 text width=\codewidth,
-%                 align=left,
-%                 inner sep=0pt,
-%                 anchor=north,
-%                 label={[blue,
-%                         anchor=north east,
-%                         font=\ttfamily\fontsize{4}{4}\selectfont,
-%                         inner sep=0pt,
-%                         outer sep=0pt,
-%                         xshift=-3pt,
-%                         yshift=-3.5pt,
-%                         text depth=0
-%                         ]north west:In{[}1{]}:}
-%             ] (code) at (0, 0) {
-%                 \begin{lstlisting}[style=PythonStyle, basicstyle=\ttfamily\fontsize{4}{4}\selectfont]
-% # Read and clean data
-% path = '/Users/esten/Downloads/Auto.csv'
-% df = pd.read_csv(path)
+    \begin{frame}{Coding tips: Separation of concerns} % Spaghetti
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, -7.55) {};
+            \only<1-2>{
+                \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
+\# Read and clean data^^J
+path = '/Users/esten/Downloads/Auto.csv'^^J
+df = pd.read_csv(path)^^J
+^^J
+\# Split data^^J
+train = df.iloc[:int(len(df) * 0.8)]^^J
+validation = df.iloc[int(len(df) * 0.8):]^^J
+^^J
+\# Define input and output variables^^J
+predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
+target = 'mpg'^^J
+^^J
+\# Define necessary data structures for state^^J
+chosen_predictors = []^^J
+mses = []^^J
+^^J
+while len(predictors) > 0:^^J
+{ }{ }{ }{ }best_predictor = \{'mse': float('inf'), 'predictor': None\}^^J
+^^J
+{ }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
+{ }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Fit and evaluate model^^J
+{ }{ }{ }{ }{ }{ }{ }{ }model = LinearRegression()^^J
+{ }{ }{ }{ }{ }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
+{ }{ }{ }{ }{ }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
+{ }{ }{ }{ }{ }{ }{ }{ }test_mse = np.mean((validation[target] - predictions) ** 2)^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
+{ }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
+{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = \{'mse': test_mse, 'predictor': predictor\}^^J
+^^J
+{ }{ }{ }{ }\# Update state^^J
+{ }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
+{ }{ }{ }{ }mses.append(best_predictor['mse'])^^J
+{ }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
+                }
+                \only<2>{
+                    \node[
+                        anchor=north west,
+                        fill=purple,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        minimum width=0.9\textwidth,
+                        minimum height=2.55cm,
+                        opacity=0.2,
+                        align=right,
+                    ] (setup) at ($ (code.north west) + (0.01, -0.01) $) {};
+                    \node[anchor=north east, inner sep=2pt] at (setup.north east) {\textcolor{red}{\tiny{Setup}}};
 
-% # Split data
-% train = df.iloc[:int(len(df) * 0.8)]
-% validation = df.iloc[int(len(df) * 0.8):]
+                    \node[
+                        anchor=north west,
+                        fill=green,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        minimum width=0.9\textwidth,
+                        minimum height=3.478cm,
+                        opacity=0.2
+                    ] (selection) at (setup.south west) {};
+                    \node[anchor=north east, inner sep=2pt] at (selection.north east) {\textcolor{green}{\tiny{Selection}}};
 
-% # Define input and output variables
-% predictors = ['cylinders', 'displacement', 'horsepower',
-%                 'weight', 'acceleration', 'year']
-% target = 'mpg'
+                    \node[
+                        anchor=north west,
+                        fill=blue,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        minimum width=0.9\textwidth - 0.65cm,
+                        minimum height=1cm,
+                        opacity=0.2
+                    ] (training) at ($ (selection.north west) + (0.6, -0.98) $) {};
+                    \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
 
-% # Define necessary data structures for state
-% chosen_predictors = []
-% mses = []
+                    \node[
+                        anchor=north west,
+                        fill=orange,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        minimum width=0.9\textwidth - 0.39cm,
+                        minimum height=0.83cm,
+                        opacity=0.2
+                    ] (state) at ($ (selection.north west) + (0.34, -2.6) $) {};
+                    \node[anchor=north east, inner sep=2pt] at (state.north east) {\textcolor{orange}{\tiny{Housekeeping}}};
+                }
+            }
+            \only<3>{
+                \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
+\# Read and clean data^^J
+path = '/Users/esten/Downloads/Auto.csv'^^J
+df = pd.read_csv(path)^^J
+^^J
+\# Split data^^J
+train = df.iloc[:int(len(df) * 0.8)]^^J
+validation = df.iloc[int(len(df) * 0.8):]^^J
+^^J
+\# Define input and output variables^^J
+predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
+target = 'mpg'^^J
+^^J
+\# Define necessary data structures for state^^J
+chosen_predictors = []^^J
+mses = []^^J
+^^J
+def fit_and_evaluate_model(model: LinearRegression, train: pd.DataFrame, validation: pd.DataFrame, variables: List[str], target: str):^^J
+{ }{ }{ }{ }""" Fit a given model on a training dataset using a given set of variables and return MSE from a validation dataset. """^^J
+{ }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
+{ }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
+^^J
+{ }{ }{ }{ }return np.mean((validation[target] - predictions) ** 2)^^J
+^^J
+while len(predictors) > 0:^^J
+{ }{ }{ }{ }best_predictor = {'mse': float('inf'), 'predictor': None}^^J
+^^J
+{ }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
+{ }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
+{ }{ }{ }{ }{ }{ }{ }{ }test_mse = fit_and_evaluate_model(LinearRegression(), train, validation, variables=potential_predictors,target=target)^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
+{ }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
+{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = {'mse': test_mse, 'predictor': predictor}^^J
+^^J
+{ }{ }{ }{ }\# Update state^^J
+{ }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
+{ }{ }{ }{ }mses.append(best_predictor['mse'])^^J
+{ }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
+                }
+                \node[
+                    anchor=north west,
+                    fill=blue,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth - 0.14cm,
+                    minimum height=1.2cm,
+                    opacity=0.2
+                ] (training) at ($ (code.north west) + (0.07, -2.65) $) {};
+                \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
 
-% while len(predictors) > 0:
-%     best_predictor = {'mse': float('inf'), 'predictor': None}
-
-%     for predictor in set(predictors) - set(chosen_predictors):
-%         potential_predictors = chosen_predictors + [predictor]
-
-%         # Fit and evaluate model
-%         model = LinearRegression()
-%         model.fit(train[potential_predictors], train[target])
-%         predictions = model.predict(validation[potential_predictors])
-%         test_mse = np.mean((validation[target] - predictions) ** 2)
-
-%         # Compare model with previous best
-%         if test_mse < best_predictor['mse']:
-%             best_predictor = {'mse': test_mse, 'predictor': predictor}
-
-%     # Update state
-%     chosen_predictors.append(best_predictor['predictor'])
-%     mses.append(best_predictor['mse'])
-%     predictors = [p for p in predictors if p != best_predictor['predictor']]
-%                 \end{lstlisting}
-%             };
-%             \node[] at (0, -7.55) {};
-%         \end{tikzpicture}
-%     \end{frame}
-
-%     \begin{frame}[fragile]{Coding tips: Separation of concerns} % Chunks
-%         \centering
-%         \begin{tikzpicture}
-%             \node[
-%                 minimum width=\codewidth,
-%                 text width=\codewidth,
-%                 align=left,
-%                 inner sep=0pt,
-%                 anchor=north,
-%                 label={[blue,
-%                         anchor=north east,
-%                         font=\ttfamily\fontsize{4}{4}\selectfont,
-%                         inner sep=0pt,
-%                         outer sep=0pt,
-%                         xshift=-3pt,
-%                         yshift=-3.5pt,
-%                         text depth=0
-%                         ]north west:In{[}1{]}:}
-%             ] (code) at (0, 0) {
-%                 \begin{lstlisting}[style=PythonStyle, basicstyle=\ttfamily\fontsize{4}{4}\selectfont]
-% # Read and clean data
-% path = '/Users/esten/Downloads/Auto.csv'
-% df = pd.read_csv(path)
-
-% # Split data
-% train = df.iloc[:int(len(df) * 0.8)]
-% validation = df.iloc[int(len(df) * 0.8):]
-
-% # Define input and output variables
-% predictors = ['cylinders', 'displacement', 'horsepower',
-%                 'weight', 'acceleration', 'year']
-% target = 'mpg'
-
-% # Define necessary data structures for state
-% chosen_predictors = []
-% mses = []
-
-% while len(predictors) > 0:
-%     best_predictor = {'mse': float('inf'), 'predictor': None}
-
-%     for predictor in set(predictors) - set(chosen_predictors):
-%         potential_predictors = chosen_predictors + [predictor]
-
-%         # Fit and evaluate model
-%         model = LinearRegression()
-%         model.fit(train[potential_predictors], train[target])
-%         predictions = model.predict(validation[potential_predictors])
-%         test_mse = np.mean((validation[target] - predictions) ** 2)
-
-%         # Compare model with previous best
-%         if test_mse < best_predictor['mse']:
-%             best_predictor = {'mse': test_mse, 'predictor': predictor}
-
-%     # Update state
-%     chosen_predictors.append(best_predictor['predictor'])
-%     mses.append(best_predictor['mse'])
-%     predictors = [p for p in predictors if p != best_predictor['predictor']]
-%                 \end{lstlisting}
-%             };
-%             \node[
-%                 anchor=north west,
-%                 fill=purple,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=\codewidth,
-%                 minimum height=2.78cm,
-%                 opacity=0.2,
-%                 align=right,
-%             ] (setup) at ($ (code.north west) + (0.01, -0.01) $) {};
-%             \node[anchor=north east, inner sep=2pt] at (setup.north east) {\textcolor{red}{\tiny{Setup}}};
-
-%             \node[
-%                 anchor=north west,
-%                 fill=green,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=\codewidth,
-%                 minimum height=3.478cm,
-%                 opacity=0.2
-%             ] (selection) at (setup.south west) {};
-%             \node[anchor=north east, inner sep=2pt] at (selection.north east) {\textcolor{green}{\tiny{Selection}}};
-
-%             \node[
-%                 anchor=north west,
-%                 fill=blue,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=\codewidth - 0.8cm,
-%                 minimum height=1cm,
-%                 opacity=0.2
-%             ] (training) at ($ (selection.north west) + (0.66, -0.98) $) {};
-%             \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
-
-%             \node[
-%                 anchor=north west,
-%                 fill=orange,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=\codewidth - 0.48cm,
-%                 minimum height=0.83cm,
-%                 opacity=0.2
-%             ] (state) at ($ (selection.north west) + (0.34, -2.6) $) {};
-%             \node[anchor=north east, inner sep=2pt] at (state.north east) {\textcolor{orange}{\tiny{Housekeeping}}};
-%             \node[] at (0, -7.55) {};
-%         \end{tikzpicture}
-%     \end{frame}
-
-    \begin{frame}{Coding tips: Separation of concerns}
-
+                \node[
+                    anchor=north west,
+                    draw=blue,
+                    line width=0.5pt,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth - 2.1cm,
+                    minimum height=0.2cm
+                ] (training) at ($ (code.north west) + (0.65, -4.78) $) {};
+            }
+        \end{tikzpicture}
     \end{frame}
+
+
 
 \end{document}
