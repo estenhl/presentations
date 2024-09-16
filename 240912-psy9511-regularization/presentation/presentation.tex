@@ -2354,7 +2354,7 @@ target = 'mpg'^^J
 chosen_predictors = []^^J
 mses = []^^J
 ^^J
-def fit_and_evaluate_model(model: LinearRegression, train: pd.DataFrame, validation: pd.DataFrame, variables: List[str], target: str):^^J
+def fit_and_evaluate(model: LinearRegression, train: pd.DataFrame, validation: pd.DataFrame, variables: List[str], target: str):^^J
 { }{ }{ }{ }""" Fit a given model on a training dataset using a given set of variables and return MSE from a validation dataset. """^^J
 { }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
 { }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
@@ -2366,7 +2366,7 @@ while len(predictors) > 0:^^J
 ^^J
 { }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
 { }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
-{ }{ }{ }{ }{ }{ }{ }{ }test_mse = fit_and_evaluate_model(LinearRegression(), train, validation, variables=potential_predictors,target=target)^^J
+{ }{ }{ }{ }{ }{ }{ }{ }test_mse = fit_and_evaluate(LinearRegression(), train, validation, variables=potential_predictors,target=target)^^J
 ^^J
 { }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
 { }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
