@@ -15,6 +15,9 @@
 \author{Esten H. Leonardsen}
 \date{23.09.24}
 
+\colorlet{cases}{red}
+\colorlet{controls}{blue}
+
 \begin{document}
 	\begin{frame}
 	 	\titlepage
@@ -1061,871 +1064,856 @@
     %     }
     % \end{frame}
 
-    \colorlet{cases}{red}
-    \colorlet{controls}{blue}
+    % \newcommand{\aucpredictionplot}[1]{
+    %     \begin{tikzpicture}
+    %         \begin{axis}[
+    %             height=3cm,
+    %             width=7cm,
+    %             ymajorticks=false,
+    %             xtick={0, 0.25, 0.5, 0.75, 1},
+    %             xlabel=\small{Prediction},
+    %             xmin=-0.1,
+    %             xmax=1.1,
+    %             ymin=-0.25,
+    %             ymax=1.25,
+    %             xtick pos=bottom,
+    %             clip=false,
+    %             typeset ticklabels with strut
+    %         ]
+    %             \node[] at (axis cs: -0.2, 1.6) {};
+    %             \node[] at (axis cs: 1.2, -1.4) {};
+    %             \ifnum#1=1
+    %                 \addplot[
+    %                     only marks,
+    %                     mark options={fill=controls}
+    %                 ] coordinates {
+    %                     (0.588 - 0.5, -0.026)
+    %                     (0.491 - 0.45, 0.021)
+    %                     (0.522 - 0.4, -0.042)
+    %                     (0.450 - 0.425, -0.004)
+    %                     (0.488 - 0.375, 0.006)
+    %                     (0.573 - 0.325, 0.073)
+    %                     (0.505 - 0.275, -0.060)
+    %                     (0.554 - 0.225, -0.002)
+    %                     (0.502 - 0.35, -0.023)
+    %                     (0.576 - 0.15, -0.031)
+    %                     (0.607 - 0.1, -0.018)
+    %                     (0.544 - 0.05, 0.018)
+    %                     (0.523 - 0.0, -0.093)
+    %                     (0.432- 0.125, -0.054)
+    %                     (0.460 + 0.025, 0.085)
+    %                     (0.479 + 0.075, 0.072)
+    %                     (0.547 + 0.125, -0.108)
+    %                     (0.523 + 0.175, -0.082)
+    %                     (0.586 + 0.05, -0.049)
+    %                     (0.527 + 0.2, 0.021)
+    %                 };
 
-    \newcommand{\aucpredictionplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                height=3cm,
-                width=7cm,
-                ymajorticks=false,
-                xtick={0, 0.25, 0.5, 0.75, 1},
-                xlabel=\small{Prediction},
-                xmin=-0.1,
-                xmax=1.1,
-                ymin=-0.25,
-                ymax=1.25,
-                xtick pos=bottom,
-                clip=false,
-                typeset ticklabels with strut
-            ]
-                \node[] at (axis cs: -0.2, 1.6) {};
-                \node[] at (axis cs: 1.2, -1.4) {};
-                \ifnum#1=1
-                    \addplot[
-                        only marks,
-                        mark options={fill=controls}
-                    ] coordinates {
-                        (0.588 - 0.5, -0.026)
-                        (0.491 - 0.45, 0.021)
-                        (0.522 - 0.4, -0.042)
-                        (0.450 - 0.425, -0.004)
-                        (0.488 - 0.375, 0.006)
-                        (0.573 - 0.325, 0.073)
-                        (0.505 - 0.275, -0.060)
-                        (0.554 - 0.225, -0.002)
-                        (0.502 - 0.35, -0.023)
-                        (0.576 - 0.15, -0.031)
-                        (0.607 - 0.1, -0.018)
-                        (0.544 - 0.05, 0.018)
-                        (0.523 - 0.0, -0.093)
-                        (0.432- 0.125, -0.054)
-                        (0.460 + 0.025, 0.085)
-                        (0.479 + 0.075, 0.072)
-                        (0.547 + 0.125, -0.108)
-                        (0.523 + 0.175, -0.082)
-                        (0.586 + 0.05, -0.049)
-                        (0.527 + 0.2, 0.021)
-                    };
+    %                 \addplot[
+    %                     only marks,
+    %                     mark options={fill=cases}
+    %                 ] coordinates {
+    %                     (0.494 - 0.2, -0.047 + 1)
+    %                     (0.526 - 0.15, -0.001 + 1)
+    %                     (0.514 - 0.1, 0.039 + 1)
+    %                     (0.451 - 0.05, -0.002 + 1)
+    %                     (0.459 - 0.075, -0.077 + 1)
+    %                     (0.533 + 0.025, 0.079 + 1)
+    %                     (0.479 + 0.075, -0.025 + 1)
+    %                     (0.462 + 0.125, 0.031 + 1)
+    %                     (0.472 + 0.1, 0.038 + 1)
+    %                     (0.462 + 0.15, -0.014 + 1)
+    %                     (0.549 + 0.2, 0.013 + 1)
+    %                     (0.572 + 0.25, 0.008 + 1)
+    %                     (0.491 + 0.3, 0.022 + 1)
+    %                     (0.501 + 0.325, 0.015 + 1)
+    %                     (0.453 + 0.35, -0.046 + 1)
+    %                     (0.439 + 0.4, -0.023 + 1)
+    %                     (0.477 + 0.425, 0.007 + 1)
+    %                     (0.446 + 0.45, 0.016 + 1)
+    %                     (0.487 + 0.475, -0.036 + 1)
+    %                     (0.424 + 0.5, 0.004 + 1)
+    %                 };
+    %                 \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{threshold}};
+    %             \fi
+    %             \ifnum#1>1
+    %                 \addplot[
+    %                     only marks,
+    %                     mark options={fill=controls}
+    %                 ] coordinates {
+    %                     ((0.588 - 0.5) * 0.5, -0.026)
+    %                     ((0.491 - 0.45) * 0.5, 0.021)
+    %                     ((0.522 - 0.4) * 0.5, -0.042)
+    %                     ((0.450 - 0.425) * 0.5, -0.004)
+    %                     ((0.488 - 0.375) * 0.5, 0.006)
+    %                     ((0.573 - 0.325) * 0.5, 0.073)
+    %                     ((0.505 - 0.275) * 0.5, -0.060)
+    %                     ((0.554 - 0.225) * 0.5, -0.002)
+    %                     ((0.502 - 0.35) * 0.5, -0.023)
+    %                     ((0.576 - 0.15) * 0.5, -0.031)
+    %                     ((0.607 - 0.1) * 0.5, -0.018)
+    %                     ((0.544 - 0.05) * 0.5, 0.018)
+    %                     ((0.523 - 0.0) * 0.5, -0.093)
+    %                     ((0.432- 0.125) * 0.5, -0.054)
+    %                     ((0.460 + 0.025) * 0.5, 0.085)
+    %                     ((0.479 + 0.075) * 0.5, 0.072)
+    %                     ((0.547 + 0.125) * 0.5, -0.108)
+    %                     ((0.523 + 0.175) * 0.5, -0.082)
+    %                     ((0.586 + 0.05) * 0.5, -0.049)
+    %                     ((0.527 + 0.2) * 0.5, 0.021)
+    %                 };
 
-                    \addplot[
-                        only marks,
-                        mark options={fill=cases}
-                    ] coordinates {
-                        (0.494 - 0.2, -0.047 + 1)
-                        (0.526 - 0.15, -0.001 + 1)
-                        (0.514 - 0.1, 0.039 + 1)
-                        (0.451 - 0.05, -0.002 + 1)
-                        (0.459 - 0.075, -0.077 + 1)
-                        (0.533 + 0.025, 0.079 + 1)
-                        (0.479 + 0.075, -0.025 + 1)
-                        (0.462 + 0.125, 0.031 + 1)
-                        (0.472 + 0.1, 0.038 + 1)
-                        (0.462 + 0.15, -0.014 + 1)
-                        (0.549 + 0.2, 0.013 + 1)
-                        (0.572 + 0.25, 0.008 + 1)
-                        (0.491 + 0.3, 0.022 + 1)
-                        (0.501 + 0.325, 0.015 + 1)
-                        (0.453 + 0.35, -0.046 + 1)
-                        (0.439 + 0.4, -0.023 + 1)
-                        (0.477 + 0.425, 0.007 + 1)
-                        (0.446 + 0.45, 0.016 + 1)
-                        (0.487 + 0.475, -0.036 + 1)
-                        (0.424 + 0.5, 0.004 + 1)
-                    };
-                    \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
-                    \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{threshold}};
-                \fi
-                \ifnum#1>1
-                    \addplot[
-                        only marks,
-                        mark options={fill=controls}
-                    ] coordinates {
-                        ((0.588 - 0.5) * 0.5, -0.026)
-                        ((0.491 - 0.45) * 0.5, 0.021)
-                        ((0.522 - 0.4) * 0.5, -0.042)
-                        ((0.450 - 0.425) * 0.5, -0.004)
-                        ((0.488 - 0.375) * 0.5, 0.006)
-                        ((0.573 - 0.325) * 0.5, 0.073)
-                        ((0.505 - 0.275) * 0.5, -0.060)
-                        ((0.554 - 0.225) * 0.5, -0.002)
-                        ((0.502 - 0.35) * 0.5, -0.023)
-                        ((0.576 - 0.15) * 0.5, -0.031)
-                        ((0.607 - 0.1) * 0.5, -0.018)
-                        ((0.544 - 0.05) * 0.5, 0.018)
-                        ((0.523 - 0.0) * 0.5, -0.093)
-                        ((0.432- 0.125) * 0.5, -0.054)
-                        ((0.460 + 0.025) * 0.5, 0.085)
-                        ((0.479 + 0.075) * 0.5, 0.072)
-                        ((0.547 + 0.125) * 0.5, -0.108)
-                        ((0.523 + 0.175) * 0.5, -0.082)
-                        ((0.586 + 0.05) * 0.5, -0.049)
-                        ((0.527 + 0.2) * 0.5, 0.021)
-                    };
+    %                 \addplot[
+    %                     only marks,
+    %                     mark options={fill=cases}
+    %                 ] coordinates {
+    %                     ((0.494 - 0.2) * 0.5, -0.047 + 1)
+    %                     ((0.526 - 0.15) * 0.5, -0.001 + 1)
+    %                     ((0.514 - 0.1) * 0.5, 0.039 + 1)
+    %                     ((0.451 - 0.05) * 0.5, -0.002 + 1)
+    %                     ((0.459 - 0.075) * 0.5, -0.077 + 1)
+    %                     ((0.533 + 0.025) * 0.5, 0.079 + 1)
+    %                     ((0.479 + 0.075) * 0.5, -0.025 + 1)
+    %                     ((0.462 + 0.125) * 0.5, 0.031 + 1)
+    %                     ((0.472 + 0.1) * 0.5, 0.038 + 1)
+    %                     ((0.462 + 0.15) * 0.5, -0.014 + 1)
+    %                     ((0.549 + 0.2) * 0.5, 0.013 + 1)
+    %                     ((0.572 + 0.25) * 0.5, 0.008 + 1)
+    %                     ((0.491 + 0.3) * 0.5, 0.022 + 1)
+    %                     ((0.501 + 0.325) * 0.5, 0.015 + 1)
+    %                     ((0.453 + 0.35) * 0.5, -0.046 + 1)
+    %                     ((0.439 + 0.4) * 0.5, -0.023 + 1)
+    %                     ((0.477 + 0.425) * 0.5, 0.007 + 1)
+    %                     ((0.446 + 0.45) * 0.5, 0.016 + 1)
+    %                     ((0.487 + 0.475) * 0.5, -0.036 + 1)
+    %                     ((0.424 + 0.5) * 0.5, 0.004 + 1)
+    %                 };
+    %             \fi
+    %             \ifnum#1=2
+    %                 \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{threshold}};
+    %             \fi
+    %             \ifnum#1=3
+    %                 \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.25, 1.25) {\footnotesize{threshold}};
+    %             \fi
+    %             \ifnum#1=4
+    %                 \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.25, 1.25) {\footnotesize{$t_0$}};
+    %                 \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{$t_1$}};
+    %                 \draw[dashed] (axis cs: 0.75, -0.25) -- (axis cs: 0.75, 1.25);
+    %                 \node[anchor=south] at (axis cs: 0.75, 1.25) {\footnotesize{$t_2$}};
+    %             \fi
 
-                    \addplot[
-                        only marks,
-                        mark options={fill=cases}
-                    ] coordinates {
-                        ((0.494 - 0.2) * 0.5, -0.047 + 1)
-                        ((0.526 - 0.15) * 0.5, -0.001 + 1)
-                        ((0.514 - 0.1) * 0.5, 0.039 + 1)
-                        ((0.451 - 0.05) * 0.5, -0.002 + 1)
-                        ((0.459 - 0.075) * 0.5, -0.077 + 1)
-                        ((0.533 + 0.025) * 0.5, 0.079 + 1)
-                        ((0.479 + 0.075) * 0.5, -0.025 + 1)
-                        ((0.462 + 0.125) * 0.5, 0.031 + 1)
-                        ((0.472 + 0.1) * 0.5, 0.038 + 1)
-                        ((0.462 + 0.15) * 0.5, -0.014 + 1)
-                        ((0.549 + 0.2) * 0.5, 0.013 + 1)
-                        ((0.572 + 0.25) * 0.5, 0.008 + 1)
-                        ((0.491 + 0.3) * 0.5, 0.022 + 1)
-                        ((0.501 + 0.325) * 0.5, 0.015 + 1)
-                        ((0.453 + 0.35) * 0.5, -0.046 + 1)
-                        ((0.439 + 0.4) * 0.5, -0.023 + 1)
-                        ((0.477 + 0.425) * 0.5, 0.007 + 1)
-                        ((0.446 + 0.45) * 0.5, 0.016 + 1)
-                        ((0.487 + 0.475) * 0.5, -0.036 + 1)
-                        ((0.424 + 0.5) * 0.5, 0.004 + 1)
-                    };
-                \fi
-                \ifnum#1=2
-                    \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
-                    \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{threshold}};
-                \fi
-                \ifnum#1=3
-                    \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
-                    \node[anchor=south] at (axis cs: 0.25, 1.25) {\footnotesize{threshold}};
-                \fi
-                \ifnum#1=4
-                    \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
-                    \node[anchor=south] at (axis cs: 0.25, 1.25) {\footnotesize{$t_0$}};
-                    \draw[dashed] (axis cs: 0.5, -0.25) -- (axis cs: 0.5, 1.25);
-                    \node[anchor=south] at (axis cs: 0.5, 1.25) {\footnotesize{$t_1$}};
-                    \draw[dashed] (axis cs: 0.75, -0.25) -- (axis cs: 0.75, 1.25);
-                    \node[anchor=south] at (axis cs: 0.75, 1.25) {\footnotesize{$t_2$}};
-                \fi
+    %             \ifnum#1=6
+    %                 \draw[dashed, red] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
+    %                 \draw[dashed, red] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
+    %             \fi
 
-                \ifnum#1=6
-                    \draw[dashed, red] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
-                    \draw[dashed, red] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
-                \fi
+    %             \ifnum#1>6
+    %                 \draw[dashed] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
+    %                 \draw[dashed] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
+    %                 \draw[dashed] (axis cs: 0.15, -0.25) -- (axis cs: 0.15, 1.25);
+    %             \fi
+    %             \ifnum#1>7
+    %                 \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
+    %             \fi
+    %             \ifnum#1>8
+    %                 \draw[dashed] (axis cs: 0.35, -0.25) -- (axis cs: 0.35, 1.25);
+    %             \fi
+    %         \end{axis}
+    %     \end{tikzpicture}
+    % }
 
-                \ifnum#1>6
-                    \draw[dashed] (axis cs: 0, -0.25) -- (axis cs: 0, 1.25);
-                    \draw[dashed] (axis cs: 1, -0.25) -- (axis cs: 1, 1.25);
-                    \draw[dashed] (axis cs: 0.15, -0.25) -- (axis cs: 0.15, 1.25);
-                \fi
-                \ifnum#1>7
-                    \draw[dashed] (axis cs: 0.25, -0.25) -- (axis cs: 0.25, 1.25);
-                \fi
-                \ifnum#1>8
-                    \draw[dashed] (axis cs: 0.35, -0.25) -- (axis cs: 0.35, 1.25);
-                \fi
-            \end{axis}
-        \end{tikzpicture}
-    }
+    % \newsavebox{\aucbalanced}
+    % \sbox{\aucbalanced}{\aucpredictionplot{1}}
+    % \newsavebox{\aucimbalanced}
+    % \sbox{\aucimbalanced}{\aucpredictionplot{2}}
+    % \newsavebox{\aucthreshold}
+    % \sbox{\aucthreshold}{\aucpredictionplot{3}}
+    % \newsavebox{\aucthresholds}
+    % \sbox{\aucthresholds}{\aucpredictionplot{4}}
+    % \newsavebox{\aucnothresholds}
+    % \sbox{\aucnothresholds}{\aucpredictionplot{5}}
+    % \newsavebox{\aucthresholdbounds}
+    % \sbox{\aucthresholdbounds}{\aucpredictionplot{6}}
+    % \newsavebox{\aucthresholdfirst}
+    % \sbox{\aucthresholdfirst}{\aucpredictionplot{7}}
+    % \newsavebox{\aucthresholdsecond}
+    % \sbox{\aucthresholdsecond}{\aucpredictionplot{8}}
+    % \newsavebox{\aucthresholdthird}
+    % \sbox{\aucthresholdthird}{\aucpredictionplot{9}}
 
-    \newsavebox{\aucbalanced}
-    \sbox{\aucbalanced}{\aucpredictionplot{1}}
-    \newsavebox{\aucimbalanced}
-    \sbox{\aucimbalanced}{\aucpredictionplot{2}}
-    \newsavebox{\aucthreshold}
-    \sbox{\aucthreshold}{\aucpredictionplot{3}}
-    \newsavebox{\aucthresholds}
-    \sbox{\aucthresholds}{\aucpredictionplot{4}}
-    \newsavebox{\aucnothresholds}
-    \sbox{\aucnothresholds}{\aucpredictionplot{5}}
-    \newsavebox{\aucthresholdbounds}
-    \sbox{\aucthresholdbounds}{\aucpredictionplot{6}}
-    \newsavebox{\aucthresholdfirst}
-    \sbox{\aucthresholdfirst}{\aucpredictionplot{7}}
-    \newsavebox{\aucthresholdsecond}
-    \sbox{\aucthresholdsecond}{\aucpredictionplot{8}}
-    \newsavebox{\aucthresholdthird}
-    \sbox{\aucthresholdthird}{\aucpredictionplot{9}}
+    % \newcommand{\rocplot}[1]{
+    %     \begin{tikzpicture}
+    %         \begin{axis}[
+    %             width=5cm,
+    %             height=5cm,
+    %             ylabel=\small{True positive rate},
+    %             xlabel=\small{False positive rate},
+    %             xmin=0,
+    %             xmax=1,
+    %             ymin=0,
+    %             ymax=1,
+    %             ticklabel style={font=\small},
+    %             xmajorgrids=true,
+    %             ymajorgrids=true,
+    %             tick style={draw=none}
+    %         ]
+    %             \ifnum#1=1
+    %                 \addplot[
+    %                     only marks,
+    %                     mark options={fill=orange!50, very thick},
+    %                     mark size=3pt
+    %                 ] coordinates {
+    %                     (0, 0)
+    %                     (0, 0.2)
+    %                     (0.2, 0.5)
+    %                     (0.5, 0.95)
+    %                     (1, 1)
+    %                 };
+    %             \fi
+    %             \ifnum#1=2
+    %                 \node[anchor=north east, font=\scriptsize\selectfont,align=center] at (axis cs: 0.95, 0.95) {
+    %                     Receiver\\operating\\characteristic\\curve\\(ROC)
+    %                 };
+    %             \fi
+    %             \ifnum#1>1
+    %                 \ifnum#1<5
+    %                     \addplot[
+    %                         very thick,
+    %                         mark=*,
+    %                         mark options={fill=orange!50},
+    %                         mark size=3pt,
+    %                         name path=roc
+    %                     ] coordinates {
+    %                         (0, 0)
+    %                         (0, 0.2)
+    %                         (0.2, 0.5)
+    %                         (0.5, 0.95)
+    %                         (1, 1)
+    %                     };
+    %                 \fi
+    %             \fi
+    %             \ifnum#1=3
+    %                 \addplot[dashed] coordinates {
+    %                     (0, 0)
+    %                     (1, 1)
+    %                 };
+    %             \fi
+    %             \ifnum#1>3
+    %                 \path[name path=axis] (axis cs:0,0) -- (axis cs:1,0);
+    %             \fi
+    %             \ifnum#1=4
+    %                 \addplot[pattern=north west lines, pattern color=red] fill between [of=roc and axis];
+    %                 \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.16, 0.16) {
+    %                     Area under\\the curve\\(AUC)
+    %                 };
+    %             \fi
+    %             \ifnum#1=5
+    %                 \draw[name path=random, very thick] (axis cs: 0, 0) -- (axis cs: 1, 1);
+    %                 \addplot[pattern=north west lines, pattern color=red] fill between [of=random and axis];
+    %                 \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.15, 0.15) {
+    %                     AUC=0.5
+    %                 };
+    %             \fi
+    %             \ifnum#1=6
+    %                 \draw[name path=perfect, very thick] (axis cs: 0, 0) -- (axis cs: 0, 1) -- (axis cs: 1, 1);
+    %                 \addplot[pattern=north west lines, pattern color=red] fill between [of=perfect and axis];
+    %                 \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.15, 0.15) {
+    %                     AUC=1.0
+    %                 };
+    %             \fi
+    %         \end{axis}
+    %     \end{tikzpicture}
+    % }
 
-    \newcommand{\rocplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                width=5cm,
-                height=5cm,
-                ylabel=\small{True positive rate},
-                xlabel=\small{False positive rate},
-                xmin=0,
-                xmax=1,
-                ymin=0,
-                ymax=1,
-                ticklabel style={font=\small},
-                xmajorgrids=true,
-                ymajorgrids=true,
-                tick style={draw=none}
-            ]
-                \ifnum#1=1
-                    \addplot[
-                        only marks,
-                        mark options={fill=orange!50, very thick},
-                        mark size=3pt
-                    ] coordinates {
-                        (0, 0)
-                        (0, 0.2)
-                        (0.2, 0.5)
-                        (0.5, 0.95)
-                        (1, 1)
-                    };
-                \fi
-                \ifnum#1=2
-                    \node[anchor=north east, font=\scriptsize\selectfont,align=center] at (axis cs: 0.95, 0.95) {
-                        Receiver\\operating\\characteristic\\curve\\(ROC)
-                    };
-                \fi
-                \ifnum#1>1
-                    \ifnum#1<5
-                        \addplot[
-                            very thick,
-                            mark=*,
-                            mark options={fill=orange!50},
-                            mark size=3pt,
-                            name path=roc
-                        ] coordinates {
-                            (0, 0)
-                            (0, 0.2)
-                            (0.2, 0.5)
-                            (0.5, 0.95)
-                            (1, 1)
-                        };
-                    \fi
-                \fi
-                \ifnum#1=3
-                    \addplot[dashed] coordinates {
-                        (0, 0)
-                        (1, 1)
-                    };
-                \fi
-                \ifnum#1>3
-                    \path[name path=axis] (axis cs:0,0) -- (axis cs:1,0);
-                \fi
-                \ifnum#1=4
-                    \addplot[pattern=north west lines, pattern color=red] fill between [of=roc and axis];
-                    \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.16, 0.16) {
-                        Area under\\the curve\\(AUC)
-                    };
-                \fi
-                \ifnum#1=5
-                    \draw[name path=random, very thick] (axis cs: 0, 0) -- (axis cs: 1, 1);
-                    \addplot[pattern=north west lines, pattern color=red] fill between [of=random and axis];
-                    \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.15, 0.15) {
-                        AUC=0.5
-                    };
-                \fi
-                \ifnum#1=6
-                    \draw[name path=perfect, very thick] (axis cs: 0, 0) -- (axis cs: 0, 1) -- (axis cs: 1, 1);
-                    \addplot[pattern=north west lines, pattern color=red] fill between [of=perfect and axis];
-                    \node[fill=white, draw=red, font=\footnotesize\selectfont, align=center, text=red, anchor=south east] at (axis cs: 1-0.15, 0.15) {
-                        AUC=1.0
-                    };
-                \fi
-            \end{axis}
-        \end{tikzpicture}
-    }
+    % \newsavebox{\rocpoints}
+    % \sbox{\rocpoints}{\rocplot{1}}
+    % \newsavebox{\roccurve}
+    % \sbox{\roccurve}{\rocplot{2}}
+    % \newsavebox{\rocbaseline}
+    % \sbox{\rocbaseline}{\rocplot{3}}
+    % \newsavebox{\rocauc}
+    % \sbox{\rocauc}{\rocplot{4}}
+    % \newsavebox{\rocrandom}
+    % \sbox{\rocrandom}{\rocplot{5}}
+    % \newsavebox{\rocperfect}
+    % \sbox{\rocperfect}{\rocplot{6}}
 
-    \newsavebox{\rocpoints}
-    \sbox{\rocpoints}{\rocplot{1}}
-    \newsavebox{\roccurve}
-    \sbox{\roccurve}{\rocplot{2}}
-    \newsavebox{\rocbaseline}
-    \sbox{\rocbaseline}{\rocplot{3}}
-    \newsavebox{\rocauc}
-    \sbox{\rocauc}{\rocplot{4}}
-    \newsavebox{\rocrandom}
-    \sbox{\rocrandom}{\rocplot{5}}
-    \newsavebox{\rocperfect}
-    \sbox{\rocperfect}{\rocplot{6}}
+    % \begin{frame}[t]{Classification metrics: Area under the curve}
+    %     \only<1-15>{
+    %         \centering
+    %         \begin{tikzpicture}
+    %             \visible<1>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucbalanced}
+    %                 };
+    %             }
+    %             \only<2>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucimbalanced}
+    %                 };
+    %             }
+    %             \only<3>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthreshold}
+    %                 };
+    %             }
+    %             \only<4>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthresholds}
+    %                 };
+    %             }
+    %             \only<5>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucnothresholds}
+    %                 };
+    %             }
+    %             \only<6>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthresholdbounds}
+    %                 };
+    %             }
+    %             \only<7>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthresholdfirst}
+    %                 };
+    %             }
+    %             \only<8>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthresholdsecond}
+    %                 };
+    %             }
+    %             \only<9>{
+    %                 \node[] at (0, 0) {
+    %                     \usebox{\aucthresholdthird}
+    %                 };
+    %             }
 
-    \begin{frame}[t]{Classification metrics: Area under the curve}
-        \only<1-15>{
-            \centering
-            \begin{tikzpicture}
-                \visible<1>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucbalanced}
-                    };
-                }
-                \only<2>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucimbalanced}
-                    };
-                }
-                \only<3>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthreshold}
-                    };
-                }
-                \only<4>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthresholds}
-                    };
-                }
-                \only<5>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucnothresholds}
-                    };
-                }
-                \only<6>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthresholdbounds}
-                    };
-                }
-                \only<7>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthresholdfirst}
-                    };
-                }
-                \only<8>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthresholdsecond}
-                    };
-                }
-                \only<9>{
-                    \node[] at (0, 0) {
-                        \usebox{\aucthresholdthird}
-                    };
-                }
+    %             \visible<5-9>{
+    %                 \node[inner sep=0pt] (table) at (0, -4) {
+    %                     \small
+    %                     \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
+    %                         \hline
+    %                         \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
+    %                         \hline
+    %                         \visible<6-9>{0}&\visible<6-9>{1}&\visible<6-9>{1}\\
+    %                         \hline
+    %                         \visible<7-9>{0.15}&\visible<7-9>{0.95}&\visible<7-9>{0.5}\\
+    %                         \hline
+    %                         \visible<8-9>{0.25}&\visible<8-9>{0.5}&\visible<8-9>{0.2}\\
+    %                         \hline
+    %                         \visible<9>{0.35}&\visible<9>{0.2}&\visible<9>{0.0}\\
+    %                         \hline
+    %                         \visible<6-9>{1}&\visible<6-9>{0}&\visible<6-9>{0}\\
+    %                         \hline
+    %                     \end{tabular}
+    %                 };
+    %             }
+    %             \visible<10->{
+    %                 \node[inner sep=0pt] (table) at (2.75, -2) {
+    %                     \small
+    %                     \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
+    %                         \hline
+    %                         \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
+    %                         \hline
+    %                         0&1&1\\
+    %                         \hline
+    %                         0.15&0.95&0.5\\
+    %                         \hline
+    %                         0.25&0.5&0.2\\
+    %                         \hline
+    %                         0.35&0.2&0.0\\
+    %                         \hline
+    %                         1&0&0\\
+    %                         \hline
+    %                     \end{tabular}
+    %                 };
+    %             }
+    %             \visible<10>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\rocpoints}
+    %                 };
+    %                 \node[
+    %                     inner sep=0pt,
+    %                     draw=red,
+    %                     anchor=south east,
+    %                     very thick,
+    %                     minimum width=2.46cm,
+    %                     minimum height=2.3cm
+    %                 ] at (table.south east) {};
+    %             }
+    %             \visible<11>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\roccurve}
+    %                 };
+    %             }
+    %             \visible<12>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\rocbaseline}
+    %                 };
+    %             }
+    %             \visible<13>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\rocauc}
+    %                 };
+    %             }
+    %             \visible<14>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\rocrandom}
+    %                 };
+    %             }
+    %             \visible<15>{
+    %                 \node[] at (-2.75, -2.3) {
+    %                     \usebox{\rocperfect}
+    %                 };
+    %             }
+    %         \end{tikzpicture}
+    %     }
+    %     \only<16>{
+    %         \vspace{1.8cm}
+    %         \textbf{Area under the receiver operating characteristic curve (AUC/AUROC)}
+    %         \begin{itemize}
+    %             \item A performance metric that does not rely on a correct classification threshold
+    %             \item Measures whether the predictions are ranked correctly (e.g. patients have a higher prediction than controls)
+    %             \item \textbf{Handles class imbalance (relatively well)} and is commonly reported in the literature
+    %         \end{itemize}
+    %     }
+    % \end{frame}
 
-                \visible<5-9>{
-                    \node[inner sep=0pt] (table) at (0, -4) {
-                        \small
-                        \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
-                            \hline
-                            \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
-                            \hline
-                            \visible<6-9>{0}&\visible<6-9>{1}&\visible<6-9>{1}\\
-                            \hline
-                            \visible<7-9>{0.15}&\visible<7-9>{0.95}&\visible<7-9>{0.5}\\
-                            \hline
-                            \visible<8-9>{0.25}&\visible<8-9>{0.5}&\visible<8-9>{0.2}\\
-                            \hline
-                            \visible<9>{0.35}&\visible<9>{0.2}&\visible<9>{0.0}\\
-                            \hline
-                            \visible<6-9>{1}&\visible<6-9>{0}&\visible<6-9>{0}\\
-                            \hline
-                        \end{tabular}
-                    };
-                }
-                \visible<10->{
-                    \node[inner sep=0pt] (table) at (2.75, -2) {
-                        \small
-                        \begin{tabular}{|>{\centering\arraybackslash}m{1.8cm}|>{\centering\arraybackslash}m{0.8cm}|>{\centering\arraybackslash}m{0.8cm}|}
-                            \hline
-                            \textbf{threshold}&\textbf{TPR}&\textbf{FPR}\\
-                            \hline
-                            0&1&1\\
-                            \hline
-                            0.15&0.95&0.5\\
-                            \hline
-                            0.25&0.5&0.2\\
-                            \hline
-                            0.35&0.2&0.0\\
-                            \hline
-                            1&0&0\\
-                            \hline
-                        \end{tabular}
-                    };
-                }
-                \visible<10>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\rocpoints}
-                    };
-                    \node[
-                        inner sep=0pt,
-                        draw=red,
-                        anchor=south east,
-                        very thick,
-                        minimum width=2.46cm,
-                        minimum height=2.3cm
-                    ] at (table.south east) {};
-                }
-                \visible<11>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\roccurve}
-                    };
-                }
-                \visible<12>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\rocbaseline}
-                    };
-                }
-                \visible<13>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\rocauc}
-                    };
-                }
-                \visible<14>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\rocrandom}
-                    };
-                }
-                \visible<15>{
-                    \node[] at (-2.75, -2.3) {
-                        \usebox{\rocperfect}
-                    };
-                }
-            \end{tikzpicture}
-        }
-        \only<16>{
-            \vspace{1.8cm}
-            \textbf{Area under the receiver operating characteristic curve (AUC/AUROC)}
-            \begin{itemize}
-                \item A performance metric that does not rely on a correct classification threshold
-                \item Measures whether the predictions are ranked correctly (e.g. patients have a higher prediction than controls)
-                \item \textbf{Handles class imbalance (relatively well)} and is commonly reported in the literature
-            \end{itemize}
-        }
+    % \begin{frame}{Loss functions and performance metrics: Summary}
+    %     \only<1>{
+    %         \textbf{Performance metrics and loss functions measure the performance of a predictive model}\\[-0cm]
+    %         \begin{itemize}
+    %             \item There is a range of alternatives that can be used, each capturing a different aspect of a model's performance
+    %             \item It is good practice to report more than one metric
+    %             \item For regression:
+    %             \begin{itemize}
+    %                 \item MSE is a common loss function with nice mathematical properties.
+    %                 \item MAE is an intuitive performance metric
+    %             \end{itemize}
+    %             \item For classification:
+    %             \begin{itemize}
+    %                 \item Log-loss is the most common loss function for probabilistic classifiers
+    %                 \item AUC is a widely used metric that is easy to interpret, handles class imbalance (to some degree), and is not reliant on the choice of classification threshold
+    %             \end{itemize}
+    %         \end{itemize}
+    %     }
+    %     \only<2>{
+    %         \centering
+    %         \tiny{\url{http://localhost:8889/notebooks/notebooks\%2FClassification\%20metrics.ipynb}}
+    %     }
+    % \end{frame}
+
+    \section{Strategies for model evaluation}
+
+    \begin{frame}{Model evaluation: Rationale}
+        \textbf{\underline{Statistical inference:}}\\
+        Goal: In-sample quantification
+        \vspace{0.7cm}\\
+        \textbf{\underline{Predictive modelling:}}\\
+        Goal: Out-of-sample generalization
+        \begin{itemize}
+            \item How can we test how good our model is on \textbf{unseen data} and \textbf{be certain that performance holds if we present even more new data}
+        \end{itemize}
     \end{frame}
 
-    \begin{frame}{Loss functions and performance metrics: Summary}
-        \only<1>{
-            \textbf{Performance metrics and loss functions measure the performance of a predictive model}\\[-0cm]
-            \begin{itemize}
-                \item There is a range of alternatives that can be used, each capturing a different aspect of a model's performance
-                \item It is good practice to report more than one metric
-                \item For regression:
-                \begin{itemize}
-                    \item MSE is a common loss function with nice mathematical properties.
-                    \item MAE is an intuitive performance metric
-                \end{itemize}
-                \item For classification:
-                \begin{itemize}
-                    \item Log-loss is the most common loss function for probabilistic classifiers
-                    \item AUC is a widely used metric that is easy to interpret, handles class imbalance (to some degree), and is not reliant on the choice of classification threshold
-                \end{itemize}
-            \end{itemize}
-        }
-        \only<2>{
-            \centering
-            \tiny{\url{http://localhost:8889/notebooks/notebooks\%2FClassification\%20metrics.ipynb}}
-        }
+
+    \begin{frame}{Model evaluation: Validation set} % Performance
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-4, 1) {};
+            \node[] at (4, -4.5) {};
+            \visible<1-5>{
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            }
+
+            \visible<2-5,7-9>{
+                \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
+            }
+
+            \visible<3-5,7-9>{
+                \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
+                \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
+            }
+
+            \visible<4-5,7-9>{
+                \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
+                \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
+                \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
+            }
+
+            \visible<5,7-9>{
+                \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (eval) - (0, 1.5) $) {Predictive\\performance};
+                \draw[->] ($ (eval.south) - (0, 00) $) -- (score.north);
+            }
+            \visible<6>{
+                \node[text width=11cm] at (0, -1.75) {
+                    In the validation set approach we split the dataset into two subsets (commonly $\sim$80\%/20\%), use the first for training the model and the second to test its performance.
+                    \begin{itemize}
+                        \item[\textcolor{green}{+}] Accurate estimate of out-of-sample error
+                        \item[\textcolor{green}{+}] Simple
+                        \item[\textcolor{red}{-}] Variable results depending on the exact split
+                        \item[\textcolor{red}{-}] Only uses a subset of data for training models
+                        \item[\textcolor{red}{-}] Gives a point estimate of the error, without confidence intervals
+                    \end{itemize}
+                };
+            }
+            \visible<7-9>{
+                \node[align=center, font=\small\linespread{0.9}\selectfont] (trainscore) at ($ (model) - (0, 1.5) $) {Training\\performance};
+                \draw[->] ($ (model.south) - (0, 00) $) -- (trainscore.north);
+            }
+            \visible<8-9>{
+                \node[] at ($ (trainscore.east)!0.5!(score.west) $) {\textcolor{red}{$\neq$}};
+            }
+            \visible<9>{
+                \node[anchor=west, align=center, font=\small\linespread{0.9}\selectfont] (traincharacteristics) at ($ (full.west) + (0, 1) $) {Males\\>60 years};
+                \node[anchor=east, align=center, font=\small\linespread{0.9}\selectfont] (valcharacteristics) at ($ (full.east) + (0, 1) $) {Females\\<40 years};
+
+                \draw[->, densely dotted] (traincharacteristics.south) -- ($ (traincharacteristics.south) - (0, 0.3) $);
+                \draw[->, densely dotted] (valcharacteristics.south) -- ($ (valcharacteristics.south) - (0, 0.3) $);
+            }
+
+        \end{tikzpicture}
     \end{frame}
 
-    % \section{Strategies for model evaluation}
+    \begin{frame}{Model evaluation: Stratification} % Definition
+        \textbf{\underline{Stratification:}}\\
+        Ensuring all folds of the dataset are similar with respect to some given characteristics.
+    \end{frame}
 
-    % \begin{frame}{Model evaluation: Rationale}
-    %     \textbf{\underline{Statistical inference:}}\\
-    %     Goal: In-sample quantification
-    %     \vspace{0.7cm}\\
-    %     \textbf{\underline{Predictive modelling:}}\\
-    %     Goal: Out-of-sample generalization
-    % \end{frame}
+    \begin{frame}{Model evaluation: Stratification} % Dataset
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-5, 1) {};
+            \node[] at (5, -6) {};
 
-    % \begin{frame}{Model evaluation: Validation set} % Dataset
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %     \end{tikzpicture}
-    % \end{frame}
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
 
-    % \begin{frame}{Model evaluation: Validation set} % Split
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %     \end{tikzpicture}
-    % \end{frame}
+            \visible<1-2>{
+                \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                    df = ...^^J
+                    ^^J
+                    ^^J
+                    ^^J
+                    ^^J
+                    ^^J
+                }
+            }
+            \visible<2-3>{
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+            }
+            \visible<2-4>{
+                \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
+                \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
+                \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
+                \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
 
-    % \begin{frame}{Model evaluation: Validation set} % Training
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
+                \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
+                \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
+            }
+            \visible<3>{
+                \node[minimum height=0.5cm, minimum width=6cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
 
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
+                \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                    df = ...^^J
+                    ^^J
+                    train = df.iloc[:int(len(df) * 0.8)]^^J
+                    validation = df.iloc[int(len(df) * 0.8):]^^J
+                    ^^J
+                    ^^J
+                }
+            }
+            \visible<4>{
+                \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                    df = ...^^J
+                    df = df.sort_values(['sex', 'age'])^^J
+                    ^^J
+                    ^^J
+                    ^^J
+                    ^^J
+                }
+            }
+            \visible<4-5>{
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+            }
+            \visible<5>{
+                \draw[->, red] ($ (p1.north) + (0, 0.5) $) -- (p1);
+                \draw[->, red] ($ (p6.north) + (0, 0.5) $) -- (p6);
+                \draw[->, red] ($ (p11.north) + (0, 0.5) $) -- (p11);
+                \draw[->, red] ($ (p16.north) + (0, 0.5) $) -- (p16);
 
-    %     \end{tikzpicture}
-    % \end{frame}
+                \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                    df = ...^^J
+                    df = df.sort_values(['sex', 'age'])^^J
+                    ^^J
+                    df['fold'] = np.arange(len(df)) \% (1 / 0.2)^^J
+                    train = df[df['fold'] != 0]^^J
+                    val = df[df['fold'] == 0]^^J
+                }
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    % \begin{frame}{Model evaluation: Validation set} % Evaluation
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
-
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
-    %         \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
-
-    %         \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
-
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Validation set} % Performance
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (eval) - (0, 1.5) $) {Predictive\\performance};
-
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
-    %         \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
-
-    %         \draw[->] ($ (eval.south) - (0, 00) $) -- (score.north);
-
-    %         \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
-
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Validation set}
-    %     In the validation set approach we split the dataset into two subsets (commonly $\sim$80\%/20\%), use the first for training the model and the second to test its performance.
-    %     \begin{itemize}
-    %         \item[\textcolor{green}{+}] Accurate estimate of out-of-sample error
-    %         \item[\textcolor{green}{+}] Simple
-    %         \item[\textcolor{red}{-}] Variable results depending on the exact split
-    %         \item[\textcolor{red}{-}] Only uses a subset of data for training models
-    %         \item[\textcolor{red}{-}] Gives a point estimate of the error, without confidence intervals
-    %     \end{itemize}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Validation set} % Performance
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (eval) - (0, 1.5) $) {Predictive\\performance};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (trainscore) at ($ (model) - (0, 1.5) $) {Training\\performance};
-
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
-    %         \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
-
-    %         \draw[->] ($ (eval.south) - (0, 00) $) -- (score.north);
-    %         \draw[->] ($ (model.south) - (0, 00) $) -- (trainscore.north);
-
-    %         \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
-
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Validation set} % Performance
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 1) {};
-    %         \node[] at (4, -4.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (eval) - (0, 1.5) $) {Predictive\\performance};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (trainscore) at ($ (model) - (0, 1.5) $) {Training\\performance};
-
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
-    %         \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
-
-    %         \draw[->] ($ (eval.south) - (0, 00) $) -- (score.north);
-    %         \draw[->] ($ (model.south) - (0, 00) $) -- (trainscore.north);
-
-    %         \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
-
-    %         \node[] at ($ (trainscore.east)!0.5!(score.west) $) {\textcolor{red}{$\neq$}};
-
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Validation set} % Performance
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-4, 2) {};
-    %         \node[] at (4, -5.5) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=black, fill=green!20, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=black, fill=blue!20, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
-    %         \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Evaluation};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (eval) - (0, 1.5) $) {Predictive\\performance};
-    %         \node[align=center, font=\small\linespread{0.9}\selectfont] (trainscore) at ($ (model) - (0, 1.5) $) {Training\\performance};
-
-    %         \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
-    %         \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
-
-    %         \draw[->] ($ (eval.south) - (0, 00) $) -- (score.north);
-    %         \draw[->] ($ (model.south) - (0, 00) $) -- (trainscore.north);
-
-    %         \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Model}};
-
-    %         \node[] at ($ (trainscore.east)!0.5!(score.west) $) {\textcolor{red}{$\neq$}};
-
-    %         \node[anchor=west, align=center, font=\small\linespread{0.9}\selectfont] (traincharacteristics) at ($ (full.west) + (0, 1) $) {Males\\>60 years};
-    %         \node[anchor=east, align=center, font=\small\linespread{0.9}\selectfont] (valcharacteristics) at ($ (full.east) + (0, 1) $) {Females\\<40 years};
-
-    %         \draw[->, densely dotted] (traincharacteristics.south) -- ($ (traincharacteristics.south) - (0, 0.3) $);
-    %         \draw[->, densely dotted] (valcharacteristics.south) -- ($ (valcharacteristics.south) - (0, 0.3) $);
-
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Stratification} % Definition
-    %     \textbf{\underline{Stratification:}}\\
-    %     Ensuring all folds of the dataset are similar with respect to some given characteristics.
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Stratification} % Dataset
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-5, 1) {};
-    %         \node[] at (5, -6) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-
-    %         \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
-    %             df = ...^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Stratification} % Distribution
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-5, 1) {};
-    %         \node[] at (5, -6) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+    \begin{frame}{Model evaluation: Stratification} % Distribution
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-5, 1) {};
+            \node[] at (5, -6) {};
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
 
 
-    %         \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
-    %         \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
-    %         \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
-    %         \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
+            \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
+            \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
+            \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
+            \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
 
-    %         \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
-    %         \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
-
-
-    %         \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
-    %             df = ...^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
-
-    % \begin{frame}{Model evaluation: Stratification} % Bad split
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-5, 1) {};
-    %         \node[] at (5, -6) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
-
-    %         \node[minimum height=0.5cm, minimum width=6cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
-
-    %         \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
-    %         \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
-    %         \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
-    %         \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
-
-    %         \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
-    %         \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
+            \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
+            \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
 
 
-    %         \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
-    %             df = ...^^J
-    %             ^^J
-    %             train = df.iloc[:int(len(df) * 0.8)]^^J
-    %             validation = df.iloc[int(len(df) * 0.8):]^^J
-    %             ^^J
-    %             ^^J
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+            \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                df = ...^^J
+                ^^J
+                ^^J
+                ^^J
+                ^^J
+                ^^J
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    % \begin{frame}{Model evaluation: Stratification} % Sorting
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-5, 1) {};
-    %         \node[] at (5, -6) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+    \begin{frame}{Model evaluation: Stratification} % Bad split
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-5, 1) {};
+            \node[] at (5, -6) {};
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
 
-    %         \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
-    %         \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
-    %         \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
-    %         \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
+            \node[minimum height=0.5cm, minimum width=6cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=east, label=below:\footnotesize{Validation}] (val) at (full.east) {};
 
-    %         \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
-    %         \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
+            \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
+            \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
+            \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
+            \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
+
+            \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
+            \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
 
 
-    %         \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
-    %             df = ...^^J
-    %             df = df.sort_values(['sex', 'age'])^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %             ^^J
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+            \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                df = ...^^J
+                ^^J
+                train = df.iloc[:int(len(df) * 0.8)]^^J
+                validation = df.iloc[int(len(df) * 0.8):]^^J
+                ^^J
+                ^^J
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    % \begin{frame}{Model evaluation: Stratification} % Good split
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[] at (-5, 1) {};
-    %         \node[] at (5, -6) {};
-    %         \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
-    %         \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+    \begin{frame}{Model evaluation: Stratification} % Sorting
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-5, 1) {};
+            \node[] at (5, -6) {};
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
 
-    %         \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
-    %         \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
-    %         \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
-    %         \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
+            \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
+            \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
+            \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
+            \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
 
-    %         \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
-    %         \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
+            \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
+            \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
 
-    %         \draw[->, red] ($ (p1.north) + (0, 0.5) $) -- (p1);
-    %         \draw[->, red] ($ (p6.north) + (0, 0.5) $) -- (p6);
-    %         \draw[->, red] ($ (p11.north) + (0, 0.5) $) -- (p11);
-    %         \draw[->, red] ($ (p16.north) + (0, 0.5) $) -- (p16);
 
-    %         \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
-    %             df = ...^^J
-    %             df = df.sort_values(['sex', 'age'])^^J
-    %             ^^J
-    %             df['fold'] = np.arange(len(df)) \% (1 / 0.2)^^J
-    %             train = df[df['fold'] != 0]^^J
-    %             val = df[df['fold'] == 0]^^J
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+            \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                df = ...^^J
+                df = df.sort_values(['sex', 'age'])^^J
+                ^^J
+                ^^J
+                ^^J
+                ^^J
+            }
+        \end{tikzpicture}
+    \end{frame}
 
-    % \begin{frame}{Model evaluation: Stratification} % Summary
-    %     \textbf{\underline{Stratification:}}\\
-    %     Ensuring all folds of the dataset are similar with respect to some given characteristics.
-    %     \begin{itemize}
-    %         \item Helps alleviate the risk of training performance $\gg$ validation performance
-    %         \item \textbf{Always} stratify on target variable first
-    %         \item Also good idea to stratify on other core characteristics, e.g. sex and age
-    %     \end{itemize}
-    %     \vspace{0.3cm}
-    %     \begin{tikzpicture}
-    %         \PythonInputNode{1}{(0, 0)}{pythonnode}{10cm}{8}{
-    %             from sklearn.model_selection import train_test_split
-    %         }
+    \begin{frame}{Model evaluation: Stratification} % Good split
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-5, 1) {};
+            \node[] at (5, -6) {};
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!15, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!25, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!30, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!45, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!40, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!50, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!70, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!45, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!50, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!75, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!65, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!80, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!80, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!85, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!90, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!95, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
 
-    %         \RInputNode{(0, -0.8)}{rnode}{10cm}{8}{
-    %             library(splitstackshape)^^J
-    %             stratified(data, columns, split)
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+            \node[draw=black, fill=blue!50] (malelabel) at ($ (full.east) - (2.3, 1) $) {};
+            \node[anchor=west] at (malelabel.east) {\footnotesize{Male}};
+            \node[anchor=north, draw=black, fill=red!50] (femalelabel) at ($ (malelabel.south) - (0, 0.1) $) {};
+            \node[anchor=west] at (femalelabel.east) {\footnotesize{Female}};
+
+            \node[anchor=north, draw=black, shading=vertical, top color=black, bottom color=white, minimum height=0.5825cm] (agelabel) at ($ (malelabel.north) + (1.5, 0) $) {};
+            \node[anchor=west] at (agelabel.east) {\footnotesize{Age}};
+
+            \draw[->, red] ($ (p1.north) + (0, 0.5) $) -- (p1);
+            \draw[->, red] ($ (p6.north) + (0, 0.5) $) -- (p6);
+            \draw[->, red] ($ (p11.north) + (0, 0.5) $) -- (p11);
+            \draw[->, red] ($ (p16.north) + (0, 0.5) $) -- (p16);
+
+            \PythonInputNode{1}{(-3.5, -2.5)}{pythonnode}{7cm}{8}{
+                df = ...^^J
+                df = df.sort_values(['sex', 'age'])^^J
+                ^^J
+                df['fold'] = np.arange(len(df)) \% (1 / 0.2)^^J
+                train = df[df['fold'] != 0]^^J
+                val = df[df['fold'] == 0]^^J
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Model evaluation: Stratification} % Summary
+        \textbf{\underline{Stratification:}}\\
+        Ensuring all folds of the dataset are similar with respect to some given characteristics.
+        \begin{itemize}
+            \item Helps alleviate the risk of training performance $\gg$ validation performance
+            \item \textbf{Always} stratify on target variable first
+            \item Also good idea to stratify on other core characteristics, e.g. sex and age
+        \end{itemize}
+        \vspace{0.3cm}
+        \begin{tikzpicture}
+            \PythonInputNode{1}{(0, 0)}{pythonnode}{10cm}{8}{
+                from sklearn.model_selection import train_test_split
+            }
+
+            \RInputNode{(0, -0.8)}{rnode}{10cm}{8}{
+                library(splitstackshape)^^J
+                stratified(data, columns, split)
+            }
+        \end{tikzpicture}
+    \end{frame}
 
     % \begin{frame}{Model evaluation: Leave-one-out cross-validation} % Dataset
     %     \centering
