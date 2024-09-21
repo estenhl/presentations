@@ -10,6 +10,7 @@
 \usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
+\usetikzlibrary{matrix}
 
 \date{23.09.24}
 \title{Introduksjon til maskinlæring}
@@ -894,1864 +895,1775 @@
 	% 				\end{math}
 	% 			}};
 	% 		}
+	% 		\visible<13>{
+	% 			\node[align=left, text width=9cm] at (0, 0) {
+	% 				\textbf{Hvordan fungerer et (dypt) kunstig nevralt nettverk?}\\
+	% 				\begin{itemize}
+	% 					\item Kunstige nevroner som hver for seg beregner en enkel, ikke-lineær funksjon kombineres i en komputasjonell graf
+	% 					\item Grafen som helhet kan beregne arbitrært komplekse sammenhenger mellom input og output
+	% 				\end{itemize}
+
+	% 			};
+	% 		}
 
 	% 	\end{tikzpicture}
 	% \end{frame}
 
-	\section{Konvolusjonelle nevrale nettverk}
+	% \section{Konvolusjonelle nevrale nettverk}
 
-	% \begin{frame}{Convolutional neural networks} % Basic neural net
+	% \begin{frame}{Konvolusjonelle nevrale nettverk: Bildeinput}
 	% 	\centering
-	% 	\vfill
+	% 	\begin{tikzpicture}[ampersand replacement=\&]
+	% 		\node[draw=black] at (-5.25, -3.5) {};
+	% 		\node[draw=black] at (5.25, 3.5) {};
+
+	% 		\visible<1-3>{
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
+	% 		}
+	% 		\visible<1-2,6>{
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n00) at (-1, 1) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n01) at (-1, 0) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n02) at (-1, -1) {};
+
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n10) at (1, 1) {};
+
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n11) at (1, 0) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n12) at (1, -1) {};
+
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (y) at (3, 0) {\footnotesize{$y$}};
+
+	% 			\draw[->] (n00) -- (n10);
+	% 			\draw[->] (n00) -- (n11);
+	% 			\draw[->] (n00) -- (n12);
+	% 			\draw[->] (n01) -- (n10);
+	% 			\draw[->] (n01) -- (n11);
+	% 			\draw[->] (n01) -- (n12);
+	% 			\draw[->] (n02) -- (n10);
+	% 			\draw[->] (n02) -- (n11);
+	% 			\draw[->] (n02) -- (n12);
+
+	% 			\draw[->] (n10) -- (y);
+	% 			\draw[->] (n11) -- (y);
+	% 			\draw[->] (n12) -- (y);
+	% 		}
+	% 		\visible<1,2>{
+	% 			\draw[->] (x0) -- (n00);
+	% 			\draw[->] (x0) -- (n01);
+	% 			\draw[->] (x0) -- (n02);
+	% 			\draw[->] (x1) -- (n00);
+	% 			\draw[->] (x1) -- (n01);
+	% 			\draw[->] (x1) -- (n02);
+	% 		}
+	% 		\visible<2>{
+	% 			\draw[red, very thick] ($ (x0.north west) + (-0.2, 0.2) $) -- ($ (x0.north east) + (0.2, 0.2) $) -- ($ (x1.south east) + (0.2, -0.2) $) -- ($ (x1.south west) + (-0.2, -0.2) $) -- cycle;
+	% 		}
+	% 		\visible<3>{
+	% 			\node[] at (-0.6, 0) {
+	% 				\Huge{?}
+	% 			};
+	% 		}
+	% 		\visible<3-5>{
+	% 			\node[inner sep=0pt, draw=black] (cat) at (3, 0) {
+	% 				\includegraphics[width=3cm]{data/cat.png}
+	% 			};
+	% 		}
+	% 		\visible<4>{
+	% 			\node[] (blue) at (-2.75, -0.25) {
+	% 				\includegraphics[width=3cm]{data/blue.png}
+	% 			};
+	% 			\node[] (green) at (-3, 0) {
+	% 				\includegraphics[width=3cm]{data/green.png}
+	% 			};
+	% 			\node[] (red) at (-3.25, 0.25) {
+	% 				\includegraphics[width=3cm]{data/red.png}
+	% 			};
+
+	% 			\draw[<->] ($ (red.north west) - (0.1, 0.1) $) -- ($ (red.south west) - (0.1, -0.1) $) node[midway, above, rotate=90] {\footnotesize{høyde}};
+	% 			\draw[<->] ($ (blue.south west) - (-0.1, 0.1) $) -- ($ (blue.south east) - (0.1, 0.1) $) node[midway, below] {\footnotesize{bredde}};
+	% 			\draw[<->] ($ (red.north east) + (-0.1, 0.2) $) -- ($ (blue.north east) + (0.2, -0.1) $) node[midway, above, rotate=315] {\footnotesize{kanaler}};
+	% 		}
+	% 		\visible<4-5>{
+	% 			\draw[
+	% 				{Stealth[length=5mm]}-{Stealth[length=5mm]},
+	% 				double distance=3pt,
+	% 				line width=1pt
+	% 			] ($ (cat.west) + (-0.4, 0) $) -- ($ (green.east) + (0.65, 0) $);
+	% 		}
+	% 		\visible<5>{
+	% 			\matrix[
+	% 				matrix of nodes,
+	% 				nodes={
+	% 					draw=black,
+	% 					fill=white,
+	% 					minimum width=0.6cm,
+	% 					minimum height=0.6cm,
+	% 					anchor=center,
+	% 					font=\small\selectfont
+	% 				},
+	% 				row sep=0cm,
+	% 				column sep=0cm
+	% 			]  at (-2.75, -0.25) {
+	% 				$x_{002}$ \& $x_{012}$ \& $x_{022}$ \& $x_{032}$ \& $x_{042}$ \\
+	% 				$x_{102}$ \& $x_{112}$ \& $x_{122}$ \& $x_{132}$ \& $x_{142}$ \\
+	% 				$x_{202}$ \& $x_{212}$ \& $x_{222}$ \& $x_{232}$ \& $x_{242}$ \\
+	% 				$x_{302}$ \& $x_{312}$ \& $x_{322}$ \& $x_{332}$ \& $x_{342}$ \\
+	% 				$x_{402}$ \& $x_{412}$ \& $x_{422}$ \& $x_{432}$ \& $x_{442}$ \\
+	% 			};
+	% 			\matrix[
+	% 				matrix of nodes,
+	% 				nodes={
+	% 					draw=black,
+	% 					fill=white,
+	% 					minimum width=0.6cm,
+	% 					minimum height=0.6cm,
+	% 					anchor=center,
+	% 					font=\small\selectfont
+	% 				},
+	% 				row sep=0cm,
+	% 				column sep=0cm
+	% 			]  at (-3, 0) {
+	% 				$x_{001}$ \& $x_{011}$ \& $x_{021}$ \& $x_{031}$ \& $x_{041}$ \\
+	% 				$x_{101}$ \& $x_{111}$ \& $x_{121}$ \& $x_{131}$ \& $x_{141}$ \\
+	% 				$x_{201}$ \& $x_{211}$ \& $x_{221}$ \& $x_{231}$ \& $x_{241}$ \\
+	% 				$x_{301}$ \& $x_{311}$ \& $x_{321}$ \& $x_{331}$ \& $x_{341}$ \\
+	% 				$x_{401}$ \& $x_{411}$ \& $x_{421}$ \& $x_{431}$ \& $x_{441}$ \\
+	% 			};
+	% 			\matrix[
+	% 				matrix of nodes,
+	% 				nodes={
+	% 					draw=black,
+	% 					fill=white,
+	% 					minimum width=0.6cm,
+	% 					minimum height=0.6cm,
+	% 					anchor=center,
+	% 					font=\small\selectfont
+	% 				},
+	% 				row sep=0cm,
+	% 				column sep=0cm
+	% 			]  at (-3.25, 0.25) {
+	% 				$x_{000}$ \& $x_{010}$ \& $x_{020}$ \& $x_{030}$ \& $x_{040}$ \\
+	% 				$x_{100}$ \& $x_{110}$ \& $x_{120}$ \& $x_{130}$ \& $x_{140}$ \\
+	% 				$x_{200}$ \& $x_{210}$ \& $x_{220}$ \& $x_{230}$ \& $x_{240}$ \\
+	% 				$x_{300}$ \& $x_{310}$ \& $x_{320}$ \& $x_{330}$ \& $x_{340}$ \\
+	% 				$x_{400}$ \& $x_{410}$ \& $x_{420}$ \& $x_{430}$ \& $x_{440}$ \\
+	% 			};
+	% 		}
+	% 		\visible<6>{
+	% 			\node[inner sep=0pt, draw=black] (cat) at (-3.5, 0) {
+	% 				\includegraphics[width=2cm]{data/cat.png}
+	% 			};
+
+	% 			\draw[->] (cat) -- (n00);
+	% 			\draw[->] (cat) -- (n01);
+	% 			\draw[->] (cat) -- (n02);
+	% 		}
+	% 	\end{tikzpicture}
+	% \end{frame}
+
+	% \begin{frame}{Konvolusjonelle nevrale nettverk: Klassifikasjonsoutput}
+	% 	\centering
 	% 	\begin{tikzpicture}
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
+	% 		\node[draw=black] at (-5.25, -3.5) {};
+	% 		\node[draw=black] at (5.25, 3.5) {};
 
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n00) at (-1, 1) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n01) at (-1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n02) at (-1, -1) {};
+	% 		\visible<1-4>{
+	% 			\node[inner sep=0pt, draw=black] (cat) at (-3.5, 0) {
+	% 				\includegraphics[width=2cm]{data/cat.png}
+	% 			};
 
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n10) at (1, 1) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n00) at (-1, 1) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n01) at (-1, 0) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n02) at (-1, -1) {};
 
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n11) at (1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n12) at (1, -1) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n10) at (1, 1) {};
 
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (y) at (3, 0) {\footnotesize{$y$}};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n11) at (1, 0) {};
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt
+	% 			] (n12) at (1, -1) {};
 
-	% 		\draw[->] (x0) -- (n00);
-	% 		\draw[->] (x0) -- (n01);
-	% 		\draw[->] (x0) -- (n02);
-	% 		\draw[->] (x1) -- (n00);
-	% 		\draw[->] (x1) -- (n01);
-	% 		\draw[->] (x1) -- (n02);
+	% 			\draw[->] (cat) -- (n00);
+	% 			\draw[->] (cat) -- (n01);
+	% 			\draw[->] (cat) -- (n02);
 
-	% 		\draw[->] (n00) -- (n10);
-	% 		\draw[->] (n00) -- (n11);
-	% 		\draw[->] (n00) -- (n12);
-	% 		\draw[->] (n01) -- (n10);
-	% 		\draw[->] (n01) -- (n11);
-	% 		\draw[->] (n01) -- (n12);
-	% 		\draw[->] (n02) -- (n10);
-	% 		\draw[->] (n02) -- (n11);
-	% 		\draw[->] (n02) -- (n12);
+	% 			\draw[->] (n00) -- (n10);
+	% 			\draw[->] (n00) -- (n11);
+	% 			\draw[->] (n00) -- (n12);
+	% 			\draw[->] (n01) -- (n10);
+	% 			\draw[->] (n01) -- (n11);
+	% 			\draw[->] (n01) -- (n12);
+	% 			\draw[->] (n02) -- (n10);
+	% 			\draw[->] (n02) -- (n11);
+	% 			\draw[->] (n02) -- (n12);
+	% 		}
+	% 		\visible<1>{
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (y) at (3, 0) {\footnotesize{$y$}};
 
-	% 		\draw[->] (n10) -- (y);
-	% 		\draw[->] (n11) -- (y);
-	% 		\draw[->] (n12) -- (y);
+	% 			\draw[->] (n10) -- (y);
+	% 			\draw[->] (n11) -- (y);
+	% 			\draw[->] (n12) -- (y);
+
+	% 			\draw[red, very thick] ($ (y.north west) + (-0.2, 0.2) $) -- ($ (y.north east) + (0.2, 0.2) $) -- ($ (y.south east) + (0.2, -0.2) $) -- ($ (y.south west) + (-0.2, -0.2) $) -- cycle;
+	% 		}
+	% 		\visible<2-3>{
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (catpred) at (3, 0.5) {\footnotesize{$y_0$}};
+
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0
+	% 			] (dogpred) at (3, -0.5) {\footnotesize{$y_1$}};
+	% 		}
+	% 		\visible<2-4>{
+	% 			\draw[->] (n10) -- (catpred);
+	% 			\draw[->] (n11) -- (catpred);
+	% 			\draw[->] (n12) -- (catpred);
+	% 			\draw[->] (n10) -- (dogpred);
+	% 			\draw[->] (n11) -- (dogpred);
+	% 			\draw[->] (n12) -- (dogpred);
+	% 		}
+	% 		\visible<3-4>{
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0,
+	% 				label={[text depth=0]right:\small{Cat}}
+	% 			] (catpred) at (3, 0.5) {\footnotesize{$y_0$}};
+
+	% 			\node[
+	% 				circle,
+	% 				draw=black,
+	% 				fill=green!20,
+	% 				minimum size=\nodesize,
+	% 				inner sep=0pt,
+	% 				text depth=0,
+	% 				label={[text depth=0]right:\small{Dog}}
+	% 			] (dogpred) at (3, -0.5) {\footnotesize{$y_1$}};
+	% 		}
+	% 		\visible<4>{
+	% 			\node[font=\Large\selectfont] at (0, -2.5) {
+	% 				$\text{kost}=-\sum\limits_i y_i \log(\hat{y}_i)$
+	% 			};
+	% 		}
 	% 	\end{tikzpicture}
-	% 	\vfill
 	% \end{frame}
 
-	% \begin{frame}{Convolutional neural networks: Images} % Images
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}
-	% 		\node[] (cat) at (-6, -0.25) {
-	% 			\includegraphics[width=3cm]{data/cat.png}
-	% 		};
-	% 		\node[] (red) at (0, 0) {
-	% 			\includegraphics[width=3cm]{data/red.png}
-	% 		};
-	% 		\node[] (green) at (0.25, -0.25) {
-	% 			\includegraphics[width=3cm]{data/green.png}
-	% 		};
-	% 		\node[] (blue) at (0.5, -0.5) {
-	% 			\includegraphics[width=3cm]{data/blue.png}
-	% 		};
-
-	% 		\draw[<->] ($ (red.north west) - (0.1, 0.1) $) -- ($ (red.south west) - (0.1, -0.1) $) node[midway, above, rotate=90] {\footnotesize{height}};
-	% 		\draw[<->] ($ (blue.south west) - (-0.1, 0.1) $) -- ($ (blue.south east) - (0.1, 0.1) $) node[midway, below] {\footnotesize{width}};
-	% 		\draw[<->] ($ (red.north east) + (-0.1, 0.2) $) -- ($ (blue.north east) + (0.2, -0.1) $) node[midway, above, rotate=315] {\footnotesize{channels}};
-
-	% 		\draw[
-	% 			{Stealth[length=5mm]}-{Stealth[length=5mm]},
-	% 			double distance=3pt,
-	% 			line width=1pt
-	% 		] ($ (cat.east) + (0.4, 0) $) -- ($ (green.west) + (-1, 0) $);
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Images} % Image regression
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
-
-	% 		\node[inner sep=0pt, draw=black] (cat) at (-3.5, 0) {
-	% 			\includegraphics[width=2cm]{data/cat.png}
-	% 		};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n00) at (-1, 1) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n01) at (-1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n02) at (-1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n10) at (1, 1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n11) at (1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n12) at (1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (y) at (3, 0) {\footnotesize{$y$}};
-
-	% 		\draw[->] (cat.east) -- (n00);
-	% 		\draw[->] (cat.east) -- (n01);
-	% 		\draw[->] (cat.east) -- (n02);
-
-	% 		\draw[->] (n00) -- (n10);
-	% 		\draw[->] (n00) -- (n11);
-	% 		\draw[->] (n00) -- (n12);
-	% 		\draw[->] (n01) -- (n10);
-	% 		\draw[->] (n01) -- (n11);
-	% 		\draw[->] (n01) -- (n12);
-	% 		\draw[->] (n02) -- (n10);
-	% 		\draw[->] (n02) -- (n11);
-	% 		\draw[->] (n02) -- (n12);
-
-	% 		\draw[->] (n10) -- (y);
-	% 		\draw[->] (n11) -- (y);
-	% 		\draw[->] (n12) -- (y);
-
-	% 		\node[] at (-4.6, -1.2) {};
-	% 		\node[] at (3.9, 1.2) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Classification} % Multiple outputs
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
-
-	% 		\node[inner sep=0pt, draw=black] (cat) at (-3.5, 0) {
-	% 			\includegraphics[width=2cm]{data/cat.png}
-	% 		};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n00) at (-1, 1) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n01) at (-1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n02) at (-1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n10) at (1, 1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n11) at (1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n12) at (1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (catpred) at (3, 0.5) {\footnotesize{$y_0$}};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (dogpred) at (3, -0.5) {\footnotesize{$y_1$}};
-
-	% 		\draw[->] (cat.east) -- (n00);
-	% 		\draw[->] (cat.east) -- (n01);
-	% 		\draw[->] (cat.east) -- (n02);
-
-	% 		\draw[->] (n00) -- (n10);
-	% 		\draw[->] (n00) -- (n11);
-	% 		\draw[->] (n00) -- (n12);
-	% 		\draw[->] (n01) -- (n10);
-	% 		\draw[->] (n01) -- (n11);
-	% 		\draw[->] (n01) -- (n12);
-	% 		\draw[->] (n02) -- (n10);
-	% 		\draw[->] (n02) -- (n11);
-	% 		\draw[->] (n02) -- (n12);
-
-	% 		\draw[->] (n10) -- (catpred);
-	% 		\draw[->] (n11) -- (catpred);
-	% 		\draw[->] (n12) -- (catpred);
-	% 		\draw[->] (n10) -- (dogpred);
-	% 		\draw[->] (n11) -- (dogpred);
-	% 		\draw[->] (n12) -- (dogpred);
-
-	% 		\node[] at (-4.6, -1.2) {};
-	% 		\node[] at (3.9, 1.2) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Classification} % Classes
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x0) at (-3, 0.5) {\footnotesize{$x_0$}};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0
-	% 		] (x1) at (-3, -0.5) {\footnotesize{$x_1$}};
-
-	% 		\node[inner sep=0pt, draw=black] (cat) at (-3.5, 0) {
-	% 			\includegraphics[width=2cm]{data/cat.png}
-	% 		};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n00) at (-1, 1) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n01) at (-1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n02) at (-1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n10) at (1, 1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n11) at (1, 0) {};
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt
-	% 		] (n12) at (1, -1) {};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0,
-	% 			label={[text depth=0]right:\small{Cat}}
-	% 		] (catpred) at (3, 0.5) {\footnotesize{$y_0$}};
-
-	% 		\node[
-	% 			circle,
-	% 			draw=black,
-	% 			fill=green!20,
-	% 			minimum size=\nodesize,
-	% 			inner sep=0pt,
-	% 			text depth=0,
-	% 			label={[text depth=0]right:\small{Dog}}
-	% 		] (dogpred) at (3, -0.5) {\footnotesize{$y_1$}};
-
-	% 		\draw[->] (cat.east) -- (n00);
-	% 		\draw[->] (cat.east) -- (n01);
-	% 		\draw[->] (cat.east) -- (n02);
-
-	% 		\draw[->] (n00) -- (n10);
-	% 		\draw[->] (n00) -- (n11);
-	% 		\draw[->] (n00) -- (n12);
-	% 		\draw[->] (n01) -- (n10);
-	% 		\draw[->] (n01) -- (n11);
-	% 		\draw[->] (n01) -- (n12);
-	% 		\draw[->] (n02) -- (n10);
-	% 		\draw[->] (n02) -- (n11);
-	% 		\draw[->] (n02) -- (n12);
-
-	% 		\draw[->] (n10) -- (catpred);
-	% 		\draw[->] (n11) -- (catpred);
-	% 		\draw[->] (n12) -- (catpred);
-	% 		\draw[->] (n10) -- (dogpred);
-	% 		\draw[->] (n11) -- (dogpred);
-	% 		\draw[->] (n12) -- (dogpred);
-
-	% 		\node[] at (-4.6, -1.2) {};
-	% 		\node[] at (3.9, 1.2) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Architecture} % Architecture
-	% 	\centering
-	% 	\vfill
-	% 	\resizebox{\textwidth}{!}{
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
-	% 			\includegraphics[width=1cm]{data/cat.png}
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l0) -- (l1);
-	% 		\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l1) -- (l2);
-	% 		\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
-	% 		\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
-	% 		\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
-	% 		\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->] (n0) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->] (n1) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->] (n2) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
-	% 		\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
-	% 		\draw[->] (n3) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->] (n4) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->] (n5) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->] (n6) -- (y1);
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->] (n0) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->] (n1) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->] (n2) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->] (n3) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->] (n4) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->] (n5) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->] (n6) -- (y2);
-
-	% 	\end{tikzpicture}
-	% 	}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Setup
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Match [0][0]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
-	% 			\node[draw=red] {3};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Match [0][1]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white,draw=red] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
-	% 			\node[draw=black] {3};  \& \node[draw=red] {0}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Match [0][2]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
-	% 			\node[draw=black] {3};  \& \node[draw=black] {0}; \& \node[draw=red] {1};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Match [1][0]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
-	% 			\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
-	% 			\node[draw=black] {3};  \& \node[draw=black] {0}; \& \node[draw=black] {1};\\
-	% 			\node[draw=red] {0};  \& \node[] {}; \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {}; \& \node[] {};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Full match
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[] {3};  \& \node[] {0}; \& \node[] {1};\\
-	% 			\node[] {0};  \& \node[] {3}; \& \node[] {0};\\
-	% 			\node[] {1};  \& \node[] {0}; \& \node[] {3};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Second pattern
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Third pattern
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Feature maps
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Weights
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
-	% 			\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 			\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
-	% 			\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
-	% 		};
-
-	% 		\draw[] ($ (kernel1.north west) + (-0.2, 0.2) $) --
-	% 				   ($ (kernel3.north east) + (0.2, 0.2) $) --
-	% 				   ($ (kernel3.south east) + (0.2, -0.5) $) --
-	% 				   ($ (kernel1.south west) + (-0.2, -0.5) $) --
-	% 				   ($ (kernel1.north west) + (-0.2, 0.2) $);
-	% 		\node[anchor=north] at ($ (kernel2.south) + (0, -0.5) $) {\footnotesize{Weights}};
-	% 		\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Convolution} % Feature maps as images
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
-	% 			\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
-	% 			\node[fill=red!30] {};  \& \node[fill=white] {}; \& \node[fill=red!10] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=red!30] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=red!10] {};  \& \node[fill=white] {}; \& \node[fill=red!30] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
-	% 			\node[fill=green!10] {};  \& \node[fill=white] {}; \& \node[fill=green!30] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=green!30] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=green!30] {};  \& \node[fill=white] {}; \& \node[fill=green!10] {};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
-	% 			\node[fill=blue!30] {};  \& \node[fill=white] {}; \& \node[fill=blue!30] {};\\
-	% 			\node[fill=white] {};  \& \node[fill=blue!50] {}; \& \node[fill=white] {};\\
-	% 			\node[fill=blue!30] {};  \& \node[fill=white] {}; \& \node[fill=blue!30] {};\\
-	% 		};
-
-	% 		\draw[] ($ (kernel1.north west) + (-0.2, 0.2) $) --
-	% 				   ($ (kernel3.north east) + (0.2, 0.2) $) --
-	% 				   ($ (kernel3.south east) + (0.2, -0.5) $) --
-	% 				   ($ (kernel1.south west) + (-0.2, -0.5) $) --
-	% 				   ($ (kernel1.north west) + (-0.2, 0.2) $);
-	% 		\node[anchor=north] at ($ (kernel2.south) + (0, -0.5) $) {\footnotesize{Weights}};
-	% 		\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
-
-	% 		\node[] at (-3.9, 2.2) {};
-	% 		\node[] at (6.5, -5) {};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Feature map
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
-	% 			\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
-	% 			\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
-	% 			\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[] {};  \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Match [0][0]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[draw=red] {0};  \& \node[draw=red] {1}; \& \node[] {2}; \& \node[] {3};\\
-	% 			\node[draw=red] {4};  \& \node[draw=red] {5}; \& \node[] {6}; \& \node[] {7};\\
-	% 			\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
-	% 			\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[draw=red] {5};  \& \node[] {};\\
-	% 			\node[] {};  \& \node[] {};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Match [0][1]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[] {0};  \& \node[] {1}; \& \node[draw=red] {2}; \& \node[draw=red] {3};\\
-	% 			\node[] {4};  \& \node[] {5}; \& \node[draw=red] {6}; \& \node[draw=red] {7};\\
-	% 			\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
-	% 			\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[draw=black] {5};  \& \node[draw=red] {7};\\
-	% 			\node[] {};  \& \node[] {};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Match [1][0]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
-	% 			\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
-	% 			\node[draw=red] {8};  \& \node[draw=red] {9}; \& \node[] {10}; \& \node[] {11};\\
-	% 			\node[draw=red] {12};  \& \node[draw=red] {13}; \& \node[] {14}; \& \node[] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[draw=black] {5};  \& \node[draw=black] {7};\\
-	% 			\node[draw=red] {13};  \& \node[] {};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Match [1][1]
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
-	% 			\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
-	% 			\node[] {8};  \& \node[] {9}; \& \node[draw=red] {10}; \& \node[draw=red] {11};\\
-	% 			\node[] {12};  \& \node[] {13}; \& \node[draw=red] {14}; \& \node[draw=red] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[draw=black] {5};  \& \node[draw=black] {7};\\
-	% 			\node[draw=black] {13};  \& \node[draw=red] {15};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Pooling} % Full match
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
-	% 			\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
-	% 			\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
-	% 			\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
-	% 			\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}] (map) at ($ (image) + (3, 0) $) {
-	% 			\node[] {5};  \& \node[] {7};\\
-	% 			\node[] {13};  \& \node[] {15};\\
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Architecture} % Patterns
-	% 	\centering
-	% 	\vfill
-	% 	\resizebox{\textwidth}{!}{
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
-	% 			\includegraphics[width=1cm]{data/cat.png}
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l0) -- (l1);
-	% 		\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l1) -- (l2);
-	% 		\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
-	% 		\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
-	% 		\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
-	% 		\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->] (n0) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->] (n1) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->] (n2) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
-	% 		\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
-	% 		\draw[->] (n3) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->] (n4) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->] (n5) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->] (n6) -- (y1);
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->] (n0) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->] (n1) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->] (n2) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->] (n3) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->] (n4) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->] (n5) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->] (n6) -- (y2);
-
-	% 		\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/first.png}
-	% 		};
-
-	% 		\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/third.png}
-	% 		};
-
-	% 		\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/fifth.png}
-	% 		};
-
-	% 		\end{tikzpicture}
-	% 	}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Architecture} % Pattern detection + classification
-	% 	\centering
-	% 	\vfill
-	% 	\resizebox{\textwidth}{!}{
-	% 	\begin{tikzpicture}[
-	% 		ampersand replacement=\&
-	% 	]
-	% 		\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
-	% 			\includegraphics[width=1cm]{data/cat.png}
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l0) -- (l1);
-	% 		\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l1) -- (l2);
-	% 		\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
-	% 		\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
-	% 		\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-	% 		\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
-	% 		\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-	% 		\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 			\node{}; \& \node{}; \& \node{}; \& \node{};\\
-	% 		};
-
-
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
-	% 		\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->, red] (n0) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->, red] (n1) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->, red] (n2) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
-	% 		\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
-	% 		\draw[->, red] (n3) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->, red] (n4) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->, red] (n5) -- (y1);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->, red] (n6) -- (y1);
-
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
-	% 		\draw[->, red] (n0) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
-	% 		\draw[->, red] (n1) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
-	% 		\draw[->, red] (n2) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
-	% 		\draw[->, red] (n3) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
-	% 		\draw[->, red] (n4) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
-	% 		\draw[->, red] (n5) -- (y2);
-	% 		\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
-	% 		\draw[->, red] (n6) -- (y2);
-
-	% 		\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/first.png}
-	% 		};
-
-	% 		\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/third.png}
-	% 		};
-
-	% 		\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -3) $) {
-	% 			\includegraphics[height=2cm, width=2cm]{data/fifth.png}
-	% 		};
-
-	% 		\end{tikzpicture}
-	% 	}
-	% 	\vfill
-	% \end{frame}
-
-	% \begin{frame}{Convolutional neural networks: Architecture} % Inception
-	% 	\centering
-	% 	\vfill
-	% 	\begin{tikzpicture}
-	% 		\node[inner sep=0pt, draw=black] at (0, 0) {
-	% 			\includegraphics[width=7cm]{data/inception.png}
-	% 		};
-	% 	\end{tikzpicture}
-	% 	\vfill
-	% \end{frame}
+	\begin{frame}{Konvolusjonelle nevrale nettverk: Arkitektur} % Architecture
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.png}
+			};
+
+			\matrix[
+				matrix of nodes,
+				nodes in empty cells,
+				nodes={
+					draw=black,
+					fill=green!20,
+					minimum width=0.15cm,
+					minimum height=0.15cm,
+					inner sep=0pt
+				},
+				row sep=0cm,
+				column sep=0cm
+			] (l1) at (1.75, 0) {
+				 \& \& \& \& \& \& \& \\
+			};
+
+			% \matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% };
+
+			% \matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% };
+			\draw[->] (l0) -- (l1);
+			\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
+
+			% \matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% 	\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			% };
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+			\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+			\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+			\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+			\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+		\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Setup
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Match [0][0]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
+				\node[draw=red] {3};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Match [0][1]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white,draw=red] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
+				\node[draw=black] {3};  \& \node[draw=red] {0}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Match [0][2]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
+				\node[draw=black] {3};  \& \node[draw=black] {0}; \& \node[draw=red] {1};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Match [1][0]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=white,draw=red] {}; \& \node[fill=black,draw=red] {};\\
+				\node[fill=black,draw=red] {};  \& \node[fill=black,draw=red] {}; \& \node[fill=white,draw=red] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm}] (map1) at (5.1, -1.1) {
+				\node[draw=black] {3};  \& \node[draw=black] {0}; \& \node[draw=black] {1};\\
+				\node[draw=red] {0};  \& \node[] {}; \& \node[] {};\\
+				\node[] {};  \& \node[] {}; \& \node[] {};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Full match
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[] {3};  \& \node[] {0}; \& \node[] {1};\\
+				\node[] {0};  \& \node[] {3}; \& \node[] {0};\\
+				\node[] {1};  \& \node[] {0}; \& \node[] {3};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Second pattern
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Third pattern
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Feature maps
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Weights
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
+				\node[fill=white] {1};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {3}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {1};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+				\node[fill=white] {0};  \& \node[fill=white] {5}; \& \node[fill=white] {0};\\
+				\node[fill=white] {3};  \& \node[fill=white] {0}; \& \node[fill=white] {3};\\
+			};
+
+			\draw[] ($ (kernel1.north west) + (-0.2, 0.2) $) --
+					   ($ (kernel3.north east) + (0.2, 0.2) $) --
+					   ($ (kernel3.south east) + (0.2, -0.5) $) --
+					   ($ (kernel1.south west) + (-0.2, -0.5) $) --
+					   ($ (kernel1.north west) + (-0.2, 0.2) $);
+			\node[anchor=north] at ($ (kernel2.south) + (0, -0.5) $) {\footnotesize{Weights}};
+			\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Convolution} % Feature maps as images
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=\footnotesize{Image}] (image) at (0, 0) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 1}] (kernel1) at (-2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 2}] (kernel2) at (0, -3) {
+				\node[fill=black] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=black] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}, label=below:\footnotesize{Pattern 3}] (kernel3) at (2.25, -3) {
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+				\node[fill=black] {};  \& \node[fill=white] {}; \& \node[fill=black] {};\\
+				\node[fill=white] {};  \& \node[fill=black] {}; \& \node[fill=white] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map1) at (5.1, -1.1) {
+				\node[fill=red!30] {};  \& \node[fill=white] {}; \& \node[fill=red!10] {};\\
+				\node[fill=white] {};  \& \node[fill=red!30] {}; \& \node[fill=white] {};\\
+				\node[fill=red!10] {};  \& \node[fill=white] {}; \& \node[fill=red!30] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map2) at (5.3, -1.3) {
+				\node[fill=green!10] {};  \& \node[fill=white] {}; \& \node[fill=green!30] {};\\
+				\node[fill=white] {};  \& \node[fill=green!30] {}; \& \node[fill=white] {};\\
+				\node[fill=green!30] {};  \& \node[fill=white] {}; \& \node[fill=green!10] {};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.6cm, minimum width=0.6cm, draw=black}] (map3) at (5.5, -1.5) {
+				\node[fill=blue!30] {};  \& \node[fill=white] {}; \& \node[fill=blue!30] {};\\
+				\node[fill=white] {};  \& \node[fill=blue!50] {}; \& \node[fill=white] {};\\
+				\node[fill=blue!30] {};  \& \node[fill=white] {}; \& \node[fill=blue!30] {};\\
+			};
+
+			\draw[] ($ (kernel1.north west) + (-0.2, 0.2) $) --
+					   ($ (kernel3.north east) + (0.2, 0.2) $) --
+					   ($ (kernel3.south east) + (0.2, -0.5) $) --
+					   ($ (kernel1.south west) + (-0.2, -0.5) $) --
+					   ($ (kernel1.north west) + (-0.2, 0.2) $);
+			\node[anchor=north] at ($ (kernel2.south) + (0, -0.5) $) {\footnotesize{Weights}};
+			\node[anchor=south] at ($ (map1.north) + (0, 0.0) $) {\footnotesize{Feature maps}};
+
+			\node[] at (-3.9, 2.2) {};
+			\node[] at (6.5, -5) {};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Feature map
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
+				\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
+				\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
+				\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
+				\node[] {};  \& \node[] {};\\
+				\node[] {};  \& \node[] {};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Match [0][0]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[draw=red] {0};  \& \node[draw=red] {1}; \& \node[] {2}; \& \node[] {3};\\
+				\node[draw=red] {4};  \& \node[draw=red] {5}; \& \node[] {6}; \& \node[] {7};\\
+				\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
+				\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
+				\node[draw=red] {5};  \& \node[] {};\\
+				\node[] {};  \& \node[] {};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Match [0][1]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[] {0};  \& \node[] {1}; \& \node[draw=red] {2}; \& \node[draw=red] {3};\\
+				\node[] {4};  \& \node[] {5}; \& \node[draw=red] {6}; \& \node[draw=red] {7};\\
+				\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
+				\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
+				\node[draw=black] {5};  \& \node[draw=red] {7};\\
+				\node[] {};  \& \node[] {};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Match [1][0]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
+				\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
+				\node[draw=red] {8};  \& \node[draw=red] {9}; \& \node[] {10}; \& \node[] {11};\\
+				\node[draw=red] {12};  \& \node[draw=red] {13}; \& \node[] {14}; \& \node[] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
+				\node[draw=black] {5};  \& \node[draw=black] {7};\\
+				\node[draw=red] {13};  \& \node[] {};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Match [1][1]
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
+				\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
+				\node[] {8};  \& \node[] {9}; \& \node[draw=red] {10}; \& \node[draw=red] {11};\\
+				\node[] {12};  \& \node[] {13}; \& \node[draw=red] {14}; \& \node[draw=red] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm}] (map) at ($ (image) + (3, 0) $) {
+				\node[draw=black] {5};  \& \node[draw=black] {7};\\
+				\node[draw=black] {13};  \& \node[draw=red] {15};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Pooling} % Full match
+		\centering
+		\vfill
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}, label=\footnotesize{Feature map}] (image) at (0, 0) {
+				\node[] {0};  \& \node[] {1}; \& \node[] {2}; \& \node[] {3};\\
+				\node[] {4};  \& \node[] {5}; \& \node[] {6}; \& \node[] {7};\\
+				\node[] {8};  \& \node[] {9}; \& \node[] {10}; \& \node[] {11};\\
+				\node[] {12};  \& \node[] {13}; \& \node[] {14}; \& \node[] {15};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.8cm, minimum width=0.8cm, draw=black}] (map) at ($ (image) + (3, 0) $) {
+				\node[] {5};  \& \node[] {7};\\
+				\node[] {13};  \& \node[] {15};\\
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Architecture} % Patterns
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.png}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+			\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+			\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+			\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+			\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+			\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
+			\draw[->] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->] (n6) -- (y2);
+
+			\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/first.png}
+			};
+
+			\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/third.png}
+			};
+
+			\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/fifth.png}
+			};
+
+			\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Architecture} % Pattern detection + classification
+		\centering
+		\vfill
+		\resizebox{\textwidth}{!}{
+		\begin{tikzpicture}[
+			ampersand replacement=\&
+		]
+			\node[inner sep=0pt, draw=black] (l0) at (0, 0) {
+				\includegraphics[width=1cm]{data/cat.png}
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.65, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt, outer sep=0pt}] (l1) at (1.75, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l0) -- (l1);
+			\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (1.85, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.4, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l2)at (3.5, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l1) -- (l2);
+			\node[text depth=0] at ($(l1)!0.5!(l2) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (3.6, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.05, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.15, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l3) at (5.25, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] (l2) -- ($ (l3.west) - (0.1, 0) $);
+			\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.35, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (5.45, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.8, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (6.9, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l4) at (7, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l3.east) + (0.1, 0) $) -- ($ (l4.west) + (-0.1, 0) $);
+			\node[text depth=0] at ($(l3)!0.5!(l4) + (0, -1) $) {\tiny{Pooling}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.1, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (7.2, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.25, 0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.35, 0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.45, 0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] (l5) at (8.55, 0) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+			\draw[->] ($ (l4.east) + (0.1, 0) $) -- ($ (l5.west) + (-0.2, 0) $);
+			\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -1) $) {\tiny{Convolution}};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.65, -0.1) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.75, -0.2) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+			\matrix[every node/.style={minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt}] at (8.85, -0.3) {
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+				\node{}; \& \node{}; \& \node{}; \& \node{};\\
+			};
+
+
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y1) at (10.5, 0.125) {\tiny{$y_0$}};
+			\node[circle, draw=black, fill=green!20, text depth=0, inner sep=2pt] (y2) at (10.75, -0.125) {\tiny{$y_1$}};
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->, red] (n0) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->, red] (n1) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->, red] (n2) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->] ($ (l5.east) + (0.2, 0) $) -- ($ (n3.west) + (-0.15, 0) $);
+			\node[text depth=0] at ($(l5)!0.5!(n3) + (0, -1) $) {\tiny{Pooling}};
+			\draw[->, red] (n3) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->, red] (n4) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->, red] (n5) -- (y1);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->, red] (n6) -- (y1);
+
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n0) at (9.4, 0.3) {};
+			\draw[->, red] (n0) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n1) at (9.5, 0.2) {};
+			\draw[->, red] (n1) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n2) at (9.6, 0.1) {};
+			\draw[->, red] (n2) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n3) at (9.7, 0) {};
+			\draw[->, red] (n3) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n4) at (9.8, -0.1) {};
+			\draw[->, red] (n4) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n5) at (9.9, -0.2) {};
+			\draw[->, red] (n5) -- (y2);
+			\node[minimum height=0.15cm, minimum width=0.15cm, draw=black, fill=green!20, inner sep=0pt] (n6) at (10, -0.3) {};
+			\draw[->, red] (n6) -- (y2);
+
+			\node[text depth=0] at ($(l0)!0.5!(l1) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/first.png}
+			};
+
+			\node[text depth=0] at ($(l2)!0.5!(l3) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/third.png}
+			};
+
+			\node[text depth=0] at ($(l4)!0.5!(l5) + (0, -3) $) {
+				\includegraphics[height=2cm, width=2cm]{data/fifth.png}
+			};
+
+			\end{tikzpicture}
+		}
+		\vfill
+	\end{frame}
+
+	\begin{frame}{Convolutional neural networks: Architecture} % Inception
+		\centering
+		\vfill
+		\begin{tikzpicture}
+			\node[inner sep=0pt, draw=black] at (0, 0) {
+				\includegraphics[width=7cm]{data/inception.png}
+			};
+		\end{tikzpicture}
+		\vfill
+	\end{frame}
 
 	% \section{Practicalities}
 
