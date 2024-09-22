@@ -23,6 +23,17 @@
 	 	\titlepage
 	\end{frame}
 
+    \begin{frame}
+        \vfill
+        \centering
+        \begin{tikzpicture}
+            \node[inner sep=0pt, draw=black] {
+                \includegraphics[width=8cm]{data/unclesam.png}
+            };
+        \end{tikzpicture}
+        \vfill
+    \end{frame}
+
     \begin{frame}{Outline}
         \begin{enumerate}
             \item Assignment 3
@@ -46,11 +57,171 @@
 
     \section{Assigment 3}
 
-    \begin{frame}{Assignment 3}
+    \begin{frame}{Assignment 3: Performance}
+        \begin{tikzpicture}
+            \begin{axis}[
+                height=7cm,
+                width=10cm,
+                xlabel={Lambda},
+                ylabel={MAE}
+            ]
+                \addplot[red, mark=*] coordinates {
+                    (0, 2.86)
+                    (0.1, 2.83)
+                    (0.2, 2.81)
+                    (0.3, 2.79)
+                    (0.4, 2.77)
+                    (0.5, 2.75)
+                    (0.6, 2.73)
+                    (0.7, 2.71)
+                    (0.8, 2.7)
+                    (0.9, 2.7)
+                    (1.0, 2.72)
+                };
+                \addlegendentry{Training}
+                \addplot[blue, mark=*] coordinates {
+                    (0, 2.57)
+                    (0.1, 2.56)
+                    (0.2, 2.55)
+                    (0.3, 2.54)
+                    (0.4, 2.54)
+                    (0.5, 2.55)
+                    (0.6, 2.56)
+                    (0.7, 2.57)
+                    (0.8, 2.59)
+                    (0.9, 2.62)
+                    (1.0, 2.65)
+                };
+                \addlegendentry{Validation}
+            \end{axis}
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Assignment 3: Preprocessing}
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, -6) {};
+            \only<1-3>{
+                \node[label=above:\footnotesize{Training}, font=\small\selectfont] (train) at (0, 0) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        0.0\\
+                        0.2\\
+                        0.4\\
+                        0.6\\
+                        0.8\\
+                        1.0\\
+                        \hline
+                    \end{tabular}
+                };
+                \node[label=above:\footnotesize{Validation}, font=\small\selectfont] (val) at (4, 0) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        1.0\\
+                        1.2\\
+                        1.4\\
+                        1.6\\
+                        1.8\\
+                        2.0\\
+                        \hline
+                    \end{tabular}
+                };
+            }
+            \visible<2-4>{
+                \node[anchor=north, font=\small\selectfont] at (train.south) {$\bar{x}=0.5$};
+                \node[anchor=north, font=\small\selectfont] at (val.south) {$\bar{x}=1.5$};
+            }
+            \visible<3>{
+                \node[text width=10cm, align=center] at (2, -3.5) {
+                    In a real-life scenario we don't have a validation set, only\\individual observations
+                };
+            }
+            \visible<4-5>{
+                \node[label=above:\footnotesize{Training}, font=\small\selectfont] (train) at (0, 0) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        0.0\\
+                        0.2\\
+                        0.4\\
+                        0.6\\
+                        0.8\\
+                        \textcolor{red}{1.0}\\
+                        \hline
+                    \end{tabular}
+                };
+                \node[label=above:\footnotesize{Validation}, font=\small\selectfont] (val) at (4, 0) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        \textcolor{red}{1.0}\\
+                        1.2\\
+                        1.4\\
+                        1.6\\
+                        1.8\\
+                        2.0\\
+                        \hline
+                    \end{tabular}
+                };
+            }
+            \only<5>{
+                \node[font=\small\selectfont] (trainz) at (0, -3.75) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        -0.5\\
+                        -0.3\\
+                        -0.1\\
+                        0.1\\
+                        0.3\\
+                        \textcolor{red}{0.5}\\
+                        \hline
+                    \end{tabular}
+                };
+                \draw[-stealth, very thick] (train) -- (trainz);
+                \node[font=\small\selectfont] (valz) at (4, -3.75) {
+                    \begin{tabular}{|c|}
+                        \hline
+                        \textbf{x}\\
+                        \hline
+                        \textcolor{red}{-0.5}\\
+                        -0.3\\
+                        -0.1\\
+                        0.1\\
+                        0.3\\
+                        0.5\\
+                        \hline
+                    \end{tabular}
+                };
+                \draw[-stealth, very thick] (val) -- (valz);
+            }
+
+        \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{The mortal sins of machine learning in neuroscience}
+        \begin{tikzpicture}
+            \node[text width=10cm, font=\small\selectfont] at (0, 0) {
+                \begin{enumerate}
+                    \item Reporting inflated modelling performance due to insufficient testing procedures
+                    \item Using accuracy as a model performance measure when it is not appropriate
+                \end{enumerate}
+            };
 
+            \visible<2>{
+                \draw[-stealth, line width=5pt] (0, -1.2) -- (0, -2.4);
+                \node[align=left, text width=10cm, font=\small\selectfont\bfseries] at (0.4, -3) {
+                    We believe that we know things that we actually don't (e.g. what brain regions are involved in a mental disorder)
+                };
+            }
+        \end{tikzpicture}
     \end{frame}
 
     \section{Loss functions and performance metrics}
@@ -1131,12 +1302,26 @@
                 \item Although not a metric per se, the confusion matrix is a very useful tool to understand model behaviour, and should \textbf{always} be looked at (and preferably reported).
             \end{itemize}
         }
-        \only<12-18>{
+        \only<12-19>{
             \begin{tikzpicture}
                 \node[] at (0, 0) {};
                 \node[] at (10.5, -7.2) {};
 
                 \only<12>{
+                    \node[] at (5.25, -1.5) {
+                        \LARGE{$-(y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}))$}
+                    };
+                    \node[anchor=north west, align=left, text width=8.5cm] at (1, -2.75) {
+                        \textbf{\underline{Logloss}}\\
+                        \begin{itemize}
+                            \item[\textcolor{green}{+}] Does not rely on thresholding
+                            \item[\textcolor{green}{+}] Can be used as a loss function (and very often is)
+                            \item[\textcolor{red}{-}] Not very interpretable
+                        \end{itemize}
+                    };
+                }
+
+                \only<13>{
                     \node[] at (5.25, -1.5) {
                         \LARGE{$\frac{TP + TN}{TP + TN + FP + FN}$}
                     };
@@ -1149,7 +1334,7 @@
                         \end{itemize}
                     };
                 }
-                \only<13>{
+                \only<14>{
                     \node[] (dataset) at (2, -3.5) {
                         \usebox{\balanceddataset}
                     };
@@ -1172,7 +1357,7 @@
                     \draw[-stealth] ($ (dataset.north) + (0.35, -1.1) $) -- (model.west);
                     \draw[-stealth] ($ (dataset.south) + (0.35, 1.1) $) -- (model.west);
                 }
-                \only<14>{
+                \only<15>{
                     \node[] (dataset) at (2, -3.5) {
                         \usebox{\imbalanceddataset}
                     };
@@ -1195,7 +1380,7 @@
                     \draw[-stealth] ($ (dataset.north) + (0.35, -1.1) $) -- (model.west);
                     \draw[-stealth] ($ (dataset.south) + (0.35, 1.1) $) -- (model.west);
                 }
-                \only<15>{
+                \only<16>{
                     \node[] at (5.25, -1.5) {
                         \LARGE{$\frac{TP}{TP + FN}$}
                     };
@@ -1207,7 +1392,7 @@
                         \end{itemize}
                     };
                 }
-                \only<16>{
+                \only<17>{
                     \node[] at (5.25, -1.5) {
                         \LARGE{$\frac{TN}{TN + FP}$}
                     };
@@ -1219,7 +1404,7 @@
                         \end{itemize}
                     };
                 }
-                \only<17>{
+                \only<18>{
                     \node[] at (5.25, -1.5) {
                         \LARGE{$\frac{TP}{TP + FP}$}
                     };
@@ -1231,7 +1416,7 @@
                         \end{itemize}
                     };
                 }
-                \only<18>{
+                \only<19>{
                     \node[] at (5.25, -1.5) {
                         \LARGE{$\frac{\frac{TP}{TP+FN}+\frac{TN}{TN+FP}}{2}$}
                     };
@@ -3159,13 +3344,13 @@
         \begin{tikzpicture}
             \node[text width=11cm] at (0, 0) {
                 \begin{itemize}
-                    \item Whenever a choice is made on the basis of performance in a dataset, \textbf{we have to assume the performance achieved by the chosen model is inflated}
+                    \item Whenever a modelling choice is made on the basis of performance in a dataset, \textbf{we have to assume the performance achieved by the chosen model is inflated}
                     \item If n is big ($\geq 10000$), a single train/validation/test split is often sufficient
                     \item When possible, use nested cross-validation to select the best model and estimate the out-of-sample error
                 \end{itemize}
             };
             \visible<2>{
-                \node[minimum height=1.6cm, minimum width=10.6cm, draw=red, label=above:\Large{\textcolor{red}{!!!!!}}] at (0, 0.9) {};
+                \node[minimum height=1.6cm, minimum width=10.6cm, draw=red, label=above:\Large{\textcolor{red}{!!!!!}}] at (0.1, 1) {};
             }
         \end{tikzpicture}
     \end{frame}
