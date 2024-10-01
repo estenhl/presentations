@@ -424,7 +424,7 @@
     %     \end{tikzpicture}
     % }
 
-    \newcommand{\sidewaysinput}[2]{
+    \newcommand{\inputfront}[2]{
         \def\mridepth{0.6}
         \node[yslant=1, inner sep=0pt] (input) at (#1, #2) {
             \includegraphics[height=1.7cm, width=1cm]{data/bert_z_enhanced.png}
@@ -449,10 +449,11 @@
             ($ (input.south west) + (\mridepth, 0) $);
     }
 
-    \newcommand{\forwardinput}[2]{
+    \newcommand{\mritop}[3]{
         \def\mridepth{0.75}
+
         \node[inner sep=0pt, xslant=1] (input) at (#1, #2) {
-            \includegraphics[height=1.5cm, width=0.75cm, rotate=90]{data/bert_y_enhanced.png}
+            \includegraphics[height=1.5cm, width=0.75cm, rotate=90]{#3}
         };
         \draw[fill=black] (input.north east) --
             ($ (input.north east) - (0, \mridepth) $) --
@@ -474,6 +475,14 @@
             ($ (input.south west) + (0, \mridepth) $);
         \draw[] ($ (input.north east) + (0, \mridepth) $) --
             ($ (input.north west) + (0, \mridepth) $);
+    }
+
+    \newcommand{\inputtop}[2]{
+        \mritop{#1}{#2}{data/bert_y_enhanced.png}
+    }
+
+    \newcommand{\segmentationtop}[2]{
+        \mritop{#1}{#2}{data/segmentation.png}
     }
 
     \newcommand{\convside}[6]{
@@ -518,12 +527,14 @@
     }
 
 
-    \newcommand{\convchannel}[5]{
+    \newcommand{\convchannel}[7]{
         \def\channelx{#1}
         \def\channely{#2}
         \def\channelnodedepth{#3}
         \def\channelnodesize{#4}
         \def\channelnodecount{#5}
+        \def\channelcolour{#6}
+        \def\includefront{#7}
 
         \def\huemin{20}
         \def\huemax{80}
@@ -531,198 +542,163 @@
         \pgfmathsetmacro{\iterations}{#5-1}
         \foreach \i in {0,...,\iterations} {
             \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
-            \convside{#1}{#2+\i*-0.15}{#3}{#4}{blue!\hue}{n\i0}
+            \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
 
             \foreach \j in {0,...,\iterations} {
                 \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
                 \ifnum\j=0
                     \pgfmathsetmacro{\innerhue}{\hue}
                 \fi
-                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{blue!\innerhue}
+
+                \ifnum\includefront=1
+                    \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
+                \fi
 
                 \ifnum\i=0
-                    \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{blue!\innerhue}
+                    \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
                 \fi
             }
         }
     }
 
-    \newcommand{\convlayer}[6]{
+    \newcommand{\convlayer}[7]{
         \def\layerx{#1}
         \def\layery{#2}
         \def\layernodedepth{#3}
         \def\layernodesize{#4}
         \def\layernodecount{#5}
         \def\layerdepth{#6}
+        \def\layercolour{#7}
 
         \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
         \foreach \i in {0,...,\layeriterations}{
-            \pgfmathsetmacro{\x}{\layerx + \i * 0.066}
-            \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}
+            \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+            \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+            \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\layercolour}{\islast}
         }
     }
 
-    \newcommand{\cnnarrow}[2]{
+    \newcommand{\cnnarrow}[3]{
         \begin{scope}[transparency group, opacity=0.5]
-            \draw[-stealth, line width=2pt] #1 -- #2;
+            \draw[-stealth, line width=2pt, #3] #1 to [in=180, out=0] #2;
         \end{scope}
     }
 
-    \newcommand{\cnn}[4]{
+    \newcommand{\cnn}[6]{
         \def\xmin{#1}
         \def\ymin{#2}
         \def\nodedepth{#3}
         \def\nodesize{#4}
+        \def\modelcolour{#5}
+        \def\annotate{#6}
 
-        \convlayer{#1 - 0.06 + 0.4}{#2 + 0.38}{#3 cm}{#4 cm}{12}{3}
-        % \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}
+        \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+        \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
 
-        % \convlayer{#1 + 1.44 + 0.4}{#2 + 0.23}{#3 cm}{8 * #4 cm}{8}{5}
-        % \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}
+        \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+        \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
 
-        % \convlayer{#1 + 2.77 + 0.4}{#2 + 0.08}{#3 cm}{4 * #4 cm}{4}{7}
-        % \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}
+        \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+        \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
 
-        % \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3 cm}{2 * #4 cm}{2}{9}
+        \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
 
-        % \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
-        %                     (#1 + 5.13, #2 + 1.43) --
-        %                     (#1 + 5.13, #2 - 1.42) --
-        %                     (#1 + 0.22, #2 - 1.42) -- cycle;
-        % \node[anchor=south, text depth=0, font=\small\selectfont] at (#1 + 2.675, #2 + 1.43) {
-        %     \textbf{3D Convolutional Neural Network}
-        % };
-    }
-
-    \newcommand{\lrpchannel}[5]{
-        \def\huemin{30}
-        \def\huemax{210}
-        \colorlet{bgcolor}{black!90}
-        \pgfmathsetmacro{\iterations}{#5-1}
-        \foreach \i in {0,...,\iterations} {
-            \pgfmathsetmacro{\red}{int(random(-150, 100))}
-            \colorlet{fillcolor}{bgcolor}
-
-            \ifnum\red>0
-                \colorlet{fillcolor}{red!\red!bgcolor}
-            \fi
-
-            \convside{#1}{#2+\i*-0.75}{#3}{#4/#5}{fillcolor}{n\i0}
-
-            \foreach \j in {0,...,\iterations} {
-                \pgfmathsetmacro{\innerred}{int(random(-150, 100))}
-                \colorlet{innerfillcolor}{bgcolor}
-
-                \ifnum\innerred>0
-                    \colorlet{innerfillcolor}{red!\innerred!bgcolor}
-                \fi
-
-                \ifnum\j=0
-                    \colorlet{innerfillcolor}{fillcolor}
-                \fi
-
-                \convfront{($ (n00.north east) + (0.5*\j*#4/#5, 0.5*\j*#4/#5 - \i*#4/#5) $)}{0.5*#4/#5}{innerfillcolor}
-                \ifnum\i=0
-                    \convtop{($ (n\i0.north west) + (0.5*\j*#4/#5, 0.5*\j*#4/#5) $)}{#3}{0.5*#4/#5}{innerfillcolor}
-                \fi
-            }
-        }
-    }
-
-    \newcommand{\lrplayer}[6]{
-        \pgfmathsetmacro{\iterations}{#6-1}
-        \foreach \i in {0,...,\iterations}{
-            \pgfmathsetmacro{\x}{#1 + \i * 0.33}
-            \lrpchannel{\x}{#2}{#3}{#4}{#5}
-        }
-    }
-
-    \newcommand{\lrp}[2]{
-
-        \lrplayer{#1}{#2-1}{0.33cm}{1.5cm}{2}{9}
-        \cnnarrow{(#1 + 3.18, #2 - 1)}{(#1+6, #2 - 1)}
-        \lrplayer{#1+4.24}{#2-0.65}{0.33cm}{3cm}{4}{7}
-        \cnnarrow{(#1 + 7.14, #2 - 1)}{(#1+13, #2 - 1)}
-        \lrplayer{#1 + 8.57}{#2+0.1}{0.33cm}{6cm}{8}{5}
-        \cnnarrow{(#1 + 11.55, #2 - 1)}{(#1+15, #2 - 1)}
-        \lrplayer{#1 + 13.72}{#2 + 0.85}{0.33cm}{9cm}{12}{3}%#1 + 14.85
-
-        \draw[thick, dashed] (#1 - 0.67, #2 + 6.225) --
-                            (#1 + 19.55, #2 + 6.225) --
-                            (#1 + 19.55, #2 - 8.275) --
-                            (#1 - 0.67, #2 - 8.275) -- cycle;
-        \node[anchor=south, text depth=0, font=\fontsize{32}{32}] at (#1 + 9.95, #2 + 6.425) {
-            \textbf{Layerwise relevance propagation}
-        };
-    }
-
-    \newcommand{\heatmap}[2]{
-        \node[yslant=1, inner sep=0pt] (map) at (#1, #2) {
-            \includegraphics[width=5cm, height=8.5cm]{data/heatmap.png}
-        };
-        \draw[fill=black] (map.north east) --
-            ($ (map.north east) - (\mridepth, 0) $) --
-            ($ (map.north west) - (\mridepth, 0) $) --
-            (map.north west) -- cycle;
-        \draw[fill=black] (map.north west) --
-            ($ (map.north west) - (\mridepth, 0) $) --
-            ($ (map.south west) - (\mridepth, 0) $) --
-            (map.south west) -- cycle;
-        \draw[] (map.north east) --
-            ($ (map.north east) + (\mridepth, 0) $) --
-            ($ (map.north west) + (\mridepth, 0) $) --
-            (map.north west) -- cycle;
-        \draw[]  ($ (map.north west) + (\mridepth, 0) $) --
-            ($ (map.south west) + (\mridepth, 0) $) --
-            (map.south west);
-        \draw[] ($ (map.north east) + (\mridepth, 0) $) --
-            ($ (map.south east) + (\mridepth, 0) $) --
-            ($ (map.south west) + (\mridepth, 0) $);
-        \node[
-            anchor=south,
-            align=center,
-            font=\fontsize{32}{32}\linespread{0.8}\selectfont,
-            text depth=0
-        ] at ($ (map.north east) + (0, 0.2) $) {
-            \textit{Explanatory}\\
-            \textit{heatmap}
-        };
+        \ifnum#6=1
+            \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
+                                (#1 + 5.13, #2 + 1.43) --
+                                (#1 + 5.13, #2 - 1.42) --
+                                (#1 + 0.22, #2 - 1.42) -- cycle;
+            \node[anchor=south, text depth=0, font=\small\selectfont] at (#1 + 2.675, #2 + 1.43) {
+                \textbf{3D Convolutional Neural Network}
+            };
+        \fi
     }
 
     \newcommand{\cnnbox}[1]{
-        \begin{tikzpicture}
-            \ifnum#1=0
-                \sidewaysinput{-1.2}{-1.15}
-                \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}
-            \fi
+        \definecolor{hippocampus}{HTML}{74c476}
+        \definecolor{thalamus}{HTML}{e6550d}
+        \definecolor{cortex}{HTML}{7eaaf1}
 
+        \begin{tikzpicture}
+            \node[draw=black] at (-2.5, 0) {};
+            \node[draw=black] at (7.6, 0) {};
+
+
+            \ifnum#1=0
+                \node[
+                    font=\small\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output) at (5.35, 0) {
+                    Chronological\\age
+                };
+            \fi
             \ifnum#1=1
-                \forwardinput{-1.2}{-1.15}
-                \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}
+                \node[
+                    font=\small\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output) at (5.35, 0) {
+                    Apparent\\brain age
+                };
             \fi
 
             \ifnum#1<2
-                \cnn{0}{-1.15}{0.066}{0.15}
+                \inputtop{-1.4}{0}
+                \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{blue}
 
-                \node[font=\small\linespread{0.8}\selectfont, align=center] (output) at (6.1 + 0.5, -1.15) {
-                    Chronological\\age
-                };
-                \cnnarrow{($ (output.west) - (0.33, 0) $)}{($ (output.west) + (0.1, 0) $)}
+                \cnn{0}{0}{0.066}{0.15}{blue}{1}
+
+                \cnnarrow{($ (output.west) - (0.39, 0) $)}{($ (output.west) + (0.1, 0) $)}{blue}
             \fi
 
             \ifnum#1=2
-                \cnn{0}{-1.15}{0.066}{0.15}
+                \segmentationtop{-1.4}{0}
+
+                \cnnarrow{(input.east)}{($ (input.center) + (2, 2) $)}{cortex}
+                \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{hippocampus}
+                \cnnarrow{(input.east)}{($ (input.center) + (2, -2) $)}{thalamus}
+
+                \cnn{0}{2}{0.066}{0.1}{cortex}{0}
+                \cnn{0}{0}{0.066}{0.1}{hippocampus}{0}
+                \cnn{0}{-2}{0.066}{0.1}{thalamus}{0}
+
+                \node[
+                    font=\footnotesize\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output0) at (5.35, 2) {
+                    Apparent\\cortical age
+                };
+                \node[
+                    font=\footnotesize\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output1) at (5.35, 0) {
+                    Apparent\\hippocampal\\age
+                };
+                \node[
+                    font=\footnotesize\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output2) at (5.35, -2) {
+                    Apparent\\thalamic age
+                };
+
+                \cnnarrow{($ (output0.west) - (0.39, 0) $)}{($ (output0.west) + (0.1, 0) $)}{cortex}
+                \cnnarrow{($ (output1.west) - (0.39, 0) $)}{($ (output1.west) + (0.1, 0) $)}{hippocampus}
+                \cnnarrow{($ (output2.west) - (0.39, 0) $)}{($ (output2.west) + (0.1, 0) $)}{thalamus}
             \fi
         \end{tikzpicture}
     }
 
-    \newsavebox{\cnnforward}
-    \sbox{\cnnforward}{
+    \newsavebox{\cnntraining}
+    \sbox{\cnntraining}{
         \cnnbox{0}
     }
 
-    \newsavebox{\cnntwod}
-    \sbox{\cnntwod}{
+    \newsavebox{\cnnforward}
+    \sbox{\cnnforward}{
         \cnnbox{1}
     }
 
@@ -1022,72 +998,176 @@
         \abstractionplot{2}
     }
 
-    \begin{frame}{Brain age modelling: Results}
+    % \begin{frame}{Brain age modelling: Results}
+    %     \begin{tikzpicture}
+    %         \node[draw=black] at (-5.25, -3.5) {};
+    %         \node[draw=black] at (5.25, 3.5) {};
+
+    %         \visible<1>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\datasetbox}
+    %             };
+    %         }
+
+    %         \visible<2>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\cnnforward}
+    %             };
+    %         }
+
+    %         \visible<3>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\results}
+    %             };
+    %         }
+
+    %         \visible<4>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\patients}
+    %             };
+    %         }
+
+    %         \visible<5>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\dementiapatients}
+    %             };
+    %         }
+
+    %         \visible<6>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\dementiaclassification}
+    %             };
+    %         }
+    %     \end{tikzpicture}
+    % \end{frame}
+
+    % \begin{frame}{Explainable AI: Motivation}
+    %     \begin{tikzpicture}
+    %         \node[draw=black] at (-5.25, -3.5) {};
+    %         \node[draw=black] at (5.25, 3.5) {};
+
+    %         \visible<1>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\abstractionmri}
+    %             };
+    %         }
+    %         \visible<2>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\abstractionbrainage}
+    %             };
+    %         }
+    %         \visible<3>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\abstractionideal}
+    %             };
+    %         }
+    %         \visible<4>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\cnntwod}
+    %             };
+    %         }
+    %         \visible<5>{
+    %             \node[] at (0, 0) {
+    %                 \usebox{\cnnregions}
+    %             };
+    %         }
+    %     \end{tikzpicture}
+    % \end{frame}
+
+    \newcommand{\artificialneuron}[5]{
+        \node[
+            circle,
+            fill=#5,
+            draw=none,
+            minimum size=13pt,
+            font=\tiny\selectfont,
+            text depth=0,
+            inner sep=0pt,
+            text=white!90
+        ] (#4) at (#1, #2) {#3};
+    }
+    \newcommand{\connection}[4]{
+        \draw[-stealth, line width=1pt,#3] #1 -- #2 #4;
+    }
+
+    \newcommand{\mathplot}[1]{
         \begin{tikzpicture}
-            \node[draw=black] at (-5.25, -3.5) {};
-            \node[draw=black] at (5.25, 3.5) {};
+            \node[draw=black] at (-4, -1.5) {};
+            \node[draw=black] at (4, 1.5) {};
 
-            % \visible<1>{
-            %     \node[] at (0, 0) {
-            %         \usebox{\datasetbox}
-            %     };
-            % }
+            \ifnum#1=0
+                \artificialneuron{-0.5}{1}{$n_{00}$}{n00}{blue!65}
+                \artificialneuron{-0.5}{0.5}{$n_{01}$}{n01}{blue!55}
+                \artificialneuron{-0.5}{0}{$n_{02}$}{n02}{blue!98}
 
-            \visible<2>{
-                \node[] at (0, 0) {
+                \artificialneuron{0.5}{0.5}{$n_{10}$}{n10}{blue!82}
+
+                \connection{(n00)}{(n10)}{blue!45}{node [midway, above, font=\tiny\selectfont, text=black, yshift=-0.05cm] {$w_0$}}
+                \connection{(n01)}{(n10)}{blue!92}{node [above, font=\tiny\selectfont, text=black, pos=0.35, yshift=-0.11cm] {$w_1$}}
+                \connection{(n02)}{(n10)}{blue!78}{node [midway, below, font=\tiny\selectfont, text=black, yshift=0.03cm] {$w_2$}}
+
+                \connection{($ (n00.west) - (0.5, 0) $)}{(n00)}{blue!65}{}
+                \connection{($ (n01.west) - (0.5, 0) $)}{(n01)}{blue!55}{}
+                \connection{($ (n02.west) - (0.5, 0) $)}{(n02)}{blue!98}{}
+
+                \connection{(n10)}{($ (n10.east) + (0.5, 0) $)}{blue!82}{}
+
+                \node[font=\footnotesize\selectfont, anchor=north] at (0, -0.25) {
+                    $n_{10}=f\left({\color{red}\sum\limits_i w_i \cdot n_{0i}}\right)$
+                };
+            \fi
+
+            \ifnum#1=1
+                \artificialneuron{-0.5}{1}{$n_{00}$}{n00}{red!20!yellow}
+                \artificialneuron{-0.5}{0.5}{$n_{01}$}{n01}{red!80!black}
+                \artificialneuron{-0.5}{0}{$n_{02}$}{n02}{red!50!black}
+
+                \artificialneuron{0.5}{0.5}{$n_{10}$}{n10}{red}
+
+                \connection{(n10)}{(n00)}{red!20!yellow}{}
+                \connection{(n10)}{(n01)}{red!80!black}{}
+                \connection{(n10)}{(n02)}{red!50!black}{}
+
+                \connection{(n00)}{($ (n00.west) - (0.5, 0) $)}{red!20!yellow}{}
+                \connection{(n01)}{($ (n01.west) - (0.5, 0) $)}{red!80!black}{}
+                \connection{(n02)}{($ (n02.west) - (0.5, 0) $)}{red!50!black}{}
+
+                \connection{($ (n10.east) + (0.5, 0) $)}{(n10)}{red}{}
+
+                \node[anchor=east, font=\tiny\selectfont] at ($ (n00.west) - (0.5, 0) $) {$R_0$};
+            \fi
+
+        \end{tikzpicture}
+    }
+
+    \newsavebox{\mathforward}
+    \sbox{\mathforward}{
+        \mathplot{0}
+    }
+
+    \newsavebox{\mathbackward}
+    \sbox{\mathbackward}{
+        \mathplot{1}
+    }
+
+    \begin{frame}{Explainable AI: Methods}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3.5) {};
+            \node[] at (5.25, 3.5) {};
+
+            \visible<1-3>{
+                \node[] at (0, 1.5) {
                     \usebox{\cnnforward}
                 };
             }
-
-            % \visible<3>{
-            %     \node[] at (0, 0) {
-            %         \usebox{\results}
-            %     };
-            % }
-
-            \visible<4>{
-                \node[] at (0, 0) {
-                    \usebox{\patients}
-                };
-            }
-
-            \visible<5>{
-                \node[] at (0, 0) {
-                    \usebox{\dementiapatients}
-                };
-            }
-
-            \visible<6>{
-                \node[] at (0, 0) {
-                    \usebox{\dementiaclassification}
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
-
-    \begin{frame}{Explainable AI: Rationale}
-        \begin{tikzpicture}
-            \node[draw=black] at (-5.25, -3.5) {};
-            \node[draw=black] at (5.25, 3.5) {};
-
-            \visible<1>{
-                \node[] at (0, 0) {
-                    \usebox{\abstractionmri}
-                };
-            }
             \visible<2>{
-                \node[] at (0, 0) {
-                    \usebox{\abstractionbrainage}
+                \node[anchor=north] at (0, -0.5) {
+                    \usebox{\mathforward}
                 };
             }
             \visible<3>{
-                \node[] at (0, 0) {
-                    \usebox{\abstractionideal}
-                };
-            }
-            \visible<4>{
-                \node[] at (0, 0) {
-                    \usebox{\cnntwod}
+                \node[anchor=north] at (0, -0.5) {
+                    \usebox{\mathbackward}
                 };
             }
         \end{tikzpicture}
