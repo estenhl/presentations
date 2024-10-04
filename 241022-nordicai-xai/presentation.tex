@@ -1385,82 +1385,84 @@
     %     \end{tikzpicture}
     % \end{frame}
 
-    \newcommand{\disorderplot}[5]{
-        \colorlet{significantcolour}{red}
+    \newcommand{\auctrace}[2]{
+        \draw[] (axis cs: #1-0.125, #2) --
+            (axis cs: #1+0.125, #2);
+        \node[
+            anchor=west,
+            font=\footnotesize\selectfont\bfseries,
+            inner sep=2pt,
+            draw=black,
+            fill=white
+        ] at (axis cs: #1+0.125, #2) {#2};
+    }
 
-        \def\column{#1}
-        \def\stage{#2}
-        \def\meanbaseline{#3}
-        \def\meanbrainage{#4}
-        \def\meanheatmap{#5}
-
+    \newcommand{\disorderplot}[7]{
         \nextgroupplot[]
+            \def\column{#1}
+            \def\stage{#2}
+            \def\meanbaseline{#3}
+            \def\meanbrainage{#4}
+            \def\meanheatmap{#5}
+            \def\firstcolour{#6}
+            \def\secondcolour{#7}
+
             \addplot[
                 only marks,
-                opacity=0.5
+                opacity=0.25,
+                gray
             ] table [
                 col sep=comma,
                 x expr=(rnd*0.1) - 0.05,
                 y=\column-BL
             ] {data/casecontrol.csv};
 
-        \ifnum #2 > 0
-            \ifnum #4 pt > 0.5 pt
+            \node[
+                anchor=north,
+                font=\scriptsize\selectfont,
+                rotate=90
+            ] at (axis cs: 2.5, 0.5) {AUC};
+
+            \auctrace{0}{\meanbaseline}
+
+            \ifnum \stage > 0
                 \addplot[
                     only marks,
-                    opacity=0.5,
-                    color=black
+                    opacity=0.25,
+                    color=\firstcolour
                 ] table [
                     col sep=comma,
                     x expr=1 + (rnd*0.1) - 0.05,
                     y=#1-BA
                 ] {data/casecontrol.csv};
-            \fi
-            % \ifnum #3 = 1
-            %     \addplot[
-            %         only marks,
-            %         opacity=0.5,
-            %         color=significantcolour
-            %     ] table [
-            %         col sep=comma,
-            %         x expr=1 + (rnd*0.1) - 0.05,
-            %         y=#1-BA
-            %     ] {data/casecontrol.csv};
-            % \fi
-        \fi
 
-        % \ifnum #2 > 1
-        %     \ifnum #4 > 0.5
-        %         \addplot[
-        %             only marks,
-        %             opacity=0.5,
-        %             color=black
-        %         ] table [
-        %             col sep=comma,
-        %             x expr=2 + (rnd*0.1) - 0.05,
-        %             y=#1-HM
-        %         ] {data/casecontrol.csv};
-        %     \fi
-        %     \ifnum #4 = 1
-        %         \addplot[
-        %             only marks,
-        %             opacity=0.5,
-        %             color=significantcolour
-        %         ] table [
-        %             col sep=comma,
-        %             x expr=2 + (rnd*0.1) - 0.05,
-        %             y=#1-HM
-        %         ] {data/casecontrol.csv};
-        %     \fi
-        % \fi
+                \auctrace{1}{\meanbrainage}
+            \fi
+
+            \ifnum \stage > 1
+            \addplot[
+                only marks,
+                opacity=0.25,
+                color=\secondcolour
+            ] table [
+                col sep=comma,
+                x expr=2 + (rnd*0.1) - 0.05,
+                y=#1-HM
+            ] {data/casecontrol.csv};
+
+            \auctrace{2}{\meanheatmap}
+        \fi
     }
 
     \newcommand{\clinicalplot}[1]{
+        \colorlet{insignificant}{gray}
+        \colorlet{significant}{red}
+
         \begin{tikzpicture}
             \begin{groupplot}[
                 group style={
                     group size=1 by 9,
-                    vertical sep=0.1cm
+                    vertical sep=0.05cm
                 },
                 width=9cm,
                 height=2.3cm,
@@ -1471,20 +1473,52 @@
                 ymax=1,
                 ytick={0.25, 0.5, 0.75},
                 yticklabels=\empty,
-                xmin=-0.5,
-                xmax=2.5
+                xmin=-0.3,
+                xmax=2.5,
+                clip=false
             ]
-                \disorderplot{ADHD}{#1}{0.5}{0.49}{0.5}
-                % \disorderplot{ANX}{#1}{0.5}{0.56}{0.6}
-                % \disorderplot{ASD}{#1}{0.5}{0.52}{0.5}
-                % \disorderplot{BIP}{#1}{0.49}{0.54}{0.60}
-                % \disorderplot{DEM}{#1}{0.5}{0.75}{0.81}
-                % \disorderplot{MCI}{#1}{0.5}{0.58}{0.62}
-                % \disorderplot{MDD}{#1}{0.49}{0.5}{0.42}
-                % \disorderplot{MS}{#1}{0.49}{0.63}{0.87}
-                % \disorderplot{SCZ}{#1}{0.5}{0.57}{0.65}
 
+                \disorderplot{ADHD}{#1}{0.5}{0.49}{0.5}{insignificant}{insignificant}
+                \disorderplot{ANX}{#1}{0.5}{0.56}{0.6}{insignificant}{insignificant}
+                \disorderplot{ASD}{#1}{0.5}{0.52}{0.5}{insignificant}{insignificant}
+                \disorderplot{BIP}{#1}{0.49}{0.54}{0.60}{insignificant}{significant}
+                \disorderplot{DEM}{#1}{0.5}{0.75}{0.81}{significant}{significant}
+                \disorderplot{MCI}{#1}{0.5}{0.58}{0.62}{significant}{significant}
+                \disorderplot{MDD}{#1}{0.49}{0.5}{0.42}{insignificant}{insignificant}
+                \disorderplot{MS}{#1}{0.49}{0.63}{0.87}{significant}{significant}
+                \disorderplot{SCZ}{#1}{0.5}{0.57}{0.65}{significant}{significant}
             \end{groupplot}
+
+            \node[
+                anchor=south,
+                font=\small\selectfont,
+                text depth=0
+            ] at ($ (group c1r1.north) - (2.7, 0) $) {Baseline};
+
+            \ifnum#1>0
+                \node[
+                    anchor=south,
+                    font=\small\selectfont,
+                    text depth=0
+                ] at ($ (group c1r1.north) + (0.04, 0) $) {Brain age};
+            \fi
+
+            \ifnum#1>1
+                \node[
+                    anchor=south,
+                    font=\small\selectfont,
+                    text depth=0
+                ] at ($ (group c1r1.north) + (2.62, 0) $) {Heatmaps};
+            \fi
+
+            \pgfplotsforeachungrouped \name/\idx in {{Attention deficit \\ hyperactivity disorder}/1, {Anxiety disorder}/2, {Autism spectrum \\ disorder}/3, {Bipolar disorder}/4, {Dementia}/5, {Mild cognitive \\ impairment}/6, {Major depressive \\ disorder}/7, {Multiple sclerosis}/8, {Schizophrenia}/9} {
+                \node[
+                    anchor=east,
+                    font=\scriptsize\linespread{0.85}\selectfont,
+                    text depth=0,
+                    align=right
+                ] at ($ (group c1r\idx.west) - (0, 0) $) {\name};
+            }
         \end{tikzpicture}
     }
 
@@ -1493,17 +1527,32 @@
         \clinicalplot{0}
     }
 
+    \newsavebox{\clinicalbrainage}
+    \sbox{\clinicalbrainage}{
+        \clinicalplot{1}
+    }
+
     \newsavebox{\clinicalheatmaps}
     \sbox{\clinicalheatmaps}{
         \clinicalplot{2}
     }
 
     \begin{frame}{Explainable AI: Results}
+        \vspace{-0.8cm}
+        \hspace{-1.1cm}
         \begin{tikzpicture}
             \node[] at (-5.25, -3.5) {};
             \node[] at (5.25, 3.5) {};
-
             \visible<1>{
+                \node[] at (0, 0) {
+                    \usebox{\clinicalbaseline}
+                };
+            }\visible<2>{
+                \node[] at (0, 0) {
+                    \usebox{\clinicalbrainage}
+                };
+            }
+            \visible<3>{
                 \node[] at (0, 0) {
                     \usebox{\clinicalheatmaps}
                 };
