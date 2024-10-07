@@ -1,0 +1,68 @@
+\section{Extensions of linear models}
+
+
+\newcommand{\datasetplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=6cm,
+            width=8cm,
+            xmin=0,
+            xmax=1,
+            xtick pos=bottom,
+            ytick pos=left
+        ]
+            \ifnum#1=0
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=0:1,
+                    opacity=0.5
+                ] (x, 20 + 5 * x + rand);
+            \fi
+            \ifnum#1=1
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=0:1,
+                    opacity=0.5
+                ] (x, x^2 + gauss(0,0.1));
+            \fi
+
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\linearbox}
+\sbox{\linearbox}{
+    \datasetplot{0}
+}
+
+\newsavebox{\exponentialbox}
+\sbox{\exponentialbox}{
+    \datasetplot{1}
+}
+
+\begin{frame}{Extensions of linear models: Motivation}
+    \begin{tikzpicture}
+        \node[draw=black] at (-5.25, -3.5) {};
+        \node[draw=black] at (5.25, 3.5) {};
+
+        \node[] at (0, -3) {
+            $\hat{y}=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+        };
+
+        \visible<2>{
+            \node[] at (0, 0.5) {
+                \usebox{\linearbox}
+            };
+        }
+        \visible<3>{
+            \node[] at (0, 0.5) {
+                \usebox{\exponentialbox}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
