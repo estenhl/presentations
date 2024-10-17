@@ -127,8 +127,33 @@
                     samples=100,
                     domain=0:1,
                     opacity=0.5
-                ] (x, {x <= 0.2 ? 3*x : (x <= 0.8 ? 0.6 + 1*(x-0.2) : 1.2 + 0.1*(x-0.8))});
-                %\addplot[thick, blue] (0.9*(1 - exp(-5*x)));
+                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
+            \fi
+
+            \ifnum#1=6
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=0:1,
+                    opacity=0.25
+                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
+                \addplot[
+                    very thick,
+                    red,
+                    domain=0:0.2
+                ] (x, 20*x^0.75);
+
+                \addplot[
+                    very thick,
+                    orange,
+                    domain=0.2:0.6
+                ] (x, 3.7+10.5*x^0.95);
+                \addplot[
+                    very thick,
+                    yellow,
+                    domain=0.6:1.0
+                ] (x, 10-x^7+0.5*x^4);
             \fi
         \end{axis}
     \end{tikzpicture}
@@ -162,6 +187,11 @@
 \newsavebox{\complexbox}
 \sbox{\complexbox}{
     \datasetplot{5}
+}
+
+\newsavebox{\splinebox}
+\sbox{\splinebox}{
+    \datasetplot{6}
 }
 
 \newcommand{\gammadistribution}{
@@ -299,6 +329,112 @@
         \visible<1>{
             \node[] at (0, 1) {
                 \usebox{\complexbox}
+            };
+        }
+
+        \visible<2>{
+            \node[] at (0, 0) {
+                \underline{Splines: Piecewise polynomial functions}
+            };
+        }
+
+        \visible<3>{
+            \node[] at (0, 1) {
+                \usebox{\splinebox}
+            };
+        }
+
+        \visible<4>{
+            \node[text width=10cm] at (0, 0) {
+                \underline{Splines: Piecewise polynomial functions}
+                \begin{itemize}
+                    \item Regression splines (ISL, Chapter 7.4)
+                    \item Smoothing splines (This lecture)
+                \end{itemize}
+            };
+        }
+
+        \visible<5,9>{
+            \node[] at (0, 0) {
+                $\sum\limits_{i=1}^n(y_i - g(x_i))^2 + \lambda\int g''(t)^2dt$
+            };
+        }
+
+        \visible<6>{
+            \node[] at (0, 0) {
+                $\sum\limits_{i=1}^n(y_i - {\color{red}g(x_i)})^2 + \lambda\int g''(t)^2dt$
+            };
+            \node[text=red] (model) at (-0.7, 1) {
+                $\hat{y}_i=g(x_i)$
+            };
+            \draw[red, -stealth] (model.south) -- +(0, -0.4);
+        }
+        \visible<7>{
+            \node[] at (0, 0) {
+                ${\color{red}\sum\limits_{i=1}^n(y_i - g(x_i))^2} + \lambda\int g''(t)^2dt$
+            };
+            \node[text=red] (mse) at (-1.2, -1) {
+                $\sum (y_i - \hat{y}_i)^2$
+            };
+            \draw[red, -stealth] (mse.north) -- +(0, 0.4);
+        }
+        \visible<8>{
+            \node[] at (0, 0) {
+                $\sum\limits_{i=1}^n(y_i - g(x_i))^2 + \lambda{\color{red}\int g''(t)^2dt}$
+            };
+            \node[text=red] (penalty) at (1.5, -1) {
+                Large when $g$ is wiggly
+            };
+            \draw[red, -stealth] (penalty.north) -- +(0, 0.4);
+        }
+        \visible<9>{
+            \node[align=center, anchor=north] (mse) at (-1.2, -1) {
+                Tries to\\fit data
+            };
+            \draw[-stealth] (mse.north) -- +(0, 0.5);
+
+            \node[align=center, anchor=north] (penalty) at (1.5, -1) {
+                Tries to \\
+                simplify $g$
+            };
+            \draw[-stealth] (penalty.north) -- +(0, 0.5);
+
+            \node[align=center, anchor=south] (lambda) at (0.55, 1) {
+                Balances what is\\
+                most important
+            };
+            \draw[-stealth] (lambda.south) -- +(0, -0.5);
+        }
+        \visible<10>{
+            \node[] at (0, 0) {
+                \tiny{\url{http://localhost:8888/notebooks/notebooks/Smoothing\%20spline.ipynb}}
+            };
+        }
+        \visible<11-12>{
+            \node[] (singlelinear) at (-2, 1) {
+                $\hat{y}=\beta_0+\beta_1x$
+            };
+            \node[] (singleadditive) at (2, 1) {
+                $\hat{y}=g(x)$
+            };
+        }
+        \visible<12>{
+            \node[] (multiplelinear) at (-2, -1) {
+                $\hat{y}=\beta_0+\sum\limits_{j=1}^p \beta_jx_{j}$
+            };
+            \draw[line width=2pt, -stealth, gray] (singlelinear) -- (multiplelinear);
+            \node[] (multipleadditive) at (2, -1) {
+                $\hat{y}=\beta_0+\sum\limits_{j=1}^p f_j(x_{j})$
+            };
+            \draw[line width=2pt, -stealth, gray] (singleadditive) -- (multipleadditive);
+        }
+        \visible<13>{
+            \node[align=flush left, text width=10.1cm] at (0, 0) {
+                \textbf{Generalized additive models (GAMs):}\\
+                Extends upon the regular linear model by allowing for non-linear functions $f_j$ to be fitted for each predictor $x_j$.
+                \begin{itemize}
+                    \item Does not allow for interactions between predictors.
+                \end{itemize}
             };
         }
 
