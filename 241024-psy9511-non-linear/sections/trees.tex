@@ -1,1 +1,314 @@
 \section{Tree-based models}
+
+\newcommand{\treedataplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=8cm,
+            xlabel=$x_1$,
+            ylabel=$x_2$,
+            zlabel=$y$,
+            view={75}{15}
+        ]
+            \addplot3 table [
+                only marks,
+                opacity=0.5,
+                col sep=comma,
+                x=x,
+                y=y,
+                z=value
+            ] {data/treedata.csv};
+
+            \ifnum#1>0
+                \addplot3[
+                    surf,
+                    opacity=0.1,
+                    red,
+                    domain=0:0.5, y domain=0:0.5
+                ] {0.8};
+
+                \addplot3[
+                    surf,
+                    opacity=0.1,
+                    red,
+                    domain=0:0.5, y domain=0.5:1
+                ] {0.9};
+                \addplot3[
+                    surf,
+                    opacity=0.1,
+                    red,
+                    domain=0.5:1, y domain=0:0.5
+                ] {0.5};
+                \addplot3[
+                    surf,
+                    opacity=0.1,
+                    red,
+                    domain=0.5:1, y domain=0.5:1
+                ] {0.1};
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\polyplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=8cm,
+            xlabel=$x$,
+            ylabel=$y$,
+            xmin=-0.1,
+            xmax=1,
+            xtick={-0.1, 0.175, 0.45, 0.725, 1},
+            xticklabels={0, 0.25, 0.5, 0.75, 1},
+            ymajorticks=false,
+            ymin=-10,
+            ymax=2.5,
+            xtick pos=bottom
+        ]
+            \ifnum#1<3
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=-0.1:1,
+                    opacity=0.5
+                ] (x, 300*x^5 - 750 * x^4 + 630 * x^3 - 210 * x^2 + 20 * x + 1 + rand);
+            \fi
+
+            \ifnum#1=1
+                \addplot[
+                    very thick,
+                    red
+                ] coordinates {
+                    (-0.1,-3)
+                    (-0.05, -3)
+                    (-0.05, 0)
+                    (0, 0)
+                    (0, 1.5)
+                    (0.2, 1.5)
+                    (0.2, -0.5)
+                    (0.65, -0.5)
+                    (0.65, -1)
+                    (0.7, -1)
+                    (0.7, -3)
+                    (0.85, -3)
+                    (0.85, -6)
+                    (0.95, -6)
+                    (0.95, -9)
+                    (1, -9)
+                };
+            \fi
+            \ifnum#1>1
+                \addplot[
+                    very thick,
+                    red
+                ] coordinates {
+                    (-0.1,-3)
+                    (-0.05, -3)
+                    (-0.05, 0)
+                    (0, 0)
+                    (0, 1)
+                    (0.05, 1)
+                    (0.05, 1.5)
+                    (0.15, 1.5)
+                    (0.15, 1)
+                    (0.2, 1)
+                    (0.2, 0)
+                    (0.4, 0)
+                    (0.4, -0.5)
+                    (0.65, -0.5)
+                    (0.65, -1)
+                    (0.7, -1)
+                    (0.7, -2.5)
+                    (0.75, -2.5)
+                    (0.75, -4)
+                    (0.85, -4)
+                    (0.85, -6)
+                    (0.95, -6)
+                    (0.95, -9)
+                    (1, -9)
+                };
+            \fi
+            \ifnum#1=4
+                \node[anchor=south, font=\scriptsize, inner sep=2pt] at (axis cs: 0.525, -0.5) {
+                    $\hat{y}=-0.5$
+                };
+                \draw[red] (axis cs: 0.4, 2.5) -- (axis cs: 0.4, -10);
+                \draw[red] (axis cs: 0.65, 2.5) -- (axis cs: 0.65, -10);
+
+                \node[anchor=south, font=\scriptsize, inner sep=2pt] at (axis cs: 0.3, -0.0) {
+                    $\hat{y}=0.0$
+                };
+                \draw[red] (axis cs: 0.2, 2.5) -- (axis cs: 0.2, -10);
+                \draw[red] (axis cs: 0.4, 2.5) -- (axis cs: 0.4, -10);
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\treedata}
+\sbox{\treedata}{
+    \treedataplot{0}
+}
+
+\newsavebox{\treestep}
+\sbox{\treestep}{
+    \treedataplot{1}
+}
+
+\newsavebox{\polydata}
+\sbox{\polydata}{
+    \polyplot{0}
+}
+
+\newsavebox{\polystep}
+\sbox{\polystep}{
+    \polyplot{1}
+}
+
+\newsavebox{\polyprecise}
+\sbox{\polyprecise}{
+    \polyplot{2}
+}
+\newsavebox{\polyconstant}
+\sbox{\polyconstant}{
+    \polyplot{3}
+}
+\newsavebox{\polyregions}
+\sbox{\polyregions}{
+    \polyplot{4}
+}
+
+\newsavebox{\emptyplot}
+\sbox{\emptyplot}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=8cm,
+            xlabel=$x$,
+            ylabel=$y$,
+            ymajorticks=false,
+            xmajorticks=false,
+            xmin=0,
+            xmax=1,
+            ymin=0,
+            ymax=1
+        ]
+            \node[] at (axis cs: 0.5, 0.5) {
+                \Huge{?}
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\begin{frame}{Tree-based models: Motivation}
+    \begin{tikzpicture}
+        \node[draw=black] at (-5.25, -3.5) {};
+        \node[draw=black] at (5.25, 3.5) {};
+
+        \visible<1-2>{
+            \node[] at (0, 1) {
+                \usebox{\treedata}
+            };
+        }
+        \visible<2>{
+            \node[font=\scriptsize\selectfont] at (0, -2.5) {
+                $y=
+                \begin{cases}
+                    0.8&x_1\leq0.5\ \&\ x_2\leq0.5\\
+                    0.9&x_1\leq0.5\ \&\ x_2>0.5\\
+                    0.5&x_1>0.5\ \&\ x_2\leq0.5\\
+                    0.1&x_1>0.5\ \&\ x_2>0.5\\
+                \end{cases}
+                $
+            };
+        }
+        \visible<3-4>{
+            \node[] at (0, 1) {
+                \usebox{\polydata}
+            };
+        }
+        \visible<4>{
+            \node[] at (0, -2.5) {
+                $y=?x^5+?x^4+?x^3+?x^2+?x+?$
+            };
+        }
+        \visible<5>{
+            \node[] at (0, 1) {
+                \usebox{\emptyplot}
+            };
+        }
+        \visible<6>{
+            \node[] at (0, 1) {
+                \usebox{\treestep}
+            };
+        }
+        \visible<7>{
+            \node[] at (0, 1) {
+                \usebox{\polystep}
+            };
+        }
+        \visible<8>{
+            \node[] at (0, 1) {
+                \usebox{\polyprecise}
+            };
+        }
+        \visible<9>{
+            \node[] at (0, 1) {
+                \usebox{\polyconstant}
+            };
+        }
+        \visible<10-11>{
+            \node[] at (0, 1) {
+                \usebox{\polyregions}
+            };
+        }
+        \visible<11>{
+            \node[font=\footnotesize\selectfont] at (0, -2.5) {
+                $\hat{y}=
+                \begin{cases}
+                    ...\\
+                    0.0&x\geq0.27\ \& \ x<0.45\\
+                    -0.5&x\geq0.45\ \& \ x<0.69\\
+                    ...\\
+                \end{cases}
+                $
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\newcommand{\stratificationplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=5cm,
+            xlabel=\scriptsize{$x_1$},
+            ylabel=\scriptsize{$x_2$},
+            ticklabel style={font=\scriptsize\selectfont},
+            tick style={draw=none},
+            clip=false
+        ]
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\stratificationregions}
+\sbox{\stratificationregions}{
+    \stratificationplot{0}
+}
+
+\begin{frame}{Tree-based models: Decision trees}
+    \begin{tikzpicture}
+        \node[draw=black] at (-5.25, -3.5) {};
+        \node[draw=black] at (5.25, 3.5) {};
+
+        \visible<1>{
+            \node[anchor=east] at (5, 0) {
+                \usebox{\stratificationregions}
+            };
+        }
+
+    \end{tikzpicture}
+\end{frame}
