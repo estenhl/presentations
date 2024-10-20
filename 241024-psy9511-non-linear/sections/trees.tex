@@ -1,50 +1,87 @@
 \section{Tree-based models}
 
 \newcommand{\treedataplot}[1]{
+    \def\height{5cm}
+    \def\width{8cm}
+
+    \ifnum#1>1
+        \def\width{5cm}
+    \fi
+
     \begin{tikzpicture}
         \begin{axis}[
-            height=5cm,
-            width=8cm,
+            height=\height,
+            width=\width,
             xlabel=$x_1$,
             ylabel=$x_2$,
             zlabel=$y$,
-            view={75}{15}
+            view={75}{10},
+            x dir=reverse
         ]
-            \addplot3 table [
-                only marks,
-                opacity=0.5,
-                col sep=comma,
-                x=x,
-                y=y,
-                z=value
-            ] {data/treedata.csv};
+            \ifnum#1<3
+                \addplot3 table [
+                    only marks,
+                    opacity=0.5,
+                    col sep=comma,
+                    x=x,
+                    y=y,
+                    z=value
+                ] {data/treedata.csv};
+            \fi
 
             \ifnum#1>0
-                \addplot3[
-                    surf,
-                    opacity=0.1,
-                    red,
-                    domain=0:0.5, y domain=0:0.5
-                ] {0.8};
+                \ifnum#1<2
+                    \addplot3[
+                        surf,
+                        opacity=0.25,
+                        fill=red!80!blue,
+                        draw=red!80!blue,
+                        domain=0:0.6, y domain=0:0.5,
+                        shader=flat
+                    ] {0.8};
 
-                \addplot3[
-                    surf,
-                    opacity=0.1,
-                    red,
-                    domain=0:0.5, y domain=0.5:1
-                ] {0.9};
-                \addplot3[
-                    surf,
-                    opacity=0.1,
-                    red,
-                    domain=0.5:1, y domain=0:0.5
-                ] {0.5};
-                \addplot3[
-                    surf,
-                    opacity=0.1,
-                    red,
-                    domain=0.5:1, y domain=0.5:1
-                ] {0.1};
+                    \addplot3[
+                        surf,
+                        opacity=0.25,
+                        fill=red!90!blue,
+                        draw=red!90!blue,
+                        domain=0:0.6, y domain=0.5:1,
+                        shader=flat
+                    ] {0.9};
+                    \addplot3[
+                        surf,
+                        opacity=0.25,
+                        fill=red!50!blue,
+                        draw=red!50!blue,
+                        domain=0.6:1, y domain=0:0.5,
+                        shader=flat
+                    ] {0.5};
+                    \addplot3[
+                        surf,
+                        opacity=0.25,
+                        fill=red!10!blue,
+                        draw=red!10!blue,
+                        domain=0.6:1, y domain=0.5:1,
+                        shader=flat
+                    ] {0.1};
+                \fi
+            \fi
+
+            \ifnum#1>2
+                \addplot3 [
+                    only marks,
+                    scatter,
+                    scatter src=explicit,
+                    point meta min=0,
+                    point meta max=1,
+                    colormap name=blue red
+                ] table [
+                    col sep=comma,
+                    x=x,
+                    y=y,
+                    z=value,
+                    meta=value
+                ] {data/treedata.csv};
             \fi
         \end{axis}
     \end{tikzpicture}
@@ -157,6 +194,15 @@
     \treedataplot{1}
 }
 
+\newsavebox{\treesquare}
+\sbox{\treesquare}{
+    \treedataplot{2}
+}
+\newsavebox{\treecolours}
+\sbox{\treecolours}{
+    \treedataplot{3}
+}
+
 \newsavebox{\polydata}
 \sbox{\polydata}{
     \polyplot{0}
@@ -216,8 +262,8 @@
             \node[font=\scriptsize\selectfont] at (0, -2.5) {
                 $y=
                 \begin{cases}
-                    0.8&x_1\leq0.5\ \&\ x_2\leq0.5\\
-                    0.9&x_1\leq0.5\ \&\ x_2>0.5\\
+                    0.8&x_1\leq0.6\ \&\ x_2\leq0.5\\
+                    0.9&x_1\leq0.6\ \&\ x_2>0.5\\
                     0.5&x_1>0.5\ \&\ x_2\leq0.5\\
                     0.1&x_1>0.5\ \&\ x_2>0.5\\
                 \end{cases}
@@ -258,6 +304,9 @@
             \node[] at (0, 1) {
                 \usebox{\polyconstant}
             };
+            \node[] at (0, -2) {
+                Piecewise constant function
+            };
         }
         \visible<10-11>{
             \node[] at (0, 1) {
@@ -282,21 +331,118 @@
 \newcommand{\stratificationplot}[1]{
     \begin{tikzpicture}
         \begin{axis}[
-            height=5cm,
-            width=5cm,
-            xlabel=\scriptsize{$x_1$},
-            ylabel=\scriptsize{$x_2$},
+            height=4cm,
+            width=4cm,
+            xlabel=\scriptsize{$x_2$},
+            ylabel=\scriptsize{$x_1$},
             ticklabel style={font=\scriptsize\selectfont},
             tick style={draw=none},
-            clip=false
+            clip=false,
+            xmin=-0.05,
+            xmax=0.95,
+            ymin=-0.05,
+            ymax=0.95,
+            point meta min=0,
+            point meta max=1,
+            colormap name=blue red,
+            colorbar,
+            colorbar style={
+                title=\scriptsize{$y$}
+            }
         ]
+            \addplot[
+                only marks,
+                scatter,
+                scatter src=explicit
+            ] table [
+                col sep=comma,
+                x=y,
+                y=x,
+                meta=value
+            ] {data/treedata.csv};
+
+            \ifnum#1>0
+                \draw[very thick] (axis cs: -0.05, 0.55) -- (axis cs: 0.95, 0.55);
+            \fi
+            \ifnum#1>1
+                \draw[very thick] (axis cs: 0.45, 0.55) -- (axis cs: 0.45, 0.95);
+            \fi
         \end{axis}
     \end{tikzpicture}
 }
 
-\newsavebox{\stratificationregions}
-\sbox{\stratificationregions}{
+\newsavebox{\stratificationpoints}
+\sbox{\stratificationpoints}{
     \stratificationplot{0}
+}
+\newsavebox{\stratificationfirst}
+\sbox{\stratificationfirst}{
+    \stratificationplot{1}
+}
+
+\newsavebox{\stratificationsecond}
+\sbox{\stratificationsecond}{
+    \stratificationplot{2}
+}
+
+\newcommand{\treeplot}[1]{
+    \begin{tikzpicture}
+        \node[] at (-1, 0.5) {};
+        \node[] at (1.75, -3.5) {};
+
+        \node[draw=black, font=\small\selectfont] (n0) at (0, 0) {
+            $x_1 < 0.6$
+        };
+
+        \node[font=\small\selectfont, minimum height=1cm] (n10) at (-0.75, -1.5) {};
+        \node[font=\small\selectfont, minimum height=1cm] (n11) at (0.75, -1.5) {};
+        \node[font=\small\selectfont, minimum height=1cm] (n20) at (0, -3) {};
+        \node[font=\small\selectfont, minimum height=1cm] (n21) at (1.5, -3) {};
+
+
+        \draw[-stealth] (n0) -- (n10) node [midway, left] {Yes};
+        \draw[-stealth] (n0) -- (n11) node [midway, right] {No};
+
+        \ifnum#1>0
+            \node[font=\small\selectfont] (n10) at (-0.75, -1.5) {
+                0.85
+            };
+        \fi
+        \ifnum#1>1
+            \node[draw=black, font=\small\selectfont] (n11) at (0.75, -1.5) {
+                $x_2 < 0.5$
+            };
+
+            \draw[-stealth] (n11) -- (n20) node [midway, left] {Yes};
+            \draw[-stealth] (n11) -- (n21) node [midway, right] {No};
+        \fi
+        \ifnum#1>2
+            \node[font=\small\selectfont] (n20) at (0, -3) {
+                0.5
+            };
+            \node[font=\small\selectfont] (n21) at (1.5, -3) {
+                0.1
+            };
+        \fi
+
+    \end{tikzpicture}
+}
+
+\newsavebox{\treeroot}
+\sbox{\treeroot}{
+    \treeplot{0}
+}
+\newsavebox{\treeleft}
+\sbox{\treeleft}{
+    \treeplot{1}
+}
+\newsavebox{\treeright}
+\sbox{\treeright}{
+    \treeplot{2}
+}
+\newsavebox{\treefull}
+\sbox{\treefull}{
+    \treeplot{3}
 }
 
 \begin{frame}{Tree-based models: Decision trees}
@@ -305,8 +451,137 @@
         \node[draw=black] at (5.25, 3.5) {};
 
         \visible<1>{
-            \node[anchor=east] at (5, 0) {
-                \usebox{\stratificationregions}
+            \node[anchor=west] at (-5.25, 0) {
+                \usebox{\treesquare}
+            };
+        }
+        \visible<2>{
+            \node[anchor=west] at (-5.25, 0) {
+                \usebox{\treecolours}
+            };
+        }
+        \visible<2-3,8-11,14-15>{
+            \node[anchor=east] at (5.25, 0.3) {
+                \usebox{\stratificationpoints}
+            };
+        }
+        \visible<4>{
+            \node[anchor=north] at (-3, 2.5) {
+                \usebox{\treeroot}
+            };
+        }
+        \visible<4-5,12-13>{
+            \node[anchor=east] at (5.25, 0.3) {
+                \usebox{\stratificationfirst}
+            };
+        }
+        \visible<5>{
+            \node[anchor=north] at (-3, 2.5) {
+                \usebox{\treeleft}
+            };
+        }
+        \visible<6>{
+            \node[anchor=north] at (-3, 2.5) {
+                \usebox{\treeright}
+            };
+        }
+        \visible<6-7>{
+            \node[anchor=east] at (5.25, 0.3) {
+                \usebox{\stratificationsecond}
+            };
+        }
+        \visible<7>{
+            \node[anchor=north] at (-3, 2.5) {
+                \usebox{\treefull}
+            };
+        }
+        \visible<8-11>{
+            \node[anchor=east] at (5.25, 0.3) {
+                \usebox{\stratificationpoints}
+            };
+        }
+        \visible<9-11,13-15>{
+            \node[] (predictor) at (-3, 0.5) {
+                $x_1$ or $x_2$?
+            };
+        }
+        \visible<10-11,14-15>{
+            \node[font=\footnotesize] (x1) at (-4, -0.5) {
+                [0, 0.1, \ldots, 0.9]
+            };
+            \node[font=\footnotesize] (x2) at (-2, -0.5) {
+                [0, 0.1, \ldots, 0.9]
+            };
+            \draw[-stealth] ($ (predictor.south) - (0.7, 0) $) -- (x1);
+            \draw[-stealth] ($ (predictor.south) + (0.6, 0) $) -- (x2);
+        }
+        \visible<11>{
+            \node[font=\footnotesize, inner sep=2pt] (l1) at ($ (x1.south) - (0.66, 0.5) $) {
+                $\ell_0$
+            };
+            \draw[-stealth] ($ (l1) + (0, 0.55) $) -- (l1);
+            \node[font=\footnotesize, inner sep=2pt] (l2) at ($ (x1.south) - (0.23, 0.5) $) {
+                $\ell_1$
+            };
+            \draw[-stealth] ($ (l2) + (0, 0.55) $) -- (l2);
+            \node[font=\footnotesize, inner sep=2pt] (l3) at ($ (x1.south) - (-0.66, 0.5) $) {
+                $\ell_2$
+            };
+            \draw[-stealth] ($ (l3) + (0, 0.55) $) -- (l3);
+
+            \node[font=\footnotesize, inner sep=2pt] (l4) at ($ (x2.south) - (0.66, 0.5) $) {
+                $\ell_3$
+            };
+            \draw[-stealth] ($ (l4) + (0, 0.55) $) -- (l4);
+            \node[font=\footnotesize, inner sep=2pt] (l5) at ($ (x2.south) - (0.23, 0.5) $) {
+                $\ell_4$
+            };
+            \draw[-stealth] ($ (l5) + (0, 0.55) $) -- (l5);
+            \node[font=\footnotesize, inner sep=2pt] (l6) at ($ (x2.south) - (-0.66, 0.5) $) {
+                $\ell_5$
+            };
+            \draw[-stealth] ($ (l6) + (0, 0.55) $) -- (l6);
+        }
+        \visible<13>{
+            \node[font=\footnotesize] (x1) at (-4, -0.5) {
+                [0.6, 0.7, 0.8, 0.9]
+            };
+            \node[font=\footnotesize] (x2) at (-2, -0.5) {
+                [0, 0.1, \ldots, 0.9]
+            };
+            \draw[-stealth] ($ (predictor.south) - (0.7, 0) $) -- (x1);
+            \draw[-stealth] ($ (predictor.south) + (0.6, 0) $) -- (x2);
+        }
+        \visible<11,14-16>{
+            \node[font=\footnotesize, inner sep=2pt] (l1) at ($ (x1.south) - (0.66, 0.5) $) {
+                $\ell_0$
+            };
+            \draw[-stealth] ($ (l1) + (0, 0.55) $) -- (l1);
+            \node[font=\footnotesize, inner sep=2pt] (l2) at ($ (x1.south) - (0.23, 0.5) $) {
+                $\ell_1$
+            };
+            \draw[-stealth] ($ (l2) + (0, 0.55) $) -- (l2);
+            \node[font=\footnotesize, inner sep=2pt] (l3) at ($ (x1.south) - (-0.66, 0.5) $) {
+                $\ell_2$
+            };
+            \draw[-stealth] ($ (l3) + (0, 0.55) $) -- (l3);
+
+            \node[font=\footnotesize, inner sep=2pt] (l4) at ($ (x2.south) - (0.66, 0.5) $) {
+                $\ell_3$
+            };
+            \draw[-stealth] ($ (l4) + (0, 0.55) $) -- (l4);
+            \node[font=\footnotesize, inner sep=2pt, text=red] (l5) at ($ (x2.south) - (0.23, 0.5) $) {
+                $\ell_4$
+            };
+            \draw[-stealth, red] ($ (l5) + (0, 0.55) $) -- (l5);
+            \node[font=\footnotesize, inner sep=2pt] (l6) at ($ (x2.south) - (-0.66, 0.5) $) {
+                $\ell_5$
+            };
+            \draw[-stealth] ($ (l6) + (0, 0.55) $) -- (l6);
+        }
+        \visible<15-16>{
+            \node[font=\footnotesize, inner sep=2pt, text=red] (l5) at (-3, 1) {
+                $\ell$
             };
         }
 

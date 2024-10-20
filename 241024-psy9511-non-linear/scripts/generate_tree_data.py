@@ -4,10 +4,10 @@ import pandas as pd
 
 
 values = np.random.uniform(0, 1, (10, 10))
-values[:5, :5] = 0.8
-values[:5, 5:] = 0.9
-values[5:, :5] = 0.5
-values[5:, 5:] = 0.1
+values[:6, :5] = 0.8
+values[:6, 5:] = 0.9
+values[6:, :5] = 0.5
+values[6:, 5:] = 0.1
 
 values += np.random.normal(0, 0.025, values.shape)
 
