@@ -214,117 +214,137 @@
     \end{tikzpicture}
 }
 
-% \begin{frame}{Extensions of linear models: Generalized linear models}
-%     \begin{tikzpicture}
-%         \node[draw=black] at (-5.25, -3.5) {};
-%         \node[draw=black] at (5.25, 3.5) {};
+\begin{frame}{Non-linear models: Nothing to be afraid of}
+    \begin{tikzpicture}
+        \RInputNode{(0, 1.5)}{rnode}{10cm}{8}{
+            formula <- ...^^J
+            result <- glm(formula, family=Gamma(link="log"), data=data)^^J
+        }
 
-%         \visible<1-3,5>{
-%             \node[] at (0, -2.5) {
-%                 $\hat{y}=$$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
-%             };
-%         }
+        \RInputNode{(0, 0)}{rnode}{10cm}{8}{
+            formula <- ...^^J
+            result <- gam(formula, data=data)^^J
+        }
+        \PythonInputNode{2}{(0, -1.5)}{glmnode}{10cm}{8}{
+            from xgboost import XGBClassifier^^J
+            ^^J
+            model = XGBClassifier()^^J
+            model.fit(X, y)^^J
+        }
+    \end{tikzpicture}
+\end{frame}
 
-%         \visible<2>{
-%             \node[] at (0, 1) {
-%                 \usebox{\linearbox}
-%             };
-%         }
-%         \visible<3-4,12>{
-%             \node[] at (0, 1) {
-%                 \usebox{\exponentialbox}
-%             };
-%         }
-%         \visible<4>{
-%             \node[] at (0, -2.5) {
-%                 $\hat{y}=$\textcolor{red}{$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$}
-%             };
-%         }
-%         \visible<5-7>{
-%             \node[] at (0, 1) {
-%                 \usebox{\logisticbox}
-%             };
-%         }
-%         \visible<6>{
-%             \node[] at (0, -2.5) {
-%                 $\log\left(\dfrac{p(X)}{1 - p(X)}\right)=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
-%             };
-%         }
-%         \visible<7-8>{
-%             \node[] at (0, -2.5) {
-%                 $p(X)=\dfrac{e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}{1 + e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}$
-%             };
-%         }
-%         \visible<8-11>{
-%             \node[] at (0, 1) {
-%                 \usebox{\logregbox}
-%             };
-%         }
-%         \visible<9>{
-%             \node[] at (0, -2.5) {
-%                 $p(X)=\dfrac{e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i} \right)}}{1 + e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i}\right)}}$
-%             };
-%         }
-%         \visible<10>{
-%             \node[] at (0, -2.5) {
-%                 $p(X)=f(\beta_0+\sum\limits_{i=0}^p \beta_ix_i)$
-%             };
-%         }
-%         \visible<11-12>{
-%             \node[] at (0, -2.5) {
-%                 $f(\hat{y})=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
-%             };
-%         }
-%         \visible<13>{
-%             \node[] at (0, 1) {
-%                 \usebox{\expregbox}
-%             };
-%             \node[] at (0, -2.5) {
-%                 $\log(\hat{y})=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
-%             };
-%         }
-%         \visible<14>{
-%             \node[] at (0, 0) {
-%                 \gammadistribution
-%             };
-%         }
-%         \visible<15>{
-%             \node[align=flush left, text width=10.1cm] at (0, 0) {
-%                 \textbf{Generalized linear models (GLMs):}\\
-%                 Extends upon the regular linear model by associating the predictors to the response via a non-linear link function $f$.
-%                 \begin{itemize}
-%                     \item Requires us to specify $f$ (often determined by investigating the distribution of the response).
-%                 \end{itemize}
-%             };
-%         }
-%         \visible<16>{
-%             \PythonInputNode{1}{(-5, 3)}{gammanode}{10cm}{8}{
-%                 from sklearn.linear_model import GammaRegressor^^J
-%                 ^^J
-%                 model = GammaRegressor()^^J
-%                 model.fit(X, y)^^J
-%             }
+\begin{frame}{Extensions of linear models: Generalized linear models}
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
 
-%             \PythonInputNode{2}{($ (gammanode.south west) - (0, 0.2) $)}{glmnode}{10cm}{8}{
-%                 import statsmodels.api as sm^^J
-%                 ^^J
-%                 link = sm.genmod.families.links.Log()^^J
-%                 model = sm.GLM(y, X, family=sm.families.Gamma(link=link))^^J
-%                 model.fit()
-%             }
+        \visible<1-3,5>{
+            \node[] at (0, -2.5) {
+                $\hat{y}=$$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+            };
+        }
 
-%             \RInputNode{($ (glmnode.south west) - (0, 0.7) $)}{rnode}{10cm}{8}{
-%                 formula <- ...^^J
-%                 result <- glm(formula, family=Gamma(link="log"), data=data)^^J
-%             }
-%         }
-%     \end{tikzpicture}
-% \end{frame}
+        \visible<2>{
+            \node[] at (0, 1) {
+                \usebox{\linearbox}
+            };
+        }
+        \visible<3-4,12>{
+            \node[] at (0, 1) {
+                \usebox{\exponentialbox}
+            };
+        }
+        \visible<4>{
+            \node[] at (0, -2.5) {
+                $\hat{y}=$\textcolor{red}{$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$}
+            };
+        }
+        \visible<5-7>{
+            \node[] at (0, 1) {
+                \usebox{\logisticbox}
+            };
+        }
+        \visible<6>{
+            \node[] at (0, -2.5) {
+                $\log\left(\dfrac{p(X)}{1 - p(X)}\right)=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+            };
+        }
+        \visible<7-8>{
+            \node[] at (0, -2.5) {
+                $p(X)=\dfrac{e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}{1 + e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}$
+            };
+        }
+        \visible<8-11>{
+            \node[] at (0, 1) {
+                \usebox{\logregbox}
+            };
+        }
+        \visible<9>{
+            \node[] at (0, -2.5) {
+                $p(X)=\dfrac{e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i} \right)}}{1 + e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i}\right)}}$
+            };
+        }
+        \visible<10>{
+            \node[] at (0, -2.5) {
+                $p(X)=f(\beta_0+\sum\limits_{i=0}^p \beta_ix_i)$
+            };
+        }
+        \visible<11-12>{
+            \node[] at (0, -2.5) {
+                $f(\hat{y})=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+            };
+        }
+        \visible<13>{
+            \node[] at (0, 1) {
+                \usebox{\expregbox}
+            };
+            \node[] at (0, -2.5) {
+                $\log(\hat{y})=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+            };
+        }
+        \visible<14>{
+            \node[] at (0, 0) {
+                \gammadistribution
+            };
+        }
+        \visible<15>{
+            \node[align=flush left, text width=10.1cm] at (0, 0) {
+                \textbf{Generalized linear models (GLMs):}\\
+                Extends upon the regular linear model by associating the predictors to the response via a non-linear link function $f$.
+                \begin{itemize}
+                    \item Requires us to specify $f$ (often determined by investigating the distribution of the response).
+                \end{itemize}
+            };
+        }
+        \visible<16>{
+            \PythonInputNode{1}{(-5, 3)}{gammanode}{10cm}{8}{
+                from sklearn.linear_model import GammaRegressor^^J
+                ^^J
+                model = GammaRegressor()^^J
+                model.fit(X, y)^^J
+            }
+
+            \PythonInputNode{2}{($ (gammanode.south west) - (0, 0.2) $)}{glmnode}{10cm}{8}{
+                import statsmodels.api as sm^^J
+                ^^J
+                link = sm.genmod.families.links.Log()^^J
+                model = sm.GLM(y, X, family=sm.families.Gamma(link=link))^^J
+                model.fit()
+            }
+
+            \RInputNode{($ (glmnode.south west) - (0, 0.7) $)}{rnode}{10cm}{8}{
+                formula <- ...^^J
+                result <- glm(formula, family=Gamma(link="log"), data=data)^^J
+            }
+        }
+    \end{tikzpicture}
+\end{frame}
 
 \begin{frame}{Extensions of linear models: Generalized additive models}
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, -3.5) {};
-        \node[draw=black] at (5.25, 3.5) {};
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
 
         \visible<1>{
             \node[] at (0, 1) {
