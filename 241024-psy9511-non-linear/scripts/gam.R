@@ -1,4 +1,5 @@
 df <- read.csv('~/Downloads/Auto.csv')
+
 df <- df[df$horsepower != '?', ]
 df$horsepower <- as.numeric(df$horsepower)
 df <- df[order(df$horsepower), ]
