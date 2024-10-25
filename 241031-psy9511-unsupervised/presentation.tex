@@ -3,11 +3,26 @@
 \usetheme{PSY9511}
 
 \usepackage{array}
+\usepackage{pgfplots}
+\usepackage{tikz}
 
 \title{PSY9511: Seminar 5}
 \subtitle{Unsupervised learning}
 \author{Esten H. Leonardsen}
 \date{24.10.24}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
 
 \begin{document}
 	\begin{frame}

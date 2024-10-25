@@ -1,16 +1,88 @@
 \section{Clustering}
 
+\newcommand{\clusterplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=6cm,
+            width=6cm,
+            xmajorticks=false,
+            ymajorticks=false,
+            xlabel=$x_1$,
+            ylabel=$x_2$,
+        ]
+            \ifnum#1=0
+                \addplot[
+                    only marks,
+                    mark=*,
+                    blue,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=x,
+                    y=y
+                ]{data/clusterdata.csv};
+            \fi
+            \ifnum#1=1
+                \addplot[
+                    only marks,
+                    mark=*,
+                    blue,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=x,
+                    y=y,
+                    discard if not={c}{0.0}
+                ]{data/clusterdata.csv};
+
+                \addplot[
+                    only marks,
+                    mark=*,
+                    green,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=x,
+                    y=y,
+                    discard if not={c}{1.0}
+                ]{data/clusterdata.csv};
+
+                \addplot[
+                    only marks,
+                    mark=*,
+                    red,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=x,
+                    y=y,
+                    discard if not={c}{2.0}
+                ]{data/clusterdata.csv};
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\unclusteredbox}
+\sbox{\unclusteredbox}{
+    \clusterplot{0}
+}
+\newsavebox{\clusteredbox}
+\sbox{\clusteredbox}{
+    \clusterplot{1}
+}
 
 \begin{frame}{Clustering: Background}
     \begin{tikzpicture}
         \node[] at (-5.25, 3.5) {};
         \node[] at (-5.25, -3.5) {};
 
-        \node[] at (0, 3) {
-            Are there some (naturally occuring) subgroups in our dataset?
-        };
-
-        \visible<2>{
+        \visible<1-4>{
+            \node[] at (0, 3) {
+                Are there some (naturally occuring) subgroups in our dataset?
+            };
+        }
+        \visible<2-5>{
             \node[anchor=north west] at (-4.5, 2.5) {
                 \begin{tabular}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|}
                     \hline
@@ -28,6 +100,163 @@
                     0.00&-0.12\\
                     \hline
                 \end{tabular}
+            };
+        }
+        \visible<3>{
+            \node[anchor=north east] at (4.5, 2) {
+                \usebox{\unclusteredbox}
+            };
+        }
+        \visible<4-5>{
+            \node[anchor=north east] at (4.5, 2) {
+                \usebox{\clusteredbox}
+            };
+        }
+        \visible<5>{
+            \node[] at (0, 3) {
+                Are there some (\textcolor{red}{naturally occuring}) subgroups in our dataset?
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\newcommand{\simpleclusterplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.45cm,
+            width=5.45cm,
+            xmajorticks=false,
+            ymajorticks=false,
+            xlabel=$x_1$,
+            ylabel=$x_2$
+        ]
+            \ifnum#1=0
+                \addplot[
+                    only marks,
+                    blue,
+                    opacity=0.5
+                ] coordinates {
+                    (1, 1)
+                    (1.5, 1)
+                    (1.25, 1.25)
+                    (-1, 1)
+                    (-1.5, 1)
+                    (-1.25, 1.25)
+                    (0.25, 0.0)
+                    (-0.25, 0.0)
+                    (0, -0.25)
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+\newcommand{\simpleclusterplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.45cm,
+            width=5.45cm,
+            xmajorticks=false,
+            ymajorticks=false,
+            xlabel=$x_1$,
+            ylabel=$x_2$
+        ]
+            \ifnum#1=0
+                \addplot[
+                    only marks,
+                    blue,
+                    opacity=0.5
+                ] coordinates {
+                    (1, 1)
+                    (1.5, 1)
+                    (1.25, 1.25)
+                    (-1, 1)
+                    (-1.5, 1)
+                    (-1.25, 1.25)
+                    (0.25, 0.0)
+                    (-0.25, 0.0)
+                    (0, -0.25)
+                };
+            \fi
+            \ifnum#1=1
+                \addplot[
+                    only marks,
+                    blue,
+                    opacity=0.5
+                ] coordinates {
+                    (1, 1)
+                    (1.5, 1)
+                    (1.25, 1.25)
+                };
+                \addplot[
+                    only marks,
+                    green,
+                    opacity=0.5
+                ] coordinates {
+                    (-1, 1)
+                    (-1.5, 1)
+                    (-1.25, 1.25)
+                };
+                \addplot[
+                    only marks,
+                    red,
+                    opacity=0.5
+                ] coordinates {
+                    (0.25, 0.0)
+                    (-0.25, 0.0)
+                    (0, -0.25)
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\simpleunclustered}
+\sbox{\simpleunclustered}{
+    \simpleclusterplot{0}
+}
+
+\begin{frame}{K-means clustering}
+    \begin{tikzpicture}
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (-5.25, -3.5) {};
+
+        \visible<1-2>{
+            \node[text width=10cm, align=left] at (0, -2) {
+                \underline{K-means clustering}: Find $k$ clusters in the data to minimze the \textit{within-cluster variance}:
+            };
+        }
+        \visible<1>{
+            \node[] at (0, -3) {
+                $\underset{C_1,...,C_k}{\mathrm{minimize}} \left( \sum\limits_{k=1}^K \dfrac{1}{|C_k|} \sum\limits_{i,i' \in C_k}  \sum\limits_{j=1}^p (x_{ij} - x_{i'j})^2 \right)$
+            };
+        }
+        \visible<2-3>{
+            \node[] at (0, -3) {
+                $\underset{C_1,...,C_k}{\mathrm{minimize}} \left( \sum\limits_{k=1}^K \dfrac{1}{|C_k|} \sum\limits_{i,i' \in C_k}  \sqrt{\sum\limits_{j=1}^p (x_{ij} - x_{i'j})^2} \right)$
+            };
+        }
+        \visible<3>{
+            \node[anchor=north west] at (-4.5, 3) {
+                {\footnotesize
+                \begin{tabular}{|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1cm}|}
+                    \hline
+                    $\mathbf{x_1}$ & $\mathbf{x_2}$ \\
+                    \hline
+                    1&1\\
+                    1.5&1\\
+                    1.25&1.25\\
+                    -1&1\\
+                    -1.5&1\\
+                    -1.25&1.25\\
+                    0.25&0.0\\
+                    -0.25&0.0\\
+                    0&-0.25\\
+                    \hline
+                \end{tabular}
+                }
+            };
+            \node[anchor=north east] at (4.5, 3) {
+                \usebox{\simpleunclustered}
             };
         }
     \end{tikzpicture}
