@@ -268,6 +268,11 @@
                 \draw[red,-stealth,very thick] (axis cs: -1.81260902e-16, -1.81260902e-17) -- (axis cs: -1.81260902e-16 + 3 * 0.26058464, -1.81260902e-17 - 3 * 0.26058464);
                 \node[anchor=west, outer sep=3pt] at (axis cs: -1.81260902e-16 + 0.8 * 0.26058464, -1.81260902e-17 - 0.8 * 0.26058464) {\Large{\textbf{\textcolor{red}{$v$}}}};
             \fi
+            \ifnum#1>4
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 3 * 0.26058464, -1.81260902e-17 + 3 * 0.26058464) -- (axis cs: -1.81260902e-16 + 3 * 0.26058464, -1.81260902e-17 - 3 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 6 * 0.26058464, -1.81260902e-17 + 6 * 0.26058464) -- (axis cs: -1.81260902e-16 + 6 * 0.26058464, -1.81260902e-17 - 6 * 0.26058464);
+                \draw[red,|-|,very thick] (axis cs: -1.81260902e-16 - 9 * 0.26058464, -1.81260902e-17 + 9 * 0.26058464) -- (axis cs: -1.81260902e-16 + 9 * 0.26058464, -1.81260902e-17 - 9 * 0.26058464);
+            \fi
         \end{axis}
     \end{tikzpicture}
 }
@@ -291,6 +296,78 @@
 \newsavebox{\pcasecondvector}
 \sbox{\pcasecondvector}{
     \pcaplot{4}
+}
+\newsavebox{\pcasecond}
+\sbox{\pcasecond}{
+    \pcaplot{5}
+}
+
+\newsavebox{\pcadata}
+\sbox{\pcadata}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=6.5cm,
+            width=6.5cm,
+            xlabel=$PC_1$,
+            ylabel=$PC_2$,
+        ]
+            \addplot[
+                only marks,
+                mark=*,
+                color=blue,
+                opacity=0.25
+            ] table [col sep=comma, x=x, y=y] {data/pcs.csv};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\screeplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.5cm,
+            width=5.5cm,
+            xlabel=\footnotesize{Component},
+            ylabel=\footnotesize{Explained variance},
+            xtick pos=bottom,
+            ytick pos=left,
+            ticklabel style={font=\footnotesize},
+            xmin=-0.5,
+            xmax=5.5
+        ]
+            \addplot[
+                mark=*,
+                blue
+            ] coordinates {
+                (0, 0.709)
+                (1, 0.139)
+                (2, 0.112)
+                (3, 0.022)
+                (4, 0.010)
+                (5, 0.006)
+            };
+
+            \ifnum#1=1
+                \draw[thick, red] (axis cs: -0.5, 0.2) -- (axis cs: 5.5, 0.2);
+            \fi
+
+            \ifnum#1=2
+                \draw[thick, red] (axis cs: -0.5, 0.06) -- (axis cs: 5.5, 0.06);
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\screedata}
+\sbox{\screedata}{
+    \screeplot{0}
+}
+\newsavebox{\screefirst}
+\sbox{\screefirst}{
+    \screeplot{1}
+}
+\newsavebox{\screesecond}
+\sbox{\screesecond}{
+    \screeplot{2}
 }
 
 \begin{frame}{Dimensionality reduction: Principal component analysis}
@@ -333,6 +410,92 @@
             };
             \node[] at (0, -3) {
                 $v \rightarrow$ direction of maximum variance \textbf{orthogonal} to $PC_1$
+            };
+        }
+        \visible<6>{
+            \node[] at (0, 0.5) {
+                \usebox{\pcasecond}
+            };
+            \node[] at (0, -3) {
+                $v \rightarrow$ direction of maximum variance \textbf{orthogonal} to $PC_1$
+            };
+        }
+        \visible<7>{
+            \node[] at (0, 0.5) {
+                \usebox{\pcadata}
+            };
+        }
+        \visible<8-9>{
+            \node[] at (0, 0.5) {
+                \begin{tabular}{|c|c|c|c|c|}
+                    \hline
+                    \textbf{mpg}&\textbf{horsepower}&\textbf{weight}&\textbf{PC1}&\textbf{PC2}\\
+                    \hline
+                    18&130&3504&0.908&0.303\\
+                    \hline
+                    15&165&3693&1.709&0.517\\
+                    \hline
+                    18&150&3436&1.219&0.455\\
+                    \hline
+                    16&150&3433&1.217&0.457\\
+                    \hline
+                    17&140&3449&1.046&0.260\\
+                    \hline
+                    15&198&4341&2.856&0.583\\
+                    \hline
+                    14&220&4354&3.272&0.977\\
+                    \hline
+                \end{tabular}
+            };
+        }
+        \visible<9>{
+            \node[] at (0, -2.5) {
+                $PC_1 = 0.69*z_\mathrm{horsepower}+0.71*z_\mathrm{weight}$
+            };
+        }
+        \visible<10>{
+            \node[font=\small\selectfont] at (0, 0) {
+                \url{http://localhost:8888/notebooks/notebooks\%2FPCA.ipynb}
+            };
+        }
+        \visible<11-12,15>{
+            \node[] at (0, 1) {
+                \usebox{\screedata}
+            };
+        }
+        \visible<12,15>{
+            \node[font=\small\selectfont] at (0, -2.5) {
+                $\hat{y}=\beta_0+\sum_{i=0}^n\beta_i PC_i$
+            };
+        }
+        \visible<13>{
+            \node[] at (0, 1) {
+                \usebox{\screefirst}
+            };
+            \node[font=\small\selectfont] at (0, -2.5) {
+                $\hat{y}=\beta_0+\sum_{i=1}^{{\color{red}1}}\beta_i PC_i$
+            };
+        }
+        \visible<14>{
+            \node[] at (0, 1) {
+                \usebox{\screesecond}
+            };
+            \node[font=\small\selectfont] at (0, -2.5) {
+                $\hat{y}=\beta_0+\sum_{i=1}^{{\color{red}3}}\beta_i PC_i$
+            };
+        }
+        \visible<15>{
+            \node[font=\small\selectfont, text=red] at (0, -3.2) {
+                $n$ decided via a validation set, tested in a \textbf{held-out test set}
+            };
+        }
+        \visible<16>{
+            \node[align=left, text width=10.5cm] at (0, 0) {
+                \underline{Principal component analysis}: Transforms our dataset by computing new \textit{principal components} that replace our original variables.
+                \begin{itemize}
+                    \item Principal components are linear combinations of the original variables
+                    \item Principal components are orthogonal to each other, meaning that they capture different signals in our data (in a very strict sense)
+                \end{itemize}
             };
         }
     \end{tikzpicture}
