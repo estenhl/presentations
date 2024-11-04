@@ -1,0 +1,50 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{PSY9511}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usepgfplotslibrary{groupplots}
+
+\usetikzlibrary{calc}
+
+\title{PSY9511: Seminar 7}
+\subtitle{Deep learning for computer vision tasks}
+\author{Esten H. Leonardsen}
+\date{07.11.24}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\begin{document}
+	\begin{frame}
+	 	\maketitle
+	\end{frame}
+
+    \begin{frame}{Outline}
+        \begin{enumerate}
+            \item Exercise 4
+            \item Deep learning
+            \begin{itemize}
+                \item Motivation
+                \item (Deep) neural networks
+                \item Training procedure
+            \end{itemize}
+            \item Convolutional neural networks for computer vision
+        \end{enumerate}
+    \end{frame}
+
+    \input{sections/exercise.tex}
+    \input{sections/nn.tex}
+\end{document}
