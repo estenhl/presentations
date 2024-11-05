@@ -78,6 +78,32 @@
                     (1.6, 1.2)
                 };
             \fi
+            \ifnum#1=5
+                \addplot[
+                    samples=100,
+                    domain=-1.6:1.6,
+                    red,
+                    very thick
+                ] coordinates {
+                    (-1.6, 4.4)
+                    (-1.4, 3)
+                    (-1.3, 2.9)
+                    (-1.1, 2.9)
+                    (-0.5, 3.8)
+                    (0, 3.8)
+                    (0.4, 3)
+                    (1, 1)
+                    (1.2, 0.7)
+                    (1.6, 1.2)
+                };
+
+                \addplot[
+                    samples=100,
+                    domain=-1.6:1.6,
+                    orange,
+                    very thick
+                ] (x, {x^4-3*x^2-x+4});
+            \fi
         \end{axis}
     \end{tikzpicture}
 }
@@ -101,6 +127,10 @@
 \newsavebox{\polynomialapprox}
 \sbox{\polynomialapprox}{
     \polynomialplot{4}
+}
+\newsavebox{\polynomialboth}
+\sbox{\polynomialboth}{
+    \polynomialplot{5}
 }
 
 \newsavebox{\correlatedpredictors}
@@ -894,185 +924,388 @@
 %     \end{tikzpicture}
 % \end{frame}
 
-\newcommand{\mseloss}[1]{
+% \newcommand{\mseloss}[1]{
+%     \begin{tikzpicture}
+%         \begin{axis}[
+%             height=5.5cm,
+%             width=5.5cm,
+%             xmajorticks=false,
+%             ymajorticks=false,
+%             xlabel=$\beta$,
+%             ylabel=$MSE$,
+%             xmin=-1,
+%             xmax=1,
+%             ymin=-0.2,
+%             ymax=1
+%         ]
+%             \addplot[
+%                 thick,
+%                 red,
+%                 domain=-1:1,
+%                 samples=100
+%             ] (x, {x^2});
+
+%             \ifnum#1=1
+%                 \addplot[
+%                     only marks,
+%                     mark=*,
+%                     red
+%                 ] coordinates {
+%                     (-0.5, 0.25)
+%                 };
+%                 \draw[-stealth] (axis cs: -0.45, 0.25) -- (axis cs: -0.33, 0.15);
+%             \fi
+%             \ifnum#1=2
+%                 \addplot[
+%                     only marks,
+%                     mark=*,
+%                     red
+%                 ] coordinates {
+%                     (0, 0)
+%                 };
+%                 \node[anchor=north, font=\small\selectfont] at (axis cs: 0, 0) {
+%                     Global optimum
+%                 };
+%             \fi
+%         \end{axis}
+%     \end{tikzpicture}
+% }
+
+% \newsavebox{\msetrace}
+% \sbox{\msetrace}{
+%     \mseloss{0}
+% }
+% \newsavebox{\mseinit}
+% \sbox{\mseinit}{
+%     \mseloss{1}
+% }
+% \newsavebox{\mseconverged}
+% \sbox{\mseconverged}{
+%     \mseloss{2}
+% }
+
+% \newcommand{\surfaceplot}[1]{
+%     \begin{tikzpicture}
+%         \begin{axis}[
+%             view={0}{90}, % 2D top-down view
+%             xlabel={$w_0^0$},
+%             ylabel={$w_1^0$},
+%             colormap/viridis, % You can change the colormap if you want
+%             samples=100, % Increase for finer detail
+%             domain=0:5,
+%             y domain=-3:6,
+%             height=5cm,
+%             width=8cm,
+%             ymajorticks=false,
+%             xmajorticks=false,
+%             axis lines=left
+%         ]
+%             \ifnum#1>0
+%                 \addplot3[
+%                     surf,
+%                     shader=interp
+%                 ] {sin(deg(x)) * cos(deg(0.5 * y)) + y*0.25};
+%             \fi
+%             \ifnum#1>1
+%                 \addplot[
+%                     only marks,
+%                     mark=*,
+%                     color=red
+%                 ] coordinates {
+%                     (4, 4)
+%                 };
+%             \fi
+%             \ifnum#1=3
+%                 \draw[red,-stealth] (axis cs: 4, 4) -- (axis cs: 3.9, 3);
+%             \fi
+%             \ifnum#1>3
+%                 \draw[red,-stealth] (axis cs: 4, 4) -- (axis cs: 3.9, 3) -- (axis cs: 3.95, 2) -- (axis cs: 4.05, 1) -- (axis cs: 4.15, 0.5) -- (axis cs: 4.2, -1) -- (axis cs: 4.5, -1.5);
+%             \fi
+%         \end{axis}
+%     \end{tikzpicture}
+% }
+
+% \newsavebox{\lossparameters}
+% \sbox{\lossparameters}{
+%     \surfaceplot{0}
+% }
+% \newsavebox{\losssurface}
+% \sbox{\losssurface}{
+%     \surfaceplot{1}
+% }
+% \newsavebox{\losspoint}
+% \sbox{\losspoint}{
+%     \surfaceplot{2}
+% }
+% \newsavebox{\lossdirection}
+% \sbox{\lossdirection}{
+%     \surfaceplot{3}
+% }
+% \newsavebox{\lossconvergence}
+% \sbox{\lossconvergence}{
+%     \surfaceplot{4}
+% }
+% \begin{frame}{Deep learning: Training}
+%     \begin{tikzpicture}
+%         \node[draw=black] at (5.25, -3.5) {};
+%         \node[draw=black] at (-5.25, 3.5) {};
+
+%         \visible<1-2>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x0) at (-3, 2.5) {\footnotesize{$x_0$}};
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x1) at (-3, 1.5) {\footnotesize{$x_1$}};
+
+%             \artificialneuron{(-1, 3)}{n00}{0}
+%             \artificialneuron{(-1, 2)}{n01}{0}
+%             \artificialneuron{(-1, 1)}{n02}{0}
+
+%             \artificialneuron{(1, 3)}{n10}{0}
+%             \artificialneuron{(1, 2)}{n11}{0}
+%             \artificialneuron{(1, 1)}{n12}{0}
+
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (3, 2) {\footnotesize{$\hat{y}$}};
+
+%             \alert<2>{
+%                 \draw[->] (x0) -- (n00);
+%                 \draw[->] (x0) -- (n01);
+%                 \draw[->] (x0) -- (n02);
+%                 \draw[->] (x1) -- (n00);
+%                 \draw[->] (x1) -- (n01);
+%                 \draw[->] (x1) -- (n02);
+
+%                 \draw[->] (n00) -- (n10);
+%                 \draw[->] (n00) -- (n11);
+%                 \draw[->] (n00) -- (n12);
+%                 \draw[->] (n01) -- (n10);
+%                 \draw[->] (n01) -- (n11);
+%                 \draw[->] (n01) -- (n12);
+%                 \draw[->] (n02) -- (n10);
+%                 \draw[->] (n02) -- (n11);
+%                 \draw[->] (n02) -- (n12);
+
+%                 \draw[->] (n10) -- (y);
+%                 \draw[->] (n11) -- (y);
+%                 \draw[->] (n12) -- (y);
+
+%                 \draw[->] ($ (n00.north) + (0, 0.3) $) -- (n00.north);
+%                 \draw[->] ($ (n01.north) + (0, 0.3) $) -- (n01.north);
+%                 \draw[->] ($ (n02.north) + (0, 0.3) $) -- (n02.north);
+%                 \draw[->] ($ (n10.north) + (0, 0.3) $) -- (n10.north);
+%                 \draw[->] ($ (n11.north) + (0, 0.3) $) -- (n11.north);
+%                 \draw[->] ($ (n12.north) + (0, 0.3) $) -- (n12.north);
+%                 \draw[->] ($ (y.north) + (0, 0.3) $) -- (y.north);
+%             }
+
+%             \node[anchor=north] at (0, 0.5) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} &= max(0, &&\alert<2>{w^2_{0,0}}*max(0, &&\alert<2>{w^1_{0,0}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{1,0}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{2,0}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+%                         & && &&\alert<2>{b_{1,0}})+\\[\spacing]
+%                         & &&\alert<2>{w^2_{1,0}}*max(0, &&\alert<2>{w^1_{0,1}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{1,1}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{2,1}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+%                         & && &&\alert<2>{b_{1,1}})+\\[\spacing]
+%                         & &&\alert<2>{w^2_{2,0}}*max(0, &&\alert<2>{w^1_{0,2}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{1,2}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+%                         & && &&\alert<2>{w^1_{2,2}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+%                         & && &&\alert<2>{b_{1,2}})+\\[\spacing]
+%                         & &&\alert<2>{b_2})&&\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<3>{
+%             \node[] at (0, 0) {
+%                 \usebox{\msetrace}
+%             };
+%         }
+%         \visible<4>{
+%             \node[] at (0, 0) {
+%                 \usebox{\mseinit}
+%             };
+%         }
+%         \visible<5-6>{
+%             \node[] at (0, 0) {
+%                 \usebox{\mseconverged}
+%             };
+%         }
+%         \visible<6>{
+%             \node[align=left] at (0, -3) {
+%                 \textbullet $|\beta| \rightarrow 10^{6}-10^{12}$\\
+%                 \textbullet $\beta_x \implies \beta_y$
+%             };
+%         }
+%         \visible<7-8>{
+%             \node[inner sep=0pt, draw=black] at (0, 0) {
+%                 \includegraphics[width=6cm]{data/backprop.png}
+%             };
+%         }
+%         \visible<8>{
+%             \node[minimum width=2.1cm, minimum height=0.3cm, draw=red, thick] at (0.35, 1.8) {};
+%         }
+%         \visible<9-12>{
+%             \node[] (equation) at (0, -1.5) {
+%                 $\Delta R(\theta^m)=\left.\dfrac{\partial \alert<11>{R(\alert<10>{\theta})}}{\partial \alert<10>{\theta}} \right|_{\alert<12>{\theta=\theta^m}}$
+%             };
+%             \node[anchor=north, text width=7cm, font=\footnotesize\selectfont] (where) at (equation.south) {
+%                 \begin{itemize}
+%                     \item <10->$\theta$ are the parameters of the model
+%                     \item <11->$R(\theta)$ is the loss as a function of the parameters
+%                     \item <12->$\theta^m$ is a specific configuration of parameters
+%                 \end{itemize}
+%             };
+%         }
+%         \visible<10>{
+%             \node[] at (0, 1.2) {
+%                 \usebox{\lossparameters}
+%             };
+%         }
+%         \visible<11>{
+%             \node[] at (0, 1.2) {
+%                 \usebox{\losssurface}
+%             };
+%         }
+%         \visible<12-13>{
+%             \node[] at (0, 1.2) {
+%                 \usebox{\losspoint}
+%             };
+%         }
+%         \visible<13-15>{
+%             \node[] at (0, -2) {
+%                 $\dfrac{\partial R_i(\theta)}{\partial w_{jk}} = \dfrac{\partial R(\theta)}{\partial f_\theta(x_i)} \cdot \dfrac{\partial f_\theta(x_i)}{\partial g(z_{ik})} \cdot \dfrac{\partial g(z_{ik})}{\partial z_{ik}} \cdot \dfrac{z_{ik}}{w_{kj}}$
+%             };
+%         }
+%         \visible<14>{
+%             \node[] at (0, 1.2) {
+%                 \usebox{\lossdirection}
+%             };
+%         }
+%         \visible<15>{
+%             \node[] at (0, 1.2) {
+%                 \usebox{\lossconvergence}
+%             };
+%         }
+%         \visible<16-17>{
+%             \node[text width=10cm] (gd) at (0, 0) {
+%                 \underline{Backpropagation}: Uses gradient descent to iteratively determine how the model weights should be updated to minimize the loss function
+%                 \begin{itemize}
+%                     \item \textbf{Gradient descent}: Calculate gradient based on all data points
+%                     \item <17> \textbf{Stochastic gradient descent}: Calculate gradient based on a batch of data points
+%                 \end{itemize}
+%             };
+%         }
+%     \end{tikzpicture}
+% \end{frame}
+
+\newsavebox{\tradeoff}
+\sbox{\tradeoff}{
     \begin{tikzpicture}
         \begin{axis}[
-            height=5.5cm,
-            width=5.5cm,
+            height=6cm,
+            width=9cm,
+            xlabel={Degrees of freedom},
+            axis x line*=bottom,
+            axis y line*=left,
+            axis line style={-stealth},
             xmajorticks=false,
             ymajorticks=false,
-            xlabel=$\beta$,
-            ylabel=$MSE$,
-            xmin=-1,
+            xmin=0,
             xmax=1,
-            ymin=-0.2,
-            ymax=1
+            ymin=0,
+            ymax=1,
+            ylabel=Error,
+            legend style={at={(0.02, 0.04)}, font=\scriptsize\selectfont, align=left, anchor=south west}
         ]
-            \addplot[
-                thick,
-                red,
-                domain=-1:1,
-                samples=100
-            ] (x, {x^2});
+            \addplot[blue, thick, domain=0:1, samples=100] (x, {exp(-5 * x) + 0.1});
+            \addplot[red, thick, domain=0:1, samples=100] (x, x^3);
+            \addplot[black, thick, domain=0:1, samples=100] (x, {exp(-5 * x) + 0.1 + x^3});
+            %\addplot[red, smooth, thick] (x, x^2);
+            \legend{Bias, Variance, Total}
 
-            \ifnum#1=1
-                \addplot[
-                    only marks,
-                    mark=*,
-                    red
-                ] coordinates {
-                    (-0.5, 0.25)
-                };
-                \draw[-stealth] (axis cs: -0.45, 0.25) -- (axis cs: -0.33, 0.15);
-            \fi
-            \ifnum#1=2
-                \addplot[
-                    only marks,
-                    mark=*,
-                    red
-                ] coordinates {
-                    (0, 0)
-                };
-                \node[anchor=north, font=\small\selectfont] at (axis cs: 0, 0) {
-                    Global optimum
-                };
-            \fi
+
         \end{axis}
     \end{tikzpicture}
 }
 
-\newsavebox{\msetrace}
-\sbox{\msetrace}{
-    \mseloss{0}
-}
-\newsavebox{\mseinit}
-\sbox{\mseinit}{
-    \mseloss{1}
-}
-\newsavebox{\mseconverged}
-\sbox{\mseconverged}{
-    \mseloss{2}
-}
-
-\begin{frame}{Deep learning: Training}
+\begin{frame}{Deep learning: The conundrum}
     \begin{tikzpicture}
         \node[draw=black] at (5.25, -3.5) {};
         \node[draw=black] at (-5.25, 3.5) {};
 
-        \visible<1-2>{
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x0) at (-3, 2.5) {\footnotesize{$x_0$}};
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x1) at (-3, 1.5) {\footnotesize{$x_1$}};
-
-            \artificialneuron{(-1, 3)}{n00}{0}
-            \artificialneuron{(-1, 2)}{n01}{0}
-            \artificialneuron{(-1, 1)}{n02}{0}
-
-            \artificialneuron{(1, 3)}{n10}{0}
-            \artificialneuron{(1, 2)}{n11}{0}
-            \artificialneuron{(1, 1)}{n12}{0}
-
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (y) at (3, 2) {\footnotesize{$\hat{y}$}};
-
-            \alert<2>{
-                \draw[->] (x0) -- (n00);
-                \draw[->] (x0) -- (n01);
-                \draw[->] (x0) -- (n02);
-                \draw[->] (x1) -- (n00);
-                \draw[->] (x1) -- (n01);
-                \draw[->] (x1) -- (n02);
-
-                \draw[->] (n00) -- (n10);
-                \draw[->] (n00) -- (n11);
-                \draw[->] (n00) -- (n12);
-                \draw[->] (n01) -- (n10);
-                \draw[->] (n01) -- (n11);
-                \draw[->] (n01) -- (n12);
-                \draw[->] (n02) -- (n10);
-                \draw[->] (n02) -- (n11);
-                \draw[->] (n02) -- (n12);
-
-                \draw[->] (n10) -- (y);
-                \draw[->] (n11) -- (y);
-                \draw[->] (n12) -- (y);
-
-                \draw[->] ($ (n00.north) + (0, 0.3) $) -- (n00.north);
-                \draw[->] ($ (n01.north) + (0, 0.3) $) -- (n01.north);
-                \draw[->] ($ (n02.north) + (0, 0.3) $) -- (n02.north);
-                \draw[->] ($ (n10.north) + (0, 0.3) $) -- (n10.north);
-                \draw[->] ($ (n11.north) + (0, 0.3) $) -- (n11.north);
-                \draw[->] ($ (n12.north) + (0, 0.3) $) -- (n12.north);
-                \draw[->] ($ (y.north) + (0, 0.3) $) -- (y.north);
-            }
-
-            \node[anchor=north] at (0, 0.5) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} &= max(0, &&\alert<2>{w^2_{0,0}}*max(0, &&\alert<2>{w^1_{0,0}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{1,0}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{2,0}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
-                        & && &&\alert<2>{b_{1,0}})+\\[\spacing]
-                        & &&\alert<2>{w^2_{1,0}}*max(0, &&\alert<2>{w^1_{0,1}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{1,1}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{2,1}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
-                        & && &&\alert<2>{b_{1,1}})+\\[\spacing]
-                        & &&\alert<2>{w^2_{2,0}}*max(0, &&\alert<2>{w^1_{0,2}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{1,2}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
-                        & && &&\alert<2>{w^1_{2,2}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
-                        & && &&\alert<2>{b_{1,2}})+\\[\spacing]
-                        & &&\alert<2>{b_2})&&\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<3>{
-            \node[] at (0, 0) {
-                \usebox{\msetrace}
+        \visible<1>{
+            \node[] at (0, -1.2) {
+                \usebox{\polynomialboth}
             };
         }
-        \visible<4>{
-            \node[] at (0, 0) {
-                \usebox{\mseinit}
+        \visible<1-3>{
+            \node[text width=5cm, anchor=north west, font=\footnotesize\selectfont, text depth=0] at (-5.25, 3.25) {
+                \underline{Splines}: A smooth curve implemented via piecewise polynomial functions
+                \begin{itemize}
+                    \item <2-> Requires us to carefully balance the complexity of the function
+                \end{itemize}
+            };
+            \node[text width=5cm, anchor=north east, font=\footnotesize\selectfont, text depth=0] at (5.25, 3.26) {
+                \underline{Neural networks}: A piecewise linear function implemented as a hierarchy of artificial neurons
+                \begin{itemize}
+                    \item <3> Overparameterization \emoji{partying-face}
+                \end{itemize}
             };
         }
-        \visible<5-6>{
+        \visible<4-5>{
             \node[] at (0, 0) {
-                \usebox{\mseconverged}
+                \usebox{\tradeoff}
             };
+        }
+        \visible<5>{
+            \draw[gray!50, -stealth, line width=10pt] (-2, 0) -- (2, 0);
         }
         \visible<6>{
-            \node[align=left] at (0, -3) {
-                \textbullet $|\beta| \rightarrow 10^{6}-10^{12}$\\
-                \textbullet $\beta_x \implies \beta_y$
+            \node[inner sep=0pt, draw=black] at (0, 1.75) {
+                \includegraphics[width=6cm]{data/double_descent_epochs.png}
+            };
+            \node[inner sep=0pt, draw=black] at (0, -1.75) {
+                \includegraphics[width=6cm]{data/double_descent_width.png}
             };
         }
-        \visible<7-8>{
+        \visible<7>{
             \node[inner sep=0pt, draw=black] at (0, 0) {
-                \includegraphics[width=6cm]{data/backprop.png}
+                \includegraphics[width=9cm]{data/degrees_of_freedom.png}
             };
         }
         \visible<8>{
-            \node[minimum width=2.1cm, minimum height=0.3cm, draw=red, thick] at (0.35, 1.8) {};
+            \node[text width=10cm] at (0, 0) {
+                \underline{Overparameterization}: Deep artificial neural networks generally have far more parameters than necessary (and often more than the number of data points)
+                \begin{itemize}
+                    \item At face value, it is surprising that this does not yield severe overfitting
+                    \item However, it can be shown that functions generally calm down as they become more complex after having perfectly fitted the training data
+                    \item \textbf{Only works for some types of models}
+                \end{itemize}
+            };
         }
     \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Deep learning: Regularization}
 \end{frame}
