@@ -123,59 +123,59 @@
         \end{axis}
     \end{tikzpicture}
 }
-\begin{frame}{Deep learning: Motivation}
-    \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.5) {};
-        \node[draw=black] at (5.25, -3.5) {};
+% \begin{frame}{Deep learning: Motivation}
+%     \begin{tikzpicture}
+%         \node[draw=black] at (-5.25, 3.5) {};
+%         \node[draw=black] at (5.25, -3.5) {};
 
-        \visible<1,6>{
-            \node[] at (0, 0.5) {
-                \usebox{\polynomialdata}
-            };
-        }
-        %shader=interp,
-        \visible<2>{
-            \node[] at (0, 0.5) {
-                \usebox{\polynomialspline}
-            };
-            \node[font=\small] at (0, -2.75) {
-                $\hat{y}=s(x)$
-            };
-        }
-        \visible<3>{
-            \node[] at (0, 0.5) {
-                \usebox{\polynomialtree}
-            };
-            \node[font=\small] at (0, -2.75) {
-                $\hat{y}=
-                \begin{cases}
-                    4&\cdots\\
-                    3&0.2\leq x<0.6\\
-                    1.5&\cdots\\
-                \end{cases}
-                $
-            };
-        }
-        \visible<4>{
-            \node[] at (0, 0.5) {
-                \usebox{\correlatedpredictors}
-            };
-        }
-        \visible<5>{
-            \node[inner sep=0pt, draw=black] at (-2.5, 0) {
-                \includegraphics[width=3cm]{data/cat.png}
-            };
-            \node[align=center, draw=black] at (2.5, 0) {
-                The cat wagged\\ its tail
-            };
-        }
-        \visible<7>{
-            \node[] at (0, 0.5) {
-                \usebox{\polynomialpiecewise}
-            };
-        }
-    \end{tikzpicture}
-\end{frame}
+%         \visible<1,6>{
+%             \node[] at (0, 0.5) {
+%                 \usebox{\polynomialdata}
+%             };
+%         }
+%         %shader=interp,
+%         \visible<2>{
+%             \node[] at (0, 0.5) {
+%                 \usebox{\polynomialspline}
+%             };
+%             \node[font=\small] at (0, -2.75) {
+%                 $\hat{y}=s(x)$
+%             };
+%         }
+%         \visible<3>{
+%             \node[] at (0, 0.5) {
+%                 \usebox{\polynomialtree}
+%             };
+%             \node[font=\small] at (0, -2.75) {
+%                 $\hat{y}=
+%                 \begin{cases}
+%                     4&\cdots\\
+%                     3&0.2\leq x<0.6\\
+%                     1.5&\cdots\\
+%                 \end{cases}
+%                 $
+%             };
+%         }
+%         \visible<4>{
+%             \node[] at (0, 0.5) {
+%                 \usebox{\correlatedpredictors}
+%             };
+%         }
+%         \visible<5>{
+%             \node[inner sep=0pt, draw=black] at (-2.5, 0) {
+%                 \includegraphics[width=3cm]{data/cat.png}
+%             };
+%             \node[align=center, draw=black] at (2.5, 0) {
+%                 The cat wagged\\ its tail
+%             };
+%         }
+%         \visible<7>{
+%             \node[] at (0, 0.5) {
+%                 \usebox{\polynomialpiecewise}
+%             };
+%         }
+%     \end{tikzpicture}
+% \end{frame}
 
 \newsavebox{\threedimensional}
 \sbox{\threedimensional}{
@@ -200,334 +200,879 @@
     \end{tikzpicture}
 }
 
-\begin{frame}{Deep learning: Artificial neural networks}
-
-    \def\nodesize{14pt}
-    \colorlet{nodefill}{teal!40}
-
-    \newcommand{\artificialneuron}[3]{
-        \node[
-            circle,
-            draw=black,
-            fill=nodefill,
-            minimum size=\nodesize,
-            inner sep=0pt
-        ] (####2) at ####1 {};
-
-        % \ifnum####1=1
-
-        % \fi
-    }
-
-    \centering
+\newcommand{\examplefunction}[1]{
     \begin{tikzpicture}
-        \node[] at (-5, 3) {};
-        \node[] at (5, -4.5) {};
+        \begin{axis}[
+            height=4cm,
+            width=10cm,
+            ticklabel style={font=\footnotesize},
+            xlabel=\footnotesize{$x$},
+            ylabel=\footnotesize{$\hat{y}$},
+            xmin=-2,
+            xmax=2,
+            xtick pos=bottom,
+            ytick pos=left
+        ]
+            \ifnum#1=0
+                \addplot[
+                    domain=-2:2,
+                    samples=100,
+                    thick,
+                    red
+                ] (x, {max(0, max(0, -2*x+3) - 4*max(0, 5*x-6)+7)});
+            \fi
+            \ifnum#1=1
+            \addplot[
+                domain=-2:2,
+                samples=100,
+                thick,
+                red
+            ] (x, {max(0, -7*max(0, 6*x-5) +4*max(0, -3*x+2)-1)});
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
 
-        \visible<1>{
-            \artificialneuron{(0, 1.5)}{n}{0}
-            \node[] (x) at (-1.5, 1.5) {$x$};
-            \node[] (b) at (0, 2.5) {$\beta_0$};
-            \node[] (y) at (1.5, 1.5) {$\hat{y}$};
+\newsavebox{\firstexample}
+\sbox{\firstexample}{
+    \examplefunction{0}
+}
 
-            \draw[->] (x) -- (n) node [midway, above] {$\beta_1$};
-            \draw[->] (b) -- (n);
-            \draw[->] (n) -- (y);
+\newsavebox{\secondexample}
+\sbox{\secondexample}{
+    \examplefunction{1}
+}
 
-            \node[] at (0, 0) {$\hat{y}=\beta_0+\beta_1x$};
-        }
+\def\nodesize{14pt}
+\colorlet{nodefill}{teal!40}
 
-        \visible<2-3>{
-            \node[] at (0, 0) {$\hat{y}=wx+b$};
-        }
-        \visible<2-5>{
-            \artificialneuron{(0, 1.5)}{n}{0}
-            \node[] (x) at (-1.5, 1.5) {$x$};
-            \node[] (b) at (0, 2.5) {$b$};
-            \node[] (y) at (1.5, 1.5) {$\hat{y}$};
 
-            \draw[->] (x) -- (n) node [midway, above] {$w$};
-            \draw[->] (b) -- (n);
-            \draw[->] (n) -- (y);
+\newcommand{\highlightedneuron}[4]{
+    \node[
+        circle,
+        draw=#4,
+        fill=nodefill,
+        minimum size=\nodesize,
+        inner sep=0pt
+    ] (#2) at #1 {};
+}
+
+\newcommand{\artificialneuron}[3]{
+    \highlightedneuron{#1}{#2}{#3}{black}
+}
+
+\def\spacing{-0.1cm}
+
+% \begin{frame}{Deep learning: Artificial neural networks}
+%     \centering
+%     \begin{tikzpicture}
+%         \node[] at (-5, 3) {};
+%         \node[] at (5, -4.5) {};
+
+%         \visible<1>{
+%             \artificialneuron{(0, 1.5)}{n}{0}
+%             \node[] (x) at (-1.5, 1.5) {$x$};
+%             \node[] (b) at (0, 2.5) {$\beta_0$};
+%             \node[] (y) at (1.5, 1.5) {$\hat{y}$};
+
+%             \draw[->] (x) -- (n) node [midway, above] {$\beta_1$};
+%             \draw[->] (b) -- (n);
+%             \draw[->] (n) -- (y);
+
+%             \node[] at (0, 0) {$\hat{y}=\beta_0+\beta_1x$};
+%         }
+
+%         \visible<2-3>{
+%             \node[] at (0, 0) {$\hat{y}=wx+b$};
+%         }
+%         \visible<2-5>{
+%             \artificialneuron{(0, 1.5)}{n}{0}
+%             \node[] (x) at (-1.5, 1.5) {$x$};
+%             \node[] (b) at (0, 2.5) {$b$};
+%             \node[] (y) at (1.5, 1.5) {$\hat{y}$};
+
+%             \draw[->] (x) -- (n) node [midway, above] {$w$};
+%             \draw[->] (b) -- (n);
+%             \draw[->] (n) -- (y);
+%         }
+%         \visible<3>{
+%             \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+
+%             \draw[very thick, blue!60] (-2, -3.5) -- (2, -1.75);
+
+%             \node[anchor=north] at (0, -4.1) {x};
+%             \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+%         }
+%         \visible<4>{
+%             \node[] at (0, 0) {$\hat{y}=\dfrac{e^{wx+b}}{1+e^{wx+b}}$};
+
+%             \node[anchor=south, font=\footnotesize\selectfont] at (0, -1.5) {Sigmoid};
+
+%             \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+%             \draw[very thick, blue!60, smooth] (-2, -3.5) -- (-1, -3.5) to[in=180, out=0] (1, -1.75) -- (2, -1.75);
+
+%             \node[anchor=north] at (0, -4.1) {x};
+%             \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+%         }
+%         \visible<5>{
+%             \node[] at (0, 0) {$\hat{y}=max(0, wx+b)$};
+
+%             \node[anchor=south, font=\footnotesize\selectfont] at (0, -1.5) {Rectified Linear Unit (ReLU)};
+
+%             \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+%             \draw[very thick, blue!60] (-2, -3.5) -- (0, -3.5) -- (2, -1.75);
+
+%             \node[anchor=north] at (0, -4.1) {x};
+%             \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+%         }
+%         \visible<6>{
+%             \artificialneuron{(0, 1.5)}{n}{0}
+
+%             \node[] (x0) at (-1.5, 2) {$x_0$};
+%             \node[] (x1) at (-1.5, 1) {$x_1$};
+%             \node[] (b) at (0, 2.5) {$b$};
+%             \node[] (y) at (1.5, 1.5) {$\hat{y}$};
+%             \node[] at (0, 0) {$\hat{y}=max(0, w_0x_0+w_1x_1+b)$};
+
+%             \draw[->] (x0) -- (n) node [midway, above] {$w_0$};
+%             \draw[->] (x1) -- (n) node [midway, below] {$w_1$};
+%             \draw[->] (b) -- (n);
+%             \draw[->] (n) -- (y);
+
+%             \node[] at (0, -2.75) {
+%                 \usebox{\threedimensional}
+%             };
+%         }
+%         \visible<7>{
+%             \artificialneuron{(0, 2)}{n0}{0}
+%             \artificialneuron{(0, 1)}{n1}{0}
+
+%             \node[] (x) at (-1.5, 1.5) {$x$};
+%             \node[] (y) at (1.5, 1.5) {$\hat{y}$};
+%             \node[] at (0, 0) {$\hat{y}=max(0, w_0x+b_0)+max(0, w_1x+b_1)$};
+
+%             \draw[->] (x) -- (n0) node [midway, above] {$w_0$};
+%             \draw[->] (x) -- (n1) node [midway, below] {$w_1$};
+%             \draw[->] (n0) -- (y);
+%             \draw[->] (n1) -- (y);
+
+%             \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
+%             \draw[very thick, blue!60] (-2, -3.5) -- (-0.66, -3.5) -- (0.66, -2.25) -- (2, -3);
+
+%             \node[anchor=north] at (0, -4.1) {x};
+%             \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+%         }
+%         \visible<8>{
+%             \node[] at (0, 0) {
+%                 \usebox{\polynomialapprox}
+%             };
+%             \node[] at (0, -2.5) {
+%                 Piecewise linear function
+%             };
+%         }
+%         \visible<9>{
+%             \node[align=center, text width=10cm] at (0, -0.75) {
+%                 \textbf{Universal approximation theorem:}\\
+%                 \begin{quotation}
+%                     \centering
+%                     "Any relationship that can be described with a polynomial function can be approximated by a neural network with a single hidden layer."
+%                 \end{quotation}
+%             };
+%         }
+%         \visible<10,12-17>{
+%             \artificialneuron{(0, 2)}{n00}{0}
+%             \artificialneuron{(0, 1)}{n01}{0}
+%         }
+%         \visible<10-12>{
+%             \node[
+%                 circle,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x) at (-3, 1.5) {\footnotesize{$x$}};
+%         }
+%         \visible<10-11>{
+%             \node[
+%                 circle,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (3, 1.5) {\footnotesize{$\hat{y}$}};
+
+%             \draw[->] (x) -- (n00) node [midway, above] {$w_0$};
+%             \draw[->] (x) -- (n01) node [midway, below] {$w_1$};
+
+%             \draw[->] (n00) -- (y);
+%             \draw[->] (n01) -- (y);
+
+%             \node[anchor=north] (formula) at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} = max(0, w_0x+b_0)+max(0, w_1x+b_1)\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<11>{
+%             \highlightedneuron{(0, 2)}{n00}{0}{red}
+%             \highlightedneuron{(0, 1)}{n01}{0}{orange}
+%             \node[minimum height=0.4cm, minimum width=1.55cm, draw=red] at ($ (formula) - (0.64, 0) $) {};
+%             \node[minimum height=0.4cm, minimum width=1.55cm, draw=orange] at ($ (formula) + (1.1, 0) $) {};
+%         }
+%         \visible<13-16>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x) at (-3, 1.5) {\footnotesize{$x$}};
+%         }
+%         \visible<12-14>{
+%             \draw[->] (x) -- (n00) node [midway, above] {$w^0_0$};
+%             \draw[->] (x) -- (n01) node [midway, below] {$w^0_1$};
+
+%             \draw[->] (n00) -- (y) node [midway, above] {$w^1_0$};
+%             \draw[->] (n01) -- (y) node [midway, below] {$w^1_1$};
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} = max(0, w^1_0*max(0, w^0_0*x+b^0_0)+w^1_1*max(0, w^0_1*x+b^0_1)+b^1_0)\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<12-19>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (3, 1.5) {\footnotesize{$\hat{y}$}};
+%         }
+%         \visible<14>{
+%             \node[text depth=0] at (-3, 0.3) {\textcolor{red}{Input}};
+%             \node[text depth=0] at (0, 0.3) {\textcolor{red}{Hidden}};
+%             \node[text depth=0] at (3, 0.3) {\textcolor{red}{Output}};
+%         }
+%         \visible<15>{
+%             \node[] at (0, -2.5) {
+%                 \usebox{\firstexample}
+%             };
+%             \draw[->] (x) -- (n00) node [midway, above] {$-2$};
+%             \draw[->] (x) -- (n01) node [midway, below] {$5$};
+
+%             \draw[->] (n00) -- (y) node [midway, above] {$1$};
+%             \draw[->] (n01) -- (y) node [midway, below] {$-4$};
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} = max(0, 1*max(0, (-2)*x+3)+(-4)*max(0, 5*x+(-6))+7)\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<16>{
+%             \node[] at (0, -2.5) {
+%                 \usebox{\secondexample}
+%             };
+%             \draw[->] (x) -- (n00) node [midway, above] {$6$};
+%             \draw[->] (x) -- (n01) node [midway, below] {$-3$};
+
+%             \draw[->] (n00) -- (y) node [midway, above] {$-7$};
+%             \draw[->] (n01) -- (y) node [midway, below] {$4$};
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} = max(0, -7*max(0, 6*x+(-5))+4*max(0, (-3)*x+2)-1)\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<17-19>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x0) at (-3, 2) {\footnotesize{$x_0$}};
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x1) at (-3, 1) {\footnotesize{$x_1$}};
+%         }
+%         \visible<17>{
+%             \draw[->] (x0) -- (n00);
+%             \draw[->] (x0) -- (n01);
+%             \draw[->] (x1) -- (n00);
+%             \draw[->] (x1) -- (n01);
+%             \draw[->] (n00) -- (y);
+%             \draw[->] (n01) -- (y);
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+%                         & &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+%                         & &&b_1)&&\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<18>{
+%             \artificialneuron{(0, 2.5)}{n00}{0}
+%             \artificialneuron{(0, 1.5)}{n01}{0}
+%             \artificialneuron{(0, 0.5)}{n02}{0}
+
+%             \draw[->] (x0) -- (n00);
+%             \draw[->] (x0) -- (n01);
+%             \draw[->] (x0) -- (n02);
+%             \draw[->] (x1) -- (n00);
+%             \draw[->] (x1) -- (n01);
+%             \draw[->] (x1) -- (n02);
+
+%             \draw[->] (n00) -- (y);
+%             \draw[->] (n01) -- (y);
+%             \draw[->] (n02) -- (y);
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+%                         & &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+%                         & &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
+%                         & &&b_1)&&\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<19>{
+%             \artificialneuron{(-1, 2.5)}{n00}{0}
+%             \artificialneuron{(-1, 1.5)}{n01}{0}
+%             \artificialneuron{(-1, 0.5)}{n02}{0}
+
+%             \artificialneuron{(1, 2.5)}{n10}{0}
+%             \artificialneuron{(1, 1.5)}{n11}{0}
+%             \artificialneuron{(1, 0.5)}{n12}{0}
+
+%             \draw[->] (x0) -- (n00);
+%             \draw[->] (x0) -- (n01);
+%             \draw[->] (x0) -- (n02);
+%             \draw[->] (x1) -- (n00);
+%             \draw[->] (x1) -- (n01);
+%             \draw[->] (x1) -- (n02);
+
+%             \draw[->] (n00) -- (n10);
+%             \draw[->] (n00) -- (n11);
+%             \draw[->] (n00) -- (n12);
+%             \draw[->] (n01) -- (n10);
+%             \draw[->] (n01) -- (n11);
+%             \draw[->] (n01) -- (n12);
+%             \draw[->] (n02) -- (n10);
+%             \draw[->] (n02) -- (n11);
+%             \draw[->] (n02) -- (n12);
+
+%             \draw[->] (n10) -- (y);
+%             \draw[->] (n11) -- (y);
+%             \draw[->] (n12) -- (y);
+
+%             \node[anchor=north] at (0, 0) {\tiny{
+%                 \begin{math}
+%                     \begin{alignedat}{5}
+%                         \hat{y} &= max(0, &&w^2_{0,0}*max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+%                         & && &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+%                         & && &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
+%                         & && &&b_{1,0})+\\[\spacing]
+%                         & &&w^2_{1,0}*max(0, &&w^1_{0,1}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+%                         & && &&w^1_{1,1}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+%                         & && &&w^1_{2,1}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
+%                         & && &&b_{1,1})+\\[\spacing]
+%                         & &&w^2_{2,0}*max(0, &&w^1_{0,2}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
+%                         & && &&w^1_{1,2}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
+%                         & && &&w^1_{2,2}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
+%                         & && &&b_{1,2})+\\[\spacing]
+%                         & &&b_2)&&\\
+%                     \end{alignedat}
+%                 \end{math}
+%             }};
+%         }
+%         \visible<20>{
+%             \node[text width=10.5cm] at (0, 0) {
+%                 \underline{Artificial neural networks}: Combines artificial neurons, simple computational units that compute a non-linear function of their inputs, in a computational graph
+%                 \begin{itemize}
+%                     \item Can approximate arbitrarily complex polynomial functions (given enough neurons)
+%                     \item Organized in layers. We can expand a model in width (e.g. more neurons per layer) or depth (e.g. more layers)
+%                 \end{itemize}
+%             };
+%         }
+%     \end{tikzpicture}
+% \end{frame}
+
+% \begin{frame}{Deep learning: Loss functions}
+%     \begin{tikzpicture}
+%         \node[draw=black] at (-5.25, 3.5) {};
+%         \node[] at (5.25, -3.5) {};
+
+%         \visible<1-4>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (2, 1.5) {\footnotesize{$\hat{y}$}};
+%         }
+%         \visible<1-5>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x0) at (-4, 2) {\footnotesize{$x_0$}};
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (x1) at (-4, 1) {\footnotesize{$x_1$}};
+
+%             \artificialneuron{(-2, 2.5)}{n00}{0}
+%             \artificialneuron{(-2, 1.5)}{n01}{0}
+%             \artificialneuron{(-2, 0.5)}{n02}{0}
+
+%             \artificialneuron{(0, 2.5)}{n10}{0}
+%             \artificialneuron{(0, 1.5)}{n11}{0}
+%             \artificialneuron{(0, 0.5)}{n12}{0}
+
+
+%             \draw[->] (x0) -- (n00);
+%             \draw[->] (x0) -- (n01);
+%             \draw[->] (x0) -- (n02);
+%             \draw[->] (x1) -- (n00);
+%             \draw[->] (x1) -- (n01);
+%             \draw[->] (x1) -- (n02);
+
+%             \draw[->] (n00) -- (n10);
+%             \draw[->] (n00) -- (n11);
+%             \draw[->] (n00) -- (n12);
+%             \draw[->] (n01) -- (n10);
+%             \draw[->] (n01) -- (n11);
+%             \draw[->] (n01) -- (n12);
+%             \draw[->] (n02) -- (n10);
+%             \draw[->] (n02) -- (n11);
+%             \draw[->] (n02) -- (n12);
+
+%             \draw[->] (n10) -- (y);
+%             \draw[->] (n11) -- (y);
+%             \draw[->] (n12) -- (y);
+%         }
+%         \visible<2-5>{
+%             \node[anchor=east] at (x0.west) {-1.52};
+%             \node[anchor=east] at (x1.west) {0.77};
+%             \node[anchor=west] (pred) at (y.east) {0.92};
+%         }
+%         \visible<3-5>{
+%             \node[align=center, anchor=south] (true) at ($ (pred.south) + (2, 0) $) {
+%                 \underline{y}\\
+%                 1.14
+%             };
+%         }
+%         \visible<4-5>{
+%             \node[] (loss) at ($ (pred.south)!0.5!(true.south) - (0, 1) $) {
+%                 $(y - \hat{y})^2$
+%             };
+%             \draw[->] (pred.south) -- (loss);
+%             \draw[->] (true.south) -- (loss);
+%             \node[text=red] (value) at ($ (loss.south) - (0, 0.75) $) {
+%                 0.05
+%             };
+%             \draw[red,->] (loss.south) -- (value.north);
+%         }
+%         \visible<5>{
+%             \node[
+%                 circle,
+%                 draw=orange,
+%                 thick,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (2, 1.5) {\footnotesize{$\hat{y}$}};
+
+%             \draw[dashed, stealth-stealth] (y) |- (loss);
+%         }
+%         \visible<6-7>{
+%             \PythonInputNode{1}{(-4.2, 2)}{glmnode}{9cm}{8}{
+%                 from tensorflow.keras.layers import Input, Dense^^J
+%                 from tensorflow.keras import Model^^J
+%                 ^^J
+%                 inputs = Input(shape=(2,))^^J
+%                 hidden1 = Dense(units=3, activation='relu')(inputs)^^J
+%                 hidden2 = Dense(units=3, activation='relu')(hidden1)^^J
+%                 outputs = Dense(units=1, activation=?)(hidden2)^^J
+%                 ^^J
+%                 model = Model(inputs, outputs)^^J
+%                 model.compile(loss=?)^^J
+%             }
+%         }
+%         \visible<7>{
+%             \node[minimum height=0.25cm, minimum width=0.2cm, draw=red, thick] at (1.44, -0.18) {};
+%             \node[minimum height=0.25cm, minimum width=0.2cm, draw=red, thick] at (-1.07, -1.15) {};
+%         }
+%         \visible<8-14>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (-1.5, 2) {\footnotesize{$\hat{y}$}};
+%         }
+%         \visible<8>{
+%             \node[font=\footnotesize\selectfont] (true) at ($ (y) + (3, 0) $) {
+%                 $y \in \mathbb{R}$
+%             };
+%             \node[font=\footnotesize\selectfont] (loss) at ($ (y) + (1, -2) $) {
+%                 $(y - \hat{y})^2$
+%             };
+%             \node[] at ($ (y)!0.5!(true) + (0, 1) $) {
+%                 \textbf{Regression}
+%             };
+
+%             \draw[-stealth] (y) -- (loss);
+%             \draw[-stealth] (true) -- (loss);
+
+%             \PythonInputNode{2}{(-4.2, -1.5)}{glmnode}{9cm}{7}{
+%                 ...^^J
+%                 outputs = Dense(units=1, activation=None)(...)^^J
+%                 ...^^J
+%                 model.compile(loss='mean_squared_error')^^J
+%             }
+%         }
+%         \visible<9>{
+%             \node[font=\footnotesize\selectfont] (true) at ($ (y) + (3, 0) $) {
+%                 $y \in \{0, 1\}$
+%             };
+%             \node[font=\footnotesize\selectfont] (loss) at ($ (y) + (1, -2) $) {
+%                 $-(y * log(\hat{y}) + (1 - y) * log(1 - \hat{y}))$
+%             };
+%             \node[] at ($ (y)!0.5!(true) + (0, 1) $) {
+%                 \textbf{Binary classification}
+%             };
+
+%             \draw[-stealth] (y) -- (loss);
+%             \draw[-stealth] (true) -- (loss);
+
+%             \PythonInputNode{3}{(-4.2, -1.5)}{glmnode}{9cm}{7}{
+%                 ...^^J
+%                 outputs = Dense(units=1, activation='sigmoid')(...)^^J
+%                 ...^^J
+%                 model.compile(loss='binary_crossentropy')^^J
+%             }
+%         }
+%         \visible<10>{
+%             \node[font=\footnotesize\selectfont] (true) at ($ (y) + (3, 0) $) {
+%                 $y \in \{cat, dog, bat\}$
+%             };
+%         }
+%         \visible<11>{
+%             \node[font=\footnotesize\selectfont, ampersand replacement=\&] (true) at ($ (y) + (3, 0) $) {
+%                 {\tiny
+%                     \begin{tabular}{|c|c|}
+%                         \hline
+%                         $\mathbf{x_0}$ & \textbf{y}\\
+%                         \hline
+%                         & cat\\
+%                         & dog\\
+%                         & bat\\
+%                         & dog\\
+%                         \hline
+%                     \end{tabular}
+%                 }
+%             };
+%         }
+%         \visible<12-14>{
+%             \node[font=\footnotesize\selectfont, ampersand replacement=\&, inner sep=0pt] (true) at ($ (y) + (3, 0) $) {
+%                 {\tiny
+%                     \begin{tabular}{|c|c|c|c|c|}
+%                         \hline
+%                         $\mathbf{x_0}$ & \textbf{cat} & \textbf{dog} & \textbf{bat} \\
+%                         \hline
+%                         &1&0&1\\
+%                         &0&1&0\\
+%                         &0&0&1\\
+%                         &0&1&0\\
+%                         \hline
+%                     \end{tabular}
+%                 }
+%             };
+%         }
+%         \visible<13-14>{
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y) at (y) {\footnotesize{$\hat{y}_1$}};
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y0) at ($ (y) - (0.75, 0) $) {\footnotesize{$\hat{y}_0$}};
+%             \node[
+%                 circle,
+%                 draw=black,
+%                 fill=nodefill,
+%                 minimum size=\nodesize,
+%                 inner sep=0pt,
+%                 text depth=0
+%             ] (y2) at ($ (y) + (0.75, 0) $) {\footnotesize{$\hat{y}_2$}};
+%         }
+%         \visible<10-13>{
+%             \node[] at ($ (y)!0.5!(true) + (0, 1) $) {
+%                 \textbf{Multiclass classification}
+%             };
+%         }
+%         \visible<14>{
+%             \node[font=\footnotesize\selectfont] (loss) at ($ (y) + (1, -2) $) {
+%                 $-\sum_{i=0}^N y_i * log(\hat{y}_i)$
+%             };
+%             \draw[-stealth] (y) -- (loss);
+%             \draw[-stealth] (y0) -- (loss);
+%             \draw[-stealth] (y2) -- (loss);
+%             \draw[-stealth] (true) -- (loss);
+
+%             \PythonInputNode{3}{(-4.2, -1.5)}{glmnode}{9cm}{7}{
+%                 ...^^J
+%                 outputs = Dense(units=1, activation='softmax')(...)^^J
+%                 ...^^J
+%                 model.compile(loss='categorical_crossentropy')^^J
+%             }
+%         }
+%         \visible<15>{
+%             \node[text width=10cm] at (0, 0) {
+%                 \underline{Loss functions}: Behaves for neural networks as any other statistical learning model. However, important to \textbf{configure the final layer} correctly\\
+%                 \begin{itemize}
+%                     \item Regression: Mean squared error
+%                     \begin{itemize}
+%                         \item No activation
+%                     \end{itemize}
+%                     \item Binary classification: Binary cross-entropy
+%                     \begin{itemize}
+%                         \item Sigmoid activation
+%                     \end{itemize}
+%                     \item Multiclass classification: Categorical cross-entropy
+%                     \begin{itemize}
+%                         \item Softmax activation
+%                     \end{itemize}
+%                 \end{itemize}
+%             };
+%         }
+%     \end{tikzpicture}
+% \end{frame}
+
+\newcommand{\mseloss}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.5cm,
+            width=5.5cm,
+            xmajorticks=false,
+            ymajorticks=false,
+            xlabel=$\beta$,
+            ylabel=$MSE$,
+            xmin=-1,
+            xmax=1,
+            ymin=-0.2,
+            ymax=1
+        ]
+            \addplot[
+                thick,
+                red,
+                domain=-1:1,
+                samples=100
+            ] (x, {x^2});
+
+            \ifnum#1=1
+                \addplot[
+                    only marks,
+                    mark=*,
+                    red
+                ] coordinates {
+                    (-0.5, 0.25)
+                };
+                \draw[-stealth] (axis cs: -0.45, 0.25) -- (axis cs: -0.33, 0.15);
+            \fi
+            \ifnum#1=2
+                \addplot[
+                    only marks,
+                    mark=*,
+                    red
+                ] coordinates {
+                    (0, 0)
+                };
+                \node[anchor=north, font=\small\selectfont] at (axis cs: 0, 0) {
+                    Global optimum
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\msetrace}
+\sbox{\msetrace}{
+    \mseloss{0}
+}
+\newsavebox{\mseinit}
+\sbox{\mseinit}{
+    \mseloss{1}
+}
+\newsavebox{\mseconverged}
+\sbox{\mseconverged}{
+    \mseloss{2}
+}
+
+\begin{frame}{Deep learning: Training}
+    \begin{tikzpicture}
+        \node[draw=black] at (5.25, -3.5) {};
+        \node[draw=black] at (-5.25, 3.5) {};
+
+        \visible<1-2>{
+            \node[
+                circle,
+                draw=black,
+                fill=nodefill,
+                minimum size=\nodesize,
+                inner sep=0pt,
+                text depth=0
+            ] (x0) at (-3, 2.5) {\footnotesize{$x_0$}};
+            \node[
+                circle,
+                draw=black,
+                fill=nodefill,
+                minimum size=\nodesize,
+                inner sep=0pt,
+                text depth=0
+            ] (x1) at (-3, 1.5) {\footnotesize{$x_1$}};
+
+            \artificialneuron{(-1, 3)}{n00}{0}
+            \artificialneuron{(-1, 2)}{n01}{0}
+            \artificialneuron{(-1, 1)}{n02}{0}
+
+            \artificialneuron{(1, 3)}{n10}{0}
+            \artificialneuron{(1, 2)}{n11}{0}
+            \artificialneuron{(1, 1)}{n12}{0}
+
+            \node[
+                circle,
+                draw=black,
+                fill=nodefill,
+                minimum size=\nodesize,
+                inner sep=0pt,
+                text depth=0
+            ] (y) at (3, 2) {\footnotesize{$\hat{y}$}};
+
+            \alert<2>{
+                \draw[->] (x0) -- (n00);
+                \draw[->] (x0) -- (n01);
+                \draw[->] (x0) -- (n02);
+                \draw[->] (x1) -- (n00);
+                \draw[->] (x1) -- (n01);
+                \draw[->] (x1) -- (n02);
+
+                \draw[->] (n00) -- (n10);
+                \draw[->] (n00) -- (n11);
+                \draw[->] (n00) -- (n12);
+                \draw[->] (n01) -- (n10);
+                \draw[->] (n01) -- (n11);
+                \draw[->] (n01) -- (n12);
+                \draw[->] (n02) -- (n10);
+                \draw[->] (n02) -- (n11);
+                \draw[->] (n02) -- (n12);
+
+                \draw[->] (n10) -- (y);
+                \draw[->] (n11) -- (y);
+                \draw[->] (n12) -- (y);
+
+                \draw[->] ($ (n00.north) + (0, 0.3) $) -- (n00.north);
+                \draw[->] ($ (n01.north) + (0, 0.3) $) -- (n01.north);
+                \draw[->] ($ (n02.north) + (0, 0.3) $) -- (n02.north);
+                \draw[->] ($ (n10.north) + (0, 0.3) $) -- (n10.north);
+                \draw[->] ($ (n11.north) + (0, 0.3) $) -- (n11.north);
+                \draw[->] ($ (n12.north) + (0, 0.3) $) -- (n12.north);
+                \draw[->] ($ (y.north) + (0, 0.3) $) -- (y.north);
+            }
+
+            \node[anchor=north] at (0, 0.5) {\tiny{
+                \begin{math}
+                    \begin{alignedat}{5}
+                        \hat{y} &= max(0, &&\alert<2>{w^2_{0,0}}*max(0, &&\alert<2>{w^1_{0,0}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{1,0}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{2,0}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+                        & && &&\alert<2>{b_{1,0}})+\\[\spacing]
+                        & &&\alert<2>{w^2_{1,0}}*max(0, &&\alert<2>{w^1_{0,1}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{1,1}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{2,1}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+                        & && &&\alert<2>{b_{1,1}})+\\[\spacing]
+                        & &&\alert<2>{w^2_{2,0}}*max(0, &&\alert<2>{w^1_{0,2}}*max(0, \alert<2>{w^0_{0,0}}*x_0+\alert<2>{w^0_{1,0}}*x_{1}+\alert<2>{b_{0,0}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{1,2}}*max(0, \alert<2>{w^0_{0,1}}*x_0+\alert<2>{w^0_{1,1}}*x_{1}+\alert<2>{b_{0,1}})+\\[\spacing]
+                        & && &&\alert<2>{w^1_{2,2}}*max(0, \alert<2>{w^0_{0,2}}*x_0+\alert<2>{w^0_{1,2}}*x_{1}+\alert<2>{b_{0,2}})+\\[\spacing]
+                        & && &&\alert<2>{b_{1,2}})+\\[\spacing]
+                        & &&\alert<2>{b_2})&&\\
+                    \end{alignedat}
+                \end{math}
+            }};
         }
         \visible<3>{
-            \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
-
-            \draw[very thick, blue!60] (-2, -3.5) -- (2, -1.75);
-
-            \node[anchor=north] at (0, -4.1) {x};
-            \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+            \node[] at (0, 0) {
+                \usebox{\msetrace}
+            };
         }
         \visible<4>{
-            \node[] at (0, 0) {$\hat{y}=\dfrac{e^x}{1+e^x}$};
-
-            \node[anchor=south, font=\footnotesize\selectfont] at (0, -1.5) {Sigmoid};
-
-            \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
-            \draw[very thick, blue!60, smooth] (-2, -3.5) -- (-1, -3.5) to[in=180, out=0] (1, -1.75) -- (2, -1.75);
-
-            \node[anchor=north] at (0, -4.1) {x};
-            \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+            \node[] at (0, 0) {
+                \usebox{\mseinit}
+            };
         }
-        \visible<5>{
-            \node[] at (0, 0) {$\hat{y}=max(0, wx+b)$};
-
-            \node[anchor=south, font=\footnotesize\selectfont] at (0, -1.5) {Rectified Linear Unit (ReLU)};
-
-            \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
-            \draw[very thick, blue!60] (-2, -3.5) -- (0, -3.5) -- (2, -1.75);
-
-            \node[anchor=north] at (0, -4.1) {x};
-            \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
+        \visible<5-6>{
+            \node[] at (0, 0) {
+                \usebox{\mseconverged}
+            };
         }
         \visible<6>{
-            \artificialneuron{(0, 2)}{n0}{0}
-            \artificialneuron{(0, 1)}{n1}{0}
-
-            \node[] (x) at (-1.5, 1.5) {$x$};
-            \node[] (y) at (1.5, 1.5) {$\hat{y}$};
-            \node[] at (0, 0) {$\hat{y}=max(0, w_0x+b_0)+max(0, w_1x+b_1)$};
-
-            \draw[->] (x) -- (n0) node [midway, above] {$w_0$};
-            \draw[->] (x) -- (n1) node [midway, below] {$w_1$};
-            \draw[->] (n0) -- (y);
-            \draw[->] (n1) -- (y);
-
-            \draw[] (-2, -1.5) -- (2, -1.5) -- (2, -4) -- (-2, -4) -- (-2, -1.5);
-            \draw[very thick, blue!60] (-2, -3.5) -- (-0.66, -3.5) -- (0.66, -2.25) -- (2, -3);
-
-            \node[anchor=north] at (0, -4.1) {x};
-            \node[anchor=south, rotate=90] at (-2.1, -2.75) {$\hat{y}$};
-        }
-        \visible<7>{
-            \node[] at (0, 0) {
-                \usebox{\polynomialapprox}
+            \node[align=left] at (0, -3) {
+                \textbullet $|\beta| \rightarrow 10^{6}-10^{12}$\\
+                \textbullet $\beta_x \implies \beta_y$
             };
-            \node[] at (0, -2.5) {
-                Piecewise linear function
+        }
+        \visible<7-8>{
+            \node[inner sep=0pt, draw=black] at (0, 0) {
+                \includegraphics[width=6cm]{data/backprop.png}
             };
         }
         \visible<8>{
-            \node[align=center, text width=10cm] at (0, -0.75) {
-                \textbf{Universal approximation theorem:}\\
-                \begin{quotation}
-                    \centering
-                    "Any relationship that can be described with a polynomial function can be approximated by a neural network with a single hidden layer."
-                \end{quotation}
-            };
-        }
-        \visible<9>{
-            \artificialneuron{(0, 1.5)}{n}{0}
-
-            \node[] (x0) at (-1.5, 2) {$x_0$};
-            \node[] (x1) at (-1.5, 1) {$x_1$};
-            \node[] (b) at (0, 2.5) {$b$};
-            \node[] (y) at (1.5, 1.5) {$\hat{y}$};
-            \node[] at (0, 0) {$\hat{y}=max(0, w_0x_0+w_1x_1+b)$};
-
-            \draw[->] (x0) -- (n) node [midway, above] {$w_0$};
-            \draw[->] (x1) -- (n) node [midway, below] {$w_1$};
-            \draw[->] (b) -- (n);
-            \draw[->] (n) -- (y);
-
-            \node[] at (0, -2.75) {
-                \usebox{\threedimensional}
-            };
-        }
-        \visible<10-13>{
-            \artificialneuron{(0, 2)}{n00}{0}
-            \artificialneuron{(0, 1)}{n01}{0}
-        }
-        \visible<10>{
-            \node[
-                circle,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x) at (-3, 1.5) {\footnotesize{$x$}};
-
-            \node[
-                circle,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (y) at (3, 1.5) {\footnotesize{$\hat{y}$}};
-
-            \draw[->] (x) -- (n00) node [midway, above] {$w_0$};
-            \draw[->] (x) -- (n01) node [midway, below] {$w_1$};
-
-            \draw[->] (n00) -- (y);
-            \draw[->] (n01) -- (y);
-
-            \def\spacing{-0.1cm}
-            \node[anchor=north] at (0, 0) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} = max(0, w_0x+b_0)+max(0, w_1x+b_1)\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<11-12>{
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x) at (-3, 1.5) {\footnotesize{$x$}};
-
-            \draw[->] (x) -- (n00) node [midway, above] {$w^0_0$};
-            \draw[->] (x) -- (n01) node [midway, below] {$w^0_1$};
-
-            \def\spacing{-0.1cm}
-            \node[anchor=north] at (0, 0) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} = max(0, w^1_0*max(0, w^0_0*x+b^0_0)+w^1_1*max(0, w^0_1*x+b^0_1)+b^1_0)\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<11-15>{
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (y) at (3, 1.5) {\footnotesize{$\hat{y}$}};
-        }
-        \visible<11-12>{
-            \draw[->] (n00) -- (y) node [midway, above] {$w^1_0$};
-            \draw[->] (n01) -- (y) node [midway, below] {$w^1_1$};
-        }
-        \visible<12>{
-            \node[text depth=0] at (-3, 0.3) {\textcolor{red}{Input}};
-            \node[text depth=0] at (0, 0.3) {\textcolor{red}{Hidden}};
-            \node[text depth=0] at (3, 0.3) {\textcolor{red}{Output}};
-        }
-        \visible<13-15>{
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x0) at (-3, 2) {\footnotesize{$x_0$}};
-            \node[
-                circle,
-                draw=black,
-                fill=nodefill,
-                minimum size=\nodesize,
-                inner sep=0pt,
-                text depth=0
-            ] (x1) at (-3, 1) {\footnotesize{$x_1$}};
-        }
-        \visible<13>{
-            \draw[->] (x0) -- (n00);
-            \draw[->] (x0) -- (n01);
-            \draw[->] (x1) -- (n00);
-            \draw[->] (x1) -- (n01);
-
-            \node[anchor=north] at (0, 0) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
-                        & &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
-                        & &&b_1)&&\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<14>{
-            \artificialneuron{(0, 2.5)}{n00}{0}
-            \artificialneuron{(0, 1.5)}{n01}{0}
-            \artificialneuron{(0, 0.5)}{n02}{0}
-
-            \draw[->] (x0) -- (n00);
-            \draw[->] (x0) -- (n01);
-            \draw[->] (x0) -- (n02);
-            \draw[->] (x1) -- (n00);
-            \draw[->] (x1) -- (n01);
-            \draw[->] (x1) -- (n02);
-
-            \draw[->] (n00) -- (y);
-            \draw[->] (n01) -- (y);
-            \draw[->] (n02) -- (y);
-
-            \node[anchor=north] at (0, 0) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} &= max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
-                        & &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
-                        & &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
-                        & &&b_1)&&\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<15>{
-            \artificialneuron{(-1, 2.5)}{n00}{0}
-            \artificialneuron{(-1, 1.5)}{n01}{0}
-            \artificialneuron{(-1, 0.5)}{n02}{0}
-
-            \artificialneuron{(1, 2.5)}{n10}{0}
-            \artificialneuron{(1, 1.5)}{n11}{0}
-            \artificialneuron{(1, 0.5)}{n12}{0}
-
-            \draw[->] (x0) -- (n00);
-            \draw[->] (x0) -- (n01);
-            \draw[->] (x0) -- (n02);
-            \draw[->] (x1) -- (n00);
-            \draw[->] (x1) -- (n01);
-            \draw[->] (x1) -- (n02);
-
-            \draw[->] (n00) -- (n10);
-            \draw[->] (n00) -- (n11);
-            \draw[->] (n00) -- (n12);
-            \draw[->] (n01) -- (n10);
-            \draw[->] (n01) -- (n11);
-            \draw[->] (n01) -- (n12);
-            \draw[->] (n02) -- (n10);
-            \draw[->] (n02) -- (n11);
-            \draw[->] (n02) -- (n12);
-
-            \draw[->] (n10) -- (y);
-            \draw[->] (n11) -- (y);
-            \draw[->] (n12) -- (y);
-
-            \node[anchor=north] at (0, 0) {\tiny{
-                \begin{math}
-                    \begin{alignedat}{5}
-                        \hat{y} &= max(0, &&w^2_{0,0}*max(0, &&w^1_{0,0}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
-                        & && &&w^1_{1,0}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
-                        & && &&w^1_{2,0}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
-                        & && &&b_{1,0})+\\[\spacing]
-                        & &&w^2_{1,0}*max(0, &&w^1_{0,1}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
-                        & && &&w^1_{1,1}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
-                        & && &&w^1_{2,1}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
-                        & && &&b_{1,1})+\\[\spacing]
-                        & &&w^2_{2,0}*max(0, &&w^1_{0,2}*max(0, w^0_{0,0}*x_0+w^0_{1,0}*x_{1}+b_{0,0})+\\[\spacing]
-                        & && &&w^1_{1,2}*max(0, w^0_{0,1}*x_0+w^0_{1,1}*x_{1}+b_{0,1})+\\[\spacing]
-                        & && &&w^1_{2,2}*max(0, w^0_{0,2}*x_0+w^0_{1,2}*x_{1}+b_{0,2})+\\[\spacing]
-                        & && &&b_{1,2})+\\[\spacing]
-                        & &&b_2)&&\\
-                    \end{alignedat}
-                \end{math}
-            }};
-        }
-        \visible<16>{
-            \node[text width=10.5cm] at (0, 0) {
-                \underline{Artificial neural networks}: Combines artificial neurons, simple computational units that compute a non-linear function of their inputs, in a computational graph
-                \begin{itemize}
-                    \item Can approximate arbitrarily complex polynomial functions (given enough neurons)
-                    \item Neurons are organized in layers, and we expand a model in width (e.g. more neurons per layer) or depth (e.g. more layers)
-                \end{itemize}
-            };
+            \node[minimum width=2.1cm, minimum height=0.3cm, draw=red, thick] at (0.35, 1.8) {};
         }
     \end{tikzpicture}
 \end{frame}
