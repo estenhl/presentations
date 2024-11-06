@@ -5,12 +5,14 @@
 \usepackage{amsmath}
 \usepackage{emoji}
 \usepackage{pgfplots}
+\usepackage{transparent}
 \usepackage{tikz}
 
 \usepgfplotslibrary{groupplots}
 
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
+\usetikzlibrary{matrix}
 
 \title{PSY9511: Seminar 7}
 \subtitle{Deep learning for computer vision tasks}
@@ -38,16 +40,32 @@
     \begin{frame}{Outline}
         \begin{enumerate}
             \item Exercise 4
-            \item Deep learning
-            \begin{itemize}
-                \item Motivation
-                \item (Deep) neural networks
-                \item Training procedure
-            \end{itemize}
+            \item Deep learning with artificial neural networks
             \item Convolutional neural networks for computer vision
         \end{enumerate}
     \end{frame}
 
+    \def\nodesize{14pt}
+    \colorlet{nodefill}{teal!40}
+
+
+    \newcommand{\highlightedneuron}[4]{
+        \node[
+            circle,
+            draw=#4,
+            fill=nodefill,
+            minimum size=\nodesize,
+            inner sep=0pt
+        ] (#2) at #1 {};
+    }
+
+    \newcommand{\artificialneuron}[3]{
+        \highlightedneuron{#1}{#2}{#3}{black}
+    }
+
+    \def\spacing{-0.1cm}
+
     \input{sections/exercise.tex}
     \input{sections/nn.tex}
+    \input{sections/cnn.tex}
 \end{document}
