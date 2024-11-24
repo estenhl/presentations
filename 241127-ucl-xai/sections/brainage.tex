@@ -545,3 +545,344 @@
         }
     \end{tikzpicture}
 \end{frame}
+
+\colorlet{insignificant}{gray}
+\colorlet{significant}{red}
+
+\newcommand{\auctrace}[3]{
+    \draw[#3] (axis cs: #1-0.125, #2) --
+        (axis cs: #1+0.125, #2);
+    \node[
+        anchor=west,
+        font=\footnotesize\selectfont\bfseries,
+        inner sep=2pt,
+        draw=#3,
+        fill=white,
+        text=#3
+    ] at (axis cs: #1+0.125, #2) {#2};
+}
+
+\newcommand{\disorderauc}[8]{
+    \nextgroupplot[]
+        \def\column{#1}
+        \def\stage{#2}
+        \def\meanbaseline{#3}
+        \def\meanbrainage{#4}
+        \def\meanheatmap{#5}
+        \def\firstcolour{#6}
+        \def\secondcolour{#7}
+        \def\ylabel{#8}
+
+        \node[
+            anchor=south east,
+            font=\fontsize{3}{3}\selectfont,
+            text=gray,
+            inner sep=0.5pt
+        ] at (axis cs: 2.5, 0.75) {
+            0.75
+        };
+        \node[
+            anchor=south east,
+            font=\fontsize{3}{3}\selectfont,
+            text=gray,
+            inner sep=0.5pt
+        ] at (axis cs: 2.5, 0.5) {
+            0.50
+        };
+        \node[
+            anchor=south east,
+            font=\fontsize{3}{3}\selectfont,
+            text=gray,
+            inner sep=0.5pt
+        ] at (axis cs: 2.5, 0.25) {
+            0.25
+        };
+
+        \addplot[
+            only marks,
+            opacity=0.25,
+            gray
+        ] table [
+            col sep=comma,
+            x expr=(rnd*0.1) - 0.05,
+            y=\column-BL
+        ] {data/casecontrol.csv};
+
+        \node[
+            anchor=north,
+            font=\scriptsize\selectfont,
+            rotate=90
+        ] at (axis cs: 2.5, 0.5) {\ylabel};
+
+        \auctrace{0}{\meanbaseline}{insignificant}
+
+        \ifnum \stage > 0
+            \addplot[
+                only marks,
+                opacity=0.25,
+                color=\firstcolour
+            ] table [
+                col sep=comma,
+                x expr=1 + (rnd*0.1) - 0.05,
+                y=#1-BA
+            ] {data/casecontrol.csv};
+
+            \auctrace{1}{\meanbrainage}{\firstcolour}
+        \fi
+
+        \ifnum \stage > 1
+        \addplot[
+            only marks,
+            opacity=0.25,
+            color=\secondcolour
+        ] table [
+            col sep=comma,
+            x expr=2 + (rnd*0.1) - 0.05,
+            y=#1-HM
+        ] {data/casecontrol.csv};
+
+        \auctrace{2}{\meanheatmap}\secondcolour
+    \fi
+}
+
+\newcommand{\clinicalplot}[1]{
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group size=1 by 9,
+                vertical sep=0.05cm
+            },
+            width=9cm,
+            height=2.2cm,
+            xtick=\empty,
+            ytick style={draw=none},
+            ymajorgrids=true,
+            ymin=0,
+            ymax=1,
+            ytick={0.25, 0.5, 0.75},
+            yticklabels=\empty,
+            xmin=-0.3,
+            xmax=2.5,
+            clip=false
+        ]
+
+            \disorderauc{ADHD}{#1}{0.5}{0.49}{0.5}{insignificant}{insignificant}{AUC}
+            \disorderauc{ANX}{#1}{0.5}{0.56}{0.6}{insignificant}{insignificant}{}
+            \disorderauc{ASD}{#1}{0.5}{0.52}{0.5}{insignificant}{insignificant}{}
+            \disorderauc{BIP}{#1}{0.49}{0.54}{0.60}{insignificant}{significant}{}
+            \disorderauc{DEM}{#1}{0.5}{0.75}{0.81}{significant}{significant}{}
+            \disorderauc{MCI}{#1}{0.5}{0.58}{0.62}{significant}{significant}{}
+            \disorderauc{MDD}{#1}{0.49}{0.5}{0.42}{insignificant}{insignificant}{}
+            \disorderauc{MS}{#1}{0.49}{0.63}{0.87}{significant}{significant}{}
+            \disorderauc{SCZ}{#1}{0.5}{0.57}{0.65}{significant}{significant}{}
+        \end{groupplot}
+
+        \node[
+            anchor=south,
+            font=\small\selectfont,
+            text depth=0
+        ] at ($ (group c1r1.north) - (2.7, 0) $) {Baseline};
+
+        \ifnum#1>0
+            \node[
+                anchor=south,
+                font=\small\linespread{0.8}\selectfont,
+                text depth=0,
+                align=center
+            ] at ($ (group c1r1.north) + (0.04, 0) $) {Singular\\brain age};
+        \fi
+
+        \ifnum#1>1
+            \node[
+                anchor=south,
+                font=\small\linespread{0.8}\selectfont,
+                text depth=0,
+                align=center
+            ] at ($ (group c1r1.north) + (2.62, 0) $) {Spatial\\age motifs};
+        \fi
+
+        \pgfplotsforeachungrouped \name/\idx in {{Attention deficit \\ hyperactivity disorder}/1, {Anxiety disorder}/2, {Autism spectrum \\ disorder}/3, {Bipolar disorder}/4, {Dementia}/5, {Mild cognitive \\ impairment}/6, {Major depressive \\ disorder}/7, {Multiple sclerosis}/8, {Schizophrenia}/9} {
+            \node[
+                anchor=east,
+                font=\scriptsize\linespread{0.85}\selectfont,
+                text depth=0,
+                align=right
+            ] at ($ (group c1r\idx.west) - (0, 0) $) {\name};
+        }
+    \end{tikzpicture}
+}
+
+\newsavebox{\clinicalbaseline}
+\sbox{\clinicalbaseline}{
+    \clinicalplot{0}
+}
+
+\newsavebox{\clinicalbrainage}
+\sbox{\clinicalbrainage}{
+    \clinicalplot{1}
+}
+
+\newsavebox{\clinicalheatmaps}
+\sbox{\clinicalheatmaps}{
+    \clinicalplot{2}
+}
+
+\newcommand{\averageheatmap}[5]{
+    \begin{scope}[transparency group, opacity=#5]
+        \node[label={[align=center, text depth=0, font=\footnotesize\selectfont, yshift=0.1cm]below:#4}, inner sep=0pt] (#3) at (#1, #2) {
+            \includegraphics[
+                height=1.5cm,
+                trim={5.5cm 6cm 5.5cm 6cm},
+                clip
+            ] {data/averages/#3/diff.png}
+        };
+    \end{scope}
+}
+
+\begin{frame}{Explainable brain age: Results}
+
+    \begin{tikzpicture}
+        \node[draw=black] at (-5.4, 3.5) {};
+        \node[draw=black] at (5.4, -3.5) {};
+
+        \visible<1>{
+            \node[] (side) at (-3.25, 1) {
+                \includegraphics[height=2.5cm]{data/combined_sagittal.png}
+            };
+
+            \node[] at (0, 1) {
+                \includegraphics[height=2.5cm]{data/combined_axial.png}
+            };
+
+            \node[] at (3.25, 1) {
+                \includegraphics[height=2.5cm]{data/combined_coronal.png}
+            };
+            \node [
+                left color=blue,
+                right color=red,
+                transform shape,
+                draw=black,
+                minimum height=0.25cm,
+                text width=8cm,
+            ] (colorbar) at (0, -1.5){};
+            \node[font=\footnotesize\linespread{0.85}\selectfont, align=center, anchor=north] at (colorbar.south east) {
+                Older\\appearing
+            };
+            \node[font=\footnotesize\linespread{0.85}\selectfont, align=center, anchor=north] at (colorbar.south west) {
+                Younger\\appearing
+            };
+        }
+
+        \visible<2>{
+            \node[anchor=south] at (0, -3.5) {
+                \usebox{\clinicalbaseline}
+            };
+        }\visible<3>{
+            \node[anchor=south] at (0, -3.5) {
+                \usebox{\clinicalbrainage}
+            };
+        }
+        \visible<4>{
+            \node[anchor=south] at (0, -3.5) {
+                \usebox{\clinicalheatmaps}
+            };
+        }
+
+        \def\hsep{3}
+        \def\vsep{2.4}
+
+        \visible<5-7,11-13>{
+            \averageheatmap{-0.3}{0.2}{DEM}{Dementia}{1}
+        }
+        \visible<5-6,8-13>{
+            \averageheatmap{-0.3}{0.2-\vsep}{MS}{Multiple \\[-0.112cm] sclerosis}{1}
+        }
+        \visible<5-6,14-16>{
+            \averageheatmap{-0.3-\hsep}{0.2}{BIP}{Bipolar \\[-0.112cm] disorder}{1}
+            \averageheatmap{-0.3+\hsep}{0.2}{SCZ}{Schizophrenia}{1}
+        }
+        \visible<5-6>{
+            \averageheatmap{-0.3+\hsep}{0.2-\vsep}{MCI}{Mild cognitive \\[-0.112cm] impairment}{1}
+        }
+        \visible<5>{
+            \averageheatmap{-0.3-\hsep}{0.2+\vsep}{ADHD}{Attention deficit\\[-0.112cm] hyperactivity disorder}{1}
+            \averageheatmap{-0.3}{0.2+\vsep}{ANX}{Anxiety \\[-0.112cm] disorder}{1}
+            \averageheatmap{-0.3+\hsep}{0.2+\vsep}{ASD}{Autism spectrum \\[-0.112cm] disorder}{1}
+            \averageheatmap{-0.3-\hsep}{0.2-\vsep}{MDD}{Major depressive \\[-0.112cm] disorder}{1}
+        }
+        \visible<6>{
+            \averageheatmap{-0.3-\hsep}{0.2+\vsep}{ADHD}{Attention deficit\\[-0.112cm] hyperactivity disorder}{0.3}
+            \averageheatmap{-0.3}{0.2+\vsep}{ANX}{Anxiety \\[-0.112cm] disorder}{0.3}
+            \averageheatmap{-0.3+\hsep}{0.2+\vsep}{ASD}{Autism spectrum \\[-0.112cm] disorder}{0.3}
+            \averageheatmap{-0.3-\hsep}{0.2-\vsep}{MDD}{Major depressive \\[-0.112cm] disorder}{0.3}
+        }
+        \visible<7>{
+            \node[anchor=west, align=left, font=\small\linespread{0.95}\selectfont] at (DEM.east) {
+                \textbullet Temporal pole\\
+                \textbullet Left amygdala\\
+                \textbullet Parahippocampal gyrus
+            };
+        }
+        \visible<8-10>{
+            \node[anchor=west, align=left, font=\small\linespread{0.95}\selectfont] at (MS.east) {
+                \textbullet \alert<9>{Right} pallidum\\
+                \textbullet \alert<9>{Right} thalamus\\
+                \textbullet \alert<9>{Right} putamen
+            };
+        }
+        \visible<10>{
+            \draw[-stealth, very thick] ($ (MS) - (1.2, 0.5) $) -- ($ (MS) - (0.2, 0.1) $);
+        }
+        \visible<12-13>{
+            \node[anchor=west] (demba) at ($ (DEM.east) + (0.4, 0) $){
+                0.75
+            };
+            \node[anchor=south, font=\scriptsize\linespread{0.8}\selectfont, align=center] (ba) at ($ (demba.north) - (0, 0.1) $) {
+                Singular\\
+                \underline{brain age}
+            };
+            \node[anchor=west] (demhm) at ($ (demba.east) + (0.7, 0) $) {
+                0.81
+            };
+            \node[anchor=south, font=\scriptsize\linespread{0.8}\selectfont, align=center] (hm) at ($ (demhm.north) - (0, 0.1) $) {
+                Spatial\\
+                \underline{age motifs}
+            };
+            \node[] (auc) at ($ (ba)!0.5!(hm) + (0, 0.8) $) {
+                AUC
+            };
+            \node[] (msba) at ($ (demba) - (0, 2.5) $){
+                0.63
+            };
+            \node[anchor=west] (mshm) at ($ (msba.east) + (0.7, 0) $) {
+                0.87
+            };
+        }
+        \visible<13>{
+            \draw[-stealth, red, thick] (demba) -- (demhm) node [midway, below, red, font=\footnotesize\selectfont\bfseries] {0.06};
+            \draw[-stealth, red, thick] (msba) -- (mshm) node [midway, below, red, font=\footnotesize\selectfont\bfseries] {0.24};;
+        }
+        \visible<15-16>{
+            \node[inner sep=0pt] (BIPcontrols) at (-3.3, 2.5) {
+                \includegraphics[
+                    height=1.5cm,
+                    trim={5.5cm 6cm 5.5cm 6cm},
+                    clip
+                ] {data/template.png}
+            };
+            \node[inner sep=0pt] (SCZcontrols) at (2.7, 2.5) {
+                \includegraphics[
+                    height=1.5cm,
+                    trim={5.5cm 6cm 5.5cm 6cm},
+                    clip
+                ] {data/template.png}
+            };
+
+            \draw[stealth-stealth, thick] (BIPcontrols) -- (BIP) node[midway, right] {AUC=0.60};
+            \draw[stealth-stealth,thick] (SCZcontrols) -- (SCZ) node[midway, right] {AUC=0.65};
+        }
+        \visible<16>{
+            \draw[stealth-stealth, red, thick] (BIP) -- (SCZ) node[midway, above, red, font=\bfseries] {AUC=0.5};
+        }
+    \end{tikzpicture}
+\end{frame}
