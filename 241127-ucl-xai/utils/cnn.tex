@@ -222,13 +222,13 @@
     \def\annotate{#6}
 
     \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
-    %\cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
+    \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
 
     \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
-    %\cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
+    \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
 
     \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
-    %\cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
+    \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
 
     \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
 
@@ -296,12 +296,23 @@
             };
         \fi
         \ifnum#1>3
+            \ifnum#1<6
+                \node[
+                    font=\scriptsize\linespread{0.9}\selectfont,
+                    align=center,
+                    anchor=west
+                ] (output) at (5.5, 0) {
+                    Apparent\\brain age
+                };
+            \fi
+        \fi
+        \ifnum#1>5
             \node[
                 font=\scriptsize\linespread{0.9}\selectfont,
                 align=center,
                 anchor=west
             ] (output) at (5.5, 0) {
-                Apparent\\brain age
+                Patient\\status
             };
         \fi
 
@@ -340,11 +351,30 @@
             \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
 
         \fi
-        \ifnum#1=5
-            \heatmapside{-1.4}{0}{1.5cm}
-            \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
-            \lrp{0}{0}{0.066}{0.15}
-            \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
+        \ifnum#1>4
+            \ifnum#1<7
+                \heatmapside{-1.4}{0}{1.5cm}
+                \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
+                \lrp{0}{0}{0.066}{0.15}
+                \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
+            \fi
+        \fi
+        \ifnum#1>5
+            \draw[thick, dashed] (0.22, 1.43) --
+                    (5.13, 1.43) --
+                    (5.13, -1.42) --
+                    (0.22, -1.42) -- cycle;
+            \node[anchor=south, text depth=0, font=\scriptsize\selectfont] at (2.675, 1.43) {
+                \textbf{Convolutional Neural Network}
+            };
+        \fi
+        \ifnum#1=7
+            \inputside{-1.4}{0}{1.5cm}
+            \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{black}
+
+            \cnn{0}{0}{0.066}{0.15}{black}{0}
+
+            \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
         \fi
     \end{tikzpicture}
 }
@@ -372,6 +402,14 @@
 \newsavebox{\lrpbrainage}
 \sbox{\lrpbrainage}{
     \cnnbox{5}
+}
+\newsavebox{\lrppatient}
+\sbox{\lrppatient}{
+    \cnnbox{6}
+}
+\newsavebox{\cnnpatient}
+\sbox{\cnnpatient}{
+    \cnnbox{7}
 }
 
 \newcommand{\multitaskcnn}[6]{

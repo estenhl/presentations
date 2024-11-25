@@ -1,18 +1,66 @@
+\newcommand{\stickman}[2]{
+    \node[circle,fill,minimum size=2.5mm,#2] (head) at #1 {};
+    \node[rounded corners=1pt,minimum height=0.65cm,minimum width=0.2cm,fill,below = 0.5pt of head,#2] (body) {};
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(1pt,-0.5pt)}]body.north east) --++(-90:3mm);
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(-1pt,-0.5pt)}]body.north west)--++(-90:3mm);
+    \draw[thick,white,-round cap] (body.south) --++(90:2.75mm);
+}
+
+\newsavebox{\heterogeneity}
+\sbox{\heterogeneity}{
+    \begin{tikzpicture}
+        \node [
+            single arrow,
+            top color=red,
+            bottom color=red!30!blue,
+            %single arrow head extend=3pt,
+            transform shape,
+            minimum height=0.5cm,
+            text width=3cm,rotate=90
+        ] (out) at (1.6, -1.8){};
+
+        \node [
+            single arrow,
+            right color=red,
+            left color=red!30!blue,
+            %single arrow head extend=3pt,
+            transform shape,
+            minimum height=0.5cm,
+            text width=4cm,
+        ] (out) at (3.6, -3.5){};
+
+        \stickman{(2.1, -0.8)}{red}
+        \stickman{(3.5, -1.7)}{red!50!blue}
+        \stickman{(2.2, -2.3)}{red!95!blue}
+        \stickman{(3.8, -1.2)}{red}
+        \stickman{(4.7, -2.1)}{red!60!blue}
+        \stickman{(5.2, -1.1)}{red!72!blue}
+        \stickman{(4.2, -0.5)}{red!70!blue}
+
+        \stickman{(2.6, -2)}{red!93!blue}
+        \stickman{(4.0, -2.4)}{red!88!blue}
+        \stickman{(2.8, -0.9)}{red!71!blue}
+        \stickman{(4.6, -1)}{red!82!blue}
+        \stickman{(5.1, -2.0)}{red!86!blue}
+        \stickman{(3.3, -2.3)}{red!97!blue}
+        \stickman{(3.3, -0.5)}{red!65!blue}
+    \end{tikzpicture}
+}
+
 \begin{frame}{Background: Predictive clinical neuroscience}
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.5) {};
-        \node[draw=black] at (5.25, -3.5) {};
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.25, -3.5) {};
 
-        \visible<1>{
-            \node[inner sep=0pt] (input) at (-3.35, -1) {
+        \visible<1,3>{
+            \node[inner sep=0pt] (input) at (-3.35, 1.5) {
                 \includegraphics[height=2cm]{data/mri_sagittal.png}
             };
 
-            \node[draw=black, minimum height=2cm, minimum width=3cm, align=center, font=\normalfont\linespread{0.95}\selectfont] (model) at (0.3, -1) {
+            \node[draw=black, minimum height=2cm, minimum width=3cm, align=center, font=\normalfont\linespread{0.95}\selectfont] (model) at (0.3, 1.5) {
                 Predictive\\model
             };
-
-            \node[align=left, inner sep=0pt,font=\normalfont\linespread{0.95}\selectfont] (output) at (3.7, -1) {
+            \node[align=left, inner sep=0pt,font=\normalfont\linespread{0.95}\selectfont] (output) at (3.7, 1.5) {
                 Clinically\\relevant\\predictions
             };
 
@@ -25,25 +73,123 @@
                 font=\fontsize{10}{10}\selectfont\bfseries,
                 align=center,
                 anchor=west
-            ] at (-4.5, 2) {
+            ] at (-4.5, -1.75) {
                 Structural Magnetic\\
                 Resonance Imaging (MRI) scans
             };
 
-            \node[label=below:\small{Side}] (side) at (-3.25, -1) {
+            \node[label=below:\small{Side}] (side) at (-3.25, 1.5) {
                 \includegraphics[height=2cm]{data/mri_sagittal.png}
             };
 
-            \node[label=below:\small{Above}] at (0, -1) {
+            \node[label=below:\small{Above}] at (0, 1.5) {
                 \includegraphics[height=2cm]{data/mri_axial.png}
             };
 
-            \node[label=below:\small{Front}] at (3.25, -1) {
+            \node[label=below:\small{Front}] at (3.25, 1.5) {
                 \includegraphics[height=2cm]{data/mri_coronal.png}
             };
 
-            \node[anchor=east] (threed) at (4.5, 2) {
+            \node[anchor=east] (threed) at (4.5, -1.75) {
                 \includegraphics[height=3cm]{data/3d_bert.png}
+            };
+        }
+        \visible<4>{
+            \node [
+                double arrow,
+                draw=black,
+                right color=white,
+                left color=black,
+                %single arrow head extend=3pt,
+                transform shape,
+                minimum height=2cm,
+                text width=9cm,
+            ] (out) at (0, -1.25){};
+
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (-3, -0.5) {
+                Parkinson's\\disease
+            };
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (-3.5, 0.4) {
+                Multiple\\sclerosis
+            };
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (-1.5, 0.3) {
+                Dementia
+            };
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (3, -0.7) {
+                Schizophrenia
+            };
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (4.2, 0) {
+                Bipolar\\disorder
+            };
+            \node[align=center, font=\normalfont\linespread{0.8}\selectfont] at (2.4, 0.1) {
+                Depression
+            };
+        }
+        \visible<5>{
+            \node[] at (0, 0) {
+                \usebox{\heterogeneity}
+            };
+        }
+        \visible<6,9>{
+            \draw[dashed] (-1.2, 1.1) -- (1.2, -2.2);
+        }
+        \visible<6>{
+            \stickman{(0.4, 0)}{red!80!blue}
+            \stickman{(0.9, -0.5)}{red!95!blue}
+            \stickman{(0, 0.7)}{red!92!blue}
+            \stickman{(1.4, 0.2)}{red}
+            \stickman{(1.0, 0.9)}{red!75!blue}
+
+            \stickman{(-0.1, -1)}{blue!80!red}
+            \stickman{(-0.7, -0.8)}{blue!85!red}
+            \stickman{(-0.6, 0.3)}{blue!75!red}
+            \stickman{(0.5, -1.4)}{blue!95!red}
+            \stickman{(-1.1, -0.1)}{blue}
+
+            \node[font=\scriptsize\selectfont] at (-0.1, 1.3) {
+                Patients
+            };
+            \node[font=\scriptsize\selectfont] at (-0.8, -2.1) {
+                Controls
+            };
+        }
+        \visible<7-9>{
+            \stickman{(0.4, 0)}{red!80!blue}
+            \stickman{(0.9, -0.5)}{red!95!blue}
+            \stickman{(0, 0.7)}{red!92!blue}
+            \stickman{(1.4, 0.2)}{red}
+            \stickman{(1.0, 0.9)}{red!75!blue}
+
+            \stickman{(-0.1, -1)}{red!80!blue}
+            \stickman{(-0.7, -0.8)}{red!85!blue}
+            \stickman{(-0.6, 0.3)}{red!75!blue}
+            \stickman{(0.5, -1.4)}{red!95!blue}
+            \stickman{(-1.1, -0.1)}{red}
+        }
+        \visible<7>{
+            \node [
+                single arrow,
+                fill=red,
+                transform shape,
+                minimum height=3cm,
+                text width=2.5cm,
+                minimum width=1cm
+            ] (out) at (3.2, 0) {};
+            \node[text=white] at (3.2, 0) {
+                \footnotesize{Prognosis}
+            };
+        }
+        \visible<8>{
+            \draw[-stealth] (-0.61, 1.18) -- (-0.61, 0.48);
+            \draw[-stealth] (1, 1.7) -- (1, 1.08);
+            \draw[-stealth] (0.9, -2.07) -- (0.9, -1.37);
+        }
+        \visible<9>{
+            \node[font=\scriptsize\selectfont] at (-0.1, 1.3) {
+                Subtype 1
+            };
+            \node[font=\scriptsize\selectfont] at (-0.8, -2.1) {
+                Subtype 2
             };
         }
     \end{tikzpicture}
@@ -308,12 +454,12 @@
 
             \neuronconnection{n20}{y}{black}{-stealth}
         }
-        \visible<5>{
+        \visible<5,9>{
             \node[] at (0, -1.5) {
                 \usebox{\mathforward}
             };
         }
-        \visible<6-9>{
+        \visible<6-8,10>{
             \node[] at (0, -1.5) {
                 \usebox{\mathbackward}
             };
@@ -392,7 +538,27 @@
             };
         }
         \visible<9>{
+            \node[] at (0.4, 1.7) {
+                \usebox{\cnnpatient}
+            };
+        }
+        \visible<10>{
+            \node[] at (0.4, 1.7) {
+                \usebox{\lrppatient}
+            };
+        }
+        \visible<11>{
+            \node[] (side) at (-3.25, 0) {
+                \includegraphics[height=2.5cm]{data/combined_sagittal.png}
+            };
 
+            \node[] at (0, 0) {
+                \includegraphics[height=2.5cm]{data/combined_axial.png}
+            };
+
+            \node[] at (3.25, 0) {
+                \includegraphics[height=2.5cm]{data/combined_coronal.png}
+            };
         }
     \end{tikzpicture}
 \end{frame}
