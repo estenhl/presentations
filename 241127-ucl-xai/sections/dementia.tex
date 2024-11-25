@@ -1,4 +1,4 @@
-\section{Explainability and dementia}
+\section{Explainable dementia classification}
 
 \newcommand{\scannersubplot}[3]{
     \nextgroupplot[
@@ -159,7 +159,7 @@
     \end{tikzpicture}
 }
 
-\begin{frame}[t]{Explainability and dementia: Dataset}
+\begin{frame}[t]{Explainable dementia classification: Dataset}
     \centering
     \vfill
 
@@ -175,6 +175,20 @@
         \visible<2-3>{
             \node[] at (0, -1.5) {
                 \usebox{\dementiasubsets}
+            };
+        }
+        \visible<3>{
+            \node[anchor=north, align=center, text width=3.2cm, font=\scriptsize\linespread{0.95}\selectfont] at (-3, 3) {
+                \underline{ADNI}:\\
+                Probable Alzheimer's disease
+            };
+            \node[anchor=north, align=center, text width=3cm, font=\scriptsize\linespread{0.95}\selectfont] at (0, 3) {
+                \underline{OASIS3}:\\
+                Dementia
+            };
+            \node[anchor=north, align=center, text width=3.2cm, font=\scriptsize\linespread{0.95}\selectfont] at (3, 3) {
+                \underline{Oslo}:\\
+                Alzheimer's disease, Vascular dementia, Unspecified dementia
             };
         }
     \end{tikzpicture}
@@ -239,12 +253,12 @@
             \addplot[dashed] coordinates {(0.5, \ymin) (0.5, \ymax)};
         \end{axis}
 
-        \node[anchor=south west] at ($ (distributions.south east) + (0,0.28) $) {\footnotesize{Controls}};
+        \node[anchor=south west] at ($ (distributions.south east) + (0,0.45) $) {\footnotesize{Controls}};
         \node[anchor=south west] at ($ (distributions.south east) + (0,0.0) $) {\footnotesize{Cases}};
     \end{tikzpicture}
 }
 
-\begin{frame}[t]{Explainability and dementia: Modelling}
+\begin{frame}[t]{Explainable dementia classification: Modelling}
     \colorlet{train}{green}
     \colorlet{val}{blue}
     \colorlet{test}{red}
@@ -285,23 +299,6 @@
             };
             \draw[-stealth] (d03) -- (search);
             \draw[-stealth] (fit) -- (search);
-        }
-        \visible<4>{
-            \node[font=\scriptsize\selectfont] at (0, -1.5) {
-                \begin{tabular}{|c|c|}
-                    \hline
-                    \textbf{Hyperparameter}&\textbf{Values}\\
-                    \hline
-                    Weight decay&$\{10^{-2}, 10^{-3}\}$\\
-                    \hline
-                    Dropout&$\{0.25, 0.5\}$\\
-                    \hline
-                    Learning rate schedule&\{stepwise, cyclic, one-cycle\}\\
-                    \hline
-                    Augmentations&\{light, heavy\}\\
-                    \hline
-                \end{tabular}
-            };
         }
 
         \visible<5,8>{
@@ -467,7 +464,7 @@
     \end{tikzpicture}
 }
 
-\begin{frame}{Explainability and dementia: Validation}
+\begin{frame}{Explainable dementia classification: Validation}
     \begin{tikzpicture}
         \node[draw=black] at (-5.25, 3.5) {};
         \node[draw=black] at (5.25, -3.5) {};
@@ -560,11 +557,6 @@
         \visible<5>{
             \node[] at (0, 0) {
                 \usebox{\dicebox}
-            };
-        }
-        \visible<6>{
-            \node[] at (0, 0) {
-                AOPC
             };
         }
     \end{tikzpicture}
@@ -1229,81 +1221,75 @@
     \end{tikzpicture}
 }
 
-\begin{frame}{Explainability and dementia: Application}
+\begin{frame}{Explainable dementia classification: Application}
     \begin{tikzpicture}
         \node[draw=black] at (-5.25, 3.5) {};
         \node[draw=black] at (5.25, -3.5) {};
 
         \visible<1>{
             \node[] at (0, 0) {
-                MCI dataset
+                \usebox{\mcitrajectories}
             };
         }
 
         \visible<2>{
             \node[] at (0, 0) {
-                \usebox{\mcitrajectories}
-            };
-        }
-
-        \visible<3>{
-            \node[] at (0, 0) {
                 \usebox{\mcigroups}
             };
         }
-        \visible<4>{
+        \visible<3>{
             \node[] at (0, 0) {
                 \usebox{\mcimixed}
             };
         }
-        \visible<5>{
+        \visible<4>{
             \node[] at (0, 0) {
                 \usebox{\survivalpca}
             };
         }
-        \visible<6>{
+        \visible<5>{
             \node[] at (0, 0) {
                 \usebox{\survivalcurves}
             };
         }
-        \visible<7>{
+        \visible<6>{
             \node[] at (0, 0) {
                 \usebox{\mcioutline}
             };
         }
-        \visible<8>{
+        \visible<7>{
             \node[] at (0, 0) {
                 \usebox{\mcitimepoint}
             };
         }
-        \visible<9>{
+        \visible<8>{
             \node[] at (0, 0) {
                 \usebox{\mcifuture}
             };
         }
-        \visible<10>{
+        \visible<9>{
             \node[] at (0, 0) {
                 \usebox{\mcibaseline}
             };
         }
-        \visible<11>{
+        \visible<10>{
             \node[] at (0, 0) {
                 \usebox{\mcipredictions}
             };
         }
-        \visible<12>{
+        \visible<11>{
             \node[] at (0, 0) {
                 \usebox{\mciheatmaps}
             };
         }
-        \visible<13>{
+        \visible<12>{
             \node[] at (0, 0) {
                 \usebox{\cognitivecorrelations}
             };
         }
-        \visible<14>{
+        \visible<13>{
             \node[] at (0, 0) {
-                Morphological record
+                \includegraphics[height=7cm]{data/morphological.png}
             };
         }
 
