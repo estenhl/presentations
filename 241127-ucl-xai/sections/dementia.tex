@@ -356,11 +356,10 @@
     \end{tikzpicture}
 \end{frame}
 
-\newsavebox{\dicebox}
-\sbox{\dicebox}{
-    \newcommand{\slicewidth}{0.65cm}
-    \newcommand{\annotationpadding}{5pt}
+\newcommand{\slicewidth}{0.65cm}
+\newcommand{\annotationpadding}{5pt}
 
+\newcommand{\diceplot}[1]{
     \def\legendsize{\footnotesize}
     \def\legendnodesep{2pt}
     \def\legenddistance{1}
@@ -383,11 +382,15 @@
             xmajorgrids=true,
             ymajorgrids=true
         ]
-            \addplot[very thick,draw=blue] table [col sep=comma, x=thresholds, y=test] {data/dice.csv};\label{trace:dementia}
-            \addplot[very thick,draw=green] table [col sep=comma, x=thresholds, y=sex] {data/dice.csv};\label{trace:sex}
-            \addplot[very thick,draw=gray] table [col sep=comma, x=thresholds, y=randomized_weights] {data/dice.csv};\label{trace:weights}
-            \addplot[very thick,draw=orange] table [col sep=comma, x=thresholds, y=randomized_images] {data/dice.csv};\label{trace:images}
-            \addplot[only marks, fill=blue, draw=blue, mark size=3] coordinates {
+            \addplot[very thick,draw=dementiadice] table [col sep=comma, x=thresholds, y=test] {data/dice.csv};\label{trace:dementia}
+
+            \ifnum#1=1
+                \addplot[very thick,draw=sexdice] table [col sep=comma, x=thresholds, y=sex] {data/dice.csv};\label{trace:sex}
+                \addplot[very thick,draw=weightsdice] table [col sep=comma, x=thresholds, y=randomized_weights] {data/dice.csv};\label{trace:weights}
+                \addplot[very thick,draw=imagesdice] table [col sep=comma, x=thresholds, y=randomized_images] {data/dice.csv};\label{trace:images}
+            \fi
+
+            \addplot[only marks, fill=dementiadice, draw=dementiadice, mark size=3] coordinates {
                 (0.5, 0.6131)
                 (0.7, 0.5296)
                 (0.9, 0.4291)
@@ -417,53 +420,64 @@
                 ]{data/test_90.png}
             };
             % Legend
-            \node[
-                anchor=south west,
-                draw=black,
-                fill=white,
-                minimum width=3.45cm,
-                minimum height=1.22cm
-            ] at (axis cs: 0.015, 0.015) {};
-            \node[
-                circle,
-                draw=orange,
-                fill=orange,
-                anchor=south west,
-                inner sep=\legendnodesep
-            ] (rwnode) at (axis cs: 0.035, 0.045) {};
-            \node[anchor=west, text depth=0] (rw) at (rwnode.east) {\legendsize{Randomized images}};
-            \node[
-                circle,
-                draw=gray,
-                fill=gray,
-                anchor=south,
-                inner sep=\legendnodesep
-            ] (rinode) at ($ (rwnode.north) + (0, \legenddistance) $) {};
-            \node[anchor=west, text depth=0] at (rinode.east) {\legendsize{Randomized weights}};
-            \node[
-                circle,
-                draw=green,
-                fill=green,
-                anchor=south,
-                inner sep=\legendnodesep
-            ] (sexnode) at ($ (rinode.north) + (0, \legenddistance) $) {};
-            \node[anchor=west, text depth=0] at (sexnode.east) {\legendsize{Sex}};
-            \node[
-                circle,
-                draw=blue,
-                fill=blue,
-                anchor=south,
-                inner sep=\legendnodesep
-            ] (demnode) at ($ (sexnode.north) + (0, \legenddistance) $) {};
-            \node[anchor=west, text depth=0] at (demnode.east) {\legendsize{Dementia}};
+            \ifnum#1=1
+                \node[
+                    anchor=south west,
+                    draw=black,
+                    fill=white,
+                    minimum width=3.45cm,
+                    minimum height=1.22cm
+                ] at (axis cs: 0.015, 0.015) {};
+                \node[
+                    circle,
+                    draw=imagesdice,
+                    fill=imagesdice,
+                    anchor=south west,
+                    inner sep=\legendnodesep
+                ] (rwnode) at (axis cs: 0.035, 0.045) {};
+                \node[anchor=west, text depth=0] (rw) at (rwnode.east) {\legendsize{Randomized images}};
+                \node[
+                    circle,
+                    draw=weightsdice,
+                    fill=weightsdice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (rinode) at ($ (rwnode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (rinode.east) {\legendsize{Randomized weights}};
+                \node[
+                    circle,
+                    draw=sexdice,
+                    fill=sexdice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (sexnode) at ($ (rinode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (sexnode.east) {\legendsize{Sex}};
+                \node[
+                    circle,
+                    draw=dementiadice,
+                    fill=dementiadice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (demnode) at ($ (sexnode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (demnode.east) {\legendsize{Dementia}};
+            \fi
         \end{axis}
     \end{tikzpicture}
 }
 
+\newsavebox{\dicebox}
+\sbox{\dicebox}{
+    \diceplot{0}
+}
+\newsavebox{\diceall}
+\sbox{\diceall}{
+    \diceplot{1}
+}
+
 \begin{frame}{Explainable dementia classification: Validation}
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.5) {};
-        \node[draw=black] at (5.25, -3.5) {};
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.25, -3.5) {};
 
         \visible<1>{
 			\node[
@@ -553,6 +567,11 @@
         \visible<5>{
             \node[] at (0, 0) {
                 \usebox{\dicebox}
+            };
+        }
+        \visible<6>{
+            \node[] at (0, 0) {
+                \usebox{\diceall}
             };
         }
     \end{tikzpicture}
