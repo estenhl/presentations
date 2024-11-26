@@ -266,7 +266,7 @@
         \node[] at (-5.25, 3.5) {};
         \node[] at (5.25, -3.5) {};
 
-        \visible<1-6,8-9>{
+        \visible<1-5,7-8>{
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d00) at (-5, 2.5) {};
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d01) at (d00.east) {};
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d02) at (d01.east) {};
@@ -278,18 +278,18 @@
             \node[anchor=south, font=\scriptsize\selectfont, text depth=0] at (d04.north) {Test};
         }
 
-        \visible<2-5,8-9>{
+        \visible<2-4,7-8>{
             \node[draw=black, dashed, align=center, font=\scriptsize] (fit) at ($ (d01.south) - (0, 1) $) {
                 Model\\fitting
             };
             \draw[-stealth] (d01) -- (fit);
         }
-        \visible<3>{
+        \visible<2>{
             \node[] at (0, -1.5) {
                 \usebox{\cnntraining}
             };
         }
-        \visible<4-5,8-9>{
+        \visible<3-4,7-8>{
             \node[draw=black, dashed, align=center, font=\scriptsize] (search) at ($ (d03.south) - (0, 1) $) {
                 Model\\selection
             };
@@ -297,7 +297,7 @@
             \draw[-stealth] (fit) -- (search);
         }
 
-        \visible<5,8>{
+        \visible<4,7>{
             \node[draw=black, dashed, align=center, font=\scriptsize] (eval) at ($ (d04.south) - (0, 1) $) {
                 Model\\evaluation
             };
@@ -309,7 +309,7 @@
             };
         }
 
-        \visible<6>{
+        \visible<5>{
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d10) at (-5, 1.25) {};
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d11) at (d10.east) {};
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d12) at (d11.east) {};
@@ -334,7 +334,7 @@
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d43) at (d42.east) {};
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d44) at (d43.east) {};
         }
-        \visible<7>{
+        \visible<6>{
             \node[anchor=north] at (0, 3.25) {
                 \usebox{\dementiapredictions}
             };
@@ -342,7 +342,7 @@
                 AUC=0.91, balanced accuracy=85\%
             };
         }
-        \visible<9>{
+        \visible<8>{
             \node[draw=red, dashed, align=center, font=\scriptsize, text=red] (generation) at ($ (d04.south) - (0, 1) $) {
                 Heatmap\\generation
             };
@@ -853,102 +853,6 @@
     \end{tikzpicture}
 }
 
-\newsavebox{\mcimixed}
-\sbox{\mcimixed}{
-    \newcommand{\linestyle}{densely dotted}
-    \newcommand{\diffx}{-5}
-    \newcommand{\legendy}{0.92}
-
-    \begin{tikzpicture}
-        \begin{axis}[
-            height=7cm,
-            width=9cm,
-            xmin=-9,
-            xmax=0,
-            ymin=0,
-            ymax=1,
-            xtick={-8, -6, -4, -2, 0},
-            xticklabels={8, 6, 4, 2, 0},
-            xlabel=Years before diagnosis,
-            ylabel=Group-wise mean\\dementia prediction,
-            error bars/y dir=both,
-            error bars/y explicit,
-            xmajorgrids=true,
-            xtick style={draw=none},
-            ytick pos=left,
-            ylabel style={align=center, font=\normalfont\linespread{0.9}\selectfont},
-            grid style={draw=gray!20},
-            xlabel style={text depth=0pt}
-        ]
-            \addplot[
-                cases-default,
-                scatter,
-                scatter/use mapped color={
-                    draw=cases-default,
-                    fill=cases-default
-                },
-                visualization depends on=\thisrow{declining_size}\as\size,
-                scatter/@pre marker code/.append style={
-                    /tikz/mark size=\size ^ 0.3,
-                    /tikz/mark color=cases-default
-                }
-            ] table [
-                col sep=comma,
-                x=year,
-                y=declining_mean,
-            ] {data/yearly_trajectories.csv};
-            \addplot[
-                controls-default,
-                scatter,
-                scatter/use mapped color={
-                    draw=controls-default,
-                    fill=controls-default
-                },
-                visualization depends on=\thisrow{declining_size}\as\size,
-                scatter/@pre marker code/.append style={
-                    /tikz/mark size=\size ^ 0.3,
-                    /tikz/mark color=cases-default
-                }
-            ] table [
-                col sep=comma,
-                x=year,
-                y=stable_mean,
-            ] {data/yearly_trajectories.csv};
-            \node[circle, minimum size=5.4pt, fill=gray, inner sep=0pt, anchor=north west] (n25mark) at (axis cs: -8.5, 0.94) {};
-            \coordinate (label) at (axis cs: -11.37, 0.87);
-            \addplot[
-                cases-default,
-                scatter,
-                scatter/use mapped color={
-                    draw=cases-default,
-                    fill=cases-default
-                },
-                mark size=2.5pt
-            ] coordinates {
-                (-3.6, 0.14)
-            };
-            \node[anchor=west, text depth=0] at (axis cs: -3.5, 0.14) {\small{Progressive}};
-            \addplot[
-                controls-default,
-                scatter,
-                scatter/use mapped color={
-                    draw=controls-default,
-                    fill=controls-default
-                },
-                mark size=2.5pt
-            ] coordinates {
-                (-3.6, 0.07)
-            };
-            \node[anchor=west, text depth=0] at (axis cs: -3.5, 0.07) {\small{Non-progressive}};
-        \end{axis}
-        \node[anchor=west, inner sep=0pt] (n25label) at ($ (n25mark.east) + (0.05, 0) $) {\small{n=25}};
-        \node[anchor=west, circle, minimum size=8.5pt, fill=gray, inner sep=0pt] (n100mark) at ($ (n25label.east) + (0.1, 0) $) {};
-        \node[anchor=west, inner sep=0pt] (n100label) at ($ (n100mark.east) + (0.05, 0) $) {\small{100}};
-        \node[anchor=west, circle, minimum size=12pt, fill=gray, inner sep=0pt] (n250mark) at ($ (n100label.east) + (0.1, 0) $) {};
-        \node[anchor=west, inner sep=0pt] (n250label) at ($ (n250mark.east) + (0.05, 0) $) {\small{250}};
-    \end{tikzpicture}
-}
-
 \newcommand{\mriwidth}{2.2cm}
 \newcommand{\gap}{0.00cm}
 
@@ -1293,4 +1197,12 @@
         }
 
     \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Explainable dementia classification: Summary}
+    We used explainable artificial intelligence to characterize brain aberrations associated with dementia as seen in neuroimaging data at the level of the individual patient
+    \begin{itemize}
+        \item Visual patterns in the heatmaps were associated with future progression and clinical manifestation of the disease
+        \item \textbf{The absolute majority of the signal carried by the heatmaps for subsequent predictive tasks was also present in the singular predictions}
+    \end{itemize}
 \end{frame}
