@@ -164,8 +164,8 @@
     \vfill
 
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.25) {};
-        \node[draw=black] at (5.25, -3.25) {};
+        \node[] at (-5.25, 3.25) {};
+        \node[] at (5.25, -3.25) {};
 
         \visible<1-2>{
             \node[anchor=north] at (0, 3.5) {
@@ -259,23 +259,19 @@
 }
 
 \begin{frame}[t]{Explainable dementia classification: Modelling}
-    \colorlet{train}{green}
-    \colorlet{val}{blue}
-    \colorlet{test}{red}
-
     \def\datasetheight{0.4cm}
     \def\datasetwidth{1.9cm}
 
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.5) {};
-        \node[draw=black] at (5.25, -3.5) {};
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.25, -3.5) {};
 
         \visible<1-6,8-9>{
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d00) at (-5, 2.5) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d01) at (d00.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d02) at (d01.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=val, draw=black, anchor=west] (d03) at (d02.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=test, draw=black, anchor=west] (d04) at (d03.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d00) at (-5, 2.5) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d01) at (d00.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d02) at (d01.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d03) at (d02.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=testsplit, draw=black, anchor=west] (d04) at (d03.east) {};
 
             \node[anchor=south, font=\scriptsize\selectfont, text depth=0] at (d01.north) {Training};
             \node[anchor=south, font=\scriptsize\selectfont, text depth=0] at (d03.north) {Validation};
@@ -314,29 +310,29 @@
         }
 
         \visible<6>{
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d10) at (-5, 1.25) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d11) at (d10.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=val, draw=black, anchor=west] (d12) at (d11.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=test, draw=black, anchor=west] (d13) at (d12.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d14) at (d13.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d10) at (-5, 1.25) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d11) at (d10.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d12) at (d11.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=testsplit, draw=black, anchor=west] (d13) at (d12.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d14) at (d13.east) {};
 
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d20) at (-5, 0) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=val, draw=black, anchor=west] (d21) at (d20.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=test, draw=black, anchor=west] (d22) at (d21.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d23) at (d22.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d24) at (d23.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d20) at (-5, 0) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d21) at (d20.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=testsplit, draw=black, anchor=west] (d22) at (d21.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d23) at (d22.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d24) at (d23.east) {};
 
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=val, draw=black, anchor=west] (d30) at (-5, -1.25) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=test, draw=black, anchor=west] (d31) at (d30.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d32) at (d31.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d33) at (d32.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d34) at (d33.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d30) at (-5, -1.25) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=testsplit, draw=black, anchor=west] (d31) at (d30.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d32) at (d31.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d33) at (d32.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d34) at (d33.east) {};
 
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=test, draw=black, anchor=west] (d40) at (-5, -2.5) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d41) at (d40.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d42) at (d41.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=train, draw=black, anchor=west] (d43) at (d42.east) {};
-            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=val, draw=black, anchor=west] (d44) at (d43.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=testsplit, draw=black, anchor=west] (d40) at (-5, -2.5) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d41) at (d40.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d42) at (d41.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d43) at (d42.east) {};
+            \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=valsplit, draw=black, anchor=west] (d44) at (d43.east) {};
         }
         \visible<7>{
             \node[anchor=north] at (0, 3.25) {
@@ -347,7 +343,7 @@
             };
         }
         \visible<9>{
-            \node[draw=black, dashed, align=center, font=\scriptsize] (generation) at ($ (d04.south) - (0, 1) $) {
+            \node[draw=red, dashed, align=center, font=\scriptsize, text=red] (generation) at ($ (d04.south) - (0, 1) $) {
                 Heatmap\\generation
             };
             \draw[-stealth] (d04) -- (generation);
