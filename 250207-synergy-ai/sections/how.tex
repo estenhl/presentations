@@ -162,6 +162,49 @@
     };
 }
 
+\newcommand{\featurespace}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=3.5cm,
+            width=3.5cm,
+            xmajorticks=false,
+            ymajorticks=false
+        ]
+        \addplot[
+            only marks,
+            mark=*,
+            mark options={
+                draw=black,
+                fill=white
+            },
+            discard if not={label}{0}
+        ] table [
+            col sep=comma,
+            x=x,
+            y=y
+        ] {#1};
+        \addplot[
+            only marks,
+            mark=*,
+            mark options={
+                draw=black,
+                fill=red
+            },
+            discard if not={label}{1}
+        ] table [
+            col sep=comma,
+            x=x,
+            y=y
+        ] {#1};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\inputspace}
+\sbox{\inputspace}{
+    \featurespace{data/input_space.csv}
+}
+
 \begin{frame}{What does neural networks do?}
     \begin{tikzpicture}
         \node[draw=black] at (-5.25, -3.25) {};
@@ -259,8 +302,17 @@
         }
         \visible<9->{
 
+            \inputside{-4.7}{1.65}{0.75cm}{0.375}
+            \inputside{-3.8}{2}{0.75cm}{0.375}
+            \inputside{-3.5}{1.2}{0.75cm}{0.375}
+            \inputside{-4.6}{0.5}{0.75cm}{0.375}
             \inputside{-3.95}{0}{0.75cm}{0.375}
+            \inputside{-3.3}{0.2}{0.75cm}{0.375}
             \cnn{-2.55}{1}{0.066}{0.15}{blue}{}
+
+            \node[] at (-4, -2) {
+                \usebox{\inputspace}
+            };
         }
     \end{tikzpicture}
 \end{frame}
