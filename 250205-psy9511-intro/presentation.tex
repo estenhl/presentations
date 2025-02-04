@@ -23,6 +23,19 @@
 \definecolor{variance}{HTML}{06d6a0}
 \definecolor{train}{HTML}{ffd166}
 
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
 \begin{document}
 	\begin{frame}
 	 	\maketitle

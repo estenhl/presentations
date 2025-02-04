@@ -475,7 +475,7 @@
                 We reason about models based on their high level functionality, not their inner workings
             };
         }
-        \visible<5>{
+        \visible<5-7>{
             \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (linear) at (-4, 2.25) {
                 Linear
             };
@@ -515,13 +515,68 @@
             \draw[thick, white] (n4) -- (n5);
         }
         \visible<6>{
+            \draw[] ($ (linear.east) + (0, 0.1) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (linear.east) + (0, 0.1) $) {Train};
+            \draw[] ($ (linear.east) + (0, -0.5) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (linear.east) + (0, -0.5) $) {Predict};
+
+            \draw[] ($ (trees.east) + (0, 0.1) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (trees.east) + (0, 0.1) $) {Train};
+            \draw[] ($ (trees.east) + (0, -0.5) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (trees.east) + (0, -0.5) $) {Predict};
+
+            \draw[] ($ (nonlinear.east) + (0, 0.1) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (nonlinear.east) + (0, 0.1) $) {Train};
+            \draw[] ($ (nonlinear.east) + (0, -0.5) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (nonlinear.east) + (0, -0.5) $) {Predict};
+
+            \draw[] ($ (nn.east) + (0, 0.1) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (nn.east) + (0, 0.1) $) {Train};
+            \draw[] ($ (nn.east) + (0, -0.5) $) -- ++(1.3, 0);
+            \node[anchor=south west] at ($ (nn.east) + (0, -0.5) $) {Predict};
+        }
+        \visible<7>{
+            \draw[] ($ (linear.east) + (0, 0.1) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (linear.east) + (0, 0.1) $) {fit(X, y)};
+            \draw[] ($ (linear.east) + (0, -0.5) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (linear.east) + (0, -0.5) $) {predict(X)};
+
+            \draw[] ($ (trees.east) + (0, 0.1) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (trees.east) + (0, 0.1) $) {fit(X, y)};
+            \draw[] ($ (trees.east) + (0, -0.5) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (trees.east) + (0, -0.5) $) {predict(X)};
+
+            \draw[] ($ (nonlinear.east) + (0, 0.1) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (nonlinear.east) + (0, 0.1) $) {fit(X, y)};
+            \draw[] ($ (nonlinear.east) + (0, -0.5) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (nonlinear.east) + (0, -0.5) $) {predict(X)};
+
+            \draw[] ($ (nn.east) + (0, 0.1) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (nn.east) + (0, 0.1) $) {fit(X, y)};
+            \draw[] ($ (nn.east) + (0, -0.5) $) -- ++(1.7, 0);
+            \node[anchor=south west] at ($ (nn.east) + (0, -0.5) $) {predict(X)};
+        }
+        \visible<8>{
             \node[font=\small] at (0, 0) {
                 \url{https://scikit-learn.org/stable/developers/develop.html}
             };
         }
-        \visible<7>{
+        \visible<9>{
             \node[] at (0, 0) {
                 \url{http://localhost:8888/tree}
+            };
+        }
+        \visible<10>{
+            \node[text width=10.5cm, align=flush left] at (0, 0) {
+                \textbf{Supervised learning: We train a model to solve a problem we already know, and that we already have labels for}\\
+                \begin{itemize}
+                    \item Although a bunch of things can vary (e.g. how we preprocess the data, the type of model, how we measure performance), the overall pattern very often remains the same:
+                    \begin{enumerate}
+                        \item Data preparation
+                        \item Model training
+                        \item Model evaluation
+                    \end{enumerate}
+                \end{itemize}
             };
         }
     \end{tikzpicture}
@@ -724,6 +779,16 @@
 
             \node[font=\small] at (0, -3) {
                 \url{https://scikit-learn.org/stable/api/sklearn.metrics.html}
+            };
+        }
+        \visible<14>{
+            \node[text width=10.5cm, align=flush left] at (0, 0) {
+                \textbf{We generally divide prediction problems into two types, regression and classification}
+                \begin{itemize}
+                    \item Regression problems deal with continuous outputs
+                    \item Classification problems deal with categorical outputs
+                    \item There is a range of metrics to evaluate model performance
+                \end{itemize}
             };
         }
     \end{tikzpicture}
@@ -1249,41 +1314,270 @@
                 \textbf{Overfitting}
             };
         }
+        \visible<25>{
+            \node[text width=10.5cm, align=flush left] at (0, 0) {
+                \textbf{The bias-variance trade-off lets us reason about why our model performs poorly}
+                \begin{itemize}
+                    \item If our model is too simple it will have high bias and low variance, which we can recognize by a high error in both the training and test set
+                    \item If our model is too complex it will have low bias and high variance, which we can recognize by a low error in the training set and a high error in the test set
+                    \item \textbf{This is way easier in theory than in practice}
+                \end{itemize}
+            };
+        }
     \end{tikzpicture}
 \end{frame}
 
-% \newsavebox{\groundtruth}
-% \sbox{\groundtruth}{
-%     \begin{tikzpicture}
-%         \begin{axis}[
-%             height=3.7cm,
-%             width=5.3cm,
-%             ylabel=$y$,
-%             xlabel=$x$,
-%             title=\textbf{#3},
-%             title style={
-%                 yshift=-0.2cm,
-%                 text depth=0,
-%             },
-%             ytick pos=left,
-%             xtick pos=bottom,
-%             xmin=0,
-%             xmax=100
-%         ]
+\newsavebox{\groundtruth}
+\sbox{\groundtruth}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=6cm,
+            width=9cm,
+            ylabel=$y$,
+            xlabel=$x$,
+            title style={
+                yshift=-0.2cm,
+                text depth=0,
+            },
+            ytick pos=left,
+            xtick pos=bottom,
+            xmin=0,
+            xmax=100
+        ]
 
-%         \addplot[
-%             only marks,
-%             color=cyan,
-%             opacity=0.25
-%         ] table [
-%             col sep=comma,
-%             x=x,
-%             y=y
-%         ] {data/bias-variance-#1.csv};
-%         \addplot[
-%             very thick,
-%             domain=-5:105,
-%             samples=100,
-%         ] {-0.000226*x*x*x+0.032262*x*x-1.3543*x+30};
-%     \end{tikzpicture}
-% }
+            \addplot[
+                only marks,
+                color=cyan,
+                opacity=0.25
+            ] table [
+                col sep=comma,
+                x=x,
+                y=y
+            ] {data/bias-variance-train.csv};
+            \addplot[
+                very thick,
+                domain=-5:105,
+                samples=100,
+            ] {-0.000226*x*x*x+0.032262*x*x-1.3543*x+30};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\classificationplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=6cm,
+            width=6cm,
+            xlabel=$x_1$,
+            ylabel=$x_2$,
+            xtick pos=bottom,
+            ytick pos=left,
+            xmin=-0.99,
+            xmax=1.3,
+            ymin=-0.65,
+            ymax=1.35
+        ]
+            \ifnum#1=0
+                \addplot[
+                    only marks,
+                    draw=gray,
+                    opacity=0.5
+                ] table [
+                    col sep=comma,
+                    x=x1,
+                    y=x2
+                ] {data/bayesdata.csv};
+            \fi
+
+            \ifnum#1>0
+                \addplot[
+                    only marks,
+                    red,
+                    opacity=0.5,
+                    discard if not={y}{0.0}
+                ] table [
+                    col sep=comma,
+                    x=x1,
+                    y=x2
+                ] {data/bayesdata.csv};
+                \addplot[
+                    only marks,
+                    blue,
+                    opacity=0.5,
+                    discard if not={y}{1.0}
+                ] table [
+                    col sep=comma,
+                    x=x1,
+                    y=x2
+                ] {data/bayesdata.csv};
+            \fi
+
+            \ifnum#1=2
+                \draw[dashed, thick] (axis cs: -0.6, 1.35) -- (axis cs: 0.8, -0.65);
+                \node[anchor=north west, rotate=302, font=\footnotesize\linespread{0.85}\selectfont\bfseries, align=center] at (axis cs: -0.55, 1.35) {
+                    Decision\\boundary
+                };
+            \fi
+
+            \ifnum#1=3
+                \addplot [smooth, thick, dashed] coordinates {
+                    (-0.3, 1.35)
+                    (0.2, 0.2)
+                    (0.4, -0.2)
+                    (1.6, -0.65)
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\classificationpoints}
+\sbox{\classificationpoints}{
+    \classificationplot{0}
+}
+\newsavebox{\classificationclasses}
+\sbox{\classificationclasses}{
+    \classificationplot{1}
+}
+\newsavebox{\classificationboundary}
+\sbox{\classificationboundary}{
+    \classificationplot{2}
+}
+\newsavebox{\classificationbayes}
+\sbox{\classificationbayes}{
+    \classificationplot{3}
+}
+
+\begin{frame}{Introduction: The Bayes Classifier}
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
+
+        \visible<1>{
+            \node[] at (0, 0.5) {
+                \usebox{\groundtruth}
+            };
+            \node[] at (0, -2.5) {
+                $y=f(x)+\epsilon$
+            };
+        }
+        \visible<2>{
+            \node[inner sep=0pt, draw=black, anchor=west] (x1) at (-5.25, 2.5) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.2.jpg}
+            };
+            \node[inner sep=0pt, draw=black] (x2) at ($ (x1) - (0, 1.5) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.0.jpg}
+            };
+            \node[inner sep=0pt, draw=black] (x3) at ($ (x1) - (0, 3) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.1.jpg}
+            };
+            \node[inner sep=0pt, draw=black] (x3) at ($ (x1) - (0, 4.5) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.0.jpg}
+            };
+
+            \node[inner sep=0pt, draw=black] (x5) at ($ (x1) - (-1.25, 0.75) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.1.jpg}
+            };
+            \node[inner sep=0pt, draw=black] (x6) at ($ (x1) - (-1.25, 2.25) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.2.jpg}
+            };
+            \node[inner sep=0pt, draw=black] (x7) at ($ (x1) - (-1.25, 3.75) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.3.jpg}
+            };
+            \node[align=center, font=\scriptsize, draw=black] (sm) at ($ (x6) + (2.3, 0) $) {
+                Supervised\\model
+            };
+
+            \draw[-stealth, gray!50, line width=3pt] (x6) to (sm);
+            \draw[-stealth, gray!50, line width=3pt] (sm) -- ($ (sm.east) + (1.1, 0) $);
+
+            \node[inner sep=0pt, draw=black] (y1) at ($ (sm.center) + (5, 0.5) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.0.jpg}
+            };
+            \node[anchor=west, inner sep=0pt, draw=black] (y2) at (y1.east) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.1.jpg}
+            };
+            \node[anchor=north, inner sep=0pt, draw=black] at (y1.south) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/dog.2.jpg}
+            };
+
+            \node[inner sep=0pt, draw=black] (y4) at ($ (sm) + (2.5, 0.5) $) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.0.jpg}
+            };
+            \node[anchor=west, inner sep=0pt, draw=black] (y5) at (y4.east) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.1.jpg}
+            };
+            \node[anchor=north, inner sep=0pt, draw=black] (y6) at (y4.south) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.2.jpg}
+            };
+            \node[anchor=north, inner sep=0pt, draw=black] (y7) at (y5.south) {
+                \includegraphics[width=1cm]{data/cats_and_dogs/cat.3.jpg}
+            };
+
+            \node[anchor=south, text depth=0] at ($ (y1.north)!0.5!(y2.north) $) {
+                Dogs
+            };
+            \node[anchor=south, text depth=0] at ($ (y4.north)!0.5!(y5.north) $) {
+                Cats
+            };
+        }
+        \visible<3-7>{
+            \node[ampersand replacement=\&] at (-2.75, 0.5) {
+                \begin{tabular}{|c|c|c|}
+                    \hline
+                    $\mathbf{x_1}$&$\mathbf{x_2}$&$\mathbf{y}$\\
+                    \hline
+                    -0.06&0.17&0\\
+                    1.16&1.20&1\\
+                    1.12&1.60&1\\
+                    0.69&0.28&0\\
+                    1.25&1.11&1\\
+                    \hline
+                \end{tabular}
+            };
+        }
+        \visible<4>{
+            \node[] at (2.25, 0.5) {
+                \usebox{\classificationpoints}
+            };
+        }
+        \visible<5>{
+            \node[] at (2.25, 0.5) {
+                \usebox{\classificationclasses}
+            };
+        }
+        \visible<6>{
+            \node[] at (2.25, 0.5) {
+                \usebox{\classificationboundary}
+            };
+        }
+        \visible<7>{
+            \node[] at (2.25, 0.5) {
+                \usebox{\classificationbayes}
+            };
+            \node[] at (2.75, -2.75) {
+                $y=\underset{k\in\{0,1\}}{\mathrm{argmax}}\ Pr(y=k|x)$
+            };
+        }
+        \visible<8>{
+            \node[text width=10.5cm] at (0, 0) {
+                \textbf{Classification can be seen as the task of finding a decision boundary that best separates our classes in a high-dimensional space represented by our predictors}
+                \begin{itemize}
+                    \item The Bayes classifier is the best classifier that can be theoretically achieved (although in practice we have to approimate it using data)
+                    \item The Bayes error rate quantifies the error of the best possible classifier
+                \end{itemize}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Assignment 1}
+    Follow the steps in Chapter 2.3 of Introduction to Statistical Learning to make sure your system is set up correctly, whether you want to use Python or R. Then do the following exercises to make sure you understand:
+
+    \begin{itemize}
+        \item Create a vector of 100 standard normally distributed numbers and visualize them with a histogram.
+        \item Show rows 5, 8, 9, and 10 of the Auto dataset.
+        \item Show the last three columns of the Auto dataset.
+        \item Show all cars with five cylinders in the Auto dataset.
+    \end{itemize}
+\end{frame}
