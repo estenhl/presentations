@@ -408,6 +408,125 @@
     \end{tikzpicture}
 \end{frame}
 
+\begin{frame}{Introduction: Functional interfaces}
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
+
+        \visible<1-4>{
+            \node[draw=black, fill=gray!20, minimum height=0.6cm, rounded corners=0.1cm] (prep) at (-3.3, 2) {
+                Preparations
+            };
+            \node[draw=black, fill=gray!20, minimum height=0.6cm, rounded corners=0.1cm, anchor=west] (train) at ($ (prep.east) + (0.5, 0) $) {
+                Model training
+            };
+            \node[draw=black, fill=gray!20, minimum height=0.6cm, rounded corners=0.1cm, anchor=west] (eval) at ($ (train.east) + (0.5, 0) $) {
+                Model evaluation
+            };
+            \draw[-stealth] (prep) -- (train);
+            \draw[-stealth] (train) -- (eval);
+        }
+        \visible<2-4>{
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (linear) at ($ (train.south east)!0.5!(eval.south west) - (0, 1.5) $) {
+                Linear
+            };
+            \draw[thick, white] ($ (linear.south west) + (0.2, 0.2) $) -- ($ (linear.south east) + (-0.2, 0.8) $);
+
+            \draw[dashed, -stealth] (linear.north) |- ($ (train.south) - (0, 0.4) $) -| (train.south);
+            \draw[dashed, -stealth] (linear.north) |- ($ (eval.south) - (0, 0.4) $) -| (eval.south);
+        }
+        \visible<3-4>{
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (trees) at ($ (train.south east)!0.5!(eval.south west) - (0, 3.5) $) {
+                Trees
+            };
+            \node[circle, draw=white, thick, inner sep=2pt] (t0) at ($ (trees) + (0, 0.1) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (t1) at ($ (trees) + (0.3, -0.4) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (t2) at ($ (trees) + (-0.3, -0.4) $) {};
+            \draw[thick, white] (t0) -- (t1);
+            \draw[thick, white] (t0) -- (t2);
+
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (nonlinear) at ($ (train.south east)!0.5!(eval.south west) - (-2.5, 1.5) $) {
+                Non-linear
+            };
+            \draw[thick, white] ($ (nonlinear.south west) + (0.2, 0.2) $) to [out=90, in=180] ($ (nonlinear.south east) + (-0.2, 0.8) $);
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (nn) at ($ (train.south east)!0.5!(eval.south west) - (-2.5, 3.5) $) {
+                Neural nets
+            };
+            \node[circle, draw=white, thick, inner sep=2pt] (n0) at ($ (nn) + (-0.7, 0.1) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n1) at ($ (nn) + (-0.7, -0.2) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n2) at ($ (nn) + (-0.7, -0.5) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n3) at ($ (nn) + (0, -0.05) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n4) at ($ (nn) + (0, -0.35) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n5) at ($ (nn) + (0.7, -0.2) $) {};
+
+            \draw[thick, white] (n0) -- (n3);
+            \draw[thick, white] (n0) -- (n4);
+            \draw[thick, white] (n1) -- (n3);
+            \draw[thick, white] (n1) -- (n4);
+            \draw[thick, white] (n2) -- (n3);
+            \draw[thick, white] (n2) -- (n4);
+            \draw[thick, white] (n3) -- (n5);
+            \draw[thick, white] (n4) -- (n5);
+
+        }
+        \visible<4>{
+            \node[text width=4.3cm, align=flush left, anchor=north west] at (-4.8, 0.5) {
+                \textbf{Functional interface:}\\
+                We reason about models based on their high level functionality, not their inner workings
+            };
+        }
+        \visible<5>{
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (linear) at (-4, 2.25) {
+                Linear
+            };
+            \draw[thick, white] ($ (linear.south west) + (0.2, 0.2) $) -- ($ (linear.south east) + (-0.2, 0.8) $);
+
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (trees) at (-4, 0.75) {
+                Trees
+            };
+            \node[circle, draw=white, thick, inner sep=2pt] (t0) at ($ (trees) + (0, 0.1) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (t1) at ($ (trees) + (0.3, -0.4) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (t2) at ($ (trees) + (-0.3, -0.4) $) {};
+            \draw[thick, white] (t0) -- (t1);
+            \draw[thick, white] (t0) -- (t2);
+
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (nonlinear) at (-4, -0.75) {
+                Non-linear
+            };
+            \draw[thick, white] ($ (nonlinear.south west) + (0.2, 0.2) $) to [out=90, in=180] ($ (nonlinear.south east) + (-0.2, 0.8) $);
+
+            \node[draw=black, fill=blue!80, font=\footnotesize, text=white, rounded corners=0.1cm, text depth=1cm, minimum width=2cm] (nn) at (-4, -2.25) {
+                Neural nets
+            };
+            \node[circle, draw=white, thick, inner sep=2pt] (n0) at ($ (nn) + (-0.7, 0.1) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n1) at ($ (nn) + (-0.7, -0.2) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n2) at ($ (nn) + (-0.7, -0.5) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n3) at ($ (nn) + (0, -0.05) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n4) at ($ (nn) + (0, -0.35) $) {};
+            \node[circle, draw=white, thick, inner sep=2pt] (n5) at ($ (nn) + (0.7, -0.2) $) {};
+
+            \draw[thick, white] (n0) -- (n3);
+            \draw[thick, white] (n0) -- (n4);
+            \draw[thick, white] (n1) -- (n3);
+            \draw[thick, white] (n1) -- (n4);
+            \draw[thick, white] (n2) -- (n3);
+            \draw[thick, white] (n2) -- (n4);
+            \draw[thick, white] (n3) -- (n5);
+            \draw[thick, white] (n4) -- (n5);
+        }
+        \visible<6>{
+            \node[font=\small] at (0, 0) {
+                \url{https://scikit-learn.org/stable/developers/develop.html}
+            };
+        }
+        \visible<7>{
+            \node[] at (0, 0) {
+                \url{http://localhost:8888/tree}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
 \begin{frame}{Introduction: Model performance}
     \begin{tikzpicture}
         \node[] at (-5.25, -3.5) {};
@@ -579,9 +698,32 @@
                 $\mathbf{0.66}$
             };
         }
-        \only<10>{
+        \only<10,13>{
             \node[] at (0, 0) {
                 \url{http://localhost:8888/tree}
+            };
+        }
+        \only<11-12>{
+            \node[] at (0, 1) {
+                mean\_squared\_error(y, predictions)
+            };
+        }
+        \only<12>{
+            \node[] at (0, 0.5) {
+                mean\_absolute\_error(y, predictions)
+            };
+            \node[] at (0, 0) {
+                median\_absolute\_error(y, predictions)
+            };
+            \node[] at (0, -0.5) {
+                r2\_score(y, predictions)
+            };
+            \node[] at (0, -1) {
+                \vdots
+            };
+
+            \node[font=\small] at (0, -3) {
+                \url{https://scikit-learn.org/stable/api/sklearn.metrics.html}
             };
         }
     \end{tikzpicture}
@@ -741,7 +883,7 @@
             ymax=2.5,
             clip=false
         ]
-            \node[] at (axis cs: 1.3, 2.9) {};
+            \node[] at (axis cs: 1.34, 2.9) {};
 
             \ifnum#1>0
                 \draw[dotted] (axis cs: 0.1, 0) -- (axis cs: 0.1, 2.5);
@@ -845,8 +987,38 @@
                     (0.75, 1.6043)
                     (1.05, 2)
                 };
+                \ifnum#1<6
+                    \node[anchor=west] at (axis cs: 1.065, 2) {
+                        Total
+                    };
+                \fi
+            \fi
+            \ifnum#1>5
+                \addplot[
+                    train,
+                    very thick,
+                    domain=0:1,
+                    samples=100
+                ] {((1/(x+0.1))/10) + 1.2};
+
                 \node[anchor=west] at (axis cs: 1.065, 2) {
-                    Total
+                    Total (test)
+                };
+
+                \addplot[
+                    only marks,
+                    mark options={
+                        draw=black,
+                        fill=train,
+                        scale=2
+                    }
+                ] coordinates {
+                    (0.1, 1.7)
+                    (0.75, 1.317)
+                    (1.05, 1.8)
+                };
+                \node[anchor=west] at (axis cs: 1.065, 1.8) {
+                    Total (train)
                 };
             \fi
 
@@ -877,6 +1049,10 @@
 \newsavebox{\tradeoffloss}
 \sbox{\tradeoffloss}{
     \tradeoffplot{5}
+}
+\newsavebox{\tradeofftrain}
+\sbox{\tradeofftrain}{
+    \tradeoffplot{6}
 }
 
 
@@ -1059,5 +1235,55 @@
                 ${\color{full}\mathbb{E}\left[\left(y-\hat{f}(x)\right)^2\right]}={\color{variance}\mathrm{Var}(\hat{f}(x))} + {\color{bias}\left[\mathrm{Bias}(\hat{f}(x))\right]^2}+\mathrm{Var}(\epsilon)$
             };
         }
+        \visible<23-24>{
+            \node[] at (0, 0.5) {
+                \usebox{\tradeofftrain}
+            };
+        }
+        \visible<24>{
+            \draw[stealth-stealth, line width=4pt] (-4.6, 0.25) -- (2.7, 0.25);
+            \node[font=\bfseries, anchor=north west, draw=black, fill=white, text depth=0] at (-4.6, -0.05) {
+                \textbf{Underfitting}
+            };
+            \node[font=\bfseries, anchor=north east, draw=black, fill=white, text depth=0] at (2.7, -0.05) {
+                \textbf{Overfitting}
+            };
+        }
     \end{tikzpicture}
 \end{frame}
+
+% \newsavebox{\groundtruth}
+% \sbox{\groundtruth}{
+%     \begin{tikzpicture}
+%         \begin{axis}[
+%             height=3.7cm,
+%             width=5.3cm,
+%             ylabel=$y$,
+%             xlabel=$x$,
+%             title=\textbf{#3},
+%             title style={
+%                 yshift=-0.2cm,
+%                 text depth=0,
+%             },
+%             ytick pos=left,
+%             xtick pos=bottom,
+%             xmin=0,
+%             xmax=100
+%         ]
+
+%         \addplot[
+%             only marks,
+%             color=cyan,
+%             opacity=0.25
+%         ] table [
+%             col sep=comma,
+%             x=x,
+%             y=y
+%         ] {data/bias-variance-#1.csv};
+%         \addplot[
+%             very thick,
+%             domain=-5:105,
+%             samples=100,
+%         ] {-0.000226*x*x*x+0.032262*x*x-1.3543*x+30};
+%     \end{tikzpicture}
+% }
