@@ -2,19 +2,26 @@
 
 \begin{frame}{Introduction}
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, -3.5) {};
-        \node[draw=black] at (5.25, 3.5) {};
-        \visible<1-2>{
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
+        \visible<1-3>{
             \node[text width=10.5cm] at (0, 0) {
                 \textbf{Key terminology:}
                 \begin{itemize}
                     \item Statistical learning: A set of tools (often called models) for understanding data
-                    \item<2> Supervised learning: We know what task we want to solve
-                    \item<2> Unsupervised learning: We don't know what task we want to solve (or we don't have the data we need to solve it)
+                    \item<2-> Machine learning: Approximately the same as statistical learning
+                    \begin{itemize}
+                        \item<2-> Often has a focus on prediction
+                        \item<2-> Often uses very large datasets
+                        \item<2-> More of a focus on computer science and engineering
+                        \item<2-> More pragmatic in nature(?)
+                    \end{itemize}
+                    \item<3> Supervised learning: We know what task we want to solve
+                    \item<3> Unsupervised learning: We don't know what task we want to solve (or we don't have the data we need to solve it)
                 \end{itemize}
             };
         }
-        \visible<3-4,6-7>{
+        \visible<4-5,7-8>{
 
             \node[inner sep=0pt, draw=black, anchor=west] (x1) at (-5.25, 2.5) {
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.2.jpg}
@@ -39,7 +46,7 @@
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.3.jpg}
             };
         }
-        \visible<5>{
+        \visible<6>{
             \node[inner sep=0pt, draw=black, anchor=west, label=below:\tiny{Cat}] (x1) at (-5.25, 2.5) {
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.2.jpg}
             };
@@ -63,11 +70,12 @@
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.3.jpg}
             };
         }
-        \visible<4-5>{
-
+        \visible<5-6,9>{
             \node[align=center, font=\scriptsize, draw=black] (sm) at ($ (x1) + (3.5, -0.75) $) {
                 Supervised\\model
             };
+        }
+        \visible<5-6>{
             \draw[-stealth, gray!50, line width=3pt] (x6) to [in=270, out=0] (sm);
             \draw[-stealth, gray!50, line width=3pt] (sm) -- ($ (sm.east) + (1.1, 0) $);
 
@@ -101,15 +109,17 @@
                 Cats
             };
         }
-        \visible<6-7>{
-
+        \visible<7-9>{
             \node[align=center, font=\scriptsize, draw=black] (um) at ($ (x1) + (3.5, -3.75) $) {
                 Unsupervised\\model
             };
+        }
+        \visible<7-8>{
+
             \draw[-stealth, gray!50, line width=3pt] (x6) to [in=90, out=0] (um);
             \draw[-stealth, gray!50, line width=3pt] (um) -- ($ (um.east) + (1.1, 0) $);
         }
-        \visible<6>{
+        \visible<7>{
             \node[inner sep=0pt, draw=black] at ($ (um.center) + (6, 0.55) $) {
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.2.jpg}
             };
@@ -133,7 +143,7 @@
                 \includegraphics[width=1cm]{data/cats_and_dogs/dog.2.jpg}
             };
         }
-        \visible<7>{
+        \visible<8>{
             \node[inner sep=0pt, draw=black] at ($ (um.center) + (6, 0.55) $) {
                 \includegraphics[width=1cm]{data/cats_and_dogs/cat.0.jpg}
             };
@@ -166,7 +176,7 @@
         \begin{axis}[
             height=4cm,
             width=10cm,
-            xlabel=$x$ (weight),
+            xlabel=$x$ (horsepower),
             ylabel=$y$ (mpg),
             ytick pos=left,
             xtick pos=bottom,
@@ -241,6 +251,13 @@
             };
         \fi
         \ifnum#1>4
+            \addplot[
+                only marks,
+                red,
+                opacity=0.5
+            ] coordinates {
+                (125, 19.3)
+            };
             \node[text=red, anchor=north] at (axis cs: 180, 48.4) {
                 $\begin{aligned}
                 \hat{f}(125) &= 39 - 0.157*125\\[-0.25cm]
@@ -365,7 +382,7 @@
                 \end{itemize}
             };
         }
-        \visible<14-17>{
+        \visible<15-17>{
             \node[anchor=north west, text width=10.5cm, align=flush left] at (inference.south west) {
                 \textbf{Prediction: Predicting the response for new observations}
                 \begin{itemize}
@@ -865,8 +882,8 @@
 
 \begin{frame}{Introduction: The Bias-Variance Trade-off}
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, -3.5) {};
-        \node[draw=black] at (5.25, 3.5) {};
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
 
         \visible<1>{
             \node[inner sep=0pt, draw=black] at (0, 0) {
@@ -882,7 +899,7 @@
             };
         }
         \visible<3>{
-            \node[text width=10.5cm] at (0, 0) {
+            \node[text width=10.5cm, align=flush left] at (0, 0) {
                 \textbf{Model performance will depend on the dataset we use to calculate the performance metrics}
                 \begin{itemize}
                     \item Training set: The data we use to estimate the model
