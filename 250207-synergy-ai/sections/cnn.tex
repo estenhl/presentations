@@ -1,0 +1,899 @@
+\newcommand{\mriside}[5]{
+
+    \node[inner sep=0pt] (input) at (#1, #2) {
+        \includegraphics[height=#3, width=#3]{#4}
+    };
+
+    \draw[fill=black] (input.north west) --
+        ($ (input.north west) + (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.north east) + (0.5 * #5, 0.5 * #5) $) --
+        (input.north east) -- cycle;
+    \draw[fill=black] (input.north east) --
+        ($ (input.north east) + (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.south east) + (0.5 * #5, 0.5 * #5) $) --
+        (input.south east) -- cycle;
+    \draw[] (input.north west) --
+        ($ (input.north west) - (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.south west) - (0.5 * #5, 0.5 * #5) $) --
+        (input.south west) -- cycle;
+    \draw[] (input.north east) --
+        ($ (input.north east) - (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.south east) - (0.5 * #5, 0.5 * #5) $) --
+        (input.south east) -- cycle;
+    \draw[] ($ (input.north west) - (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.north east) - (0.5 * #5, 0.5 * #5) $);
+    \draw[] ($ (input.south west) - (0.5 * #5, 0.5 * #5) $) --
+        ($ (input.south east) - (0.5 * #5, 0.5 * #5) $);
+}
+
+
+\newcommand{\inputside}[4]{
+    \mriside{#1}{#2}{#3}{data/mri_sagittal.png}{#4}
+}
+
+\newcommand{\convside}[6]{
+    \def\sidex{#1}
+    \def\sidey{#2}
+    \def\sidewidth{#3}
+    \def\sideheight{#4}
+    \def\sidefillcolour{#5}
+    \def\sidename{#6}
+
+    \node[
+        fill=\sidefillcolour,
+        inner sep=0pt,
+        outer sep=0pt,
+        minimum width=\sidewidth,
+        minimum height=\sideheight,
+        draw=black
+    ] (\sidename) at (\sidex, \sidey) {};
+}
+
+\newcommand{\convtop}[4]{
+    \def\topbase{#1}
+    \def\topwidth{#2}
+    \def\topheight{#3}
+    \def\topfillcolour{#4}
+
+    \draw[fill=\topfillcolour,draw=black] #1 --
+        ($ #1 + (#3, #3) $) --
+        ($ #1 + (#3+#2, #3) $) --
+        ($ #1 + (#2, 0) $);
+}
+
+\newcommand{\convfront}[3]{
+    \def\frontbase{#1}
+    \def\frontsize{#2}
+    \def\frontfillcolour{#3}
+
+    \draw[black, fill=\frontfillcolour] #1 --
+        ($ #1 + (1*#2, 1*#2) $) --
+        ($ #1 + (1*#2, 1*#2 - 2*#2) $) --
+        ($ #1 + (0, -2*#2) $);
+}
+
+\newcommand{\convchannel}[7]{
+    \def\channelx{#1}
+    \def\channely{#2}
+    \def\channelnodedepth{#3}
+    \def\channelnodesize{#4}
+    \def\channelnodecount{#5}
+    \def\channelcolour{#6}
+    \def\includefront{#7}
+
+    \def\huemin{20}
+    \def\huemax{80}
+
+    \pgfmathsetmacro{\iterations}{#5-1}
+    \foreach \i in {0,...,\iterations} {
+        \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
+        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
+
+        \foreach \j in {0,...,\iterations} {
+            \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
+            \ifnum\j=0
+                \pgfmathsetmacro{\innerhue}{\hue}
+            \fi
+
+            \ifnum\includefront=1
+                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
+            \fi
+
+            \ifnum\i=0
+                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
+            \fi
+        }
+    }
+}
+\newcommand{\convlayer}[7]{
+    \def\layerx{#1}
+    \def\layery{#2}
+    \def\layernodedepth{#3}
+    \def\layernodesize{#4}
+    \def\layernodecount{#5}
+    \def\layerdepth{#6}
+    \def\layercolour{#7}
+
+    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+    \foreach \i in {0,...,\layeriterations}{
+        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+        \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\layercolour}{\islast}
+    }
+}
+
+\newcommand{\modelarrow}[5]{
+    \begin{scope}[transparency group, opacity=0.5]
+        \draw[-stealth, line width=2pt, #3] #1 to [in=#4, out=#5] #2;
+    \end{scope}
+}
+
+\newcommand{\cnnarrow}[3]{
+    \modelarrow{#1}{#2}{#3}{180}{0}
+}
+
+\newcommand{\cnn}[6]{
+    \def\xmin{#1}
+    \def\ymin{#2}
+    \def\nodedepth{#3}
+    \def\nodesize{#4}
+    \def\modelcolour{#5}
+    \def\annotate{#6}
+
+    \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+    \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
+
+    \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+    \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
+
+    \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+    \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
+
+    \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+
+    \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
+                        (#1 + 5.13, #2 + 1.43) --
+                        (#1 + 5.13, #2 - 1.42) --
+                        (#1 + 0.22, #2 - 1.42) -- cycle;
+    \node[anchor=south, text depth=0] at (#1 + 2.675, #2 + 1.43) {
+        \textbf{#6}
+    };
+}
+
+\newcommand{\multitaskcnn}[6]{
+    \def\xmin{#1}
+    \def\ymin{#2}
+    \def\nodedepth{#3}
+    \def\nodesize{#4}
+    \def\modelcolour{#5}
+    \def\stage{#6}
+
+    \ifnum#6<7
+        \convlayer{#1 - 0.06 + 0.2}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+        \cnnarrow{(#1 + 0.55, #2)}{(#1+1.5, #2)}{#5}
+
+        \convlayer{#1 + 0.87 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+        \cnnarrow{(#1 + 1.46, #2)}{(#1+2.2, #2)}{#5}
+
+        \convlayer{#1 + 1.69 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+        \cnnarrow{(#1 + 2.27, #2)}{(#1+2.9, #2)}{#5}
+
+        \convlayer{#1 + 2.4 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+        \cnnarrow{(#1 + 3.02, #2)}{(#1+3.46, #2)}{#5}
+
+        \foreach \idx in {0, ..., 9} {
+            \pgfmathsetmacro{\y}{#2 + 0.45 - \idx * 0.1}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum height=0.1cm, minimum width=0.1cm, inner sep=0pt] (b\idx) at (#1 + 3.12 + 0.4, \y) {};
+        }
+    \fi
+    \ifnum#6>6
+        \ifnum#6<9
+            \lrplayer{#1 - 0.06 + 0.2}{#2 + 2.5 * #4}{#3}{#4}{12}{3}
+            \lrparrow{(#1+1.5, #2)}{(#1 + 0.55, #2)}{#5}
+
+            \lrplayer{#1 + 0.87 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}
+            \lrparrow{(#1+2.2, #2)}{(#1 + 1.46, #2)}{#5}
+
+            \lrplayer{#1 + 1.69 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+            \lrparrow{(#1+2.9, #2)}{(#1 + 2.27, #2)}{#5}
+
+            \lrplayer{#1 + 2.4 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+            \lrparrow{(#1+3.46, #2)}{(#1 + 3.02, #2)}{#5}
+
+            \foreach \idx in {0, ..., 9} {
+                \pgfmathsetmacro{\y}{#2 + 0.45 - \idx * 0.1}
+
+                \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+                \colorlet{fillcolour}{black!85}
+
+                \colorlet{lrpcolour}{red}
+                \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+                \ifnum\coinflip=1
+                    \colorlet{lrpcolour}{blue}
+                \fi
+
+                \ifnum\hue>0
+                    \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+                \fi
+
+                \node[draw=black, fill=fillcolour, minimum height=0.1cm, minimum width=0.1cm, inner sep=0pt] (b\idx) at (#1 + 3.12 + 0.4, \y) {};
+            }
+        \fi
+    \fi
+    \ifnum#6>8
+        \ifnum#6<11
+            \convlayer{#1 - 0.06 + 0.2}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+            \cnnarrow{(#1 + 0.55, #2)}{(#1+1.5, #2)}{#5}
+
+            \convlayer{#1 + 0.87 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+            \cnnarrow{(#1 + 1.46, #2)}{(#1+2.2, #2)}{#5}
+
+            \convlayer{#1 + 1.69 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+            \cnnarrow{(#1 + 2.27, #2)}{(#1+2.9, #2)}{#5}
+
+            \convlayer{#1 + 2.4 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+            \cnnarrow{(#1 + 3.02, #2)}{(#1+3.46, #2)}{#5}
+
+            \foreach \idx in {0, ..., 9} {
+                \pgfmathsetmacro{\y}{#2 + 0.45 - \idx * 0.1}
+                \pgfmathsetmacro{\hue}{int(random(20, 80))}
+                \node[draw=black, fill=\modelcolour!\hue!white, minimum height=0.1cm, minimum width=0.1cm, inner sep=0pt] (b\idx) at (#1 + 3.12 + 0.4, \y) {};
+            }
+        \fi
+    \fi
+    \ifnum#6>10
+        \lrplayer{#1 - 0.06 + 0.2}{#2 + 2.5 * #4}{#3}{#4}{12}{3}
+        \lrparrow{(#1+1.5, #2)}{(#1 + 0.55, #2)}{#5}
+
+        \lrplayer{#1 + 0.87 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}
+        \lrparrow{(#1+2.2, #2)}{(#1 + 1.46, #2)}{#5}
+
+        \lrplayer{#1 + 1.69 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+        \lrparrow{(#1+2.9, #2)}{(#1 + 2.27, #2)}{#5}
+
+        \lrplayer{#1 + 2.4 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+        \lrparrow{(#1+3.46, #2)}{(#1 + 3.02, #2)}{#5}
+
+        \foreach \idx in {0, ..., 9} {
+            \pgfmathsetmacro{\y}{#2 + 0.45 - \idx * 0.1}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum height=0.1cm, minimum width=0.1cm, inner sep=0pt] (b\idx) at (#1 + 3.12 + 0.4, \y) {};
+        }
+    \fi
+
+    \ifnum#6=0
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2) {
+            Brain age
+        };
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2)}{#5}
+    \fi
+
+    \ifnum#6=1
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2-1) {};
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2-0.6) {};
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2-0.2) {};
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2+0.2) {};
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2+0.6) {};
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] at (#1 + 4.5, #2+1) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2+1) {
+            Brain age
+        };
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2+0.6) {
+            Sex
+        };
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2+0.2) {
+            Handedness
+        };
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2-0.2) {
+            BMI
+        };
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2-0.6) {
+            Neuroticism
+        };
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 4.6, #2-1) {
+            IQ
+        };
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2+1)}{#5}
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2+0.6)}{#5}
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2+0.2)}{#5}
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2-0.2)}{#5}
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2-0.6)}{#5}
+        \cnnarrow{(#1 + 3.57, #2)}{(#1+4.37, #2-1)}{#5}
+    \fi
+
+    \ifnum#6=2
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] (out) at (#1 + 5.3, #2) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 5.4, #2) {
+            Brain age
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \draw[black, opacity=0.5, -stealth] (h2\idx) -- (out);
+        }
+    \fi
+
+    \ifnum#6=3
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=green!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \pgfmathsetmacro{\hue}{int(random(20, 80))}
+                \draw[green!\hue!white, opacity=0.75] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] (out) at (#1 + 5.3, #2) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 5.4, #2) {
+            Brain age
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=green!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \draw[green!\hue!white, opacity=0.75, -stealth] (h2\idx) -- (out);
+
+            \foreach \prev in {0, ..., 7} {
+                \pgfmathsetmacro{\hue}{int(random(20, 80))}
+                \draw[green!\hue!white, opacity=0.75] (h1\prev) -- (h2\idx);
+            }
+        }
+    \fi
+
+    \ifnum#6=4
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black!20, fill=black!10, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+        }
+
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h11) at (#1 + 3.65 + 0.4, #2+0.7-0.2) {};
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h14) at (#1 + 3.65 + 0.4, #2+0.7-0.8) {};
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h16) at (#1 + 3.65 + 0.4, #2+0.7-1.2) {};
+
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] (out) at (#1 + 5.3, #2) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 5.4, #2) {
+            Brain age
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black!20, fill=black!10, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+        }
+
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h20) at (#1 + 4.2 + 0.4, #2+0.7-0.2) {};
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h23) at (#1 + 4.2 + 0.4, #2+0.7-0.8) {};
+        \node[draw=red, fill=red!50, minimum size=0.15cm, inner sep=0pt, circle] (h25) at (#1 + 4.2 + 0.4, #2+0.7-1.2) {};
+
+        \draw[red, -stealth] (#1 + 3.57, #2+0.35) -- (h11);
+        \draw[red, -stealth] (#1 + 3.57, #2-0.05) -- (h14);
+        \draw[red, -stealth] (#1 + 3.57, #2-0.45) -- (h16);
+        \draw[red, -stealth] (h11) -- (h20);
+        \draw[red, -stealth] (h14) -- (h23);
+        \draw[red, -stealth] (h16) -- (h25);
+        \draw[red, -stealth] (h20) -- (out);
+        \draw[red, -stealth] (h23) -- (out);
+        \draw[red, -stealth] (h25) -- (out);
+    \fi
+
+    \ifnum#6=5
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=green!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \pgfmathsetmacro{\hue}{int(random(20, 80))}
+                \draw[green!\hue!white, opacity=0.75] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] (out) at (#1 + 5.3, #2) {};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 5.4, #2) {
+            Brain age
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=green!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \draw[green!\hue!white, opacity=0.75, -stealth] (h2\idx) -- (out);
+
+            \foreach \prev in {0, ..., 7} {
+                \pgfmathsetmacro{\hue}{int(random(20, 80))}
+                \draw[green!\hue!white, opacity=0.75] (h1\prev) -- (h2\idx);
+            }
+        }
+
+        \colorlet{dropout}{black!2}
+
+        \node[draw=dropout, fill=dropout, minimum height=0.08cm, minimum width=0.1cm, inner sep=0pt] at (#1 + 3.12 + 0.4, #2-0.15) {};
+        \node[draw=dropout, fill=dropout, minimum height=0.08cm, minimum width=0.1cm, inner sep=0pt] at (#1 + 3.12 + 0.4, #2-0.35) {};
+        \node[draw=dropout, fill=dropout, minimum height=0.08cm, minimum width=0.1cm, inner sep=0pt] at (#1 + 3.12 + 0.4, #2+0.35) {};
+    \fi
+
+    \ifnum#6=6
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node [
+            single arrow,
+            draw=black,
+            top color=white,
+            bottom color=black,
+            single arrow head extend=3pt,
+            transform shape,
+            minimum height=1cm,
+            text width=3cm,
+            rotate=90
+        ] (out) at (#1 + 5.3, #2){};
+        \node[anchor=west, font=\scriptsize] at (#1 + 5.4, #2-1.6) {0};
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=north, rotate=90] at (#1 + 5.4, #2) {
+            Brain age
+        };
+        \draw[thick, red] (#1 + 5.17, #2+1.1) -- (#1 + 5.43, #2+1.1);
+        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+1.1) {
+            Prediction
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \draw[black, opacity=0.5, -stealth] (h2\idx) -- (out);
+        }
+    \fi
+    \ifnum#6=7
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node [
+            single arrow,
+            draw=black,
+            top color=white,
+            bottom color=black,
+            single arrow head extend=3pt,
+            transform shape,
+            minimum height=1cm,
+            text width=3cm,
+            rotate=90
+        ] (out) at (#1 + 5.3, #2){};
+        \node[anchor=west, font=\scriptsize] at (#1 + 5.4, #2-1.6) {0};
+        \draw[stealth-stealth,red] (#1 + 5.3, #2+1.1) -- (#1 + 5.3, #2-1.6);
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=north, rotate=90] at (#1 + 5.4, #2) {
+            Brain age
+        };
+        \draw[thick, red] (#1 + 5.17, #2+1.1) -- (#1 + 5.43, #2+1.1);
+        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+1.1) {
+            Prediction
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \draw[black, opacity=0.5, stealth-] (h2\idx) -- (out);
+        }
+    \fi
+
+    \ifnum#6=8
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \node [
+            single arrow,
+            draw=black,
+            top color=white,
+            bottom color=black,
+            single arrow head extend=3pt,
+            transform shape,
+            minimum height=1cm,
+            text width=3cm,
+            rotate=90
+        ] (out) at (#1 + 5.3, #2){};
+        \node[anchor=west, font=\scriptsize] at (#1 + 5.4, #2-1.6) {0};
+        \draw[stealth-stealth,red] (#1 + 5.3, #2+1.1) -- (#1 + 5.3, #2+0.8);
+
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=north, rotate=90] at (#1 + 5.4, #2) {
+            Brain age
+        };
+        \draw[thick, red] (#1 + 5.17, #2+1.1) -- (#1 + 5.43, #2+1.1);
+        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+1.1) {
+            Prediction
+        };
+
+        \draw[thick, red] (#1 + 5.17, #2+0.8) -- (#1 + 5.43, #2+0.8);
+        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+0.8) {
+            Chronological
+        };
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \draw[black, opacity=0.5, stealth-] (h2\idx) -- (out);
+        }
+    \fi
+
+    \ifnum#6=9
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \foreach \idx in {0, ..., 4} {
+            \pgfmathsetmacro{\y}{#2+0.66-0.33*\idx}
+            \pgfmathsetmacro{\age}{int(60+\idx)}
+            \node[
+                circle,
+                minimum size=0.25cm,
+                inner sep=0pt,
+                draw=black,
+                label=right:\scriptsize{$\delta_{\age}$}
+            ] (pred\idx) at (#1 + 5.3, \y) {};
+        }
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \foreach \pred in {0, ..., 4}{
+                \draw[black, opacity=0.5] (h2\idx) -- (pred\pred);
+            }
+        }
+    \fi
+
+    \ifnum#6=10
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \foreach \idx in {0, ..., 4} {
+            \pgfmathsetmacro{\y}{#2+0.66-0.33*\idx}
+            \pgfmathsetmacro{\age}{int(60+\idx)}
+            \node[
+                circle,
+                minimum size=0.25cm,
+                inner sep=0pt,
+                draw=red,
+                label=right:\scriptsize{\textcolor{red}{$\delta_{\age}$}}
+            ] (pred\idx) at (#1 + 5.3, \y) {};
+        }
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+            \pgfmathsetmacro{\hue}{int(random(20, 80))}
+            \node[draw=black, fill=\modelcolour!\hue!white, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \foreach \pred in {0, ..., 4}{
+                \draw[black, opacity=0.5] (h2\idx) -- (pred\pred);
+            }
+        }
+    \fi
+
+    \ifnum#6=11
+        \foreach \idx in {0, ..., 7} {
+            \pgfmathsetmacro{\y}{#2 + 0.7 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h1\idx) at (#1 + 3.65 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 9} {
+                \draw[black, opacity=0.5] (b\prev.east) -- (h1\idx);
+            }
+        }
+
+        \foreach \idx in {0, ..., 4} {
+            \pgfmathsetmacro{\y}{#2+0.66-0.33*\idx}
+            \pgfmathsetmacro{\age}{int(60+\idx)}
+            \node[
+                circle,
+                minimum size=0.25cm,
+                inner sep=0pt,
+                draw=black!20,
+                label=right:\scriptsize{\textcolor{black!20}{$\delta_{\age}$}}
+            ] (pred\idx) at (#1 + 5.3, \y) {};
+        }
+
+        \foreach \idx in {0, ..., 5} {
+            \pgfmathsetmacro{\y}{#2 + 0.5 - \idx * 0.2}
+
+            \pgfmathsetmacro{\hue}{int(random(-50, 100))}
+            \colorlet{fillcolour}{black!85}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!fillcolour}
+            \fi
+
+            \node[draw=black, fill=fillcolour, minimum size=0.15cm, inner sep=0pt, circle] (h2\idx) at (#1 + 4.2 + 0.4, \y) {};
+
+            \foreach \prev in {0, ..., 7} {
+                \draw[black, opacity=0.5] (h1\prev) -- (h2\idx);
+            }
+            \foreach \pred in {0, ..., 4}{
+                \draw[black, opacity=0.2] (h2\idx) -- (pred\pred);
+            }
+        }
+
+        \node[
+            circle,
+            minimum size=0.25cm,
+            inner sep=0pt,
+            draw=red,
+            label=right:\scriptsize{\textcolor{red}{$\delta_{62}$}}
+        ] at (#1 + 5.3, #2) {};
+        \draw[red,-stealth] (pred2) -- (h20);
+        \draw[red,-stealth] (pred2) -- (h21);
+        \draw[red,-stealth] (pred2) -- (h22);
+        \draw[red,-stealth] (pred2) -- (h23);
+        \draw[red,-stealth] (pred2) -- (h24);
+        \draw[red,-stealth] (pred2) -- (h25);
+    \fi
+}
+
+\newcommand{\multitaskbox}[1]{
+    \begin{tikzpicture}
+        \node[] at (-2.5, -2.5) {};
+        \node[] at (6.7, 2.5) {};
+
+        \ifnum#1<7
+            \inputside{-1.4}{0}{1cm}{0.5}
+
+            \cnnarrow{(input.east)}{($ (input.center) + (1.5, 0) $)}{black}
+        \fi
+        \ifnum#1>6
+            \ifnum#1<9
+                \heatmapside{-1.4}{0}{1cm}{0.5}
+
+                \lrparrow{($ (input.center) + (1.5, 0) $)}{(input.east)}{black}
+            \fi
+        \fi
+        \ifnum#1>8
+            \ifnum#1<11
+                \inputside{-1.4}{0}{1cm}{0.5}
+
+                \cnnarrow{(input.east)}{($ (input.center) + (1.5, 0) $)}{black}
+            \fi
+        \fi
+        \ifnum#1=11
+            \heatmapside{-1.4}{0}{1cm}{0.5}
+
+            \lrparrow{($ (input.center) + (1.5, 0) $)}{(input.east)}{black}
+        \fi
+
+        \multitaskcnn{-0.43}{0}{0.044}{0.1}{black}{#1}
+    \end{tikzpicture}
+}
+
+\newcommand{\featurespace}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=2.7cm,
+            width=2.7cm,
+            xmajorticks=false,
+            ymajorticks=false
+        ]
+        \addplot[
+            only marks,
+            mark=*,
+            mark options={
+                draw=black,
+                fill=white,
+                scale=0.75
+            },
+            opacity=0.5,
+            discard if not={label}{0}
+        ] table [
+            col sep=comma,
+            x=x,
+            y=y
+        ] {#1};
+        \addplot[
+            only marks,
+            mark=*,
+            mark options={
+                draw=black,
+                fill=red,
+                scale=0.75
+            },
+            opacity=0.5,
+            discard if not={label}{1}
+        ] table [
+            col sep=comma,
+            x=x,
+            y=y
+        ] {#1};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\inputspace}
+\sbox{\inputspace}{
+    \featurespace{data/input_space.csv}
+}
+\newsavebox{\firstfeaturespace}
+\sbox{\firstfeaturespace}{
+    \featurespace{data/first_feature_space.csv}
+}
+\newsavebox{\secondfeaturespace}
+\sbox{\secondfeaturespace}{
+    \featurespace{data/second_feature_space.csv}
+}
+\newsavebox{\thirdfeaturespace}
+\sbox{\thirdfeaturespace}{
+    \featurespace{data/third_feature_space.csv}
+}
