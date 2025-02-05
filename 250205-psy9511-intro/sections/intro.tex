@@ -5,7 +5,7 @@
         \node[] at (-5.25, -3.5) {};
         \node[] at (5.25, 3.5) {};
         \visible<1-3>{
-            \node[text width=10.5cm] at (0, 0) {
+            \node[text width=10.5cm, align=flush left] at (0, 0) {
                 \textbf{Key terminology:}
                 \begin{itemize}
                     \item Statistical learning: A set of tools (often called models) for understanding data
@@ -13,11 +13,11 @@
                     \begin{itemize}
                         \item<2-> Often has a focus on prediction
                         \item<2-> Often uses very large datasets
-                        \item<2-> More of a focus on computer science and engineering
+                        \item<2-> More common among practitioners with a computer science or engineering background
                         \item<2-> More pragmatic in nature(?)
                     \end{itemize}
-                    \item<3> Supervised learning: We know what task we want to solve
-                    \item<3> Unsupervised learning: We don't know what task we want to solve (or we don't have the data we need to solve it)
+                    \item<3> Supervised learning: We know what task we want the model to solve
+                    \item<3> Unsupervised learning: We don't know what task we want the model to solve (or we don't have the data needed to solve it)
                 \end{itemize}
             };
         }
@@ -421,7 +421,7 @@
                 Model training
             };
             \node[draw=black, fill=gray!20, minimum height=0.6cm, rounded corners=0.1cm, anchor=west] (eval) at ($ (train.east) + (0.5, 0) $) {
-                Model evaluation
+                Model application
             };
             \draw[-stealth] (prep) -- (train);
             \draw[-stealth] (train) -- (eval);
@@ -573,8 +573,8 @@
                     \item Although a bunch of things can vary (e.g. how we preprocess the data, the type of model, how we measure performance), the overall pattern very often remains the same:
                     \begin{enumerate}
                         \item Data preparation
-                        \item Model training
-                        \item Model evaluation
+                        \item Train the model
+                        \item Apply the model
                     \end{enumerate}
                 \end{itemize}
             };
@@ -666,7 +666,7 @@
         \visible<4-5>{
             \node[anchor=north, text width=5cm, align=center, text depth=0] at (-2.675, -2) {
                 \underline{\textbf{Mean squared error (MSE):}}\\
-                $\dfrac{1}{n}\sum_{i=1}^n(y_i-\hat{y}_i)^2$
+                $\dfrac{1}{n}\sum_{i=0}^n(y_i-\hat{y}_i)^2$
             };
         }
         \visible<5>{
@@ -700,7 +700,7 @@
             };
             \node[anchor=north, text width=5cm, align=center, text depth=0, text=gray!20] at (-2.675, -2) {
                 \underline{\textbf{Mean squared error (MSE):}}\\
-                $\dfrac{1}{n}\sum_{i=1}^n(y_i-\hat{y}_i)^2$
+                $\dfrac{1}{n}\sum_{i=0}^n(y_i-\hat{y}_i)^2$
             };
             \node[anchor=south west, ampersand replacement=\&, text=red!20, inner sep=0pt] (regloss) at (regdata.south east) {
                 \begin{tabular}{c}
@@ -734,7 +734,7 @@
         \visible<8-9>{
             \node[anchor=north, text width=5cm, align=center, text depth=0] at (2.675, -2) {
                 \underline{\textbf{Accuracy:}}\\
-                $\dfrac{1}{n}\sum_{i=1}^n \mathds{1}(y=\hat{y})$
+                $\dfrac{1}{n}\sum_{i=0}^n \mathds{1}(y=\hat{y})$
             };
         }
         \visible<9>{
@@ -750,7 +750,7 @@
             };
             \draw[red, thick] ($ (classloss.south east) - (-0.25, -0.06) $) -- ++(-0.7, 0);
             \node[text=red, anchor=north east, inner sep=0pt] at ($ (classloss.south east) - (-0.25, 0.1) $) {
-                $\mathbf{0.66}$
+                $\mathbf{0.60}$
             };
         }
         \only<10,13>{
@@ -787,7 +787,7 @@
                 \begin{itemize}
                     \item Regression problems deal with continuous outputs
                     \item Classification problems deal with categorical outputs
-                    \item There is a range of metrics to evaluate model performance
+                    \item There is a range of metrics to evaluate model performance, each suitable for different purposes
                 \end{itemize}
             };
         }
@@ -1561,7 +1561,7 @@
         }
         \visible<8>{
             \node[text width=10.5cm] at (0, 0) {
-                \textbf{Classification can be seen as the task of finding a decision boundary that best separates our classes in a high-dimensional space represented by our predictors}
+                \textbf{Classification can be seen as the task of finding a decision boundary that best separates our classes in a high-dimensional vector space representing our predictors}
                 \begin{itemize}
                     \item The Bayes classifier is the best classifier that can be theoretically achieved (although in practice we have to approimate it using data)
                     \item The Bayes error rate quantifies the error of the best possible classifier
