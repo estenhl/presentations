@@ -30,6 +30,9 @@
 \newcommand{\inputside}[4]{
     \mriside{#1}{#2}{#3}{data/mri_sagittal.png}{#4}
 }
+\newcommand{\heatmapside}[3]{
+    \mriside{#1}{#2}{#3}{data/combined_sagittal.png}
+}
 
 \newcommand{\convside}[6]{
     \def\sidex{#1}
@@ -105,6 +108,59 @@
         }
     }
 }
+
+
+\newcommand{\lrpchannel}[6]{
+    \def\channelx{#1}
+    \def\channely{#2}
+    \def\channelnodedepth{#3}
+    \def\channelnodesize{#4}
+    \def\channelnodecount{#5}
+    \def\includefront{#6}
+
+    \colorlet{bgcolour}{black!85}
+
+    \pgfmathsetmacro{\iterations}{#5-1}
+    \foreach \i in {0,...,\iterations} {
+        \pgfmathsetmacro{\hue}{int(random(-150, 100))}
+        \colorlet{fillcolour}{bgcolour}
+
+        \colorlet{lrpcolour}{red}
+        \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+        \ifnum\coinflip=1
+            \colorlet{lrpcolour}{blue}
+        \fi
+
+        \ifnum\hue>0
+            \colorlet{fillcolour}{lrpcolour!\hue!bgcolour}
+        \fi
+
+        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{fillcolour}{n\i0}
+
+        \foreach \j in {0,...,\iterations} {
+            \pgfmathsetmacro{\innerhue}{int(random(-150, 100))}
+            \colorlet{innerfillcolour}{bgcolour}
+
+            \ifnum\innerhue>0
+                \colorlet{innerfillcolour}{lrpcolour!\innerhue!bgcolour}
+            \fi
+
+            \ifnum\j=0
+                \colorlet{innerfillcolour}{fillcolour}
+            \fi
+
+            \ifnum\includefront=1
+                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{innerfillcolour}
+            \fi
+
+            \ifnum\i=0
+                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{innerfillcolour}
+            \fi
+        }
+    }
+}
+
 \newcommand{\convlayer}[7]{
     \def\layerx{#1}
     \def\layery{#2}
@@ -122,6 +178,22 @@
     }
 }
 
+\newcommand{\lrplayer}[6]{
+    \def\layerx{#1}
+    \def\layery{#2}
+    \def\layernodedepth{#3}
+    \def\layernodesize{#4}
+    \def\layernodecount{#5}
+    \def\layerdepth{#6}
+
+    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+    \foreach \i in {0,...,\layeriterations}{
+        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+        \lrpchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\islast}
+    }
+}
+
 \newcommand{\modelarrow}[5]{
     \begin{scope}[transparency group, opacity=0.5]
         \draw[-stealth, line width=2pt, #3] #1 to [in=#4, out=#5] #2;
@@ -130,6 +202,10 @@
 
 \newcommand{\cnnarrow}[3]{
     \modelarrow{#1}{#2}{#3}{180}{0}
+}
+
+\newcommand{\lrparrow}[3]{
+    \modelarrow{#1}{#2}{#3}{0}{180}
 }
 
 \newcommand{\cnn}[6]{
@@ -598,31 +674,10 @@
             }
         }
 
-        \node [
-            single arrow,
-            draw=black,
-            top color=white,
-            bottom color=black,
-            single arrow head extend=3pt,
-            transform shape,
-            minimum height=1cm,
-            text width=3cm,
-            rotate=90
-        ] (out) at (#1 + 5.3, #2){};
-        \node[anchor=west, font=\scriptsize] at (#1 + 5.4, #2-1.6) {0};
-        \draw[stealth-stealth,red] (#1 + 5.3, #2+1.1) -- (#1 + 5.3, #2+0.8);
+        \node[circle, minimum size=0.25cm, inner sep=0pt, draw=black] (out) at (#1 + 5.3, #2) {};
 
-        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=north, rotate=90] at (#1 + 5.4, #2) {
+        \node[font=\scriptsize\linespread{0.9}\selectfont, align=left, anchor=west] at (#1 + 5.4, #2) {
             Brain age
-        };
-        \draw[thick, red] (#1 + 5.17, #2+1.1) -- (#1 + 5.43, #2+1.1);
-        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+1.1) {
-            Prediction
-        };
-
-        \draw[thick, red] (#1 + 5.17, #2+0.8) -- (#1 + 5.43, #2+0.8);
-        \node[font=\tiny\selectfont, text=red, anchor=west] at (#1 + 5.43, #2+0.8) {
-            Chronological
         };
 
         \foreach \idx in {0, ..., 5} {
@@ -837,6 +892,27 @@
 
         \multitaskcnn{-0.43}{0}{0.044}{0.1}{black}{#1}
     \end{tikzpicture}
+}
+
+\newsavebox{\multitaskbrainage}
+\sbox{\multitaskbrainage}{
+    \multitaskbox{0}
+}
+\newsavebox{\multitaskmultitask}
+\sbox{\multitaskmultitask}{
+    \multitaskbox{1}
+}
+\newsavebox{\multitaskfinetune}
+\sbox{\multitaskfinetune}{
+    \multitaskbox{2}
+}
+\newsavebox{\multitasktrain}
+\sbox{\multitasktrain}{
+    \multitaskbox{3}
+}
+\newsavebox{\multitaskdelta}
+\sbox{\multitaskdelta}{
+    \multitaskbox{8}
 }
 
 \newcommand{\featurespace}[1]{

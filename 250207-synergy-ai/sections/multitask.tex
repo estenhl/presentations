@@ -1,14 +1,5 @@
 \section{Multitask pretraining}
 
-\newsavebox{\multitaskbrainage}
-\sbox{\multitaskbrainage}{
-    \multitaskbox{0}
-}
-\newsavebox{\multitaskmultitask}
-\sbox{\multitaskmultitask}{
-    \multitaskbox{1}
-}
-
 \newcommand{\featureplot}[2]{
     \begin{tikzpicture}
         \begin{axis}[
@@ -51,6 +42,143 @@
 \newsavebox{\multicorrelations}
 \sbox{\multicorrelations}{
     \featureplot{data/sfcn-multi.csv}{-1}
+}
+
+\newcommand{\bapredictions}[4]{
+    \ifnum#4=1
+        \def\annotations{, xlabel={Chronological age}, ylabel={Predicted age}}%
+    \else
+        \def\annotations{, yticklabels={,,}}%
+    \fi
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.7cm,
+            width=5.7cm,
+            xmin=0,
+            xmax=100,
+            ymin=0,
+            ymax=100,
+            xtick pos=bottom,
+            ytick pos=left,
+            title=#2,
+            xtick style={draw=none},
+            ytick style={draw=none},
+            xmajorgrids=true,
+            ymajorgrids=true,
+            clip=false,
+            title style={text depth=0, font=\large\bfseries},
+            \annotations
+        ]
+            \addplot[thick] coordinates {(0, 0) (100, 100)};
+            \addplot[
+                only marks,
+                mark=*,
+                blue,
+                opacity=0.1,
+                mark options={
+                    scale=0.5
+                }
+            ] table [
+                col sep=comma,
+                x=true,
+                y=predicted
+            ] {#1};
+            \node[anchor=south east, font=\small\bfseries, text=red] at (rel axis cs: 1, 0) {
+                MAE=#3
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\bareg}
+\sbox{\bareg}{
+    \bapredictions{data/reg_test_age.csv}{Brain age}{3.68}{1}
+}
+\newsavebox{\bamulti}
+\sbox{\bamulti}{
+    \bapredictions{data/multi_test_age.csv}{Multitask}{3.41}{0}
+}
+
+\newcommand{\tltrace}[3]{
+    \addplot[
+        #2,
+        mark=*,
+        draw opacity=0.75,
+        fill opacity=0.75,
+        thick,
+        mark options={
+            scale=1.5
+        }
+    ] table [
+        col sep=comma,
+        x=size,
+        y=#2_#3_mean
+    ] {#1};
+}
+
+
+\newsavebox{\tlbrainage}
+\sbox{\tlbrainage}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=7cm,
+            width=10cm,
+            xtick pos=bottom,
+            ytick style={draw=none},
+            ymajorgrids=true,
+            xlabel={Dataset size},
+            ylabel=Out-of-sample\\relative absolute error,
+            title=\textbf{Retraining a brain age model},
+            legend style={
+                font=\footnotesize
+            },
+            legend cell align={left},
+            ylabel style={align=center},
+            title style={yshift=-0.15cm, text depth=0}
+        ]
+            \tltrace{data/age_top.csv}{none}{loss}
+            \tltrace{data/age_top.csv}{pretrained}{loss}
+            \tltrace{data/age_top.csv}{freeze}{loss}
+            \tltrace{data/age_top.csv}{finetune}{loss}
+
+            \addlegendentry{Baseline}
+            \addlegendentry{Pretrained (frozen)}
+            \addlegendentry{Pretrained (extraction)}
+            \addlegendentry{Pretrained (finetuned)}
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\tlad}
+\sbox{\tlad}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=7cm,
+            width=10cm,
+            xtick pos=bottom,
+            ytick style={draw=none},
+            ymajorgrids=true,
+            xlabel={Dataset size},
+            ylabel=Out-of-sample\\area under the ROC curve,
+            title=\textbf{Retraining an AD classifier},
+            legend style={
+                font=\footnotesize,
+                anchor=south east,
+                at={(0.95, 0.05)}
+            },
+            legend cell align={left},
+            ylabel style={align=center},
+            title style={yshift=-0.15cm, text depth=0}
+        ]
+            \tltrace{data/ad.csv}{none}{loss}
+            \tltrace{data/ad.csv}{freeze}{loss}
+            \tltrace{data/ad.csv}{finetune}{loss}
+
+            \addlegendentry{Baseline}
+            \addlegendentry{Pretrained (extraction)}
+            \addlegendentry{Pretrained (finetuned)}
+        \end{axis}
+    \end{tikzpicture}
 }
 
 \begin{frame}{Multitask pretraining}
@@ -141,18 +269,21 @@
             };
         }
         \visible<9>{
-            \node[] at (0, 0) {
-                Brain age predictions
+            \node[] at (-2.4, 0) {
+                \usebox{\bareg}
+            };
+            \node[] at (2.8, 0.29) {
+                \usebox{\bamulti}
             };
         }
         \visible<10>{
             \node[] at (0, 0) {
-                Brain age transfer learning
+                \usebox{\tlbrainage}
             };
         }
         \visible<11>{
             \node[] at (0, 0) {
-                AD transfer learning
+                \usebox{\tlad}
             };
         }
     \end{tikzpicture}
