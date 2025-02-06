@@ -1,3 +1,5 @@
+\section{How can we understand these features?}
+
 \newcommand{\largefeaturespace}[1]{
     \begin{tikzpicture}
         \ifnum#1>4
@@ -7,12 +9,13 @@
         \fi
 
         \ifnum#1=6
-            \def\axisTextColor{, x label style={red}}%
+            \def\axisTextColor{, x label style={red, text depth=0}}%
         \else
-            \def\axisTextColor{}%
+            \def\axisTextColor{, x label style={text depth=0}}%
         \fi
 
         \ifnum#1=4
+            \def\axisTextColor{, x label style={red, text depth=0}}
             \def\axisText{, xlabel=Cortical atrophy}%
         \else
             \def\axisText{, xlabel=Feature 1}%
@@ -109,24 +112,24 @@
         \node[draw=black] at (-5.25, -3.5) {};
         \node[draw=black] at (5.25, 3.5) {};
 
-        \visible<2>{
+        \visible<1>{
             \node[font=\Large\bfseries] at (0, 0) {
                 Explainable AI!
             };
         }
 
-        \visible<3>{
+        \visible<2>{
             \node[] at (-3, 1) {
                 \usebox{\largefeaturespacenone}
             };
         }
-        \visible<4-5>{
+        \visible<3-4>{
             \node[] at (-3, 1) {
                 \usebox{\largefeaturespaceactivation}
             };
         }
 
-        \visible<5>{
+        \visible<4>{
             \node[anchor=north, font=\bfseries, text depth=0] at (2.5, 3.55) {
                 Activation maximization
             };
@@ -134,12 +137,12 @@
                 \includegraphics[width=5cm]{data/dogception.png}
             };
         }
-        \visible<6-7>{
+        \visible<5-6>{
             \node[] at (-3, 1) {
                 \usebox{\largefeaturespacesaliency}
             };
         }
-        \visible<7>{
+        \visible<6>{
             \node[anchor=north, font=\bfseries, text depth=0] at (2.5, 3.55) {
                 Saliency mapping
             };
@@ -147,41 +150,41 @@
                 \includegraphics[width=4cm]{data/gradcam.jpg}
             };
         }
-        \visible<8-14>{
+        \visible<7-11>{
             \node[] (imagefeatures) at (-3, 1) {
                 \usebox{\largefeaturespaceconcept}
             };
         }
-        \visible<8-15>{
+        \visible<7-12>{
             \node[] at (-2.75, -2.3) {
                 \includegraphics[width=2.5cm]{data/mri_sagittal.png}
             };
         }
-        \visible<9-10>{
+        \visible<8-9>{
             \node[draw=black, text width=4cm, align=flush left] at (2.75, -2.3) {
                 The patient shows cortical atrophy, reduced hippocampal volumes and enlarged ventricles
             };
         }
-        \visible<10-12>{
+        \visible<9>{
             \node[] (textfeatures) at (2.5, 1) {
                 \usebox{\largefeaturespacetext}
             };
         }
-        \visible<11-15>{
+        \visible<10-12>{
             \node[draw=black, text width=4cm, align=flush left] (report) at (2.75, -2.3) {
                 The patient shows \textcolor{red}{cortical atrophy}, reduced hippocampal volumes and enlarged ventricles
             };
             \draw[-stealth, red, thick] ($ (report) + (-0.8, 0.4) $) -- ($ (textfeatures.south) + (0.2, 0.1) $);
         }
-        \visible<13-15>{
+        \visible<10-12>{
             \node[] (textfeatures) at (2.5, 1) {
                 \usebox{\largefeaturespacetextred}
             };
         }
-        \visible<14-15>{
+        \visible<11-12>{
             \draw[red, stealth-stealth, thick] ($ (imagefeatures.east) + (-0.47, 0.45) $) -- ($ (textfeatures.west) + (0.94, 0.45) $);
         }
-        \visible<15>{
+        \visible<12>{
             \node[] (imagefeatures) at (-3, 1) {
                 \usebox{\largefeaturespacelabel}
             };
