@@ -1,6 +1,10 @@
 \documentclass{beamer}
 
 \usepackage{emoji}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
 
 \usetheme{PSY9511}
 
@@ -125,7 +129,7 @@
                     \{\emoji{laptop}, \emoji{mobile-phone}\}
                 };
             }
-            \visible<3>{
+            \visible<4>{
                 \node[] at (0, 1) {
                     $\{1, 3, 5\}$
                 };
@@ -136,22 +140,133 @@
                     $\{\}$
                 };
             }
-            \visible<4-6>{
-                \node[] at (0, 1.5) {
-                    $\{0, 1, 2, \ldots, 9999, 10000\}$
-                };
-            }
             \visible<5-6>{
                 \node[] at (0, 0.5) {
-                    $\{x\ |\ x \leq 10000\}$
+                    $\{1, 2, 3, \ldots\}$
                 };
             }
             \visible<6>{
                 \node[] at (0, -0.5) {
+                    $\{x\ |\ x > 0\}$
+                };
+            }
+            \visible<7>{
+                \node[] at (0, 0.5) {
                     $\{1, 3, 5, \ldots\}$
                 };
+                \node[] at (0, -0.5) {
+                    $\{x\ |\ x\ \%\ 2\neq0\}$
+                };
+            }
+            \visible<8-12>{
+                \node[align=center] at (0, 1.5) {
+                    \{\{\emoji{nerd-face}, \emoji{woman}, \emoji{girl}, \emoji{dog-face}\}, \{\emoji{nerd-face}, \emoji{smiling-face-with-sunglasses}, \emoji{face-with-monocle}, \emoji{woman-scientist},
+                    \emoji{woman-technologist}, \emoji{woman-teacher}\},\\\{monday, tuesday, wednesday, thursday, friday, saturday, sunday\},\\\{\emoji{laptop}, \emoji{mobile-phone}\}, $\{1, 3, 5\}$, $\{1, 10, 100\}$, $\{\}$, $\{x\ |\ x > 0\}$, $\{x\ |\ x\ \%\ 2\neq0\}$\}
+                };
+            }
+            \visible<9-12>{
+                \node[] at (0, 0) {
+                    $\{\{\}, \{0\}, \{1\}, \{0, 1\}, \ldots\}$
+                };
+            }
+            \visible<10-12>{
+                \node[] (s) at (0, -1) {
+                    $\{x\ |\ x \mathrm{\ is\ a\ set}\}$
+                };
+            }
+            \visible<11-12>{
+                \node[anchor=east] at ($ (s.west) + (0.2, 0) $) {
+                    $S=$
+                };
+            }
+            \visible<12>{
+                \node[] at (0, -2) {
+                    $S \in S\ ?$
+                };
+            }
+            \visible<13-16>{
+                \node[] at (-2.5, 1) {
+                    $S=\{\{\}, \{0\}, \{1\}, \{0, 1\}, \ldots, S, \ldots\}$
+                };
+                \node[] at (-2.5, 0) {
+                    $S \in S$
+                };
+            }
+            \visible<14-16>{
+                \node[] at (2.5, 1) {
+                    $S=\{1, 3, 5\}$
+                };
+                \node[] at (2.5, 0) {
+                    $S \notin S$
+                };
+            }
+            \visible<15-16>{
                 \node[] at (0, -1.5) {
-                    $\{x\ |\ x\ \%\ 2 = 1\}$
+                    $\{S\ |\ S \in S\}$
+                };
+            }
+            \visible<16>{
+                \node[] at (0, -2) {
+                    $\{S\ |\ S \notin S\}$
+                };
+            }
+
+            \visible<17-22>{
+                \node[] at (0, 1.5) {
+                    $T=\{S\ |\ S \notin S\}$
+                };
+            }
+            \visible<18-22>{
+                \node[] (q) at (0, 0.5) {
+                    $T \in T\ ?$
+                };
+            }
+            \visible<19-22>{
+                \node[] (no) at (-1.5, -1) {
+                    No ($T \notin T$)
+                };
+                \draw[-stealth] (q) -- (no);
+            }
+            \visible<20-22>{
+                \node[] (no2) at (-1.5, -2) {
+                    Yes
+                };
+                \draw[-stealth] (no) -- (no2);
+            }
+            \visible<21-22>{
+                \node[] (yes) at (1.5, -1) {
+                    Yes ($T \in T$)
+                };
+                \draw[-stealth] (q) -- (yes);
+            }
+            \visible<22>{
+
+                \node[] (yes2) at (1.5, -2) {
+                    No
+                };
+                \draw[-stealth] (yes) -- (yes2);
+            }
+            \visible<23>{
+                \node[inner sep=0pt, draw=black] at (0, 0) {
+                    \includegraphics[height=6cm]{data/fregecry.jpg}
+                };
+            }
+            \visible<24>{
+                \node[align=center, text width=10cm, align=flush center] at (0, 0) {
+                    \textit{"Hardly anything more unfortunate can befall a scientific writer than to have one of the foundations of his edifice shaken after the work is finished. This was the position I was placed in by a letter of Mr. Bertrand Russell, just when the printing of this volume was nearing its completion."}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Later examples}
+        \begin{tikzpicture}
+            \node[] at (-5.25, -3.5) {};
+            \node[] at (5.25, 3.5) {};
+
+            \visible<1>{
+                \node[inner sep=0pt, draw=black] at (0, 0) {
+                    \includegraphics[width=6cm]{data/gødel.jpg}
                 };
             }
         \end{tikzpicture}
