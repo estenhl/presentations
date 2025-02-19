@@ -1,6 +1,6 @@
 \documentclass[10pt]{beamer}
 
-\usetheme{metropolis}
+\usetheme{PSY9511}
 
 \usepackage[export]{adjustbox}
 \usepackage{array}
@@ -20,218 +20,6 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{patterns}
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=white,
-    urlcolor=blue!80
-}
-
-\definecolor{uiored}{HTML}{DD0000}
-\definecolor{uiolightred}{HTML}{FB6666}
-\definecolor{uioredtone}{HTML}{FEE0E0}
-\definecolor{uioblue}{HTML}{3E31D6}
-\definecolor{uiolightblue}{HTML}{86A4F7}
-\definecolor{uioblueone}{HTML}{E6ECFF}
-\definecolor{uiogreen}{HTML}{2EC483}
-\definecolor{uiolightgreen}{HTML}{6CE1AB}
-\definecolor{uiogreentone}{HTML}{CEFFDF}
-\definecolor{uioorange}{HTML}{FEA11B}
-\definecolor{uiolightorange}{HTML}{FDCB87}
-\definecolor{uioorangetone}{HTML}{FFE8D4}
-\definecolor{uioyellow}{HTML}{FFFEA7}
-\definecolor{uiogray}{HTML}{B2B3B7}
-
-\colorlet{mainbackground}{uiored}
-
-\setbeamercolor{frametitle}{bg=mainbackground, fg=white}
-\setbeamercolor{title separator}{fg=mainbackground}
-\setbeamercolor{progress bar in section page}{fg=white, bg=uiogray}
-
-\def\logowidth{4cm}
-
-\makeatletter
-\setbeamertemplate{section page}
-{
-  \begingroup
-
-    \vspace{4.3cm}
-    {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
-    {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
-
-    \vspace*{3.1cm}
-    \begin{center}
-        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
-    \end{center}
-
-  \endgroup
-}
-\makeatother
-
-\AtBeginSection{
-  {
-    \setbeamercolor{background canvas}{bg=uiored}
-    \setbeamercolor{section title}{fg=white}
-    \frame[plain,c,noframenumbering]{\sectionpage}
-    \setbeamercolor{background canvas}{bg=black!2}
-  }
-}
-
-
-
-\setbeamertemplate{footline}{
-    \ifnum\insertframenumber=1
-        % Title page, no footer
-    \else
-        \begin{tikzpicture}[remember picture,overlay]
-            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.45cm]current page.south east); % Draw filled rectangle
-
-            % Logo
-            \node[anchor=west, yshift=0.225cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
-
-            % Title and subtitle
-            \node[align=center, yshift=0.225cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.05cm]\textcolor{white}{\insertsubtitle}};
-
-            % Page number
-            \node[anchor=east, yshift=0.225cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
-        \end{tikzpicture}
-    \fi
-}
-
-\lstdefinestyle{Core}{
-    identifierstyle=\color[RGB]{0, 0, 0},
-    stringstyle=\color[RGB]{205, 49, 49},
-    showstringspaces=false,
-    breaklines,
-    xleftmargin=3pt,
-    xrightmargin=3pt,
-    framesep=3pt,
-    aboveskip=-1.5pt,
-    belowskip=-0.5pt,
-    showlines=true,
-}
-
-\lstdefinestyle{RInput}{
-    style=Core,
-    language=R,
-    keywordstyle=\color[RGB]{17, 115, 187},
-    commentstyle=\color[RGB]{0, 128, 0},
-    identifierstyle=\color[RGB]{0, 0, 0},
-    stringstyle=\color[RGB]{205, 49, 49},
-    backgroundcolor=\color[RGB]{255, 255, 255},
-    frame=single,
-    rulecolor=\color[RGB]{0, 0, 0},
-}
-
-\lstdefinestyle{PythonInput}{
-    style=Core,
-    language=Python,
-    keywordstyle=\color[RGB]{26, 13, 171},
-    commentstyle=\color[RGB]{0, 128, 0},
-    backgroundcolor=\color[RGB]{245, 245, 245},
-    rulecolor=\color[RGB]{192, 192, 192},
-    frame=tblr,
-}
-
-\lstdefinestyle{ROutput}{
-    style=Core,
-    language=R,
-    backgroundcolor=\color[RGB]{255, 255, 255},
-    commentstyle=\color[HTML]{009900},
-    stringstyle=\color[HTML]{0000FF},
-    keywordstyle=\color[HTML]{000000},
-    numberstyle=\tiny\color[HTML]{000000},
-    breakatwhitespace=true,
-    frame=single,
-    rulecolor=\color{black},
-}
-
-\lstdefinestyle{PythonOutput}{
-    backgroundcolor=\color[RGB]{255, 255, 255},
-    rulecolor=\color[RGB]{192, 192, 192},
-    frame=single,
-    numbers=none,
-    showstringspaces=false,
-    breakatwhitespace=true,
-    keywordstyle=\color[RGB]{255, 0, 0},
-    morekeywords={AttributeError}
-}
-
-\newcommand{\PythonInputNode}[6]{%
-    \node[
-        minimum width=#4,
-        text width=#4,
-        align=left,
-        inner sep=0pt,
-        outer sep=0pt,
-        anchor=north west,
-        label={[blue,
-                anchor=north east,
-                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
-                inner sep=0pt,
-                outer sep=0pt,
-                xshift=-3pt,
-                yshift=-3pt
-                ]north west:In{[}#1{]}:},
-    ] (#3) at #2 {
-    \begin{lstlisting}[
-        style=PythonInput,
-        linewidth=#4,
-        basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
-        numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
-    ]^^J
-        #6
-    \end{lstlisting}
-    };
-}
-
-\newcommand{\PythonOutputNode}[6]{%
-    \node[
-        minimum width=#4,
-        text width=#4,
-        align=left,
-        inner sep=0pt,
-        outer sep=0pt,
-        anchor=north west,
-        label={[red,
-                anchor=north east,
-                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
-                inner sep=0pt,
-                outer sep=0pt,
-                xshift=-6pt,
-                yshift=-11pt
-                ]north west:Out{[}#1{]}:}
-    ] (pythonoutput) (#3) at #2 {
-        \begin{lstlisting}[
-            style=PythonOutput,
-            basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
-            numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
-        ]^^J
-            #6
-        \end{lstlisting}
-    };
-}
-
-\newcommand{\RInputNode}[5]{
-    \node[
-        minimum width=#3,
-        text width=#3,
-        align=left,
-        inner sep=0pt,
-        outer sep=0pt,
-        draw=black,
-        anchor=north west
-    ] (#2) at #1 {
-        \begin{lstlisting}[
-            style=RInput,
-            linewidth=\textwidth,
-            basicstyle=\ttfamily\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont,
-            numberstyle=\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont\color[RGB]{128, 128, 128},
-        ]^^J
-            #5
-        \end{lstlisting}
-    };
-}
-
 \title{PSY9511: Seminar 2}
 \subtitle{The basics of regression and classification}
 \author{Esten H. Leonardsen}
@@ -248,2056 +36,2069 @@
 	 	\titlepage
 	\end{frame}
 
-    \begin{frame}[t]{Recap}
-        \only<1-4>{
-            \vspace{0.5cm}
-            \underline{What is statistical learning?}\\
-            \vspace{0.5cm}
-
-
-            \only<2>{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}
-            \only<3>{\textcolor{gray!20}{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
-            \only<4>{\small{\textcolor{gray!20}{\textbf{Inferentiental view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
-            \vspace{0.25cm}
-            \vspace{0.25cm}
-            \only<3>{\small{\textbf{Predictive view:} Finding a function $\hat{f}(X)$ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}
-            \only<4>{\small{\textcolor{gray!20}{\textbf{Predictive view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}}
-        }
-
-        \only<5-9>{
-            \centering
-            \begin{tikzpicture}
-                \begin{axis}[
-                    xtick pos=bottom,
-                    ytick pos=left,
-                    xmin=30,
-                    xmax=240,
-                    ymin=3,
-                    ymax=50,
-                    xlabel=Horsepower (x),
-                    ylabel=Miles per gallon (y),
-                    height=6.8cm,
-                    width=11cm
-                ]
-                    \addplot[
-                        only marks,
-                        opacity=0.6
-                    ] table [
-                        col sep=comma,
-                        x=horsepower,
-                        y=mpg
-                    ] {data/Auto.csv};
-                    \only<7>{
-                        \addplot[
-                            domain=30:240,
-                            samples=100,
-                            color=red,
-                            thick
-                        ] {39.93 - 0.1578*x};
-                    }
-                    \only<8>{
-                        \addplot[
-                            domain=30:240,
-                            samples=100,
-                            color=red,
-                            thick
-                        ] {23.44};
-                    }
-                    \only<9>{
-                        \addplot[
-                            domain=30:240,
-                            samples=100,
-                            color=red,
-                            thick
-                        ] {exp(3.86-0.0073*x)};
-                    }
-                \end{axis}
-            \end{tikzpicture}\\
-            \vspace{0.2cm}
-            \hspace{1.3cm}
-            \only<6>{
-                \textcolor{red}{$\hat{y}=\hat{f}(x)$}
-            }
-            \only<7>{
-                \textcolor{red}{$\hat{y}=39.93-0.1578x$}
-            }
-            \only<8>{
-                \textcolor{red}{$\hat{y}=23.44$}
-            }
-            \only<9>{
-                \textcolor{red}{$\hat{y}=e^{3.86-0.0073x}$}
-            }
-        }
-        \only<10>{
-            \centering
-            \begin{tikzpicture}
-                \node[inner sep=0pt, draw=black] {
-                    \includegraphics[width=6cm]{data/bias-variance.png}
-                };
-            \end{tikzpicture}
-        }
+    \begin{frame}{Outline}
+        \textbf{Today's lecture:}
+        \begin{enumerate}
+            \item Recap of last lecture
+            \item Proposed solution for Assignment 1
+            \item Basics of regression and classification
+            \item Presentation of Assignment 2
+        \end{enumerate}
     \end{frame}
 
-    \begin{frame}[t]{Outline}
-        \underline{Plan for the day:}
-        \begin{itemize}
-            \item Different types of outputs $y$: Regression vs classification
-            \item Linear regression: Restricting the scope of $\hat{f}(X)$
-            \begin{itemize}
-                \item Live coding
-            \end{itemize}
-            \item k-Nearest Neighbours
-            \item Logistic regression: Extending linear regression to classification
-            \begin{itemize}
-                \item Live coding
-            \end{itemize}
-            \item Generative models
-        \end{itemize}
-
-        \underline{Plan for future lectures:}
-        \begin{itemize}
-            \item How do we evaluate how good our models are? (Lecture 3)
-            \item Complex solutions to regression and classification problems (Lecture 4 and onwards)
-        \end{itemize}
-    \end{frame}
-
-    \newcommand{\weightnode}[3]{
-        \node[circle, draw=black, fill=teal!60, opacity=#3] at (#1, #2*3.5) {};
-    }
-
-    \newcommand{\weightplot}[1]{
-        \begin{tikzpicture}
-            \ifnum#1<3
-                \draw[|-Latex] (0, 3.3*3.5) -- (0, 4.6*3.5);
-                \weightnode{0}{3.850}{1.0}
-                \weightnode{0}{4.354}{1.0}
-            \fi
-            \ifnum#1>2
-                \draw[|-Latex,black!20] (0, 3.3*3.5) -- (0, 4.6*3.5);
-                \weightnode{0}{3.850}{0.2}
-                \weightnode{0}{4.354}{0.2}
-            \fi
-            \ifnum#1=1
-                \weightnode{0}{3.504}{1.0}
-                \weightnode{0}{3.693}{1.0}
-                \weightnode{0}{3.436}{1.0}
-                \weightnode{0}{3.433}{1.0}
-                \weightnode{0}{3.449}{1.0}
-                \weightnode{0}{4.341}{1.0}
-                \weightnode{0}{4.354}{1.0}
-                \weightnode{0}{4.312}{1.0}
-                \weightnode{0}{4.425}{1.0}
-            \fi
-            \ifnum#1>1
-                \weightnode{0}{3.504}{0.2}
-                \weightnode{0}{3.693}{0.2}
-                \weightnode{0}{3.436}{0.2}
-                \weightnode{0}{3.433}{0.2}
-                \weightnode{0}{3.449}{0.2}
-                \weightnode{0}{4.341}{0.2}
-                \weightnode{0}{4.354}{0.2}
-                \weightnode{0}{4.312}{0.2}
-                \weightnode{0}{4.425}{0.2}
-
-                \ifnum#1=2
-                    \draw[|-|, dashed] (0.5, 3.850*3.5) -- (0.5, 4.354*3.5);
-                    \node[anchor=west] at (0.5, 4.102*3.5) {\small{504}};
-                \fi
-            \fi
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\weightboxfirst}
-    \sbox{\weightboxfirst}{
-        \weightplot{1}
-    }
-
-    \newsavebox{\weightboxsecond}
-    \sbox{\weightboxsecond}{
-        \weightplot{2}
-    }
-
-    \newsavebox{\weightboxhidden}
-    \sbox{\weightboxhidden}{
-        \weightplot{3}
-    }
-
-    \newcommand{\manufacturernode}[5]{
-        \node[circle, draw=black, fill=#3, opacity=#4] (#5) at (#1, #2) {};
-    }
-
-
-    \newcommand{\manufacturerplot}[1]{
-        \begin{tikzpicture}
-            \colorlet{chewy}{blue!60}
-            \colorlet{ford}{red!60}
-            \colorlet{pontiac}{green!60}
-
-            \manufacturernode{0}{0}{chewy}{1.0}{c0}
-            \manufacturernode{1}{-1.2}{ford}{1.0}{f0}
-            \manufacturernode{-0.3}{-1.1}{pontiac}{1.0}{p0}
-
-            \ifnum#1=1
-                \manufacturernode{0.5}{0.4}{chewy}{1.0}{}
-                \manufacturernode{0.1}{0.5}{chewy}{1.0}{}
-
-                \manufacturernode{1.4}{-1.0}{ford}{1.0}{}
-                \manufacturernode{1.5}{-1.5}{ford}{1.0}{}
-                \manufacturernode{0.9}{-1.6}{ford}{1.0}{}
-
-                \manufacturernode{-0.1}{-1.5}{pontiac}{1.0}{}
-                \manufacturernode{0.2}{-1.05}{pontiac}{1.0}{}
-            \fi
-            \ifnum#1=2
-                \manufacturernode{0.5}{0.4}{chewy}{0.2}{}
-                \manufacturernode{0.1}{0.5}{chewy}{0.2}{}
-
-                \manufacturernode{1.4}{-1.0}{ford}{0.2}{}
-                \manufacturernode{1.5}{-1.5}{ford}{0.2}{}
-                \manufacturernode{0.9}{-1.6}{ford}{0.2}{}
-
-                \manufacturernode{-0.1}{-1.5}{pontiac}{0.2}{}
-                \manufacturernode{0.2}{-1.05}{pontiac}{0.2}{}
-
-                \draw[->, dashed] (c0) -- (f0) node[pos=0.7, above=0.15cm] {\footnotesize{?}};
-                \draw[->, dashed] (c0) -- (p0) node[pos=0.9, above=0.2cm] {\footnotesize{?}};;
-            \fi
-
-            \node[anchor=south] at (0.25, 0.7) {\textbf{\small{Chevrolet}}};
-            \node[anchor=north] at (1.2, -1.8) {\textbf{\small{Ford}}};
-            \node[anchor=north] at (0.05, -1.7) {\textbf{\small{Pontiac}}};
-
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\manufacturerboxfirst}
-    \sbox{\manufacturerboxfirst}{
-        \manufacturerplot{1}
-    }
-
-    \newsavebox{\manufacturerboxsecond}
-    \sbox{\manufacturerboxsecond}{
-        \manufacturerplot{2}
-    }
-
-    \begin{frame}{Regression vs. classification}
-        \only<1-5>{
-            \begin{tikzpicture}
-                \node[] at (-5.25, -3) {};
-                \node[] at (5.25, 3) {};
-                \only<1-2,4>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cc}
-                            \textbf{Weight}&\textbf{Manufacturer}\\
-                            3504&Chevrolet\\
-                            3693&Ford\\
-                            3436&Pontiac\\
-                            3433&Pontiac\\
-                            3449&Ford\\
-                            4341&Ford\\
-                            4354&Chevrolet\\
-                            4312&Ford\\
-                            4425&Pontiac\\
-                            3850&Chevrolet\\
-                        \end{tabular}
-                    };
-                }
-                \onslide<2,4>{
-                    \node[anchor=west] at (-4, 0) {
-                        \usebox{\weightboxfirst}
-                    };
-                }
-                \only<3>{
-                    \node[anchor=west] at (-4, 0) {
-                        \usebox{\weightboxsecond}
-                    };
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cc}
-                            \textbf{Weight}&\textcolor{gray!20}{\textbf{Manufacturer}}\\
-                            \textcolor{gray!20}{3504}&\textcolor{gray!20}{Chevrolet}\\
-                            \textcolor{gray!20}{3693}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{3436}&\textcolor{gray!20}{Pontiac}\\
-                            \textcolor{gray!20}{3433}&\textcolor{gray!20}{Pontiac}\\
-                            \textcolor{gray!20}{3449}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{4341}&\textcolor{gray!20}{Ford}\\
-                            4354&\textcolor{gray!20}{Chevrolet}\\
-                            \textcolor{gray!20}{4312}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{4425}&\textcolor{gray!20}{Pontiac}\\
-                            3850&\textcolor{gray!20}{Chevrolet}\\
-                        \end{tabular}
-                    };
-                }
-                \only<4>{
-                    \node[anchor=east] at (5, 0) {
-                        \usebox{\manufacturerboxfirst}
-                    };
-                }
-                \only<5>{
-                    \node[anchor=west] at (-4, 0) {
-                        \usebox{\weightboxhidden}
-                    };
-                    \node[anchor=east] at (5, 0) {
-                        \usebox{\manufacturerboxsecond}
-                    };
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cc}
-                            \textcolor{gray!20}{\textbf{Weight}}&\textbf{Manufacturer}\\
-                            \textcolor{gray!20}{3504}&\textcolor{gray!20}{Chevrolet}\\
-                            \textcolor{gray!20}{3693}&Ford\\
-                            \textcolor{gray!20}{3436}&\textcolor{gray!20}{Pontiac}\\
-                            \textcolor{gray!20}{3433}&\textcolor{gray!20}{Pontiac}\\
-                            \textcolor{gray!20}{3449}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{4341}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{4354}&Chevrolet\\
-                            \textcolor{gray!20}{4312}&\textcolor{gray!20}{Ford}\\
-                            \textcolor{gray!20}{4425}&Pontiac\\
-                            \textcolor{gray!20}{3850}&\textcolor{gray!20}{Chevrolet}\\
-                        \end{tabular}
-                    };
-
-                }
-            \end{tikzpicture}
-        }
-        \only<6>{
-            \centering
-            \begin{tikzpicture}
-                \node[align=center, anchor=north] at (0.5, 0) {
-                    \underline{\small{Mean squared error (MSE):}}\\[0.3cm]
-                    $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$
-                };
-                \node[align=center, anchor=north] at (6.5, 0) {
-                    \underline{\small{Accuracy}}\\[0.3cm]
-                    $\frac{1}{n}\sum_{i=1}^{n}\mathbbm{1}_{eq} (y_i,\hat{y}_i)$,\\
-                    $\mathbbm{1}_{eq}(a, b)=\begin{cases}1 & \text{if } a=b\\0 & \text{if } a\neq b\end{cases}$
-                };
-            \end{tikzpicture}
-        }
-        \only<7>{
-            Regression:
-            \begin{itemize}
-                \item Predicting reaction time on a cognitive task based on sleep scores
-                \item Predicting the age of an individual based on a brain scan
-                \item Predicting the anxiety scores based on questionnaire data
-            \end{itemize}
-            Classification:
-            \begin{itemize}
-                \item Predicting whether an individual is depressed based on cell phone usage data.
-                \item Predicting if a patient has dementia based on a brain scan
-                \item Predicting whether a patient is happy based on their facial expression
-            \end{itemize}
-        }
-        \only<8-9>{
-            \centering
-            \begin{tikzpicture}
-                \node[] at (-3, -3) {};
-                \node[] at (3, 3) {};
-
-                \node[] (l) at (0, 1.5) {Large};
-                \node[] (m) at (0, 0) {Medium};
-                \node[] (s) at (0, -1.5) {Small};
-
-                \only<9>{
-                    \draw[-stealth, line width=1mm] (-1, -1.5) -- (-1, 1.5);
-                    \draw[stealth-stealth] (l) -- (m) node[midway, right] {?};
-                    \draw[stealth-stealth] (m) -- (s) node[midway, right] {?};
-                }
-            \end{tikzpicture}
-        }
-        \only<10-11>{
-            \centering
-            \begin{tikzpicture}
-                \node[] at (-4.5, 1) {};
-                \node[] at (5.5, -4) {};
-                \node[] (sentence) at (0, 0) {
-                    The quick brown fox jumps over the lazy
-                };
-                \draw[red] ($ (sentence.south east) + (0, 0.15) $) -- ($ (sentence.south east) + (1, 0.15) $);
-                \only<11>{
-                    \draw (2,-2) ellipse (1.8cm and 0.9cm);
-                    \node[] at (3, -2.4) {\footnotesize{cat}};
-                    \node[] at (1, -2.2) {\textbf{\footnotesize{dog}}};
-                    \node[] at (2.1, -1.6) {\footnotesize{hurdle}};
-                    \node[] at (2, -3.3) {\small{Classification}};
-                }
-            \end{tikzpicture}
-        }
-        \only<12-13>{
-            \centering
-            \begin{tikzpicture}
-                \node[] at (-5.5, 2) {};
-                \node[] at (5, -4) {};
-
-                \node[align=center] (prompt) at (-4, 0) {
-                    "Students taking\\a machine learning\\class"
-                };
-                \node[fill=white, draw=black] (model) at (-1, 0) {
-                    \includegraphics[width=1cm]{data/chatgpt.png}
-                };
-                \node[] (output)at (2.5, 0) {
-                    \includegraphics[width=4cm]{data/ml-students.png}
-                };
-                \draw[-Latex] (prompt) -- (model);
-                \draw[-Latex] (model) -- (output);
-
-                \only<13>{
-                    \node[draw=black, fill=red!50, inner sep=5pt, opacity=0.9] at (-2, -3) {};
-                    \node[draw=black, fill=green!75, inner sep=5pt, opacity=0.9] (green) at (-1.9, -3.1) {};
-                    \node[draw=black, fill=blue!25, inner sep=5pt, opacity=0.9] at (-1.8, -3.2) {};
-                    \node[anchor=west] at ($ (green.east) + (0.2, 0) $) {(128, 192, 64)};
-                }
-            \end{tikzpicture}
-        }
-        \only<14>{
-            \centering
-            \begin{tikzpicture}
-                \node[] at (-5.25, 3.5) {};
-                \node[] at (5.25, -3.5) {};
-                \node[anchor=west] at (-5.25, 0) {
-                    \includegraphics[
-                        height=4.2cm,
-                        trim={0 0 13.8cm 0},
-                        clip
-                    ]{data/tumor.png}
-                };
-            \end{tikzpicture}
-        }
-        \only<15>{
-            \centering
-            \begin{tikzpicture}
-                \node[] at (-5.25, 3.5) {};
-                \node[] at (5.25, -3.5) {};
-                \node[anchor=west] at (-5.25, 0) {
-                    \includegraphics[height=4.2cm]{data/tumor.png}
-                };
-            \end{tikzpicture}
-        }
-        \only<16-17>{
-            \begin{tikzpicture}
-                \node[] at (-5.5, 3.5) {};
-                \node[] at (5, -3.5) {};
-                \node[] at (0, 0) {
-                    \includegraphics[width=5cm]{data/dog.png}
-                };
-                \draw[orange, thick] (-0.8, 1.4) -- (1.7, 1.4) -- (1.7, -1.8) -- (-0.8, -1.8) -- cycle;
-
-                \only<17>{
-                    \node[anchor=south, orange] at (0.45, 1.4) {Dog};
-                    \node[anchor=south, orange] at (-0.8, 1.4) {\footnotesize{(-0.8, 1.4)}};
-                    \node[anchor=south, orange] at (1.7, 1.4) {\footnotesize{(1.7, 1.4)}};
-                    \node[anchor=north, orange] at (-0.8, -1.8) {\footnotesize{(-0.8, -1.8)}};
-                    \node[anchor=north, orange] at (1.7, -1.8) {\footnotesize{(1.7, -1.8)}};
-                }
-
-            \end{tikzpicture}
-        }
-        \only<18-19>{
-            \begin{tikzpicture}
-                \node[] at (-5.5, 3.5) {};
-                \node[] at (5, -3.5) {};
-
-                \node[inner sep=0pt, draw=black] at (0, 1.5) {
-                    \includegraphics[width=3.5cm]{data/robot.png}
-                };
-                \only<19>{
-                    \node[inner sep=0pt, draw=black] at (0, -2) {
-                        \includegraphics[width=5cm]{data/sound.png}
-                    };
-                }
-            \end{tikzpicture}
-        }
-        \only<20>{
-            Different types of outputs $y$ require us to use different mathematical formulations of the problem we want to solve.
-            \begin{itemize}
-                \item Problems with quantitative outputs are solved via regression, often by minimizing the mean squared error.
-                \item Problems with qualitative outputs are solved by classification, often to maximize accuracy.
-                \item Ordinal regression falls between the two, with qualitative classes that have some kind of order.
-                \item A variety of other types of problems can be seen as special cases of these two.
-            \end{itemize}
-        }
-    \end{frame}
-
-    \newsavebox{\linreg}
-    \sbox{\linreg}{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xmin=30,
-                xmax=240,
-                ymin=3,
-                ymax=50,
-                width=5.2cm,
-                height=5.2cm,
-                ylabel=mpg,
-                xlabel=horsepower
-            ]
-                \addplot[
-                    only marks,
-                    opacity=0.3
-                ] table [
-                    col sep=comma,
-                    x=horsepower,
-                    y=mpg
-                ] {data/Auto.csv};
-                \addplot[
-                    domain=30:240,
-                    samples=100,
-                    color=red,
-                    thick
-                ] {39.93 - 0.1578*x};
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\residuals}
-    \sbox{\residuals}{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xmin=30,
-                xmax=240,
-                ymin=-20,
-                ymax=20,
-                width=5.2cm,
-                height=5.2cm,
-                ylabel=$y-\hat{y}$,
-                xlabel=horsepower
-            ]
-                \addplot[
-                    only marks,
-                    opacity=0.3
-                ] table [
-                    col sep=comma,
-                    x=horsepower,
-                    y=residuals
-                ] {data/residuals.csv};
-                \addplot[
-                    domain=30:240,
-                    samples=100,
-                    color=red,
-                    thick
-                ] {0};
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\multilinreg}
-    \sbox{\multilinreg}{
-        \begin{tikzpicture}
-            \begin{axis}[
-                width=8cm,
-                height=7cm, % Size of the plot
-                xlabel={Horsepower ($x_1$)},
-                ylabel={Weight ($x_2$)},
-                zlabel={Miles per gallon (y)},
-                view={25}{25}, % Adjust viewing angle colormap/cool,
-                xmin=30,
-                xmax=240,
-                ymin=1500,
-                ymax=5000,
-                zmin=3,
-                zmax=50,
-                xlabel style={sloped},
-                ylabel style={sloped},
-                xmajorgrids=true,
-                ymajorgrids=true,
-                zmajorgrids=true,
-                xtick style={draw=none},
-                ytick style={draw=none},
-                ztick style={draw=none}
-            ]
-                \addplot3[
-                    surf,
-                    samples=20,
-                    domain=30:240,
-                    y domain=1500:5000,
-                ] {45.64-0.04*x-0.005*y};
-                \addplot3[
-                    only marks,
-                    mark size=2.5pt,
-                    opacity=0.25
-                ] table [
-                    x=horsepower,
-                    y=weight,
-                    z=mpg,
-                    col sep=comma
-                ] {data/Auto.csv};
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newcommand{\binaryplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xmin=-0.5,
-                xmax=1.5,
-                xtick={0, 1},
-                xticklabels={Ford, Chevrolet},
-                ylabel=mpg,
-                height=7cm,
-                width=7cm
-            ]
-                \addplot[
-                    only marks,
-                    fill=blue,
-                    opacity=0.6
-                ] coordinates {
-                    (-0.065, 18)
-                    (-0.080, 15)
-                    (-0.038, 18)
-                    (-0.139, 16)
-                    (0.028, 17)
-                    (-0.140, 15)
-                    (-0.149, 14)
-                    (0.137, 14)
-                    (0.043, 14)
-                    (-0.101, 15)
-                    (0.007, 15)
-                    (-0.145, 14)
-                    (-0.106, 15)
-                    (-0.013, 14)
-                    (-0.120, 24)
-                    (0.150, 22)
-                    (-0.166, 18)
-                    (-0.052, 21)
-                    (0.031, 27)
-                };
-                \addplot[
-                    only marks,
-                    fill=red,
-                    opacity=0.6
-                ] coordinates {
-                    (0.985, 38)
-                    (0.943, 36)
-                    (1.085, 36)
-                    (0.971, 36)
-                    (0.990, 34)
-                    (1.029, 38)
-                    (0.958, 32)
-                    (1.018, 38)
-                    (1.054, 25)
-                    (1.064, 38)
-                    (1.070, 26)
-                    (0.938, 22)
-                    (1.131, 32)
-                    (1.009, 36)
-                    (0.835, 27)
-                    (1.109, 27)
-                    (1.032, 44)
-                    (1.142, 32)
-                    (1.115, 28)
-                    (1.009, 31)
-                };
-                \ifnum#1=2
-                    \draw[thick, dashed] (axis cs: -0.3, 17.158) -- (axis cs: 0.3, 17.158);
-                    \node[anchor=south east, inner sep=1pt] at (axis cs: 0.3, 17.158) {\small{17.1}};
-                    \draw[thick, dashed] (axis cs: 0.7, 32.8) -- (axis cs: 1.3, 32.8);
-                    \node[anchor=south west, inner sep=1pt] at (axis cs: 0.7, 32.8) {\small{32.8}};
-                \fi
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\binary}
-    \savebox{\binary}{
-        \binaryplot{1}
-    }
-    \newsavebox{\binarymeans}
-    \savebox{\binarymeans}{
-        \binaryplot{2}
-    }
-
-    \newsavebox{\multilevel}
-    \savebox{\multilevel}{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xmin=-0.5,
-                xmax=2.5,
-                xtick={0, 1, 2},
-                xticklabels={Ford, Chevrolet, Pontiac},
-                ylabel=mpg,
-                height=7cm,
-                width=7cm
-            ]
-                \addplot[
-                    only marks,
-                    fill=blue,
-                    opacity=0.6
-                ] coordinates {
-                    (-0.065, 18)
-                    (-0.080, 15)
-                    (-0.038, 18)
-                    (-0.139, 16)
-                    (0.028, 17)
-                    (-0.140, 15)
-                    (-0.149, 14)
-                    (0.137, 14)
-                    (0.043, 14)
-                    (-0.101, 15)
-                    (0.007, 15)
-                    (-0.145, 14)
-                    (-0.106, 15)
-                    (-0.013, 14)
-                    (-0.120, 24)
-                    (0.150, 22)
-                    (-0.166, 18)
-                    (-0.052, 21)
-                    (0.031, 27)
-                };
-                \addplot[
-                    only marks,
-                    fill=red,
-                    opacity=0.6
-                ] coordinates {
-                    (0.985, 38)
-                    (0.943, 36)
-                    (1.085, 36)
-                    (0.971, 36)
-                    (0.990, 34)
-                    (1.029, 38)
-                    (0.958, 32)
-                    (1.018, 38)
-                    (1.054, 25)
-                    (1.064, 38)
-                    (1.070, 26)
-                    (0.938, 22)
-                    (1.131, 32)
-                    (1.009, 36)
-                    (0.835, 27)
-                    (1.109, 27)
-                    (1.032, 44)
-                    (1.142, 32)
-                    (1.115, 28)
-                    (1.009, 31)
-                };
-                \addplot[
-                    only marks,
-                    fill=green,
-                    opacity=0.6
-                ] coordinates {
-                    (1.961, 30.200)
-                    (1.919, 28.200)
-                    (2.061, 28.200)
-                    (1.947, 28.200)
-                    (1.966, 26.200)
-                    (2.005, 30.200)
-                    (1.934, 24.200)
-                    (1.994, 30.200)
-                    (2.030, 17.200)
-                    (2.040, 30.200)
-                    (2.046, 18.200)
-                    (1.914, 14.200)
-                    (2.107, 24.200)
-                    (1.985, 28.200)
-                    (1.811, 19.200)
-                    (2.085, 19.200)
-                    (2.008, 36.200)
-                    (2.118, 24.200)
-                    (2.091, 20.200)
-                    (1.985, 23.200)
-                };
-
-                \draw[thick, dashed] (axis cs: -0.4, 17.158) -- (axis cs: 0.4, 17.158);
-                \node[anchor=south east, inner sep=1pt] at (axis cs: 0.4, 17.158) {\small{17.1}};
-                \draw[thick, dashed] (axis cs: 0.6, 32.8) -- (axis cs: 1.4, 32.8);
-                \node[anchor=south west, inner sep=1pt] at (axis cs: 0.6, 32.8) {\small{32.8}};
-                \draw[thick, dashed] (axis cs: 1.6, 25) -- (axis cs: 2.4, 25);
-                \node[anchor=south west, inner sep=1pt] at (axis cs: 1.6, 25) {\small{25.1}};
-
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newcommand{\combinationplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xtick pos=bottom,
-                ytick pos=left,
-                xmin=30,
-                xmax=240,
-                ymin=3,
-                ymax=50,
-                xlabel=Horsepower,
-                ylabel=Miles per gallon,
-                height=6.5cm,
-                width=10cm
-            ]
-                \addplot[
-                    only marks,
-                    opacity=0.6
-                ] table [
-                    col sep=comma,
-                    x=horsepower,
-                    y=mpg
-                ] {data/Auto.csv};
-
-                \ifnum#1=1
-                    \addplot[
-                        domain=30:240,
-                        samples=100,
-                        color=red,
-                        thick
-                    ] {40 - 0.1566*x};
-                    \addplot[
-                        domain=30:240,
-                        samples=100,
-                        color=blue,
-                        thick
-                    ] {40 - 0.1566*x-1.85};
-                \fi
-                \ifnum#1=2
-                    \addplot[
-                        domain=30:240,
-                        samples=100,
-                        color=red,
-                        thick
-                    ] {40 - 0.1566*x};
-                    \addplot[
-                        domain=30:240,
-                        samples=100,
-                        color=blue,
-                        thick
-                    ] {38 - 0.13*x-1.85};
-                \fi
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\combinationbox}
-    \sbox{\combinationbox}{
-        \combinationplot{1}
-    }
-    \newsavebox{\interactionbox}
-    \sbox{\interactionbox}{
-        \combinationplot{2}
-    }
-
-    \newcommand{\cisplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                xtick pos=bottom,
-                ytick pos=left,
-                xmin=30,
-                xmax=240,
-                ymin=3,
-                ymax=50,
-                xlabel=Horsepower,
-                ylabel=Miles per gallon,
-                height=6.5cm,
-                width=10.5cm
-            ]
-                \addplot[
-                    domain=30:240,
-                    samples=100,
-                    color=red,
-                    thick
-                ] {40 - 0.1566*x};
-
-                \ifnum#1>1
-                    \addplot[
-                        only marks,
-                    ] coordinates {
-                        (105, 23.5)
-                    };
-                    \draw[|-|, dashed] (axis cs: 105, 17.5) -- (axis cs: 105, 29.5);
-                    \node[anchor=south, align=center, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 105, 29.5) {
-                        Prediction\\
-                        interval
-                    };
-                \fi
-
-                \ifnum#1>2
-                    \addplot[
-                        only marks,
-                        opacity=0.2
-                    ] coordinates {
-                        (140, 22)
-                        (140, 21)
-                        (140, 19)
-                        (140, 18)
-                        (140, 15)
-                    };
-
-                    \draw[|-|, densely dotted, red, thick] (axis cs: 140, 16) -- (axis cs: 140, 20);
-                    \node[anchor=south, align=center, red, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 140, 23) {
-                        Confidence\\
-                        interval
-                    };
-                \fi
-
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\cisdata}
-    \sbox{\cisdata}{
-        \cisplot{1}
-    }
-
-    \newsavebox{\cisprediction}
-    \sbox{\cisprediction}{
-        \cisplot{2}
-    }
-
-    \newsavebox{\cisconfidence}
-    \sbox{\cisconfidence}{
-        \cisplot{3}
-    }
-
-    \section{Linear regression (via ordinary least squares)}
-
-    \begin{frame}[t]{Linear regression (via ordinary least squares)}
-        \only<1-16>{
-            \begin{tikzpicture}
-                \begin{axis}[
-                    xtick pos=bottom,
-                    ytick pos=left,
-                    xmin=30,
-                    xmax=240,
-                    ymin=3,
-                    ymax=50,
-                    xlabel=Horsepower (x),
-                    ylabel=Miles per gallon (y),
-                    height=6.8cm,
-                    width=10.7cm
-                ]
-                    \only<1-5>{
-                        \addplot[
-                            only marks,
-                            opacity=0.6
-                        ] table [
-                            col sep=comma,
-                            x=horsepower,
-                            y=mpg
-                        ] {data/Auto.csv};
-                    }
-                    \only<6-16>{
-                        \addplot[
-                            only marks,
-                            opacity=0.05
-                        ] table [
-                            col sep=comma,
-                            x=horsepower,
-                            y=mpg
-                        ] {data/Auto.csv};
-                        \addplot[
-                            only marks,
-                            opacity=0.8
-                        ] coordinates {
-                            (115, 28.9)
-                        };
-                    }
-                    \only<7-10>{
-                        \draw[dashed] (axis cs: 115, 3) -- (axis cs: 115, 50);
-                        \node[anchor=south, draw=black, fill=white, inner sep=2pt] at (axis cs: 115, 5) {\small{115}};
-                    }
-                    \only<3-16>{
-                        \addplot[
-                            domain=30:240,
-                            samples=100,
-                            color=red,
-                            thick
-                        ] {39.93 - 0.1578*x};
-                    }
-                    \only<10-16>{
-                        \addplot[
-                            only marks,
-                            red,
-                            opacity=0.6
-                        ] coordinates {
-                            (115, 21.78)
-                        };
-                    }
-                    \only<11-13>{
-                        \node[anchor=north] at (axis cs: 115, 21.78) {\small{$\hat{y}$}};
-                        \node[anchor=south] at (axis cs: 115, 28.9) {\small{$y$}};
-                    }
-                    \only<12>{
-                        \draw[] (axis cs: 115, 21.78) -- (axis cs: 115, 28.9);
-                        \node[anchor=west] at (axis cs: 115, 25.34) {\small{$|y-\hat{y}|$}};
-                    }
-                    \only<13>{
-                        \draw[] (axis cs: 115, 21.78) --
-                                                    (axis cs: 115, 28.9) --
-                                                    (axis cs: 134, 28.9) --
-                                                    (axis cs: 134, 21.78) -- cycle;
-                        \node[anchor=west] at (axis cs: 134, 25.34) {\small{$(y-\hat{y})^2$}};
-                    }
-                    \only<14-16>{
-                        \draw[] (axis cs: 115, 21.78) --
-                                                    (axis cs: 115, 28.9) --
-                                                    (axis cs: 134, 28.9) --
-                                                    (axis cs: 134, 21.78) -- cycle;
-                        \draw[] (axis cs: 60, 27) --
-                                                    (axis cs: 60, 30.462) --
-                                                    (axis cs: 69, 30.462) --
-                                                    (axis cs: 69, 27) -- cycle;
-                        \draw[] (axis cs: 75, 26) --
-                                                    (axis cs: 75, 28.095) --
-                                                    (axis cs: 81, 28.095) --
-                                                    (axis cs: 81, 26) -- cycle;
-                        \draw[] (axis cs: 165.3, 17.7) --
-                                                    (axis cs: 165.3, 13.85) --
-                                                    (axis cs: 176, 13.85) --
-                                                    (axis cs: 176, 17.7) -- cycle;
-                        \draw[] (axis cs: 198, 15) --
-                                                    (axis cs: 198, 8.68) --
-                                                    (axis cs: 215, 8.68) --
-                                                    (axis cs: 215, 15) -- cycle;
-
-                        \addplot[
-                            only marks,
-                            opacity=0.8
-                        ] coordinates {
-                            (60, 27)
-                            (75, 26)
-                            (165.3, 17.7)
-                            (198, 15)
-                        };
-                        \addplot[
-                            only marks,
-                            red,
-                            opacity=0.6
-                        ] coordinates {
-                            (60, 30.462)
-                            (75, 28.095)
-                            (165.3, 13.85)
-                            (198, 8.68)
-                        };
-                    }
-                    \only<4>{
-                        \addplot[
-                            domain=30:240,
-                            samples=100,
-                            color=blue,
-                            thick
-                        ] {36 - 0.1*x};
-                    }
-
-                \end{axis}
-            \end{tikzpicture}\\
-            \centering
-            \only<2>{
-                \hspace{0.8cm}\textcolor{red}{$\hat{y}=\beta_0-\beta_1x$}\\
-            }
-            \only<3-7>{
-                \hspace{0.75cm}\textcolor{red}{$\hat{y}=39.93-0.1578x$}\\
-            }
-            \only<4>{
-                \hspace{1.4cm}\textcolor{blue}{$\hat{y}=36-0.1x$}
-            }
-            \only<8>{
-                \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578*115$}\\
-            }
-            \only<9-10>{
-                \hspace{0.8cm}\textcolor{red}{$21.78=39.93-0.1578*115$}\\
-            }
-            \only<15>{
-                \hspace{0.8cm}\textcolor{red}{$MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
-            }
-            \only<16>{
-                \hspace{0.8cm}\textcolor{red}{$RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
-            }
-        }
-        \only<17-48>{
-            \begin{tikzpicture}
-                \node[] at (-5.25, -3) {};
-                \node[] at (5.25, 3) {};
-                \only<17,21-22,24>{
-                    \node[font=\LARGE] at (0, 0) {
-                        $\hat{y}=$
-                        $\beta_0$
-                        $+$
-                        $\beta_1$
-                        $x$
-                    };
-                }
-                \only<18>{
-                    \node[font=\LARGE] at (0, 0) {
-                        $\hat{y}=$
-                        \textcolor{red}{$\beta_0$}
-                        $+$
-                        \textcolor{red}{$\beta_1$}
-                        $x$
-                    };
-                }
-                \only<19-20>{
-                    \node[] at (-2.7, 0) {
-                        \usebox{\linreg}
-                    };
-                }
-                \only<20>{
-                    \node[] at (2.7, 0) {
-                        \usebox{\residuals}
-                    };
-                }
-                \only<22>{
-                    \node[font=\LARGE] at (0, -1) {
-                        $MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$
-                    };
-                }
-                \only<23>{
-                    \node[font=\LARGE] at (0, -0.5) {
-                        $MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\beta_0+\beta_1x_i)^2$
-                    };
-                }
-                \only<25>{
-                    \node[font=\LARGE] at (0, 0) {
-                        $\hat{y}=\beta_0+\beta_1x_1+\beta_2x_2+\ldots+\beta_px_p$
-                    };
-                }
-                \only<26>{
-                    \node[] at (0, 0) {
-                        \usebox{\multilinreg}
-                    };
-                }
-                \only<27>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cc}
-                            \textbf{mpg}&\textbf{manufacturer}\\
-                            36&Chevrolet\\
-                            15&Ford\\
-                            25&Chevrolet\\
-                            26&Chevrolet\\
-                            17&Ford\\
-                            15&Ford\\
-                            32&Chevrolet\\
-                            14&Ford\\
-                            14&Ford\\
-                            28&Chevrolet\\
-                        \end{tabular}
-                    };
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{manufacturer}$
-                    };
-                }
-                \only<28>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{ccc}
-                            \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
-                            36&Chevrolet&1\\
-                            15&Ford&0\\
-                            25&Chevrolet&1\\
-                            26&Chevrolet&1\\
-                            17&Ford&0\\
-                            15&Ford&0\\
-                            32&Chevrolet&1\\
-                            14&Ford&0\\
-                            14&Ford&0\\
-                            28&Chevrolet&1\\
-                        \end{tabular}
-                    };
-                    \only<28>{
-                        \node[] at (0, -3.5) {
-                            $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
-                        };
-                    }
-                }
-                \only<29>{
-                    \node[] at (0, 0) {
-                        \usebox{\binary}
-                    };
-                }
-                \only<30-31>{
-                    \node[] at (0, 0) {
-                        \usebox{\binarymeans}
-                    };
-                }
-                \only<31>{
-                    \node[] at (0.57, -3.5) {
-                        \textbf{Blackboard!}
-                    };
-                }
-                \only<32>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cc}
-                            \textbf{mpg}&\textbf{manufacturer}\\
-                            36&Chevrolet\\
-                            15&Ford\\
-                            25&Chevrolet\\
-                            26&Pontiac\\
-                            17&Ford\\
-                            15&Ford\\
-                            32&Pontiac\\
-                            14&Ford\\
-                            14&Pontiac\\
-                            28&Chevrolet\\
-                        \end{tabular}
-                    };
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{manufacturer}$
-                    };
-                }
-                \only<33>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{cccc}
-                            \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}&\textbf{pontiac}\\
-                            36&Chevrolet&1&0\\
-                            15&Ford&0&0\\
-                            25&Chevrolet&1&0\\
-                            26&Pontiac&0&1\\
-                            17&Ford&0&0\\
-                            15&Ford&0&0\\
-                            32&Pontiac&0&1\\
-                            14&Ford&0&0\\
-                            14&Pontiac&0&1\\
-                            28&Chevrolet&1&0\\
-                        \end{tabular}
-                    };
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{pontiac}$
-                    };
-                }
-                \only<34>{
-                    \PythonInputNode{1}{(-4, 2)}{pythonnode}{0.9\textwidth}{7}{
-                        import pandas as pd^^J
-                        ^^J
-                        df = pd.DataFrame(...)^^J
-                        print(f'Columns before: \{df.columns.values\}')^^J
-                        df = pd.get_dummies(df)^^J
-                        print(f'Columns after: \{df.columns.values\})^^J
-                    }
-                    \PythonOutputNode{1}{(-3.895, 0)}{out}{0.79\textwidth}{7}{
-                        Columns before: ['manufacturer']^^J
-                        Columns after: ['manufacturer_chevrolet' 'manufacturer_ford']^^J
-                    }
-                }
-                \only<35>{
-                    \node[] at (0, 0) {
-                        \usebox{\multilevel}
-                    };
-                }
-                \only<36-37>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{ccc}
-                            \textbf{mpg}&\textbf{chevrolet}&\textbf{horsepower}\\
-                            36&1&130\\
-                            15&0&165\\
-                            25&1&150\\
-                            26&1&150\\
-                            17&0&140\\
-                            15&0&198\\
-                            32&1&220\\
-                            14&0&215\\
-                            14&0&225\\
-                            28&1&212\\
-                        \end{tabular}
-                    };
-                    \only<36>{
-                        \node[] at (0, -3.5) {
-                            $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
-                        };
-                    }
-                }
-                \only<37>{
-                    \node[align=center] at (0, -3.8) {
-                        $\widehat{mpg}=
-                        \begin{cases}
-                            \beta_0+\beta_1+\beta_2\times\text{horsepower} & \text{if chevrolet}\\
-                            \beta_0+\beta_2\times\text{horsepower} & \text{else}\\
-                        \end{cases}$
-                    };
-
-                }
-                \only<38>{
-                    \node[] at (0, 0) {
-                        \usebox{\combinationbox}
-                    };
-                    \node[align=center] at (0, -3.8) {
-                        $\widehat{mpg}=
-                        \begin{cases}
-                            \textcolor{blue}{\beta_0+\beta_1+\beta_2\times\text{horsepower}} & \text{if chevrolet}\\
-                            \textcolor{red}{\beta_0+\beta_2\times\text{horsepower}} & \text{else}\\
-                        \end{cases}$
-                    };
-                }
-                \only<39-41>{
-                    \node[] at (0, 0) {
-                        \usebox{\interactionbox}
-                    };
-                }
-                \only<40>{
-                    \node[anchor=north] at (0, -3.4) {
-                        $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
-                    };
-                }
-                \only<41>{
-                    \node[align=center, anchor=north] at (0, -3.4) {
-                        $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$\\
-                        $+\beta_3\times\text{chevrolet}\times\text{horsepower}$
-                    };
-                }
-                \only<42>{
-                    \node[] at (0, 0) {
-                        \usebox{\cisdata}
-                    };
-                }
-                \only<43>{
-                    \node[] at (0, 0) {
-                        \usebox{\cisprediction}
-                    };
-                }
-                \only<44>{
-                    \node[] at (0, 0) {
-                        \usebox{\cisconfidence}
-                    };
-                }
-                \only<45>{
-                    \RInputNode{(-4.5, 2)}{in1}{0.8\textwidth}{7}{
-predict(fit, newdata=data.frame(horsepower=105),^^J
-{ }{ }{ }{ }{ }{ }{ }{ }interval='prediction', level=0.95)^^J
-                    }
-                    \RInputNode{(-4.5, 1)}{out1}{0.8\textwidth}{7}{
-{ }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
-1 23.535 17.158 29.912^^J
-                    }
-                    \RInputNode{(-4.5, -1)}{in2}{0.8\textwidth}{7}{
-predict(fit, newdata=data.frame(horsepower=105),^^J
-{ }{ }{ }{ }{ }{ }{ }{ }interval='confidence', level=0.95)^^J
-                    }
-                    \RInputNode{(-4.5, -2)}{out1}{0.8\textwidth}{7}{
-                        { }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
-                        1 23.535 23.023 24.047^^J
-                    }
-                }
-                \only<46>{
-                    \PythonInputNode{1}{(-4.5, 2)}{pythonnode}{0.95\textwidth}{7}{
-                        import statsmodels.api as sm^^J
-                        ^^J
-                        model = sm.OLS(df['mpg'], sm.add_constant(df[['horsepower']]))^^J
-                        fit = model.fit()^^J
-                        new_input = sm.add_constant(pd.DataFrame(\{'horsepower': [105, 106]\}))^^J
-                        intervals = fit.get_prediction(new_input).summary_frame()^^J
-                        print(intervals)^^J
-                    }
-                    \PythonOutputNode{1}{(-4.395, -0.5)}{out}{0.882\textwidth}{7}{
-                        mean   mean_se  mean_ci_lower  mean_ci_upper  obs_ci_lower  obs_ci_upper^^J
-                        0  24.467077  0.251262      23.973079      24.961075     14.809396     34.124758^^J
-                        1  31.096556  0.398740      30.312607      31.880505     21.419710     40.773402^^J
-                    }
-                }
-                \only<47>{
-                    \node[align=center] at (0, 0) {
-                        Why do we need both of these?\\
-                        Where are they useful (e.g. what is most useful in\\
-                        a scientific publication versus a business setting)?\\
-                    };
-                }
-
-                \only<48>{
-                    \node[] at (0, 1) {
-                        \Huge{\emoji{partying-face}}
-                    };
-
-                    \node[] at (0, -1) {
-                        \scriptsize{\url{http://localhost:8888/notebooks/notebooks\%2FLinear\%20regression.ipynb}}
-                    };
-                }
-            \end{tikzpicture}
-        }
-        \only<49>{
-            Linear regression: The true workhorse of machine learning
-            \begin{itemize}
-                \item Models the relationship between (either singular or mulitple) inputs $X$ and (a continuous) output $y$ as a linear function
-                \begin{itemize}
-                    \item Inputs can be both continuous and categorical
-                \end{itemize}
-                \item A strict parametric form limits the expressivity of the model
-                \begin{itemize}
-                    \item More advanced terms can be explicitly added
-                    \item The strictness allows for extended functionality, such as computing confidence intervals
-                    \item \textbf{Makes the model human interpretable}
-                \end{itemize}
-            \end{itemize}
-        }
-    \end{frame}
-
-    \newcommand{\knnplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                width=10cm,
-                height=6cm,
-                xmin=-0.2,
-                xmax=1.2,
-                ymin=-0.2,
-                ymax=1.2,
-                xmajorticks=false,
-                ymajorticks=false,
-                ylabel=y,
-                xlabel=x,
-                clip=false
-            ]
-                \ifnum#1=1
-                    \addplot[
-                        only marks,
-                        opacity=0.5,
-                        mark size=4pt
-                    ] coordinates {
-                        (0.000, -0.075)
-                        (0.105, 0.075)
-                        (0.211, 0.156)
-                        (0.316, 0.295)
-                        (0.421, 0.645)
-                        (0.526, 0.685)
-                        (0.684, 0.499)
-                        (0.789, 0.602)
-                        (0.895, 0.899)
-                        (1.000, 1.140)
-                    };
-                \fi
-                \ifnum#1>1
-                    \ifnum#1<4
-                        \addplot[
-                            only marks,
-                            opacity=0.1,
-                            mark size=4pt
-                        ] coordinates {
-                            (0.000, -0.075)
-                            (0.105, 0.075)
-                            (0.211, 0.156)
-                            (0.316, 0.295)
-                            (0.421, 0.645)
-                            (0.526, 0.685)
-                            (0.684, 0.499)
-                            (0.789, 0.602)
-                            (0.895, 0.899)
-                            (1.000, 1.140)
-                        };
-                        \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
-                        \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
-
-                        \ifnum#1=3
-                            \addplot[
-                                only marks,
-                                red,
-                                mark size=4pt,
-                                opacity=0.6
-                            ] coordinates {
-                                (0.6, 0.685)
-                            };
-                            \draw[-stealth,red] (axis cs: 0.60, 0.685) -- (axis cs: 0.55, 0.685);
-                        \fi
-                    \fi
-                \fi
-
-                \ifnum#1=4
-                    \addplot[
-                        only marks,
-                        opacity=0.5,
-                        mark size=4pt
-                    ] coordinates {
-                        (0.000, -0.075)
-                        (0.105, 0.075)
-                        (0.211, 0.156)
-                        (0.316, 0.295)
-                        (0.421, 0.645)
-                        (0.526, 0.685)
-                        (0.684, 0.499)
-                        (0.789, 0.602)
-                        (0.895, 0.899)
-                        (1.000, 1.140)
-                    };
-                    \addplot[dashed] coordinates {
-                        (-0.2, -0.075)
-                        (0.0525, -0.075)
-                        (0.0525, 0.075)
-                        (0.1575, 0.075)
-                        (0.1575, 0.156)
-                        (0.263, 0.156)
-                        (0.263, 0.295)
-                        (0.368, 0.295)
-                        (0.368, 0.645)
-                        (0.473, 0.645)
-                        (0.473, 0.685)
-                        (0.578, 0.685)
-                        (0.578, 0.499)
-                        (0.7375, 0.499)
-                        (0.7375, 0.602)
-                        (0.842, 0.602)
-                        (0.842, 0.899)
-                        (0.9475, 0.899)
-                        (0.9475, 1.140)
-                        (1.2, 1.140)
-                    };
-                \fi
-
-                \ifnum#1=5
-                    \addplot[
-                        only marks,
-                        opacity=0.1,
-                        mark size=4pt
-                    ] coordinates {
-                        (0.000, -0.075)
-                        (0.105, 0.075)
-                        (0.211, 0.156)
-                        (0.316, 0.295)
-                        (0.421, 0.645)
-                        (0.526, 0.685)
-                        (0.684, 0.499)
-                        (0.789, 0.602)
-                        (0.895, 0.899)
-                        (1.000, 1.140)
-                    };
-                    \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
-                    \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
-                    \addplot[
-                        only marks,
-                        red,
-                        mark size=4pt,
-                        opacity=0.6
-                    ] coordinates {
-                        (0.6, 0.592)
-                    };
-                    \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.55, 0.66);
-                    \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.65, 0.52);
-                \fi
-                \ifnum#1=6
-                    \addplot[
-                        only marks,
-                        opacity=0.5,
-                        mark size=4pt
-                    ] coordinates {
-                        (0.000, -0.075)
-                        (0.105, 0.075)
-                        (0.211, 0.156)
-                        (0.316, 0.295)
-                        (0.421, 0.645)
-                        (0.526, 0.685)
-                        (0.684, 0.499)
-                        (0.789, 0.602)
-                        (0.895, 0.899)
-                        (1.000, 1.140)
-                    };
-                    \addplot[dashed] coordinates {
-                        (-0.2, 0)
-                        (0.105, 0)
-                        (0.105, 0.115)
-                        (0.2105, 0.115)
-                        (0.2105, 0.225)
-                        (0.316, 0.225)
-                        (0.316, 0.47)
-                        (0.421, 0.47)
-                        (0.421, 0.665)
-                        (0.5525, 0.665)
-                        (0.5525, 0.592)
-                        (0.6575, 0.592)
-                        (0.6575, 0.55)
-                        (0.79, 0.55)
-                        (0.79, 0.7505)
-                        (0.894, 0.7505)
-                        (0.894, 1.01)
-                        (1.2, 1.01)
-
-
-                    };
-                \fi
-                \ifnum#1=7
-                \addplot[
-                    only marks,
-                    opacity=0.5,
-                    mark size=4pt
-                ] coordinates {
-                    (0.000, -0.075)
-                    (0.105, 0.075)
-                    (0.211, 0.156)
-                    (0.316, 0.295)
-                    (0.421, 0.645)
-                    (0.526, 0.685)
-                    (0.684, 0.499)
-                    (0.789, 0.602)
-                    (0.895, 0.899)
-                    (1.000, 1.140)
-                };
-                \addplot[dashed] coordinates {
-                    (-0.2, 0.4921)
-                    (1.2, 0.4921)
-                };
-            \fi
-
-            \addplot[] coordinates {
-                (-0.2, -0.2)
-                (1.2, 1.2)
-            };
-
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\knndata}
-    \sbox{\knndata}{
-        \knnplot{1}
-    }
-    \newsavebox{\knninput}
-    \sbox{\knninput}{
-        \knnplot{2}
-    }
-    \newsavebox{\knnpredone}
-    \sbox{\knnpredone}{
-        \knnplot{3}
-    }
-    \newsavebox{\knnformone}
-    \sbox{\knnformone}{
-        \knnplot{4}
-    }
-    \newsavebox{\knnpredtwo}
-    \sbox{\knnpredtwo}{
-        \knnplot{5}
-    }
-    \newsavebox{\knnformtwo}
-    \sbox{\knnformtwo}{
-        \knnplot{6}
-    }
-    \newsavebox{\knnall}
-    \sbox{\knnall}{
-        \knnplot{7}
-    }
-
-    \newcommand{\dimplot}[1]{
-        \begin{tikzpicture}[scale=2]
-            \node[] at (-1.5, -1.5) {};
-            \node[] at (1.5, 1.5) {};
-
-            \draw[-stealth,gray!50] (-1, -1) -- (1, -1);
-            \node[anchor=north,,gray!50] at (0, -1) {$x_1$};
-            \node[
-                inner sep=2pt,
-                circle,
-                draw=black,
-                fill=teal!60
-            ] (n1) at (-0.8, -0.8) {};
-
-            \ifnum#1=1
-                \node[
-                    inner sep=2pt,
-                    circle,
-                    draw=black,
-                    fill=teal!60
-                ] (n2) at (0.2, -0.8) {};
-                \draw[dashed,stealth-stealth] (-0.75, -0.8) -- (0.15, -0.8) node [midway, above] {\small{1}};
-            \fi
-
-            \ifnum#1>1
-                \draw[-stealth,gray!50] (-1, -1) -- (-1, 1);
-                \node[anchor=east,gray!50] at (-1, 0) {$x_2$};
-            \fi
-
-            \ifnum#1=2
-                \node[
-                    inner sep=2pt,
-                    circle,
-                    draw=black,
-                    fill=teal!60
-                ] (n2) at (0.2, 0.2) {};
-                \draw[dashed,stealth-] (-0.75, -0.8) -- (0.2, -0.8) node [midway, above] {\small{1}};
-                \draw[dashed,-stealth] (0.2, -0.8) -- (0.2, 0.15) node [midway, right] {\small{1}};
-                \draw[-stealth,red] (n1) -- (n2) node [pos=0.45, above=0.15cm] {\small{$\sqrt{2}$}};
-            \fi
-
-            \ifnum#1=3
-                \draw[-stealth,gray!50] (-1, -1) -- (0.5, 0.0);
-                \node[anchor=north, rotate=30,gray!50] at (-0.25, -0.5) {$x_3$};
-                \node[
-                    inner sep=2pt,
-                    circle,
-                    draw=black,
-                    fill=teal!60
-                ] (n2) at (0.7, 0.53) {};
-                \draw[dashed,stealth-] (-0.75, -0.8) -- (0.2, -0.8) node [midway, above] {\small{1}};
-                \draw[dashed,-stealth] (0.2, -0.8) -- (0.2, 0.2) node [midway, right] {\small{1}};
-                \draw[dashed,-stealth] (0.2, 0.2) -- (0.7, 0.53) node [pos=0.4, below=0.15cm] {\small{1}};
-                \draw[-stealth,red] (n1) -- (n2) node [pos=0.45, above=0.15cm] {\small{$\sqrt{3}$}};
-            \fi
-
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\dimone}
-    \sbox{\dimone}{
-        \dimplot{1}
-    }
-    \newsavebox{\dimtwo}
-    \sbox{\dimtwo}{
-        \dimplot{2}
-    }
-    \newsavebox{\dimthree}
-    \sbox{\dimthree}{
-        \dimplot{3}
-    }
-
-    \section{K-Nearest Neighbours}
-
-    \begin{frame}{K-Nearest Neighbours}
-        \only<1-13>{
-            \begin{tikzpicture}
-                \node[] at (-5.25, -3) {};
-                \node[] at (5.25, 3) {};
-
-                \only<1-2>{
-                    \node[anchor=west, align=left] at (-5, 1.5) {
-                        \underline{Linear regression:}\\[0.25cm]
-                        $\hat{f}(X)=\beta_0+\beta_1X_1+\beta_2X_2+\ldots+\beta_pX_p$
-                    };
-
-                    \node[anchor=west, align=left] at (-5, -1.5) {
-                        \underline{K-Nearest Neighbours:}\\[0.25cm]
-                        $\hat{f}(X)=\frac{1}{K}\sum\limits_{x_i \in \mathcal{N}}y_i$
-                    };
-                }
-                \only<2>{
-                    \node[rotate=45] at (0, 0) {
-                        \Huge{Blackboard!}
-                    };
-                }
-                \only<3>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knndata}
-                    };
-                }
-                \only<4>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knninput}
-                    };
-                }
-                \only<5>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knnpredone}
-                    };
-                }
-                \only<6>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knnformone}
-                    };
-                }
-                \only<7>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knnpredtwo}
-                    };
-                }
-                \only<8>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knnformtwo}
-                    };
-                }
-                \only<9>{
-                    \node[anchor=south west] at (-4.75, -2.5) {
-                        \usebox{\knnall}
-                    };
-                }
-                \only<10>{
-                    \node[align=left] at (0, 0) {
-                        \underline{Blackboard exercise}:\\
-                        How does the bias-variance trade-off relate to the choice of $K$?
-                    };
-                };
-                \only<11>{
-                    \node[] at (0, 0) {
-                        \usebox{\dimone}
-                    };
-                }
-                \only<12>{
-                    \node[] at (0, 0) {
-                        \usebox{\dimtwo}
-                    };
-                }
-                \only<13>{
-                    \node[] at (0, 0) {
-                        \usebox{\dimthree}
-                    };
-                }
-            \end{tikzpicture}
-        }
-        \only<14>{
-            K-Nearest Neighbours: An intuitive model relying on similarities between datapoints to make a prediction
-            \begin{itemize}
-                \item No assumptions about the functional relationship between inputs and outputs
-                \item Directly trades off bias and variance through the choice of $K$
-                \item Does not work well in high dimensions as space gets more sparsely populated, yielding less dense neighbourhoods
-            \end{itemize}
-        }
-    \end{frame}
-
-    \newcommand{\logisticplot}[1]{
-        \begin{tikzpicture}
-            \begin{axis}[
-                height=5cm,
-                width=10cm,
-                ytick={0, 1},
-                ytick style={draw=none},
-                xtick pos=bottom,
-                xlabel=mpg (x),
-                ylabel=chevrolet (y),
-                ymin=-0.5,
-                ymax=1.5,
-                xmin=13,
-                xmax=38
-            ]
-                \addplot[
-                    only marks,
-                    fill=red,
-                    mark size=3pt
-                ] coordinates {
-                    (36, 1)
-                    (25, 1)
-                    (26, 1)
-                    (32, 1)
-                    (28, 1)
-                    (29, 1)
-                    (29.5, 1)
-                    (21, 1)
-                };
-                \addplot[
-                    only marks,
-                    fill=blue,
-                    mark size=3pt
-                ] coordinates {
-                    (15, 0)
-                    (17, 0)
-                    (21, 0)
-                    (14, 0)
-                    (14.5, 0)
-                    (16, 0)
-                    (19, 0)
-                    (24, 0)
-                    (27, 0)
-                };
-
-                \ifnum#1=2
-                    \addplot[
-                        domain=10:40,
-                        samples=100,
-                        color=red,
-                        thick
-                    ] {-0.87+0.06*x};
-                \fi
-                \ifnum#1=3
-                    \draw[dashed] (axis cs: 25.5, -0.5) -- (axis cs: 25.5, 1.5);
-                    \draw[] (axis cs: 25.5, 1) -- (axis cs: 38, 1);
-                    \draw[] (axis cs: 25.5, 0) -- (axis cs: 13, 0);
-                \fi
-                \ifnum#1=4
-                    \addplot[
-                        domain=13:38,
-                        samples=100,
-                        color=red,
-                        thick
-                    ] {exp(-10+0.42*x)/(1+exp(-10+0.42*x))};
-
-                \fi
-            \end{axis}
-        \end{tikzpicture}
-    }
-
-    \newsavebox{\logisticdata}
-    \sbox{\logisticdata}{
-        \logisticplot{1}
-    }
-    \newsavebox{\logisticlinear}
-    \sbox{\logisticlinear}{
-        \logisticplot{2}
-    }
-    \newsavebox{\logisticstep}
-    \sbox{\logisticstep}{
-        \logisticplot{3}
-    }
-    \newsavebox{\logisticlog}
-    \sbox{\logisticlog}{
-        \logisticplot{4}
-    }
-
-    \section{Logistic regression}
-
-    \begin{frame}{Logistic regression}
-        \only<1-20>{
-            \begin{tikzpicture}
-                \node[draw=black] at (-5.25, -4) {};
-                \node[draw=black] at (5.25, 3) {};
-
-                \only<1-2>{
-                    \node[] at (0, 0) {
-                        \begin{tabular}{ccc}
-                            \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
-                            36&Chevrolet&1\\
-                            15&Ford&0\\
-                            25&Chevrolet&1\\
-                            26&Chevrolet&1\\
-                            17&Ford&0\\
-                            15&Ford&0\\
-                            32&Chevrolet&1\\
-                            14&Ford&0\\
-                            14&Ford&0\\
-                            28&Chevrolet&1\\
-                        \end{tabular}
-                    };
-                }
-                \only<1>{
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
-                    };
-                }
-                \only<2>{
-                    \node[] at (0, -3.5) {
-                        $\widehat{\text{chevrolet}}=\beta_0+\beta_1\times\text{mpg}$
-                    };
-                }
-                \only<3>{
-                    \node[] at (0, 0) {
-                        \usebox{\logisticdata}
-                    };
-                }
-                \only<4>{
-                    \node[] at (0, 0) {
-                        \usebox{\logisticlinear}
-                    };
-                    \node[] at (0, -3) {
-                        $\widehat{\text{chevrolet}}=-0.87+0.06\times\text{mpg}$
-                    };
-                }
-                \only<5>{
-                    \node[] at (0, 0) {
-                        \usebox{\logisticstep}
-                    };
-                }
-                \only<6>{
-                    \node[] at (0, 0) {
-                        \usebox{\logisticlog}
-                    };
-                    \node[] at (0, -3) {
-                        $\widehat{\text{chevrolet}}=\dfrac{e^{-10.22+0.42\times\text{mpg}}}{1 + e^{-10.22+0.42\times\text{mpg}}}$
-                    };
-                }
-                \only<7-20>{
-                    \node[] at (-0.9, 1) {
-                        $\hat{y}=$
-                    };
-                    \draw[] (-0.5, 1) -- (1.1, 1);
-                    \node[] at (-0.3, 0.75) {
-                        $1+$
-                    };
-                    \node[] at (0.45, 0.8) {
-                        $e^{\beta_0+\beta_1x}$
-                    };
-                    \node[] at (0.3, 1.2) {
-                        $e^{\beta_0+\beta_1x}$
-                    };
-                }
-                \only<8-13>{
-                    \node[anchor=east] at (0, -1) {
-                        $e^{\beta_0+\beta_1x} \rightarrow 0$
-                    };
-                }
-                \only<9-13>{
-                    \node[anchor=west] at (0, -1) {
-                        $\implies \hat{y} = 0$
-                    };
-                }
-                \only<10-13>{
-                    \node[anchor=east] at (0, -1.5) {
-                        $e^{\beta_0+\beta_1x} \rightarrow \infty$
-                    };
-                }
-                \only<11-13>{
-                    \node[anchor=west] at (0, -1.5) {
-                        $\implies \hat{y} = 1$
-                    };
-                }
-                \only<12-13>{
-                    \node[anchor=east] at (0, -2.5) {
-                        $0\leq\hat{y}\leq1$
-                    };
-                }
-                \only<13>{
-                    \node[anchor=west] at (0, -2.5) {
-                        $\implies\hat{y}=Pr(Y=1|X)$
-                    };
-                }
-                \only<15-16>{
-                    \node[] at (0, -1) {
-                        $log \left( \dfrac{p(X)}{1-p(X)} \right) = \beta_0+\beta_1x$
-                    };
-                }
-                \only<16>{
-                    \node[] at (0, -3) {
-                        "\textit{... counterintuitive and challenging to interpret.}" - James Jaccard
-                    };
-                }
-                \only<18-20>{
-                    \node[] at (0, 0) {
-                        More than one class?
-                    };
-                }
-                \only<19-20>{
-                    \node[] at (0, -2) {
-                        $Pr(Y=k|X=x)=\dfrac{e^{\beta_{0k}+\beta_{1k}x}}{\sum\limits_{l=1}^{K}e^{\beta_{0l}+\beta_{1l}x}}$
-                    };
-                }
-                \only<20>{
-                    \node[rotate=45] at (0, 0) {
-                        \Huge{Blackboard!}
-                    };
-                }
-            \end{tikzpicture}
-        }
-        \only<21>{
-            Logistic regression: Extending linear regression to classification.
-            \begin{itemize}
-                \item Treats all members of a class (approximately) equally.
-                \item Ouputs an understandable quantity: The probability of a sample belonging to the positive class.
-                \item Somewhat interpretable, although not as much as linear regression
-                \item Can trivially be extended to include multiple classes
-            \end{itemize}
-        }
-        \only<22>{
-            \scriptsize{\url{http://localhost:8888/notebooks/notebooks\%2FLogistic\%20regression.ipynb}}
-        }
-    \end{frame}
-
-    \section{Generative models for classification}
-
-    \begin{frame}[t]{Generative models}
-        \only<1-2>{
-            Generative models for classification:
-        }
-        \only<1>{
-            \begin{itemize}
-                \item Logistic regression models the probability of a class given predictors: $P(Y|X)$
-                \item Generative models instead consider the probability of the predictors values given the class, $P(X|Y)$
-                \item How would a given class generate the datapoint?
-            \end{itemize}
-        }
-        \only<2>{
-            \begin{itemize}
-                \item Bayes' theorem: $P(Y|X)=\dfrac{P(X|Y)P(Y)}{P(X)}$
-                \item $P(Y|X)$ is the posterior probability of the class given the data
-                \item $P(X|Y)$ is the likelihood of the data given the class
-                \item $P(Y)$ is the prior probability of the class
-                \item $P(X)$ is the marginal likelihood of the data
-            \end{itemize}
-        }
-        \only<3>{
-            Linear Discriminant Analysis
-            \begin{itemize}
-                \item Assume the predictors are normally distributed within each class separately
-                \begin{itemize}
-                    \item $P(X|Y=Class 1)$
-                    \item $P(X|Y=Class 2)$
-                    \item etc
-                \end{itemize}
-                \item Class probabilities $P(Y)$ estimated from training data
-                \item Marginal probability of data $P(X)$ can be simplified away
-                \item Posterior probability $P(Y|X)$ can be calculated using Bayes' theorem
-            \end{itemize}
-        }
-    \end{frame}
-
-    \section{Classification metrics}
-
-    \begin{frame}{Classification metrics}
-        The two most common, severe, mistakes made in machine learning studies in psychology and neuroscience (in my opinion) are:
-        \begin{itemize}
-            \item Poor validation and testing strategies (Next lecture)
-            \item Using incorrect performance measures, most commonly accuracy (Blackboard!)
-        \end{itemize}
-    \end{frame}
-
-    \begin{frame}{Assignment 2}
-        \scriptsize{\url{https://uio.instructure.com/courses/53357/assignments/116394?module_item_id=946345}}
-    \end{frame}
+    \input{sections/recap}
+    \input{sections/assignment1}
+
+%     \begin{frame}[t]{Recap}
+%         \only<1-4>{
+%             \vspace{0.5cm}
+%             \underline{What is statistical learning?}\\
+%             \vspace{0.5cm}
+
+
+%             \only<2>{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}
+%             \only<3>{\textcolor{gray!20}{\small{\textbf{Inferentiental view:} Finding a function $\hat{f}(X)$ that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
+%             \only<4>{\small{\textcolor{gray!20}{\textbf{Inferentiental view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{that describes the relationship between some input variables $X$ and an output variable $y$.}\\}}
+%             \vspace{0.25cm}
+%             \vspace{0.25cm}
+%             \only<3>{\small{\textbf{Predictive view:} Finding a function $\hat{f}(X)$ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}
+%             \only<4>{\small{\textcolor{gray!20}{\textbf{Predictive view:}} Finding a function $\hat{f}(X)$ \textcolor{gray!20}{ that, when given a new set of inputs $X$ allows us to predict an output $y$.}}}
+%         }
+
+%         \only<5-9>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \begin{axis}[
+%                     xtick pos=bottom,
+%                     ytick pos=left,
+%                     xmin=30,
+%                     xmax=240,
+%                     ymin=3,
+%                     ymax=50,
+%                     xlabel=Horsepower (x),
+%                     ylabel=Miles per gallon (y),
+%                     height=6.8cm,
+%                     width=11cm
+%                 ]
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.6
+%                     ] table [
+%                         col sep=comma,
+%                         x=horsepower,
+%                         y=mpg
+%                     ] {data/Auto.csv};
+%                     \only<7>{
+%                         \addplot[
+%                             domain=30:240,
+%                             samples=100,
+%                             color=red,
+%                             thick
+%                         ] {39.93 - 0.1578*x};
+%                     }
+%                     \only<8>{
+%                         \addplot[
+%                             domain=30:240,
+%                             samples=100,
+%                             color=red,
+%                             thick
+%                         ] {23.44};
+%                     }
+%                     \only<9>{
+%                         \addplot[
+%                             domain=30:240,
+%                             samples=100,
+%                             color=red,
+%                             thick
+%                         ] {exp(3.86-0.0073*x)};
+%                     }
+%                 \end{axis}
+%             \end{tikzpicture}\\
+%             \vspace{0.2cm}
+%             \hspace{1.3cm}
+%             \only<6>{
+%                 \textcolor{red}{$\hat{y}=\hat{f}(x)$}
+%             }
+%             \only<7>{
+%                 \textcolor{red}{$\hat{y}=39.93-0.1578x$}
+%             }
+%             \only<8>{
+%                 \textcolor{red}{$\hat{y}=23.44$}
+%             }
+%             \only<9>{
+%                 \textcolor{red}{$\hat{y}=e^{3.86-0.0073x}$}
+%             }
+%         }
+%         \only<10>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[inner sep=0pt, draw=black] {
+%                     \includegraphics[width=6cm]{data/bias-variance.png}
+%                 };
+%             \end{tikzpicture}
+%         }
+%     \end{frame}
+
+%     \begin{frame}[t]{Outline}
+%         \underline{Plan for the day:}
+%         \begin{itemize}
+%             \item Different types of outputs $y$: Regression vs classification
+%             \item Linear regression: Restricting the scope of $\hat{f}(X)$
+%             \begin{itemize}
+%                 \item Live coding
+%             \end{itemize}
+%             \item k-Nearest Neighbours
+%             \item Logistic regression: Extending linear regression to classification
+%             \begin{itemize}
+%                 \item Live coding
+%             \end{itemize}
+%             \item Generative models
+%         \end{itemize}
+
+%         \underline{Plan for future lectures:}
+%         \begin{itemize}
+%             \item How do we evaluate how good our models are? (Lecture 3)
+%             \item Complex solutions to regression and classification problems (Lecture 4 and onwards)
+%         \end{itemize}
+%     \end{frame}
+
+%     \newcommand{\weightnode}[3]{
+%         \node[circle, draw=black, fill=teal!60, opacity=#3] at (#1, #2*3.5) {};
+%     }
+
+%     \newcommand{\weightplot}[1]{
+%         \begin{tikzpicture}
+%             \ifnum#1<3
+%                 \draw[|-Latex] (0, 3.3*3.5) -- (0, 4.6*3.5);
+%                 \weightnode{0}{3.850}{1.0}
+%                 \weightnode{0}{4.354}{1.0}
+%             \fi
+%             \ifnum#1>2
+%                 \draw[|-Latex,black!20] (0, 3.3*3.5) -- (0, 4.6*3.5);
+%                 \weightnode{0}{3.850}{0.2}
+%                 \weightnode{0}{4.354}{0.2}
+%             \fi
+%             \ifnum#1=1
+%                 \weightnode{0}{3.504}{1.0}
+%                 \weightnode{0}{3.693}{1.0}
+%                 \weightnode{0}{3.436}{1.0}
+%                 \weightnode{0}{3.433}{1.0}
+%                 \weightnode{0}{3.449}{1.0}
+%                 \weightnode{0}{4.341}{1.0}
+%                 \weightnode{0}{4.354}{1.0}
+%                 \weightnode{0}{4.312}{1.0}
+%                 \weightnode{0}{4.425}{1.0}
+%             \fi
+%             \ifnum#1>1
+%                 \weightnode{0}{3.504}{0.2}
+%                 \weightnode{0}{3.693}{0.2}
+%                 \weightnode{0}{3.436}{0.2}
+%                 \weightnode{0}{3.433}{0.2}
+%                 \weightnode{0}{3.449}{0.2}
+%                 \weightnode{0}{4.341}{0.2}
+%                 \weightnode{0}{4.354}{0.2}
+%                 \weightnode{0}{4.312}{0.2}
+%                 \weightnode{0}{4.425}{0.2}
+
+%                 \ifnum#1=2
+%                     \draw[|-|, dashed] (0.5, 3.850*3.5) -- (0.5, 4.354*3.5);
+%                     \node[anchor=west] at (0.5, 4.102*3.5) {\small{504}};
+%                 \fi
+%             \fi
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\weightboxfirst}
+%     \sbox{\weightboxfirst}{
+%         \weightplot{1}
+%     }
+
+%     \newsavebox{\weightboxsecond}
+%     \sbox{\weightboxsecond}{
+%         \weightplot{2}
+%     }
+
+%     \newsavebox{\weightboxhidden}
+%     \sbox{\weightboxhidden}{
+%         \weightplot{3}
+%     }
+
+%     \newcommand{\manufacturernode}[5]{
+%         \node[circle, draw=black, fill=#3, opacity=#4] (#5) at (#1, #2) {};
+%     }
+
+
+%     \newcommand{\manufacturerplot}[1]{
+%         \begin{tikzpicture}
+%             \colorlet{chewy}{blue!60}
+%             \colorlet{ford}{red!60}
+%             \colorlet{pontiac}{green!60}
+
+%             \manufacturernode{0}{0}{chewy}{1.0}{c0}
+%             \manufacturernode{1}{-1.2}{ford}{1.0}{f0}
+%             \manufacturernode{-0.3}{-1.1}{pontiac}{1.0}{p0}
+
+%             \ifnum#1=1
+%                 \manufacturernode{0.5}{0.4}{chewy}{1.0}{}
+%                 \manufacturernode{0.1}{0.5}{chewy}{1.0}{}
+
+%                 \manufacturernode{1.4}{-1.0}{ford}{1.0}{}
+%                 \manufacturernode{1.5}{-1.5}{ford}{1.0}{}
+%                 \manufacturernode{0.9}{-1.6}{ford}{1.0}{}
+
+%                 \manufacturernode{-0.1}{-1.5}{pontiac}{1.0}{}
+%                 \manufacturernode{0.2}{-1.05}{pontiac}{1.0}{}
+%             \fi
+%             \ifnum#1=2
+%                 \manufacturernode{0.5}{0.4}{chewy}{0.2}{}
+%                 \manufacturernode{0.1}{0.5}{chewy}{0.2}{}
+
+%                 \manufacturernode{1.4}{-1.0}{ford}{0.2}{}
+%                 \manufacturernode{1.5}{-1.5}{ford}{0.2}{}
+%                 \manufacturernode{0.9}{-1.6}{ford}{0.2}{}
+
+%                 \manufacturernode{-0.1}{-1.5}{pontiac}{0.2}{}
+%                 \manufacturernode{0.2}{-1.05}{pontiac}{0.2}{}
+
+%                 \draw[->, dashed] (c0) -- (f0) node[pos=0.7, above=0.15cm] {\footnotesize{?}};
+%                 \draw[->, dashed] (c0) -- (p0) node[pos=0.9, above=0.2cm] {\footnotesize{?}};;
+%             \fi
+
+%             \node[anchor=south] at (0.25, 0.7) {\textbf{\small{Chevrolet}}};
+%             \node[anchor=north] at (1.2, -1.8) {\textbf{\small{Ford}}};
+%             \node[anchor=north] at (0.05, -1.7) {\textbf{\small{Pontiac}}};
+
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\manufacturerboxfirst}
+%     \sbox{\manufacturerboxfirst}{
+%         \manufacturerplot{1}
+%     }
+
+%     \newsavebox{\manufacturerboxsecond}
+%     \sbox{\manufacturerboxsecond}{
+%         \manufacturerplot{2}
+%     }
+
+%     \begin{frame}{Regression vs. classification}
+%         \only<1-5>{
+%             \begin{tikzpicture}
+%                 \node[] at (-5.25, -3) {};
+%                 \node[] at (5.25, 3) {};
+%                 \only<1-2,4>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cc}
+%                             \textbf{Weight}&\textbf{Manufacturer}\\
+%                             3504&Chevrolet\\
+%                             3693&Ford\\
+%                             3436&Pontiac\\
+%                             3433&Pontiac\\
+%                             3449&Ford\\
+%                             4341&Ford\\
+%                             4354&Chevrolet\\
+%                             4312&Ford\\
+%                             4425&Pontiac\\
+%                             3850&Chevrolet\\
+%                         \end{tabular}
+%                     };
+%                 }
+%                 \onslide<2,4>{
+%                     \node[anchor=west] at (-4, 0) {
+%                         \usebox{\weightboxfirst}
+%                     };
+%                 }
+%                 \only<3>{
+%                     \node[anchor=west] at (-4, 0) {
+%                         \usebox{\weightboxsecond}
+%                     };
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cc}
+%                             \textbf{Weight}&\textcolor{gray!20}{\textbf{Manufacturer}}\\
+%                             \textcolor{gray!20}{3504}&\textcolor{gray!20}{Chevrolet}\\
+%                             \textcolor{gray!20}{3693}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{3436}&\textcolor{gray!20}{Pontiac}\\
+%                             \textcolor{gray!20}{3433}&\textcolor{gray!20}{Pontiac}\\
+%                             \textcolor{gray!20}{3449}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{4341}&\textcolor{gray!20}{Ford}\\
+%                             4354&\textcolor{gray!20}{Chevrolet}\\
+%                             \textcolor{gray!20}{4312}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{4425}&\textcolor{gray!20}{Pontiac}\\
+%                             3850&\textcolor{gray!20}{Chevrolet}\\
+%                         \end{tabular}
+%                     };
+%                 }
+%                 \only<4>{
+%                     \node[anchor=east] at (5, 0) {
+%                         \usebox{\manufacturerboxfirst}
+%                     };
+%                 }
+%                 \only<5>{
+%                     \node[anchor=west] at (-4, 0) {
+%                         \usebox{\weightboxhidden}
+%                     };
+%                     \node[anchor=east] at (5, 0) {
+%                         \usebox{\manufacturerboxsecond}
+%                     };
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cc}
+%                             \textcolor{gray!20}{\textbf{Weight}}&\textbf{Manufacturer}\\
+%                             \textcolor{gray!20}{3504}&\textcolor{gray!20}{Chevrolet}\\
+%                             \textcolor{gray!20}{3693}&Ford\\
+%                             \textcolor{gray!20}{3436}&\textcolor{gray!20}{Pontiac}\\
+%                             \textcolor{gray!20}{3433}&\textcolor{gray!20}{Pontiac}\\
+%                             \textcolor{gray!20}{3449}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{4341}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{4354}&Chevrolet\\
+%                             \textcolor{gray!20}{4312}&\textcolor{gray!20}{Ford}\\
+%                             \textcolor{gray!20}{4425}&Pontiac\\
+%                             \textcolor{gray!20}{3850}&\textcolor{gray!20}{Chevrolet}\\
+%                         \end{tabular}
+%                     };
+
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<6>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[align=center, anchor=north] at (0.5, 0) {
+%                     \underline{\small{Mean squared error (MSE):}}\\[0.3cm]
+%                     $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$
+%                 };
+%                 \node[align=center, anchor=north] at (6.5, 0) {
+%                     \underline{\small{Accuracy}}\\[0.3cm]
+%                     $\frac{1}{n}\sum_{i=1}^{n}\mathbbm{1}_{eq} (y_i,\hat{y}_i)$,\\
+%                     $\mathbbm{1}_{eq}(a, b)=\begin{cases}1 & \text{if } a=b\\0 & \text{if } a\neq b\end{cases}$
+%                 };
+%             \end{tikzpicture}
+%         }
+%         \only<7>{
+%             Regression:
+%             \begin{itemize}
+%                 \item Predicting reaction time on a cognitive task based on sleep scores
+%                 \item Predicting the age of an individual based on a brain scan
+%                 \item Predicting the anxiety scores based on questionnaire data
+%             \end{itemize}
+%             Classification:
+%             \begin{itemize}
+%                 \item Predicting whether an individual is depressed based on cell phone usage data.
+%                 \item Predicting if a patient has dementia based on a brain scan
+%                 \item Predicting whether a patient is happy based on their facial expression
+%             \end{itemize}
+%         }
+%         \only<8-9>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[] at (-3, -3) {};
+%                 \node[] at (3, 3) {};
+
+%                 \node[] (l) at (0, 1.5) {Large};
+%                 \node[] (m) at (0, 0) {Medium};
+%                 \node[] (s) at (0, -1.5) {Small};
+
+%                 \only<9>{
+%                     \draw[-stealth, line width=1mm] (-1, -1.5) -- (-1, 1.5);
+%                     \draw[stealth-stealth] (l) -- (m) node[midway, right] {?};
+%                     \draw[stealth-stealth] (m) -- (s) node[midway, right] {?};
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<10-11>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[] at (-4.5, 1) {};
+%                 \node[] at (5.5, -4) {};
+%                 \node[] (sentence) at (0, 0) {
+%                     The quick brown fox jumps over the lazy
+%                 };
+%                 \draw[red] ($ (sentence.south east) + (0, 0.15) $) -- ($ (sentence.south east) + (1, 0.15) $);
+%                 \only<11>{
+%                     \draw (2,-2) ellipse (1.8cm and 0.9cm);
+%                     \node[] at (3, -2.4) {\footnotesize{cat}};
+%                     \node[] at (1, -2.2) {\textbf{\footnotesize{dog}}};
+%                     \node[] at (2.1, -1.6) {\footnotesize{hurdle}};
+%                     \node[] at (2, -3.3) {\small{Classification}};
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<12-13>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[] at (-5.5, 2) {};
+%                 \node[] at (5, -4) {};
+
+%                 \node[align=center] (prompt) at (-4, 0) {
+%                     "Students taking\\a machine learning\\class"
+%                 };
+%                 \node[fill=white, draw=black] (model) at (-1, 0) {
+%                     \includegraphics[width=1cm]{data/chatgpt.png}
+%                 };
+%                 \node[] (output)at (2.5, 0) {
+%                     \includegraphics[width=4cm]{data/ml-students.png}
+%                 };
+%                 \draw[-Latex] (prompt) -- (model);
+%                 \draw[-Latex] (model) -- (output);
+
+%                 \only<13>{
+%                     \node[draw=black, fill=red!50, inner sep=5pt, opacity=0.9] at (-2, -3) {};
+%                     \node[draw=black, fill=green!75, inner sep=5pt, opacity=0.9] (green) at (-1.9, -3.1) {};
+%                     \node[draw=black, fill=blue!25, inner sep=5pt, opacity=0.9] at (-1.8, -3.2) {};
+%                     \node[anchor=west] at ($ (green.east) + (0.2, 0) $) {(128, 192, 64)};
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<14>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[] at (-5.25, 3.5) {};
+%                 \node[] at (5.25, -3.5) {};
+%                 \node[anchor=west] at (-5.25, 0) {
+%                     \includegraphics[
+%                         height=4.2cm,
+%                         trim={0 0 13.8cm 0},
+%                         clip
+%                     ]{data/tumor.png}
+%                 };
+%             \end{tikzpicture}
+%         }
+%         \only<15>{
+%             \centering
+%             \begin{tikzpicture}
+%                 \node[] at (-5.25, 3.5) {};
+%                 \node[] at (5.25, -3.5) {};
+%                 \node[anchor=west] at (-5.25, 0) {
+%                     \includegraphics[height=4.2cm]{data/tumor.png}
+%                 };
+%             \end{tikzpicture}
+%         }
+%         \only<16-17>{
+%             \begin{tikzpicture}
+%                 \node[] at (-5.5, 3.5) {};
+%                 \node[] at (5, -3.5) {};
+%                 \node[] at (0, 0) {
+%                     \includegraphics[width=5cm]{data/dog.png}
+%                 };
+%                 \draw[orange, thick] (-0.8, 1.4) -- (1.7, 1.4) -- (1.7, -1.8) -- (-0.8, -1.8) -- cycle;
+
+%                 \only<17>{
+%                     \node[anchor=south, orange] at (0.45, 1.4) {Dog};
+%                     \node[anchor=south, orange] at (-0.8, 1.4) {\footnotesize{(-0.8, 1.4)}};
+%                     \node[anchor=south, orange] at (1.7, 1.4) {\footnotesize{(1.7, 1.4)}};
+%                     \node[anchor=north, orange] at (-0.8, -1.8) {\footnotesize{(-0.8, -1.8)}};
+%                     \node[anchor=north, orange] at (1.7, -1.8) {\footnotesize{(1.7, -1.8)}};
+%                 }
+
+%             \end{tikzpicture}
+%         }
+%         \only<18-19>{
+%             \begin{tikzpicture}
+%                 \node[] at (-5.5, 3.5) {};
+%                 \node[] at (5, -3.5) {};
+
+%                 \node[inner sep=0pt, draw=black] at (0, 1.5) {
+%                     \includegraphics[width=3.5cm]{data/robot.png}
+%                 };
+%                 \only<19>{
+%                     \node[inner sep=0pt, draw=black] at (0, -2) {
+%                         \includegraphics[width=5cm]{data/sound.png}
+%                     };
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<20>{
+%             Different types of outputs $y$ require us to use different mathematical formulations of the problem we want to solve.
+%             \begin{itemize}
+%                 \item Problems with quantitative outputs are solved via regression, often by minimizing the mean squared error.
+%                 \item Problems with qualitative outputs are solved by classification, often to maximize accuracy.
+%                 \item Ordinal regression falls between the two, with qualitative classes that have some kind of order.
+%                 \item A variety of other types of problems can be seen as special cases of these two.
+%             \end{itemize}
+%         }
+%     \end{frame}
+
+%     \newsavebox{\linreg}
+%     \sbox{\linreg}{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xmin=30,
+%                 xmax=240,
+%                 ymin=3,
+%                 ymax=50,
+%                 width=5.2cm,
+%                 height=5.2cm,
+%                 ylabel=mpg,
+%                 xlabel=horsepower
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     opacity=0.3
+%                 ] table [
+%                     col sep=comma,
+%                     x=horsepower,
+%                     y=mpg
+%                 ] {data/Auto.csv};
+%                 \addplot[
+%                     domain=30:240,
+%                     samples=100,
+%                     color=red,
+%                     thick
+%                 ] {39.93 - 0.1578*x};
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\residuals}
+%     \sbox{\residuals}{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xmin=30,
+%                 xmax=240,
+%                 ymin=-20,
+%                 ymax=20,
+%                 width=5.2cm,
+%                 height=5.2cm,
+%                 ylabel=$y-\hat{y}$,
+%                 xlabel=horsepower
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     opacity=0.3
+%                 ] table [
+%                     col sep=comma,
+%                     x=horsepower,
+%                     y=residuals
+%                 ] {data/residuals.csv};
+%                 \addplot[
+%                     domain=30:240,
+%                     samples=100,
+%                     color=red,
+%                     thick
+%                 ] {0};
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\multilinreg}
+%     \sbox{\multilinreg}{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 width=8cm,
+%                 height=7cm, % Size of the plot
+%                 xlabel={Horsepower ($x_1$)},
+%                 ylabel={Weight ($x_2$)},
+%                 zlabel={Miles per gallon (y)},
+%                 view={25}{25}, % Adjust viewing angle colormap/cool,
+%                 xmin=30,
+%                 xmax=240,
+%                 ymin=1500,
+%                 ymax=5000,
+%                 zmin=3,
+%                 zmax=50,
+%                 xlabel style={sloped},
+%                 ylabel style={sloped},
+%                 xmajorgrids=true,
+%                 ymajorgrids=true,
+%                 zmajorgrids=true,
+%                 xtick style={draw=none},
+%                 ytick style={draw=none},
+%                 ztick style={draw=none}
+%             ]
+%                 \addplot3[
+%                     surf,
+%                     samples=20,
+%                     domain=30:240,
+%                     y domain=1500:5000,
+%                 ] {45.64-0.04*x-0.005*y};
+%                 \addplot3[
+%                     only marks,
+%                     mark size=2.5pt,
+%                     opacity=0.25
+%                 ] table [
+%                     x=horsepower,
+%                     y=weight,
+%                     z=mpg,
+%                     col sep=comma
+%                 ] {data/Auto.csv};
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newcommand{\binaryplot}[1]{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xmin=-0.5,
+%                 xmax=1.5,
+%                 xtick={0, 1},
+%                 xticklabels={Ford, Chevrolet},
+%                 ylabel=mpg,
+%                 height=7cm,
+%                 width=7cm
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     fill=blue,
+%                     opacity=0.6
+%                 ] coordinates {
+%                     (-0.065, 18)
+%                     (-0.080, 15)
+%                     (-0.038, 18)
+%                     (-0.139, 16)
+%                     (0.028, 17)
+%                     (-0.140, 15)
+%                     (-0.149, 14)
+%                     (0.137, 14)
+%                     (0.043, 14)
+%                     (-0.101, 15)
+%                     (0.007, 15)
+%                     (-0.145, 14)
+%                     (-0.106, 15)
+%                     (-0.013, 14)
+%                     (-0.120, 24)
+%                     (0.150, 22)
+%                     (-0.166, 18)
+%                     (-0.052, 21)
+%                     (0.031, 27)
+%                 };
+%                 \addplot[
+%                     only marks,
+%                     fill=red,
+%                     opacity=0.6
+%                 ] coordinates {
+%                     (0.985, 38)
+%                     (0.943, 36)
+%                     (1.085, 36)
+%                     (0.971, 36)
+%                     (0.990, 34)
+%                     (1.029, 38)
+%                     (0.958, 32)
+%                     (1.018, 38)
+%                     (1.054, 25)
+%                     (1.064, 38)
+%                     (1.070, 26)
+%                     (0.938, 22)
+%                     (1.131, 32)
+%                     (1.009, 36)
+%                     (0.835, 27)
+%                     (1.109, 27)
+%                     (1.032, 44)
+%                     (1.142, 32)
+%                     (1.115, 28)
+%                     (1.009, 31)
+%                 };
+%                 \ifnum#1=2
+%                     \draw[thick, dashed] (axis cs: -0.3, 17.158) -- (axis cs: 0.3, 17.158);
+%                     \node[anchor=south east, inner sep=1pt] at (axis cs: 0.3, 17.158) {\small{17.1}};
+%                     \draw[thick, dashed] (axis cs: 0.7, 32.8) -- (axis cs: 1.3, 32.8);
+%                     \node[anchor=south west, inner sep=1pt] at (axis cs: 0.7, 32.8) {\small{32.8}};
+%                 \fi
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\binary}
+%     \savebox{\binary}{
+%         \binaryplot{1}
+%     }
+%     \newsavebox{\binarymeans}
+%     \savebox{\binarymeans}{
+%         \binaryplot{2}
+%     }
+
+%     \newsavebox{\multilevel}
+%     \savebox{\multilevel}{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xmin=-0.5,
+%                 xmax=2.5,
+%                 xtick={0, 1, 2},
+%                 xticklabels={Ford, Chevrolet, Pontiac},
+%                 ylabel=mpg,
+%                 height=7cm,
+%                 width=7cm
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     fill=blue,
+%                     opacity=0.6
+%                 ] coordinates {
+%                     (-0.065, 18)
+%                     (-0.080, 15)
+%                     (-0.038, 18)
+%                     (-0.139, 16)
+%                     (0.028, 17)
+%                     (-0.140, 15)
+%                     (-0.149, 14)
+%                     (0.137, 14)
+%                     (0.043, 14)
+%                     (-0.101, 15)
+%                     (0.007, 15)
+%                     (-0.145, 14)
+%                     (-0.106, 15)
+%                     (-0.013, 14)
+%                     (-0.120, 24)
+%                     (0.150, 22)
+%                     (-0.166, 18)
+%                     (-0.052, 21)
+%                     (0.031, 27)
+%                 };
+%                 \addplot[
+%                     only marks,
+%                     fill=red,
+%                     opacity=0.6
+%                 ] coordinates {
+%                     (0.985, 38)
+%                     (0.943, 36)
+%                     (1.085, 36)
+%                     (0.971, 36)
+%                     (0.990, 34)
+%                     (1.029, 38)
+%                     (0.958, 32)
+%                     (1.018, 38)
+%                     (1.054, 25)
+%                     (1.064, 38)
+%                     (1.070, 26)
+%                     (0.938, 22)
+%                     (1.131, 32)
+%                     (1.009, 36)
+%                     (0.835, 27)
+%                     (1.109, 27)
+%                     (1.032, 44)
+%                     (1.142, 32)
+%                     (1.115, 28)
+%                     (1.009, 31)
+%                 };
+%                 \addplot[
+%                     only marks,
+%                     fill=green,
+%                     opacity=0.6
+%                 ] coordinates {
+%                     (1.961, 30.200)
+%                     (1.919, 28.200)
+%                     (2.061, 28.200)
+%                     (1.947, 28.200)
+%                     (1.966, 26.200)
+%                     (2.005, 30.200)
+%                     (1.934, 24.200)
+%                     (1.994, 30.200)
+%                     (2.030, 17.200)
+%                     (2.040, 30.200)
+%                     (2.046, 18.200)
+%                     (1.914, 14.200)
+%                     (2.107, 24.200)
+%                     (1.985, 28.200)
+%                     (1.811, 19.200)
+%                     (2.085, 19.200)
+%                     (2.008, 36.200)
+%                     (2.118, 24.200)
+%                     (2.091, 20.200)
+%                     (1.985, 23.200)
+%                 };
+
+%                 \draw[thick, dashed] (axis cs: -0.4, 17.158) -- (axis cs: 0.4, 17.158);
+%                 \node[anchor=south east, inner sep=1pt] at (axis cs: 0.4, 17.158) {\small{17.1}};
+%                 \draw[thick, dashed] (axis cs: 0.6, 32.8) -- (axis cs: 1.4, 32.8);
+%                 \node[anchor=south west, inner sep=1pt] at (axis cs: 0.6, 32.8) {\small{32.8}};
+%                 \draw[thick, dashed] (axis cs: 1.6, 25) -- (axis cs: 2.4, 25);
+%                 \node[anchor=south west, inner sep=1pt] at (axis cs: 1.6, 25) {\small{25.1}};
+
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newcommand{\combinationplot}[1]{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xtick pos=bottom,
+%                 ytick pos=left,
+%                 xmin=30,
+%                 xmax=240,
+%                 ymin=3,
+%                 ymax=50,
+%                 xlabel=Horsepower,
+%                 ylabel=Miles per gallon,
+%                 height=6.5cm,
+%                 width=10cm
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     opacity=0.6
+%                 ] table [
+%                     col sep=comma,
+%                     x=horsepower,
+%                     y=mpg
+%                 ] {data/Auto.csv};
+
+%                 \ifnum#1=1
+%                     \addplot[
+%                         domain=30:240,
+%                         samples=100,
+%                         color=red,
+%                         thick
+%                     ] {40 - 0.1566*x};
+%                     \addplot[
+%                         domain=30:240,
+%                         samples=100,
+%                         color=blue,
+%                         thick
+%                     ] {40 - 0.1566*x-1.85};
+%                 \fi
+%                 \ifnum#1=2
+%                     \addplot[
+%                         domain=30:240,
+%                         samples=100,
+%                         color=red,
+%                         thick
+%                     ] {40 - 0.1566*x};
+%                     \addplot[
+%                         domain=30:240,
+%                         samples=100,
+%                         color=blue,
+%                         thick
+%                     ] {38 - 0.13*x-1.85};
+%                 \fi
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\combinationbox}
+%     \sbox{\combinationbox}{
+%         \combinationplot{1}
+%     }
+%     \newsavebox{\interactionbox}
+%     \sbox{\interactionbox}{
+%         \combinationplot{2}
+%     }
+
+%     \newcommand{\cisplot}[1]{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 xtick pos=bottom,
+%                 ytick pos=left,
+%                 xmin=30,
+%                 xmax=240,
+%                 ymin=3,
+%                 ymax=50,
+%                 xlabel=Horsepower,
+%                 ylabel=Miles per gallon,
+%                 height=6.5cm,
+%                 width=10.5cm
+%             ]
+%                 \addplot[
+%                     domain=30:240,
+%                     samples=100,
+%                     color=red,
+%                     thick
+%                 ] {40 - 0.1566*x};
+
+%                 \ifnum#1>1
+%                     \addplot[
+%                         only marks,
+%                     ] coordinates {
+%                         (105, 23.5)
+%                     };
+%                     \draw[|-|, dashed] (axis cs: 105, 17.5) -- (axis cs: 105, 29.5);
+%                     \node[anchor=south, align=center, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 105, 29.5) {
+%                         Prediction\\
+%                         interval
+%                     };
+%                 \fi
+
+%                 \ifnum#1>2
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.2
+%                     ] coordinates {
+%                         (140, 22)
+%                         (140, 21)
+%                         (140, 19)
+%                         (140, 18)
+%                         (140, 15)
+%                     };
+
+%                     \draw[|-|, densely dotted, red, thick] (axis cs: 140, 16) -- (axis cs: 140, 20);
+%                     \node[anchor=south, align=center, red, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 140, 23) {
+%                         Confidence\\
+%                         interval
+%                     };
+%                 \fi
+
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\cisdata}
+%     \sbox{\cisdata}{
+%         \cisplot{1}
+%     }
+
+%     \newsavebox{\cisprediction}
+%     \sbox{\cisprediction}{
+%         \cisplot{2}
+%     }
+
+%     \newsavebox{\cisconfidence}
+%     \sbox{\cisconfidence}{
+%         \cisplot{3}
+%     }
+
+%     \section{Linear regression (via ordinary least squares)}
+
+%     \begin{frame}[t]{Linear regression (via ordinary least squares)}
+%         \only<1-16>{
+%             \begin{tikzpicture}
+%                 \begin{axis}[
+%                     xtick pos=bottom,
+%                     ytick pos=left,
+%                     xmin=30,
+%                     xmax=240,
+%                     ymin=3,
+%                     ymax=50,
+%                     xlabel=Horsepower (x),
+%                     ylabel=Miles per gallon (y),
+%                     height=6.8cm,
+%                     width=10.7cm
+%                 ]
+%                     \only<1-5>{
+%                         \addplot[
+%                             only marks,
+%                             opacity=0.6
+%                         ] table [
+%                             col sep=comma,
+%                             x=horsepower,
+%                             y=mpg
+%                         ] {data/Auto.csv};
+%                     }
+%                     \only<6-16>{
+%                         \addplot[
+%                             only marks,
+%                             opacity=0.05
+%                         ] table [
+%                             col sep=comma,
+%                             x=horsepower,
+%                             y=mpg
+%                         ] {data/Auto.csv};
+%                         \addplot[
+%                             only marks,
+%                             opacity=0.8
+%                         ] coordinates {
+%                             (115, 28.9)
+%                         };
+%                     }
+%                     \only<7-10>{
+%                         \draw[dashed] (axis cs: 115, 3) -- (axis cs: 115, 50);
+%                         \node[anchor=south, draw=black, fill=white, inner sep=2pt] at (axis cs: 115, 5) {\small{115}};
+%                     }
+%                     \only<3-16>{
+%                         \addplot[
+%                             domain=30:240,
+%                             samples=100,
+%                             color=red,
+%                             thick
+%                         ] {39.93 - 0.1578*x};
+%                     }
+%                     \only<10-16>{
+%                         \addplot[
+%                             only marks,
+%                             red,
+%                             opacity=0.6
+%                         ] coordinates {
+%                             (115, 21.78)
+%                         };
+%                     }
+%                     \only<11-13>{
+%                         \node[anchor=north] at (axis cs: 115, 21.78) {\small{$\hat{y}$}};
+%                         \node[anchor=south] at (axis cs: 115, 28.9) {\small{$y$}};
+%                     }
+%                     \only<12>{
+%                         \draw[] (axis cs: 115, 21.78) -- (axis cs: 115, 28.9);
+%                         \node[anchor=west] at (axis cs: 115, 25.34) {\small{$|y-\hat{y}|$}};
+%                     }
+%                     \only<13>{
+%                         \draw[] (axis cs: 115, 21.78) --
+%                                                     (axis cs: 115, 28.9) --
+%                                                     (axis cs: 134, 28.9) --
+%                                                     (axis cs: 134, 21.78) -- cycle;
+%                         \node[anchor=west] at (axis cs: 134, 25.34) {\small{$(y-\hat{y})^2$}};
+%                     }
+%                     \only<14-16>{
+%                         \draw[] (axis cs: 115, 21.78) --
+%                                                     (axis cs: 115, 28.9) --
+%                                                     (axis cs: 134, 28.9) --
+%                                                     (axis cs: 134, 21.78) -- cycle;
+%                         \draw[] (axis cs: 60, 27) --
+%                                                     (axis cs: 60, 30.462) --
+%                                                     (axis cs: 69, 30.462) --
+%                                                     (axis cs: 69, 27) -- cycle;
+%                         \draw[] (axis cs: 75, 26) --
+%                                                     (axis cs: 75, 28.095) --
+%                                                     (axis cs: 81, 28.095) --
+%                                                     (axis cs: 81, 26) -- cycle;
+%                         \draw[] (axis cs: 165.3, 17.7) --
+%                                                     (axis cs: 165.3, 13.85) --
+%                                                     (axis cs: 176, 13.85) --
+%                                                     (axis cs: 176, 17.7) -- cycle;
+%                         \draw[] (axis cs: 198, 15) --
+%                                                     (axis cs: 198, 8.68) --
+%                                                     (axis cs: 215, 8.68) --
+%                                                     (axis cs: 215, 15) -- cycle;
+
+%                         \addplot[
+%                             only marks,
+%                             opacity=0.8
+%                         ] coordinates {
+%                             (60, 27)
+%                             (75, 26)
+%                             (165.3, 17.7)
+%                             (198, 15)
+%                         };
+%                         \addplot[
+%                             only marks,
+%                             red,
+%                             opacity=0.6
+%                         ] coordinates {
+%                             (60, 30.462)
+%                             (75, 28.095)
+%                             (165.3, 13.85)
+%                             (198, 8.68)
+%                         };
+%                     }
+%                     \only<4>{
+%                         \addplot[
+%                             domain=30:240,
+%                             samples=100,
+%                             color=blue,
+%                             thick
+%                         ] {36 - 0.1*x};
+%                     }
+
+%                 \end{axis}
+%             \end{tikzpicture}\\
+%             \centering
+%             \only<2>{
+%                 \hspace{0.8cm}\textcolor{red}{$\hat{y}=\beta_0-\beta_1x$}\\
+%             }
+%             \only<3-7>{
+%                 \hspace{0.75cm}\textcolor{red}{$\hat{y}=39.93-0.1578x$}\\
+%             }
+%             \only<4>{
+%                 \hspace{1.4cm}\textcolor{blue}{$\hat{y}=36-0.1x$}
+%             }
+%             \only<8>{
+%                 \hspace{0.8cm}\textcolor{red}{$\hat{y}=39.93-0.1578*115$}\\
+%             }
+%             \only<9-10>{
+%                 \hspace{0.8cm}\textcolor{red}{$21.78=39.93-0.1578*115$}\\
+%             }
+%             \only<15>{
+%                 \hspace{0.8cm}\textcolor{red}{$MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
+%             }
+%             \only<16>{
+%                 \hspace{0.8cm}\textcolor{red}{$RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$}\\
+%             }
+%         }
+%         \only<17-48>{
+%             \begin{tikzpicture}
+%                 \node[] at (-5.25, -3) {};
+%                 \node[] at (5.25, 3) {};
+%                 \only<17,21-22,24>{
+%                     \node[font=\LARGE] at (0, 0) {
+%                         $\hat{y}=$
+%                         $\beta_0$
+%                         $+$
+%                         $\beta_1$
+%                         $x$
+%                     };
+%                 }
+%                 \only<18>{
+%                     \node[font=\LARGE] at (0, 0) {
+%                         $\hat{y}=$
+%                         \textcolor{red}{$\beta_0$}
+%                         $+$
+%                         \textcolor{red}{$\beta_1$}
+%                         $x$
+%                     };
+%                 }
+%                 \only<19-20>{
+%                     \node[] at (-2.7, 0) {
+%                         \usebox{\linreg}
+%                     };
+%                 }
+%                 \only<20>{
+%                     \node[] at (2.7, 0) {
+%                         \usebox{\residuals}
+%                     };
+%                 }
+%                 \only<22>{
+%                     \node[font=\LARGE] at (0, -1) {
+%                         $MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2$
+%                     };
+%                 }
+%                 \only<23>{
+%                     \node[font=\LARGE] at (0, -0.5) {
+%                         $MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\beta_0+\beta_1x_i)^2$
+%                     };
+%                 }
+%                 \only<25>{
+%                     \node[font=\LARGE] at (0, 0) {
+%                         $\hat{y}=\beta_0+\beta_1x_1+\beta_2x_2+\ldots+\beta_px_p$
+%                     };
+%                 }
+%                 \only<26>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\multilinreg}
+%                     };
+%                 }
+%                 \only<27>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cc}
+%                             \textbf{mpg}&\textbf{manufacturer}\\
+%                             36&Chevrolet\\
+%                             15&Ford\\
+%                             25&Chevrolet\\
+%                             26&Chevrolet\\
+%                             17&Ford\\
+%                             15&Ford\\
+%                             32&Chevrolet\\
+%                             14&Ford\\
+%                             14&Ford\\
+%                             28&Chevrolet\\
+%                         \end{tabular}
+%                     };
+%                     \node[] at (0, -3.5) {
+%                         $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{manufacturer}$
+%                     };
+%                 }
+%                 \only<28>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{ccc}
+%                             \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
+%                             36&Chevrolet&1\\
+%                             15&Ford&0\\
+%                             25&Chevrolet&1\\
+%                             26&Chevrolet&1\\
+%                             17&Ford&0\\
+%                             15&Ford&0\\
+%                             32&Chevrolet&1\\
+%                             14&Ford&0\\
+%                             14&Ford&0\\
+%                             28&Chevrolet&1\\
+%                         \end{tabular}
+%                     };
+%                     \only<28>{
+%                         \node[] at (0, -3.5) {
+%                             $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
+%                         };
+%                     }
+%                 }
+%                 \only<29>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\binary}
+%                     };
+%                 }
+%                 \only<30-31>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\binarymeans}
+%                     };
+%                 }
+%                 \only<31>{
+%                     \node[] at (0.57, -3.5) {
+%                         \textbf{Blackboard!}
+%                     };
+%                 }
+%                 \only<32>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cc}
+%                             \textbf{mpg}&\textbf{manufacturer}\\
+%                             36&Chevrolet\\
+%                             15&Ford\\
+%                             25&Chevrolet\\
+%                             26&Pontiac\\
+%                             17&Ford\\
+%                             15&Ford\\
+%                             32&Pontiac\\
+%                             14&Ford\\
+%                             14&Pontiac\\
+%                             28&Chevrolet\\
+%                         \end{tabular}
+%                     };
+%                     \node[] at (0, -3.5) {
+%                         $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{manufacturer}$
+%                     };
+%                 }
+%                 \only<33>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{cccc}
+%                             \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}&\textbf{pontiac}\\
+%                             36&Chevrolet&1&0\\
+%                             15&Ford&0&0\\
+%                             25&Chevrolet&1&0\\
+%                             26&Pontiac&0&1\\
+%                             17&Ford&0&0\\
+%                             15&Ford&0&0\\
+%                             32&Pontiac&0&1\\
+%                             14&Ford&0&0\\
+%                             14&Pontiac&0&1\\
+%                             28&Chevrolet&1&0\\
+%                         \end{tabular}
+%                     };
+%                     \node[] at (0, -3.5) {
+%                         $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{pontiac}$
+%                     };
+%                 }
+%                 \only<34>{
+%                     \PythonInputNode{1}{(-4, 2)}{pythonnode}{0.9\textwidth}{7}{
+%                         import pandas as pd^^J
+%                         ^^J
+%                         df = pd.DataFrame(...)^^J
+%                         print(f'Columns before: \{df.columns.values\}')^^J
+%                         df = pd.get_dummies(df)^^J
+%                         print(f'Columns after: \{df.columns.values\})^^J
+%                     }
+%                     \PythonOutputNode{1}{(-3.895, 0)}{out}{0.79\textwidth}{7}{
+%                         Columns before: ['manufacturer']^^J
+%                         Columns after: ['manufacturer_chevrolet' 'manufacturer_ford']^^J
+%                     }
+%                 }
+%                 \only<35>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\multilevel}
+%                     };
+%                 }
+%                 \only<36-37>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{ccc}
+%                             \textbf{mpg}&\textbf{chevrolet}&\textbf{horsepower}\\
+%                             36&1&130\\
+%                             15&0&165\\
+%                             25&1&150\\
+%                             26&1&150\\
+%                             17&0&140\\
+%                             15&0&198\\
+%                             32&1&220\\
+%                             14&0&215\\
+%                             14&0&225\\
+%                             28&1&212\\
+%                         \end{tabular}
+%                     };
+%                     \only<36>{
+%                         \node[] at (0, -3.5) {
+%                             $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
+%                         };
+%                     }
+%                 }
+%                 \only<37>{
+%                     \node[align=center] at (0, -3.8) {
+%                         $\widehat{mpg}=
+%                         \begin{cases}
+%                             \beta_0+\beta_1+\beta_2\times\text{horsepower} & \text{if chevrolet}\\
+%                             \beta_0+\beta_2\times\text{horsepower} & \text{else}\\
+%                         \end{cases}$
+%                     };
+
+%                 }
+%                 \only<38>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\combinationbox}
+%                     };
+%                     \node[align=center] at (0, -3.8) {
+%                         $\widehat{mpg}=
+%                         \begin{cases}
+%                             \textcolor{blue}{\beta_0+\beta_1+\beta_2\times\text{horsepower}} & \text{if chevrolet}\\
+%                             \textcolor{red}{\beta_0+\beta_2\times\text{horsepower}} & \text{else}\\
+%                         \end{cases}$
+%                     };
+%                 }
+%                 \only<39-41>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\interactionbox}
+%                     };
+%                 }
+%                 \only<40>{
+%                     \node[anchor=north] at (0, -3.4) {
+%                         $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$
+%                     };
+%                 }
+%                 \only<41>{
+%                     \node[align=center, anchor=north] at (0, -3.4) {
+%                         $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$\\
+%                         $+\beta_3\times\text{chevrolet}\times\text{horsepower}$
+%                     };
+%                 }
+%                 \only<42>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\cisdata}
+%                     };
+%                 }
+%                 \only<43>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\cisprediction}
+%                     };
+%                 }
+%                 \only<44>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\cisconfidence}
+%                     };
+%                 }
+%                 \only<45>{
+%                     \RInputNode{(-4.5, 2)}{in1}{0.8\textwidth}{7}{
+% predict(fit, newdata=data.frame(horsepower=105),^^J
+% { }{ }{ }{ }{ }{ }{ }{ }interval='prediction', level=0.95)^^J
+%                     }
+%                     \RInputNode{(-4.5, 1)}{out1}{0.8\textwidth}{7}{
+% { }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
+% 1 23.535 17.158 29.912^^J
+%                     }
+%                     \RInputNode{(-4.5, -1)}{in2}{0.8\textwidth}{7}{
+% predict(fit, newdata=data.frame(horsepower=105),^^J
+% { }{ }{ }{ }{ }{ }{ }{ }interval='confidence', level=0.95)^^J
+%                     }
+%                     \RInputNode{(-4.5, -2)}{out1}{0.8\textwidth}{7}{
+%                         { }{ }{ }{ }{ }fit{ }{ }{ }{ }lwr{ }{ }{ }{ }upr^^J
+%                         1 23.535 23.023 24.047^^J
+%                     }
+%                 }
+%                 \only<46>{
+%                     \PythonInputNode{1}{(-4.5, 2)}{pythonnode}{0.95\textwidth}{7}{
+%                         import statsmodels.api as sm^^J
+%                         ^^J
+%                         model = sm.OLS(df['mpg'], sm.add_constant(df[['horsepower']]))^^J
+%                         fit = model.fit()^^J
+%                         new_input = sm.add_constant(pd.DataFrame(\{'horsepower': [105, 106]\}))^^J
+%                         intervals = fit.get_prediction(new_input).summary_frame()^^J
+%                         print(intervals)^^J
+%                     }
+%                     \PythonOutputNode{1}{(-4.395, -0.5)}{out}{0.882\textwidth}{7}{
+%                         mean   mean_se  mean_ci_lower  mean_ci_upper  obs_ci_lower  obs_ci_upper^^J
+%                         0  24.467077  0.251262      23.973079      24.961075     14.809396     34.124758^^J
+%                         1  31.096556  0.398740      30.312607      31.880505     21.419710     40.773402^^J
+%                     }
+%                 }
+%                 \only<47>{
+%                     \node[align=center] at (0, 0) {
+%                         Why do we need both of these?\\
+%                         Where are they useful (e.g. what is most useful in\\
+%                         a scientific publication versus a business setting)?\\
+%                     };
+%                 }
+
+%                 \only<48>{
+%                     \node[] at (0, 1) {
+%                         \Huge{\emoji{partying-face}}
+%                     };
+
+%                     \node[] at (0, -1) {
+%                         \scriptsize{\url{http://localhost:8888/notebooks/notebooks\%2FLinear\%20regression.ipynb}}
+%                     };
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<49>{
+%             Linear regression: The true workhorse of machine learning
+%             \begin{itemize}
+%                 \item Models the relationship between (either singular or mulitple) inputs $X$ and (a continuous) output $y$ as a linear function
+%                 \begin{itemize}
+%                     \item Inputs can be both continuous and categorical
+%                 \end{itemize}
+%                 \item A strict parametric form limits the expressivity of the model
+%                 \begin{itemize}
+%                     \item More advanced terms can be explicitly added
+%                     \item The strictness allows for extended functionality, such as computing confidence intervals
+%                     \item \textbf{Makes the model human interpretable}
+%                 \end{itemize}
+%             \end{itemize}
+%         }
+%     \end{frame}
+
+%     \newcommand{\knnplot}[1]{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 width=10cm,
+%                 height=6cm,
+%                 xmin=-0.2,
+%                 xmax=1.2,
+%                 ymin=-0.2,
+%                 ymax=1.2,
+%                 xmajorticks=false,
+%                 ymajorticks=false,
+%                 ylabel=y,
+%                 xlabel=x,
+%                 clip=false
+%             ]
+%                 \ifnum#1=1
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.5,
+%                         mark size=4pt
+%                     ] coordinates {
+%                         (0.000, -0.075)
+%                         (0.105, 0.075)
+%                         (0.211, 0.156)
+%                         (0.316, 0.295)
+%                         (0.421, 0.645)
+%                         (0.526, 0.685)
+%                         (0.684, 0.499)
+%                         (0.789, 0.602)
+%                         (0.895, 0.899)
+%                         (1.000, 1.140)
+%                     };
+%                 \fi
+%                 \ifnum#1>1
+%                     \ifnum#1<4
+%                         \addplot[
+%                             only marks,
+%                             opacity=0.1,
+%                             mark size=4pt
+%                         ] coordinates {
+%                             (0.000, -0.075)
+%                             (0.105, 0.075)
+%                             (0.211, 0.156)
+%                             (0.316, 0.295)
+%                             (0.421, 0.645)
+%                             (0.526, 0.685)
+%                             (0.684, 0.499)
+%                             (0.789, 0.602)
+%                             (0.895, 0.899)
+%                             (1.000, 1.140)
+%                         };
+%                         \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
+%                         \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
+
+%                         \ifnum#1=3
+%                             \addplot[
+%                                 only marks,
+%                                 red,
+%                                 mark size=4pt,
+%                                 opacity=0.6
+%                             ] coordinates {
+%                                 (0.6, 0.685)
+%                             };
+%                             \draw[-stealth,red] (axis cs: 0.60, 0.685) -- (axis cs: 0.55, 0.685);
+%                         \fi
+%                     \fi
+%                 \fi
+
+%                 \ifnum#1=4
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.5,
+%                         mark size=4pt
+%                     ] coordinates {
+%                         (0.000, -0.075)
+%                         (0.105, 0.075)
+%                         (0.211, 0.156)
+%                         (0.316, 0.295)
+%                         (0.421, 0.645)
+%                         (0.526, 0.685)
+%                         (0.684, 0.499)
+%                         (0.789, 0.602)
+%                         (0.895, 0.899)
+%                         (1.000, 1.140)
+%                     };
+%                     \addplot[dashed] coordinates {
+%                         (-0.2, -0.075)
+%                         (0.0525, -0.075)
+%                         (0.0525, 0.075)
+%                         (0.1575, 0.075)
+%                         (0.1575, 0.156)
+%                         (0.263, 0.156)
+%                         (0.263, 0.295)
+%                         (0.368, 0.295)
+%                         (0.368, 0.645)
+%                         (0.473, 0.645)
+%                         (0.473, 0.685)
+%                         (0.578, 0.685)
+%                         (0.578, 0.499)
+%                         (0.7375, 0.499)
+%                         (0.7375, 0.602)
+%                         (0.842, 0.602)
+%                         (0.842, 0.899)
+%                         (0.9475, 0.899)
+%                         (0.9475, 1.140)
+%                         (1.2, 1.140)
+%                     };
+%                 \fi
+
+%                 \ifnum#1=5
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.1,
+%                         mark size=4pt
+%                     ] coordinates {
+%                         (0.000, -0.075)
+%                         (0.105, 0.075)
+%                         (0.211, 0.156)
+%                         (0.316, 0.295)
+%                         (0.421, 0.645)
+%                         (0.526, 0.685)
+%                         (0.684, 0.499)
+%                         (0.789, 0.602)
+%                         (0.895, 0.899)
+%                         (1.000, 1.140)
+%                     };
+%                     \draw[dashed] (axis cs: 0.6, -0.2) -- (axis cs: 0.6, 1.2);
+%                     \node[anchor=south] at (axis cs: 0.6, 1.2) {\small{?}};
+%                     \addplot[
+%                         only marks,
+%                         red,
+%                         mark size=4pt,
+%                         opacity=0.6
+%                     ] coordinates {
+%                         (0.6, 0.592)
+%                     };
+%                     \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.55, 0.66);
+%                     \draw[-stealth,red] (axis cs: 0.60, 0.592) -- (axis cs: 0.65, 0.52);
+%                 \fi
+%                 \ifnum#1=6
+%                     \addplot[
+%                         only marks,
+%                         opacity=0.5,
+%                         mark size=4pt
+%                     ] coordinates {
+%                         (0.000, -0.075)
+%                         (0.105, 0.075)
+%                         (0.211, 0.156)
+%                         (0.316, 0.295)
+%                         (0.421, 0.645)
+%                         (0.526, 0.685)
+%                         (0.684, 0.499)
+%                         (0.789, 0.602)
+%                         (0.895, 0.899)
+%                         (1.000, 1.140)
+%                     };
+%                     \addplot[dashed] coordinates {
+%                         (-0.2, 0)
+%                         (0.105, 0)
+%                         (0.105, 0.115)
+%                         (0.2105, 0.115)
+%                         (0.2105, 0.225)
+%                         (0.316, 0.225)
+%                         (0.316, 0.47)
+%                         (0.421, 0.47)
+%                         (0.421, 0.665)
+%                         (0.5525, 0.665)
+%                         (0.5525, 0.592)
+%                         (0.6575, 0.592)
+%                         (0.6575, 0.55)
+%                         (0.79, 0.55)
+%                         (0.79, 0.7505)
+%                         (0.894, 0.7505)
+%                         (0.894, 1.01)
+%                         (1.2, 1.01)
+
+
+%                     };
+%                 \fi
+%                 \ifnum#1=7
+%                 \addplot[
+%                     only marks,
+%                     opacity=0.5,
+%                     mark size=4pt
+%                 ] coordinates {
+%                     (0.000, -0.075)
+%                     (0.105, 0.075)
+%                     (0.211, 0.156)
+%                     (0.316, 0.295)
+%                     (0.421, 0.645)
+%                     (0.526, 0.685)
+%                     (0.684, 0.499)
+%                     (0.789, 0.602)
+%                     (0.895, 0.899)
+%                     (1.000, 1.140)
+%                 };
+%                 \addplot[dashed] coordinates {
+%                     (-0.2, 0.4921)
+%                     (1.2, 0.4921)
+%                 };
+%             \fi
+
+%             \addplot[] coordinates {
+%                 (-0.2, -0.2)
+%                 (1.2, 1.2)
+%             };
+
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\knndata}
+%     \sbox{\knndata}{
+%         \knnplot{1}
+%     }
+%     \newsavebox{\knninput}
+%     \sbox{\knninput}{
+%         \knnplot{2}
+%     }
+%     \newsavebox{\knnpredone}
+%     \sbox{\knnpredone}{
+%         \knnplot{3}
+%     }
+%     \newsavebox{\knnformone}
+%     \sbox{\knnformone}{
+%         \knnplot{4}
+%     }
+%     \newsavebox{\knnpredtwo}
+%     \sbox{\knnpredtwo}{
+%         \knnplot{5}
+%     }
+%     \newsavebox{\knnformtwo}
+%     \sbox{\knnformtwo}{
+%         \knnplot{6}
+%     }
+%     \newsavebox{\knnall}
+%     \sbox{\knnall}{
+%         \knnplot{7}
+%     }
+
+%     \newcommand{\dimplot}[1]{
+%         \begin{tikzpicture}[scale=2]
+%             \node[] at (-1.5, -1.5) {};
+%             \node[] at (1.5, 1.5) {};
+
+%             \draw[-stealth,gray!50] (-1, -1) -- (1, -1);
+%             \node[anchor=north,,gray!50] at (0, -1) {$x_1$};
+%             \node[
+%                 inner sep=2pt,
+%                 circle,
+%                 draw=black,
+%                 fill=teal!60
+%             ] (n1) at (-0.8, -0.8) {};
+
+%             \ifnum#1=1
+%                 \node[
+%                     inner sep=2pt,
+%                     circle,
+%                     draw=black,
+%                     fill=teal!60
+%                 ] (n2) at (0.2, -0.8) {};
+%                 \draw[dashed,stealth-stealth] (-0.75, -0.8) -- (0.15, -0.8) node [midway, above] {\small{1}};
+%             \fi
+
+%             \ifnum#1>1
+%                 \draw[-stealth,gray!50] (-1, -1) -- (-1, 1);
+%                 \node[anchor=east,gray!50] at (-1, 0) {$x_2$};
+%             \fi
+
+%             \ifnum#1=2
+%                 \node[
+%                     inner sep=2pt,
+%                     circle,
+%                     draw=black,
+%                     fill=teal!60
+%                 ] (n2) at (0.2, 0.2) {};
+%                 \draw[dashed,stealth-] (-0.75, -0.8) -- (0.2, -0.8) node [midway, above] {\small{1}};
+%                 \draw[dashed,-stealth] (0.2, -0.8) -- (0.2, 0.15) node [midway, right] {\small{1}};
+%                 \draw[-stealth,red] (n1) -- (n2) node [pos=0.45, above=0.15cm] {\small{$\sqrt{2}$}};
+%             \fi
+
+%             \ifnum#1=3
+%                 \draw[-stealth,gray!50] (-1, -1) -- (0.5, 0.0);
+%                 \node[anchor=north, rotate=30,gray!50] at (-0.25, -0.5) {$x_3$};
+%                 \node[
+%                     inner sep=2pt,
+%                     circle,
+%                     draw=black,
+%                     fill=teal!60
+%                 ] (n2) at (0.7, 0.53) {};
+%                 \draw[dashed,stealth-] (-0.75, -0.8) -- (0.2, -0.8) node [midway, above] {\small{1}};
+%                 \draw[dashed,-stealth] (0.2, -0.8) -- (0.2, 0.2) node [midway, right] {\small{1}};
+%                 \draw[dashed,-stealth] (0.2, 0.2) -- (0.7, 0.53) node [pos=0.4, below=0.15cm] {\small{1}};
+%                 \draw[-stealth,red] (n1) -- (n2) node [pos=0.45, above=0.15cm] {\small{$\sqrt{3}$}};
+%             \fi
+
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\dimone}
+%     \sbox{\dimone}{
+%         \dimplot{1}
+%     }
+%     \newsavebox{\dimtwo}
+%     \sbox{\dimtwo}{
+%         \dimplot{2}
+%     }
+%     \newsavebox{\dimthree}
+%     \sbox{\dimthree}{
+%         \dimplot{3}
+%     }
+
+%     \section{K-Nearest Neighbours}
+
+%     \begin{frame}{K-Nearest Neighbours}
+%         \only<1-13>{
+%             \begin{tikzpicture}
+%                 \node[] at (-5.25, -3) {};
+%                 \node[] at (5.25, 3) {};
+
+%                 \only<1-2>{
+%                     \node[anchor=west, align=left] at (-5, 1.5) {
+%                         \underline{Linear regression:}\\[0.25cm]
+%                         $\hat{f}(X)=\beta_0+\beta_1X_1+\beta_2X_2+\ldots+\beta_pX_p$
+%                     };
+
+%                     \node[anchor=west, align=left] at (-5, -1.5) {
+%                         \underline{K-Nearest Neighbours:}\\[0.25cm]
+%                         $\hat{f}(X)=\frac{1}{K}\sum\limits_{x_i \in \mathcal{N}}y_i$
+%                     };
+%                 }
+%                 \only<2>{
+%                     \node[rotate=45] at (0, 0) {
+%                         \Huge{Blackboard!}
+%                     };
+%                 }
+%                 \only<3>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knndata}
+%                     };
+%                 }
+%                 \only<4>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knninput}
+%                     };
+%                 }
+%                 \only<5>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knnpredone}
+%                     };
+%                 }
+%                 \only<6>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knnformone}
+%                     };
+%                 }
+%                 \only<7>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knnpredtwo}
+%                     };
+%                 }
+%                 \only<8>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knnformtwo}
+%                     };
+%                 }
+%                 \only<9>{
+%                     \node[anchor=south west] at (-4.75, -2.5) {
+%                         \usebox{\knnall}
+%                     };
+%                 }
+%                 \only<10>{
+%                     \node[align=left] at (0, 0) {
+%                         \underline{Blackboard exercise}:\\
+%                         How does the bias-variance trade-off relate to the choice of $K$?
+%                     };
+%                 };
+%                 \only<11>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\dimone}
+%                     };
+%                 }
+%                 \only<12>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\dimtwo}
+%                     };
+%                 }
+%                 \only<13>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\dimthree}
+%                     };
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<14>{
+%             K-Nearest Neighbours: An intuitive model relying on similarities between datapoints to make a prediction
+%             \begin{itemize}
+%                 \item No assumptions about the functional relationship between inputs and outputs
+%                 \item Directly trades off bias and variance through the choice of $K$
+%                 \item Does not work well in high dimensions as space gets more sparsely populated, yielding less dense neighbourhoods
+%             \end{itemize}
+%         }
+%     \end{frame}
+
+%     \newcommand{\logisticplot}[1]{
+%         \begin{tikzpicture}
+%             \begin{axis}[
+%                 height=5cm,
+%                 width=10cm,
+%                 ytick={0, 1},
+%                 ytick style={draw=none},
+%                 xtick pos=bottom,
+%                 xlabel=mpg (x),
+%                 ylabel=chevrolet (y),
+%                 ymin=-0.5,
+%                 ymax=1.5,
+%                 xmin=13,
+%                 xmax=38
+%             ]
+%                 \addplot[
+%                     only marks,
+%                     fill=red,
+%                     mark size=3pt
+%                 ] coordinates {
+%                     (36, 1)
+%                     (25, 1)
+%                     (26, 1)
+%                     (32, 1)
+%                     (28, 1)
+%                     (29, 1)
+%                     (29.5, 1)
+%                     (21, 1)
+%                 };
+%                 \addplot[
+%                     only marks,
+%                     fill=blue,
+%                     mark size=3pt
+%                 ] coordinates {
+%                     (15, 0)
+%                     (17, 0)
+%                     (21, 0)
+%                     (14, 0)
+%                     (14.5, 0)
+%                     (16, 0)
+%                     (19, 0)
+%                     (24, 0)
+%                     (27, 0)
+%                 };
+
+%                 \ifnum#1=2
+%                     \addplot[
+%                         domain=10:40,
+%                         samples=100,
+%                         color=red,
+%                         thick
+%                     ] {-0.87+0.06*x};
+%                 \fi
+%                 \ifnum#1=3
+%                     \draw[dashed] (axis cs: 25.5, -0.5) -- (axis cs: 25.5, 1.5);
+%                     \draw[] (axis cs: 25.5, 1) -- (axis cs: 38, 1);
+%                     \draw[] (axis cs: 25.5, 0) -- (axis cs: 13, 0);
+%                 \fi
+%                 \ifnum#1=4
+%                     \addplot[
+%                         domain=13:38,
+%                         samples=100,
+%                         color=red,
+%                         thick
+%                     ] {exp(-10+0.42*x)/(1+exp(-10+0.42*x))};
+
+%                 \fi
+%             \end{axis}
+%         \end{tikzpicture}
+%     }
+
+%     \newsavebox{\logisticdata}
+%     \sbox{\logisticdata}{
+%         \logisticplot{1}
+%     }
+%     \newsavebox{\logisticlinear}
+%     \sbox{\logisticlinear}{
+%         \logisticplot{2}
+%     }
+%     \newsavebox{\logisticstep}
+%     \sbox{\logisticstep}{
+%         \logisticplot{3}
+%     }
+%     \newsavebox{\logisticlog}
+%     \sbox{\logisticlog}{
+%         \logisticplot{4}
+%     }
+
+%     \section{Logistic regression}
+
+%     \begin{frame}{Logistic regression}
+%         \only<1-20>{
+%             \begin{tikzpicture}
+%                 \node[draw=black] at (-5.25, -4) {};
+%                 \node[draw=black] at (5.25, 3) {};
+
+%                 \only<1-2>{
+%                     \node[] at (0, 0) {
+%                         \begin{tabular}{ccc}
+%                             \textbf{mpg}&\textbf{manufacturer}&\textbf{chevrolet}\\
+%                             36&Chevrolet&1\\
+%                             15&Ford&0\\
+%                             25&Chevrolet&1\\
+%                             26&Chevrolet&1\\
+%                             17&Ford&0\\
+%                             15&Ford&0\\
+%                             32&Chevrolet&1\\
+%                             14&Ford&0\\
+%                             14&Ford&0\\
+%                             28&Chevrolet&1\\
+%                         \end{tabular}
+%                     };
+%                 }
+%                 \only<1>{
+%                     \node[] at (0, -3.5) {
+%                         $\widehat{\text{mpg}}=\beta_0+\beta_1\times\text{chevrolet}$
+%                     };
+%                 }
+%                 \only<2>{
+%                     \node[] at (0, -3.5) {
+%                         $\widehat{\text{chevrolet}}=\beta_0+\beta_1\times\text{mpg}$
+%                     };
+%                 }
+%                 \only<3>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\logisticdata}
+%                     };
+%                 }
+%                 \only<4>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\logisticlinear}
+%                     };
+%                     \node[] at (0, -3) {
+%                         $\widehat{\text{chevrolet}}=-0.87+0.06\times\text{mpg}$
+%                     };
+%                 }
+%                 \only<5>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\logisticstep}
+%                     };
+%                 }
+%                 \only<6>{
+%                     \node[] at (0, 0) {
+%                         \usebox{\logisticlog}
+%                     };
+%                     \node[] at (0, -3) {
+%                         $\widehat{\text{chevrolet}}=\dfrac{e^{-10.22+0.42\times\text{mpg}}}{1 + e^{-10.22+0.42\times\text{mpg}}}$
+%                     };
+%                 }
+%                 \only<7-20>{
+%                     \node[] at (-0.9, 1) {
+%                         $\hat{y}=$
+%                     };
+%                     \draw[] (-0.5, 1) -- (1.1, 1);
+%                     \node[] at (-0.3, 0.75) {
+%                         $1+$
+%                     };
+%                     \node[] at (0.45, 0.8) {
+%                         $e^{\beta_0+\beta_1x}$
+%                     };
+%                     \node[] at (0.3, 1.2) {
+%                         $e^{\beta_0+\beta_1x}$
+%                     };
+%                 }
+%                 \only<8-13>{
+%                     \node[anchor=east] at (0, -1) {
+%                         $e^{\beta_0+\beta_1x} \rightarrow 0$
+%                     };
+%                 }
+%                 \only<9-13>{
+%                     \node[anchor=west] at (0, -1) {
+%                         $\implies \hat{y} = 0$
+%                     };
+%                 }
+%                 \only<10-13>{
+%                     \node[anchor=east] at (0, -1.5) {
+%                         $e^{\beta_0+\beta_1x} \rightarrow \infty$
+%                     };
+%                 }
+%                 \only<11-13>{
+%                     \node[anchor=west] at (0, -1.5) {
+%                         $\implies \hat{y} = 1$
+%                     };
+%                 }
+%                 \only<12-13>{
+%                     \node[anchor=east] at (0, -2.5) {
+%                         $0\leq\hat{y}\leq1$
+%                     };
+%                 }
+%                 \only<13>{
+%                     \node[anchor=west] at (0, -2.5) {
+%                         $\implies\hat{y}=Pr(Y=1|X)$
+%                     };
+%                 }
+%                 \only<15-16>{
+%                     \node[] at (0, -1) {
+%                         $log \left( \dfrac{p(X)}{1-p(X)} \right) = \beta_0+\beta_1x$
+%                     };
+%                 }
+%                 \only<16>{
+%                     \node[] at (0, -3) {
+%                         "\textit{... counterintuitive and challenging to interpret.}" - James Jaccard
+%                     };
+%                 }
+%                 \only<18-20>{
+%                     \node[] at (0, 0) {
+%                         More than one class?
+%                     };
+%                 }
+%                 \only<19-20>{
+%                     \node[] at (0, -2) {
+%                         $Pr(Y=k|X=x)=\dfrac{e^{\beta_{0k}+\beta_{1k}x}}{\sum\limits_{l=1}^{K}e^{\beta_{0l}+\beta_{1l}x}}$
+%                     };
+%                 }
+%                 \only<20>{
+%                     \node[rotate=45] at (0, 0) {
+%                         \Huge{Blackboard!}
+%                     };
+%                 }
+%             \end{tikzpicture}
+%         }
+%         \only<21>{
+%             Logistic regression: Extending linear regression to classification.
+%             \begin{itemize}
+%                 \item Treats all members of a class (approximately) equally.
+%                 \item Ouputs an understandable quantity: The probability of a sample belonging to the positive class.
+%                 \item Somewhat interpretable, although not as much as linear regression
+%                 \item Can trivially be extended to include multiple classes
+%             \end{itemize}
+%         }
+%         \only<22>{
+%             \scriptsize{\url{http://localhost:8888/notebooks/notebooks\%2FLogistic\%20regression.ipynb}}
+%         }
+%     \end{frame}
+
+%     \section{Generative models for classification}
+
+%     \begin{frame}[t]{Generative models}
+%         \only<1-2>{
+%             Generative models for classification:
+%         }
+%         \only<1>{
+%             \begin{itemize}
+%                 \item Logistic regression models the probability of a class given predictors: $P(Y|X)$
+%                 \item Generative models instead consider the probability of the predictors values given the class, $P(X|Y)$
+%                 \item How would a given class generate the datapoint?
+%             \end{itemize}
+%         }
+%         \only<2>{
+%             \begin{itemize}
+%                 \item Bayes' theorem: $P(Y|X)=\dfrac{P(X|Y)P(Y)}{P(X)}$
+%                 \item $P(Y|X)$ is the posterior probability of the class given the data
+%                 \item $P(X|Y)$ is the likelihood of the data given the class
+%                 \item $P(Y)$ is the prior probability of the class
+%                 \item $P(X)$ is the marginal likelihood of the data
+%             \end{itemize}
+%         }
+%         \only<3>{
+%             Linear Discriminant Analysis
+%             \begin{itemize}
+%                 \item Assume the predictors are normally distributed within each class separately
+%                 \begin{itemize}
+%                     \item $P(X|Y=Class 1)$
+%                     \item $P(X|Y=Class 2)$
+%                     \item etc
+%                 \end{itemize}
+%                 \item Class probabilities $P(Y)$ estimated from training data
+%                 \item Marginal probability of data $P(X)$ can be simplified away
+%                 \item Posterior probability $P(Y|X)$ can be calculated using Bayes' theorem
+%             \end{itemize}
+%         }
+%     \end{frame}
+
+%     \section{Classification metrics}
+
+%     \begin{frame}{Classification metrics}
+%         The two most common, severe, mistakes made in machine learning studies in psychology and neuroscience (in my opinion) are:
+%         \begin{itemize}
+%             \item Poor validation and testing strategies (Next lecture)
+%             \item Using incorrect performance measures, most commonly accuracy (Blackboard!)
+%         \end{itemize}
+%     \end{frame}
+
+%     \begin{frame}{Assignment 2}
+%         \scriptsize{\url{https://uio.instructure.com/courses/53357/assignments/116394?module_item_id=946345}}
+%     \end{frame}
 
 \end{document}
