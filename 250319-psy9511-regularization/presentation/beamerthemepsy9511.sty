@@ -1,0 +1,228 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{PSY9511}[2024/09/15 PSY9511 Beamer Style]
+
+\usetheme{metropolis}
+
+\RequirePackage[export]{adjustbox}
+\RequirePackage{array}
+\RequirePackage{hyperref}
+\RequirePackage{listings}
+\RequirePackage{tikz}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=white,
+    urlcolor=blue!80
+}
+
+\definecolor{uiored}{HTML}{DD0000}
+\definecolor{uiolightred}{HTML}{FB6666}
+\definecolor{uioredtone}{HTML}{FEE0E0}
+\definecolor{uioblue}{HTML}{3E31D6}
+\definecolor{uiolightblue}{HTML}{86A4F7}
+\definecolor{uioblueone}{HTML}{E6ECFF}
+\definecolor{uiogreen}{HTML}{2EC483}
+\definecolor{uiolightgreen}{HTML}{6CE1AB}
+\definecolor{uiogreentone}{HTML}{CEFFDF}
+\definecolor{uioorange}{HTML}{FEA11B}
+\definecolor{uiolightorange}{HTML}{FDCB87}
+\definecolor{uioorangetone}{HTML}{FFE8D4}
+\definecolor{uioyellow}{HTML}{FFFEA7}
+\definecolor{uiogray}{HTML}{B2B3B7}
+
+\colorlet{mainbackground}{uiored}
+
+\setbeamercolor{frametitle}{bg=mainbackground, fg=white}
+\setbeamercolor{title separator}{fg=mainbackground}
+\setbeamercolor{progress bar in section page}{fg=white, bg=uiogray}
+
+\def\logowidth{4cm}
+
+\makeatletter
+\setbeamertemplate{section page}
+{
+  \begingroup
+
+    \vspace{4.3cm}
+    {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
+    {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
+
+    \vspace*{2.8cm}
+    \begin{center}
+        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
+    \end{center}
+
+  \endgroup
+}
+\makeatother
+
+\AtBeginSection{
+  {
+    \setbeamercolor{background canvas}{bg=uiored}
+    \setbeamercolor{section title}{fg=white}
+    \frame[plain,c,noframenumbering]{\sectionpage}
+    \setbeamercolor{background canvas}{bg=black!2}
+  }
+}
+
+
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.55cm]current page.south east); % Draw filled rectangle
+
+            % Logo
+            \node[anchor=west, yshift=0.275cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
+
+            % Title and subtitle
+            \node[align=center, yshift=0.275cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.05cm]\textcolor{white}{\insertsubtitle}};
+
+            % Page number
+            \node[anchor=east, yshift=0.275cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
+        \end{tikzpicture}
+    \fi
+}
+
+\lstdefinestyle{Core}{
+    identifierstyle=\color[RGB]{0, 0, 0},
+    stringstyle=\color[RGB]{205, 49, 49},
+    showstringspaces=false,
+    breaklines,
+    xleftmargin=3pt,
+    xrightmargin=3pt,
+    framesep=3pt,
+    aboveskip=-1.5pt,
+    belowskip=-0.5pt,
+    showlines=true,
+}
+
+\lstdefinestyle{RInput}{
+    style=Core,
+    language=R,
+    keywordstyle=\color[RGB]{17, 115, 187},
+    commentstyle=\color[RGB]{0, 128, 0},
+    identifierstyle=\color[RGB]{0, 0, 0},
+    stringstyle=\color[RGB]{205, 49, 49},
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    frame=single,
+    rulecolor=\color[RGB]{0, 0, 0},
+}
+
+\lstdefinestyle{PythonInput}{
+    style=Core,
+    language=Python,
+    keywordstyle=\color[RGB]{26, 13, 171},
+    commentstyle=\color[RGB]{0, 128, 0},
+    backgroundcolor=\color[RGB]{245, 245, 245},
+    rulecolor=\color[RGB]{192, 192, 192},
+    frame=tblr,
+}
+
+\lstdefinestyle{ROutput}{
+    style=Core,
+    language=R,
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    commentstyle=\color[HTML]{009900},
+    stringstyle=\color[HTML]{0000FF},
+    keywordstyle=\color[HTML]{000000},
+    numberstyle=\tiny\color[HTML]{000000},
+    breakatwhitespace=true,
+    frame=single,
+    rulecolor=\color{black},
+}
+
+\lstdefinestyle{PythonOutput}{
+    backgroundcolor=\color[RGB]{255, 255, 255},
+    rulecolor=\color[RGB]{192, 192, 192},
+    frame=single,
+    numbers=none,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    keywordstyle=\color[RGB]{255, 0, 0},
+    morekeywords={AttributeError}
+}
+
+\newcommand{\PythonInputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[blue,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-3pt,
+                yshift=-3pt
+                ]north west:In{[}#1{]}:},
+    ] (#3) at #2 {
+    \begin{lstlisting}[
+        style=PythonInput,
+        linewidth=#4,
+        basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+        numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+    ]^^J
+        #6
+    \end{lstlisting}
+    };
+}
+
+\newcommand{\PythonOutputNode}[6]{%
+    \node[
+        minimum width=#4,
+        text width=#4,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        anchor=north west,
+        label={[red,
+                anchor=north east,
+                font=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+                inner sep=0pt,
+                outer sep=0pt,
+                xshift=-6pt,
+                yshift=-11pt
+                ]north west:Out{[}#1{]}:}
+    ] (pythonoutput) (#3) at #2 {
+        \begin{lstlisting}[
+            style=PythonOutput,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#5-1\relax}{#5}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #6
+        \end{lstlisting}
+    };
+}
+
+\newcommand{\RInputNode}[5]{
+    \node[
+        minimum width=#3,
+        text width=#3,
+        align=left,
+        inner sep=0pt,
+        outer sep=0pt,
+        draw=black,
+        anchor=north west
+    ] (#2) at #1 {
+        \begin{lstlisting}[
+            style=RInput,
+            linewidth=\textwidth,
+            basicstyle=\ttfamily\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont,
+            numberstyle=\fontsize{\the\numexpr#4-1\relax}{#4}\selectfont\color[RGB]{128, 128, 128},
+        ]^^J
+            #5
+        \end{lstlisting}
+    };
+}
+
+\titlegraphic{
+	\centering
+	\vspace{7.4cm}
+	\includegraphics[width=\logowidth]{data/uio_logo_full.png}
+}
