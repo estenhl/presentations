@@ -769,21 +769,22 @@ while len(chosen_predictors) < len(predictors):^^J
         \node[] at (-5.25, 3.5) {};
         \node[] at (5.25, -3.5) {};
 
-        \only<1-5, 7-9>{
+        \only<1-5, 7-11>{
             \node[] at (0, 3) {
                 $y \sim \beta_0 + \alert<2-9>{\beta_1}x_1 + \alert<2-9>{\beta_2}x_2 + \alert<2-9>{\beta_3}x_3 + \alert<2-9>{\beta_4}x_4 + \alert<2-9>{\beta_5}x_5 + \beta_6x_6$
             };
         }
-        \only<3-5, 7-9>{
+        \only<3-5, 7-11>{
             \node[] at (0, 2.25) {
-                \textcolor{orange}{$\beta_n \rightarrow 0$}
+                \alert<3>{$\beta_n \rightarrow 0$}
             };
         }
-        \only<4-5, 7-8>{
+        \only<4-5, 7-11>{
             \node[anchor=north west, align=left, text width=10.5cm] at (-5.25, 2) {
                 \begin{enumerate}
                     \item $\beta_1 = 0 \implies \text{One less degree of freedom in our function}$\\
-                    \item<7-8> $\text{A little more bias} \implies \text{A lot less variance}$\\
+                    \item<7-> $\text{A little more bias} \implies \text{A lot less variance}$\\
+                    \item<11> $\text{Parameters depend on eachother} \implies \text{Fewer degrees of freedom}$
                 \end{enumerate}
             };
         }
@@ -801,177 +802,166 @@ while len(chosen_predictors) < len(predictors):^^J
             };
         }
 
-        \only<8>{
-            \node[] (formula) at (0, -0.7) {
-                $y \sim \beta_0 + $
-                $\beta_1$$x_1 + $
-                $\beta_2$$x_2 + $
-                $\beta_3$$x_3 + $
-                $\beta_4$$x_4 + $
-                $\beta_5$$x_5 + $
-                $\beta_6$$x_6$
+        \only<8-10>{
+            \node[align=center] (formula) at (0, -1.3) {
+                $y \sim \beta_0 + \alert<10>{\beta_1}x_1 + \alert<10>{\beta_2}x_2 + \beta_3x_3 + \beta_4x_4 + \beta_5x_5 + \beta_6x_6$\\
+                subject to the constraint\\
+                $\sum\limits_{j=1}^p \beta_j \leq 1$
             };
-            \draw[-stealth] ($ (formula.north) + (-0.9, 0) $) -- ($ (formula.north) + (-0.9, 0.3) $);
-            \draw[-stealth] ($ (formula.south) - (-0.86, 0) $) -- ($ (formula.south) - (-0.86, 0.3) $);
         }
-
-        \only<9>{
-            \node[anchor=north west, align=left, text width=8cm] at (-4.1, 2) {
-                \begin{enumerate}
-                    \item $\beta_1 = 0 \implies \text{One less degree of freedom in our function}$\\
-                    \item $\text{A little more bias} \implies \text{A lot less variance}$\\
-                    \item $\text{Parameters depend on eachother} \implies \text{Fewer degrees of freedom}$
-                \end{enumerate}
+        \only<9-10>{
+            \node[] at (0, -3) {
+                $\beta_1=1, \beta_2=0, \beta_3=0, \ldots$
             };
         }
     \end{tikzpicture}
 \end{frame}
 
-% \begin{frame}{Shrinkage: Ridge regression} % MSE
-%     \begin{tikzpicture}
-%         \node[] at (-5.25, -3) {};
-%         \node[] at (5.25, 3) {};
+\begin{frame}{Shrinkage: Ridge regression} % MSE
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3) {};
+        \node[] at (5.25, 3) {};
 
-%         \only<1>{
-%             \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \node[anchor=east, inner sep=0pt] at (loss.west) {
-%                 $loss_{mse}$
-%             };
-%         }
-%         \only<2,5>{
-%             \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-%                 $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
-%             };
-%             \node[anchor=east, inner sep=0pt] at (loss.west) {
-%                 $loss_{ridge}$
-%             };
-%         }
-%         \only<3>{
-%             \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \node[anchor=west, inner sep=0pt, draw=red] (ridge) at (loss.east) {
-%                 $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
-%             };
-%             \node[anchor=east, inner sep=0pt] at (loss.west) {
-%                 $loss_{ridge}$
-%             };
+        \only<1>{
+            \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{mse}$
+            };
+        }
+        \only<2,5>{
+            \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
+        }
+        \only<3>{
+            \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
+                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+            };
+            \node[anchor=west, inner sep=0pt, draw=red] (ridge) at (loss.east) {
+                $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=east, inner sep=0pt] at (loss.west) {
+                $loss_{ridge}$
+            };
 
-%             \draw[double, -Latex, red] ($ (ridge.south) - (0, 0.2) $) -- ($ (ridge.south) - (0, 0.6) $);
-%             \node[red] at ($ (ridge.south) - (0, 0.8) $) {
-%                 $\lambda \to \infty \Rightarrow \beta \to 0$
-%             };
-%         }
-%         \only<4>{
-%             \node[draw=black, fill=white] {
-%                 \includegraphics[width=8cm]{data/ridge_coefs.png}
-%             };
-%         }
-%         \only<5>{
-%             \node[] at (0, -1.5) {
-%                 $y \sim \beta0 + \beta_1x_1 + \beta_2x_2, x_1 \in [0, 1], x_2 \in [0, 1000]$
-%             };
-%         }
+            \draw[double, -Latex, red] ($ (ridge.south) - (0, 0.2) $) -- ($ (ridge.south) - (0, 0.6) $);
+            \node[red] at ($ (ridge.south) - (0, 0.8) $) {
+                $\lambda \to \infty \Rightarrow \beta \to 0$
+            };
+        }
+        \only<4>{
+            \node[draw=black, fill=white] {
+                \includegraphics[width=8cm]{data/ridge_coefs.png}
+            };
+        }
+        \only<5>{
+            \node[] at (0, -1.5) {
+                $y \sim \beta0 + \beta_1x_1 + \beta_2x_2, x_1 \in [0, 1], x_2 \in [0, 1000]$
+            };
+        }
 
-%     \end{tikzpicture}
-% \end{frame}
+    \end{tikzpicture}
+\end{frame}
 
-% \newsavebox{\predictorscales}
-% \sbox{\predictorscales}{
-%     \begin{tikzpicture}
-%         \begin{axis}[
-%             width=6cm,
-%             height=6cm,
-%             xlabel=Acceleration,
-%             ylabel=Weight
-%         ]
-%             \addplot[only marks, blue!50, opacity=0.5] table [col sep=comma, x=acceleration, y=weight] {data/Auto.csv};
-%         \end{axis}
-%     \end{tikzpicture}
-% }
+\newsavebox{\predictorscales}
+\sbox{\predictorscales}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=6cm,
+            height=6cm,
+            xlabel=Acceleration,
+            ylabel=Weight
+        ]
+            \addplot[only marks, blue!50, opacity=0.5] table [col sep=comma, x=acceleration, y=weight] {data/Auto.csv};
+        \end{axis}
+    \end{tikzpicture}
+}
 
-% \begin{frame}{Shrinkage: Feature standardization}
-%     \begin{tikzpicture}
-%         \node[] at (-5.4, -4) {};
-%         \node[] at (5.4, 3) {};
+\begin{frame}{Shrinkage: Feature standardization}
+    \begin{tikzpicture}
+        \node[] at (-5.4, -4) {};
+        \node[] at (5.4, 3) {};
 
-%         \only<1>{
-%             \node[] at (0, 0) {
-%                 \usebox{\predictorscales}
-%             };
-%         }
-%         \only<2-4>{
-%             \node[] at (0, 3) {\underline{\textbf{z-score standardization}}};
+        \only<1>{
+            \node[] at (0, 0) {
+                \usebox{\predictorscales}
+            };
+        }
+        \only<2-4>{
+            \node[] at (0, 3) {\underline{\textbf{z-score standardization}}};
 
-%             \only<3-4>{
-%                 \node[] at (0, 2.3) {
-%                     $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x}$
-%                 };
-%             }
-%             \only<4-4>{
-%                 \PythonInputNode{1}{(-4.5, 1.5)}{pythonnode}{0.95\textwidth}{7}{
-% for col in predictors:^^J
-% { }{ }{ }{ }print(f'\{col\}: \{np.mean(df[col]):.2f\} (\{np.std(df[col]):.2f\})')^^J
-% ^^J
-% \# z-score standardization^^J
-% for col in predictors:^^J
-% { }{ }{ }{ }df[col] = (df[col] - np.mean(df[col])) / np.std(df[col])^^J
-% ^^J
-% for col in predictors:^^J
-% { }{ }{ }{ }print(f'\{col\} after: \{np.mean(df[col]):.2f\} (\{np.std(df[col]):.2f\})')^^J
-%                 }
-%                 \PythonOutputNode{1}{(-4.39, -1.2)}{output}{0.882\textwidth}{7}{
-% cylinders: 5.47 (1.70)^^J
-% displacement: 194.41 (104.51)^^J
-% horsepower: 104.47 (38.44)^^J
-% cylinders after: -0.00 (1.00)^^J
-% displacement after: -0.00 (1.00)^^J
-% horsepower after: -0.00 (1.00)^^J
-%                 }
-%             }
-%         }
-%     \end{tikzpicture}
-% \end{frame}
+            \only<3-4>{
+                \node[] at (0, 2.3) {
+                    $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x}$
+                };
+            }
+            \only<4-4>{
+                \PythonInputNode{1}{(-4.5, 1.5)}{pythonnode}{0.95\textwidth}{7}{
+for col in predictors:^^J
+{ }{ }{ }{ }print(f'\{col\}: \{np.mean(df[col]):.2f\} (\{np.std(df[col]):.2f\})')^^J
+^^J
+\# z-score standardization^^J
+for col in predictors:^^J
+{ }{ }{ }{ }df[col] = (df[col] - np.mean(df[col])) / np.std(df[col])^^J
+^^J
+for col in predictors:^^J
+{ }{ }{ }{ }print(f'\{col\} after: \{np.mean(df[col]):.2f\} (\{np.std(df[col]):.2f\})')^^J
+                }
+                \PythonOutputNode{1}{(-4.39, -1.2)}{output}{0.882\textwidth}{7}{
+cylinders: 5.47 (1.70)^^J
+displacement: 194.41 (104.51)^^J
+horsepower: 104.47 (38.44)^^J
+cylinders after: -0.00 (1.00)^^J
+displacement after: -0.00 (1.00)^^J
+horsepower after: -0.00 (1.00)^^J
+                }
+            }
+        }
+    \end{tikzpicture}
+\end{frame}
 
-% \begin{frame}{Shrinkage: Ridge regression}
-%     \begin{tikzpicture}
-%         \node[] at (-5.25, -3) {};
-%         \node[] at (5.25, 3) {};
+\begin{frame}{Shrinkage: Ridge regression}
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3) {};
+        \node[] at (5.25, 3) {};
 
-%         \node[inner sep=0pt] (loss) at (0, 0) {
-%             $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%         };
-%         \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-%             $ + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
-%         };
-%         \node[anchor=east, inner sep=0pt] at (loss.west) {
-%             $loss_{ridge}$
-%         };
+        \node[inner sep=0pt] (loss) at (0, 0) {
+            $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+        };
+        \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+            $ + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
+        };
+        \node[anchor=east, inner sep=0pt] at (loss.west) {
+            $loss_{ridge}$
+        };
 
-%         \only<2>{
-%             \node[rotate=45] at (0, 0) {
-%                 \textcolor{red}{\Huge{Blackboard!}}
-%             };
-%         }
+        \only<2>{
+            \node[rotate=45] at (0, 0) {
+                \textcolor{red}{\Huge{Blackboard!}}
+            };
+        }
 
-%         \only<3>{
-%             \node[] at (0, -1.5) {
-%                 \url{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}
-%             };
-%         }
+        \only<3>{
+            \node[] at (0, -1.5) {
+                \url{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}
+            };
+        }
 
-%         \only<4>{
-%             \node[] at (0, -1.5) {
-%                 Regularization by shrinking the model covariates towards zero.
-%             };
-%         }
-%     \end{tikzpicture}
-% \end{frame}
+        \only<4>{
+            \node[] at (0, -1.5) {
+                Regularization by shrinking the model covariates towards zero.
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
 
 % \begin{frame}{Shrinkage: LASSO}
 %     \begin{tikzpicture}
