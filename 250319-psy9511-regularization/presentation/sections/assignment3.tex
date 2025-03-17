@@ -1,0 +1,160 @@
+\section{Assignment 3}
+
+\begin{frame}{Assignment 3}
+    \footnotesize{\url{https://uio.instructure.com/courses/53357/assignments/118667?module_item_id=962921}}
+\end{frame}
+
+\begin{frame}{Coding tips: Separation of concerns} % Spaghetti
+    \centering
+    \begin{tikzpicture}
+        \node[] at (0, -7.55) {};
+        \only<1-2>{
+            \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
+\# Read and clean data^^J
+path = '/Users/esten/Downloads/Auto.csv'^^J
+df = pd.read_csv(path)^^J
+^^J
+\# Split data^^J
+train = df.iloc[:int(len(df) * 0.8)]^^J
+validation = df.iloc[int(len(df) * 0.8):]^^J
+^^J
+\# Define input and output variables^^J
+predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
+target = 'mpg'^^J
+^^J
+\# Define necessary data structures for state^^J
+chosen_predictors = []^^J
+mses = []^^J
+^^J
+while len(predictors) > 0:^^J
+{ }{ }{ }{ }best_predictor = \{'mse': float('inf'), 'predictor': None\}^^J
+^^J
+{ }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
+{ }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Fit and evaluate model^^J
+{ }{ }{ }{ }{ }{ }{ }{ }model = LinearRegression()^^J
+{ }{ }{ }{ }{ }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
+{ }{ }{ }{ }{ }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
+{ }{ }{ }{ }{ }{ }{ }{ }test_mse = np.mean((validation[target] - predictions) ** 2)^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
+{ }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
+{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = \{'mse': test_mse, 'predictor': predictor\}^^J
+^^J
+{ }{ }{ }{ }\# Update state^^J
+{ }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
+{ }{ }{ }{ }mses.append(best_predictor['mse'])^^J
+{ }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
+            }
+            \only<2>{
+                \node[
+                    anchor=north west,
+                    fill=purple,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth,
+                    minimum height=2.55cm,
+                    opacity=0.2,
+                    align=right,
+                ] (setup) at ($ (code.north west) + (0.01, -0.01) $) {};
+                \node[anchor=north east, inner sep=2pt] at (setup.north east) {\textcolor{red}{\tiny{Setup}}};
+
+                \node[
+                    anchor=north west,
+                    fill=green,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth,
+                    minimum height=3.478cm,
+                    opacity=0.2
+                ] (selection) at (setup.south west) {};
+                \node[anchor=north east, inner sep=2pt] at (selection.north east) {\textcolor{green}{\tiny{Selection}}};
+
+                \node[
+                    anchor=north west,
+                    fill=blue,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth - 0.65cm,
+                    minimum height=1cm,
+                    opacity=0.2
+                ] (training) at ($ (selection.north west) + (0.6, -0.98) $) {};
+                \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
+
+                \node[
+                    anchor=north west,
+                    fill=orange,
+                    inner sep=0pt,
+                    outer sep=0pt,
+                    minimum width=0.9\textwidth - 0.39cm,
+                    minimum height=0.83cm,
+                    opacity=0.2
+                ] (state) at ($ (selection.north west) + (0.34, -2.6) $) {};
+                \node[anchor=north east, inner sep=2pt] at (state.north east) {\textcolor{orange}{\tiny{Housekeeping}}};
+            }
+        }
+        \only<3>{
+            \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
+\# Read and clean data^^J
+path = '/Users/esten/Downloads/Auto.csv'^^J
+df = pd.read_csv(path)^^J
+^^J
+\# Split data^^J
+train = df.iloc[:int(len(df) * 0.8)]^^J
+validation = df.iloc[int(len(df) * 0.8):]^^J
+^^J
+\# Define input and output variables^^J
+predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
+target = 'mpg'^^J
+^^J
+\# Define necessary data structures for state^^J
+chosen_predictors = []^^J
+mses = []^^J
+^^J
+def fit_and_evaluate(model: LinearRegression, train: pd.DataFrame, validation: pd.DataFrame, variables: List[str], target: str):^^J
+{ }{ }{ }{ }""" Fit a given model on a training dataset using a given set of variables and return MSE from a validation dataset. """^^J
+{ }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
+{ }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
+^^J
+{ }{ }{ }{ }return np.mean((validation[target] - predictions) ** 2)^^J
+^^J
+while len(predictors) > 0:^^J
+{ }{ }{ }{ }best_predictor = {'mse': float('inf'), 'predictor': None}^^J
+^^J
+{ }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
+{ }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
+{ }{ }{ }{ }{ }{ }{ }{ }test_mse = fit_and_evaluate(LinearRegression(), train, validation, variables=potential_predictors,target=target)^^J
+^^J
+{ }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
+{ }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
+{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = {'mse': test_mse, 'predictor': predictor}^^J
+^^J
+{ }{ }{ }{ }\# Update state^^J
+{ }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
+{ }{ }{ }{ }mses.append(best_predictor['mse'])^^J
+{ }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
+            }
+            \node[
+                anchor=north west,
+                fill=blue,
+                inner sep=0pt,
+                outer sep=0pt,
+                minimum width=0.9\textwidth - 0.14cm,
+                minimum height=1.2cm,
+                opacity=0.2
+            ] (training) at ($ (code.north west) + (0.07, -2.65) $) {};
+            \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
+
+            \node[
+                anchor=north west,
+                draw=blue,
+                line width=0.5pt,
+                inner sep=0pt,
+                outer sep=0pt,
+                minimum width=0.9\textwidth - 2.1cm,
+                minimum height=0.2cm
+            ] (training) at ($ (code.north west) + (0.65, -4.78) $) {};
+        }
+    \end{tikzpicture}
+\end{frame}

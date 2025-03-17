@@ -111,21 +111,22 @@
         \node[] at (-5.25, -3) {};
         \node[] at (5.25, 3) {};
 
-        \only<1>{
-            \node[align=center, text width=10cm, align=flush center] at (0, 0) {
-                The number of predictors we are using in our model directly impacts model complexity.
+        \only<1-4>{
+            \node[align=flush left, anchor=north west, text width=10cm] (insight) at (-5.2, 3) {
+                \textbf{Insight}\\
+                The number of predictors we are using in our linear model directly impacts its complexity.
             };
         }
         \only<2-4>{
-            \node[align=flush left, anchor=west, text width=10cm] at (-5.2, 2.5) {
-                \textbf{Problem}\\
-                We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.
+            \node[align=flush left, anchor=north west, text width=10cm] (motivation) at ($ (insight.south west) + (0, 0) $) {
+                \textbf{Motivation}\\
+                To reduce model complexity (and therefore risk of overfitting), \alert<3>{avoid problems due to collinearity}, and simplify subsequent interpretations we want to reduce the number of predictors.
             };
         }
-        \only<3-4>{
-            \node[align=flush left, anchor=west, text width=10cm] at (-5.2, 0) {
-                \textbf{Motivation}\\
-                To reduce model complexity (and therefore risk of overfitting), \alert<4>{avoid problems due to collinearity}, and simplify subsequent interpretations.
+        \only<4>{
+            \node[align=flush left, anchor=north west, text width=10cm] at ($ (motivation.south west) + (0, 0) $) {
+                \textbf{Formal problem specification}\\
+                We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.
             };
         }
         \only<5>{
@@ -817,24 +818,106 @@ while len(chosen_predictors) < len(predictors):^^J
     \end{tikzpicture}
 \end{frame}
 
+\newcommand{\ridgeintuition}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            xmin=-2,
+            xmax=5,
+            ymin=-2,
+            ymax=5,
+            axis lines=middle,
+            height=7cm,
+            width=7cm,
+            xtick={-2, -1, 0, 1, 2, 3, 4},
+            ytick={-2, -1, 0, 1, 2, 3, 4},
+            ticklabel style={font=\footnotesize},
+        ]
+            \node[] at (axis cs: -0.8, 2.5) {
+                \footnotesize{$\beta_2$}
+            };
+            \node[] at (axis cs: 2.6, -0.8) {
+                \footnotesize{$\beta_1$}
+            };
+
+            \ifnum#1<9
+                \ifnum#1=2
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 1, 0) {};
+                \fi
+                \ifnum#1=3
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 1.5, 1.5) {};
+                \fi
+                \ifnum#1>3
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 2.82, 2.7) {};
+                \fi
+                \ifnum#1=5
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 2.14, 1.85) {};
+                    \node[anchor=north, text=orange, font=\tiny, inner sep=2.5pt] at (axis cs: 2.14, 1.85) {1};
+                \fi
+                \ifnum#1=6
+                    \node[anchor=north, text=orange, font=\tiny, inner sep=2.5pt] at (axis cs: 2.14, 1.85) {1};
+                \fi
+                \ifnum#1>5
+                    \draw[rotate around={30:(axis cs: 2.82, 2.7)}, orange] (axis cs: 2.82, 2.7) ellipse (1cm and 0.5cm);
+                \fi
+                \ifnum#1>6
+                    \draw[rotate around={30:(axis cs: 2.82, 2.7)}, orange] (axis cs: 2.82, 2.7) ellipse (1.414*1cm and 1.414*0.5cm);
+                \fi
+                \ifnum#1>7
+                    \draw[rotate around={30:(axis cs: 2.82, 2.7)}, orange] (axis cs: 2.82, 2.7) ellipse (1.732*1cm and 1.732*0.5cm);
+                \fi
+            \fi
+
+            \ifnum#1>8
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt] at (axis cs: 2.82, 2.7) {};
+                \draw[rotate around={30:(axis cs: 2.82, 2.7)}] (axis cs: 2.82, 2.7) ellipse (1cm and 0.5cm);
+                \draw[rotate around={30:(axis cs: 2.82, 2.7)}] (axis cs: 2.82, 2.7) ellipse (1.414*1cm and 1.414*0.5cm);
+                \draw[rotate around={30:(axis cs: 2.82, 2.7)}] (axis cs: 2.82, 2.7) ellipse (1.732*1cm and 1.732*0.5cm);
+            \fi
+            \ifnum#1<13
+                \ifnum#1>9
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 0, 0) {};
+                \fi
+                \ifnum#1>10
+                    \draw[orange] (axis cs: 0, 0) circle (0.78cm);
+                \fi
+                \ifnum#1>11
+                    \draw[orange] (axis cs: 0, 0) circle (1.414*0.78cm);
+                    \draw[orange] (axis cs: 0, 0) circle (1.732*0.78cm);
+                \fi
+            \fi
+
+            \ifnum#1>12
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt] at (axis cs: 0, 0) {};
+                \draw[] (axis cs: 0, 0) circle (0.78cm);
+                \draw[] (axis cs: 0, 0) circle (1.414*0.78cm);
+                \draw[] (axis cs: 0, 0) circle (1.732*0.78cm);
+
+                \ifnum#1>13
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 1.07, 1.4) {};
+                \fi
+            \fi
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
 \begin{frame}{Shrinkage: Ridge regression} % MSE
     \begin{tikzpicture}
-        \node[] at (-5.25, -3) {};
-        \node[] at (5.25, 3) {};
+        \node[draw=black] at (-5.25, -3) {};
+        \node[draw=black] at (5.25, 3) {};
 
-        \only<1>{
+        \only<1-3>{
             \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
             };
+        }
+        \only<1>{
             \node[anchor=east, inner sep=0pt] at (loss.west) {
                 $loss_{mse}$
             };
         }
-        \only<2,5>{
-            \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
-                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-            };
-            \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
+        \only<2>{
+            \node[anchor=west, inner sep=0pt] (ridge) at ($ (loss.east) - (0, 0.08) $) {
                 $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
             };
             \node[anchor=east, inner sep=0pt] at (loss.west) {
@@ -842,9 +925,6 @@ while len(chosen_predictors) < len(predictors):^^J
             };
         }
         \only<3>{
-            \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
-                $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-            };
             \node[anchor=west, inner sep=0pt, draw=red] (ridge) at (loss.east) {
                 $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
             };
@@ -853,18 +933,104 @@ while len(chosen_predictors) < len(predictors):^^J
             };
 
             \draw[double, -Latex, red] ($ (ridge.south) - (0, 0.2) $) -- ($ (ridge.south) - (0, 0.6) $);
-            \node[red] at ($ (ridge.south) - (0, 0.8) $) {
+            \node[red, align=center] at ($ (ridge.south) - (0, 1.2) $) {
+                $\lambda \to 0 \Rightarrow \beta\text{ are free}$\\
                 $\lambda \to \infty \Rightarrow \beta \to 0$
             };
         }
         \only<4>{
             \node[draw=black, fill=white] {
-                \includegraphics[width=8cm]{data/ridge_coefs.png}
+                \includegraphics[width=7cm]{data/ridge_coefs.png}
             };
         }
-        \only<5>{
-            \node[] at (0, -1.5) {
-                $y \sim \beta0 + \beta_1x_1 + \beta_2x_2, x_1 \in [0, 1], x_2 \in [0, 1000]$
+        \only<5-6>{
+            \node[align=center] at (2.675, 0) {
+                $\hat{y}= \alert<6>{\beta_0} + \beta_1x_1 + \beta_2x_2$\\[0.25cm]
+                $\ell=\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2+\alert<6>{\lambda}\sum\limits_{j=0}^p \beta_j^2$\\[0.25cm]
+            };
+        }
+        \only<7-8,11-25>{
+            \node[align=center] at (2.675, 0) {
+                $\hat{y}= \beta_1x_1 + \beta_2x_2$\\[0.25cm]
+                $\ell=\alert<11-19>{\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2}+\alert<20-23>{\sum\limits_{j=0}^p \beta_j^2}$\\[0.25cm]
+            };
+        }
+        \only<8>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{1}
+            };
+        }
+        \only<9>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{2}
+            };
+            \node[align=center] at (2.675, 0) {
+                $\hat{y}= \alert<9>{1}x_1 + \alert<9>{0}x_2$\\[0.25cm]
+                $\ell=\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2+\sum\limits_{j=0}^p \beta_j^2$\\[0.25cm]
+            };
+        }
+        \only<10>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{3}
+            };
+            \node[align=center] at (2.675, 0) {
+                $\hat{y}= \alert<10>{1.5}x_1 + \alert<10>{1.5}x_2$\\[0.25cm]
+                $\ell=\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2+\sum\limits_{j=0}^p \beta_j^2$\\[0.25cm]
+            };
+        }
+        \only<12>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{4}
+            };
+        }
+        \only<13-15>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{5}
+            };
+        }
+        \only<16>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{6}
+            };
+        }
+        \only<17>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{7}
+            };
+        }
+        \only<18>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{8}
+            };
+        }
+        \only<19-20>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{9}
+            };
+        }
+        \only<21>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{10}
+            };
+        }
+        \only<22>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{11}
+            };
+        }
+        \only<23>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{12}
+            };
+        }
+        \only<24>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{13}
+            };
+        }
+        \only<25>{
+            \node[] at (-2.657, 0) {
+                \ridgeintuition{14}
             };
         }
 
@@ -890,20 +1056,35 @@ while len(chosen_predictors) < len(predictors):^^J
         \node[] at (-5.4, -4) {};
         \node[] at (5.4, 3) {};
 
-        \only<1>{
-            \node[] at (0, 0) {
+        \only<1-2>{
+            \node[align=center] at (0, 0) {
+                $y \sim \beta_0 + \beta_1x_1 + \beta_2x_2$\\
+                $x_1 \in [0, 1], x_2 \in [0, 1000]$
+            };
+        }
+        \only<2>{
+            \node[rotate=270] at (0, -0.8) {
+                $\Rightarrow$
+            };
+            \node[align=center] at (0, -1.2) {
+                $\beta_1 \approx 1000*\beta_2$
+            };
+        }
+
+        \only<3>{
+            \node[] at (-0.5, -0.5) {
                 \usebox{\predictorscales}
             };
         }
-        \only<2-4>{
+        \only<4-6>{
             \node[] at (0, 3) {\underline{\textbf{z-score standardization}}};
 
-            \only<3-4>{
+            \only<5-6>{
                 \node[] at (0, 2.3) {
                     $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x}$
                 };
             }
-            \only<4-4>{
+            \only<6>{
                 \PythonInputNode{1}{(-4.5, 1.5)}{pythonnode}{0.95\textwidth}{7}{
 for col in predictors:^^J
 { }{ }{ }{ }print(f'\{col\}: \{np.mean(df[col]):.2f\} (\{np.std(df[col]):.2f\})')^^J
@@ -934,345 +1115,241 @@ horsepower after: -0.00 (1.00)^^J
         \node[] at (5.25, 3) {};
 
         \node[inner sep=0pt] (loss) at (0, 0) {
-            $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-        };
-        \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-            $ + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
-        };
-        \node[anchor=east, inner sep=0pt] at (loss.west) {
-            $loss_{ridge}$
+            $loss_{ridge} = \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2 + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
         };
 
-        \only<2>{
-            \node[rotate=45] at (0, 0) {
-                \textcolor{red}{\Huge{Blackboard!}}
+        \node[font=\scriptsize] at (0, -1.5) {
+            \url{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}
+        };
+
+    \end{tikzpicture}
+\end{frame}
+
+\newcommand{\lassointuition}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            xmin=-2,
+            xmax=5,
+            ymin=-2,
+            ymax=5,
+            axis lines=middle,
+            height=7cm,
+            width=7cm,
+            xtick={-2, -1, 0, 1, 2, 3, 4},
+            ytick={-2, -1, 0, 1, 2, 3, 4},
+            ticklabel style={font=\footnotesize},
+        ]
+            \node[] at (axis cs: -0.8, 2.5) {
+                \footnotesize{$\beta_2$}
+            };
+            \node[] at (axis cs: 2.6, -0.8) {
+                \footnotesize{$\beta_1$}
+            };
+
+            \ifnum#1=1
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 1.5, 3.22) {};
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}, orange] (axis cs: 1.5, 3.22, 2.7) ellipse (1cm and 0.5cm);
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}, orange] (axis cs: 1.5, 3.22, 2.7) ellipse (1.414*1cm and 1.414*0.5cm);
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}, orange] (axis cs: 1.5, 3.22) ellipse (1.732*1cm and 1.732*0.5cm);
+            \fi
+            \ifnum#1>1
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt] at (axis cs: 1.55, 3.22) {};
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}] (axis cs: 1.5, 3.22, 2.7) ellipse (1cm and 0.5cm);
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}] (axis cs: 1.5, 3.22, 2.7) ellipse (1.414*1cm and 1.414*0.5cm);
+                \draw[rotate around={20:(axis cs: 1.5, 3.22)}] (axis cs: 1.5, 3.22) ellipse (1.732*1cm and 1.732*0.5cm);
+            \fi
+
+            \ifnum#1<8
+                \ifnum#1>2
+                    \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 0, 0) {};
+                \fi
+                \ifnum#1=4
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 1, 0) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0, 1) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: -1, 0) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0, -1) {};
+                \fi
+                \ifnum#1=5
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 1, 0) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0, 1) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: -1, 0) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0, -1) {};
+
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0.5, 0.5) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: 0.5, -0.5) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: -0.5, 0.5) {};
+                    \node[circle, inner sep=1pt, draw=orange, fill=orange] at (axis cs: -0.5, -0.5) {};
+                \fi
+                \ifnum#1>5
+                    \draw[orange] (axis cs: 1, 0) -- (axis cs: 0, 1) -- (axis cs: -1, 0) -- (axis cs: 0, -1) -- cycle;
+                \fi
+                \ifnum#1>6
+                    \draw[orange] (axis cs: 2, 0) -- (axis cs: 0, 2) -- (axis cs: -2, 0) -- (axis cs: 0, -2) -- cycle;
+                \fi
+            \fi
+
+            \ifnum#1=8
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt] at (axis cs: 0, 0) {};
+                \draw[] (axis cs: 1, 0) -- (axis cs: 0, 1) -- (axis cs: -1, 0) -- (axis cs: 0, -1) -- cycle;
+                \draw[] (axis cs: 2, 0) -- (axis cs: 0, 2) -- (axis cs: -2, 0) -- (axis cs: 0, -2) -- cycle;
+                \node[cross out, draw=black, thick, inner sep=0pt, minimum size=3pt, orange] at (axis cs: 0, 2) {};
+            \fi
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\begin{frame}{Shrinkage: LASSO}
+    \begin{tikzpicture}
+        \node[] at (-5.25, -3.5) {};
+        \node[] at (5.25, 3.5) {};
+
+        \only<1-2>{
+            \node[inner sep=0pt] (loss) at (0, 0) {
+                $loss_{ridge} = \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2 + \lambda \sum\limits_{j=0}^p\alert<2>{\beta_j^2}$
+            };
+
+            \node[inner sep=0pt] (lassomse) at (0, -1.5) {
+                $loss_{lasso}= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2 + \lambda \sum\limits_{j=0}^p\alert<2>{|\beta_j|}$
             };
         }
-
-        \only<3>{
-            \node[] at (0, -1.5) {
-                \url{http://localhost:8888/notebooks/notebooks/Live\%20coding.ipynb}
+        \only<3-5>{
+            \node[fill=white, draw=black, label=Ridge] at (-2.5, 1.5) {
+                \includegraphics[width=3cm]{data/ridge.png}
+            };
+            \node[fill=white, draw=black, label=LASSO] at (2.5, 1.5) {
+                \includegraphics[width=3cm]{data/lasso.png}
             };
         }
 
         \only<4>{
-            \node[] at (0, -1.5) {
-                Regularization by shrinking the model covariates towards zero.
+            \node[] at (0, -2) {
+                {\small
+                    \begin{tabular}{|c|c|c|}
+                        \hline
+                        \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
+                        \hline
+                        Intercept&23.44&23.44\\
+                        \hline
+                        Weight&-5.59&-4.78\\
+                        \hline
+                        Year&2.75&2.00\\
+                        \hline
+                        Acceleration&0.19&0\\
+                        \hline
+                        Displacement&0.66&0\\
+                        \hline
+                    \end{tabular}
+                }
+            };
+        }
+        \only<6-13>{
+            \node[align=center] at (2.675, 0) {
+                $\hat{y}= \beta_1x_1 + \beta_2x_2$\\[0.25cm]
+                $\ell=\alert<6>{\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2}+\alert<7-12>{\sum\limits_{j=0}^p \beta_j^2}$\\[0.25cm]
+            };
+        }
+        \only<6>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{1}
+            };
+        }
+        \only<7>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{2}
+            };
+        }
+        \only<8>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{3}
+            };
+        }
+        \only<9>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{4}
+            };
+        }
+        \only<10>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{5}
+            };
+        }
+        \only<11>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{6}
+            };
+        }
+        \only<12>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{7}
+            };
+        }
+        \only<13>{
+            \node[] at (-2.675, 0) {
+                \lassointuition{8}
+            };
+        }
+
+        \only<14>{
+            \node[] at (0, 1) {
+                {\small
+                    \begin{tabular}{|c|c|c|}
+                        \hline
+                        \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
+                        \hline
+                        Intercept&23.44&23.44\\
+                        \hline
+                        Weight&-5.59&-4.78\\
+                        \hline
+                        Year&2.75&2.00\\
+                        \hline
+                        Acceleration&0.19&0\\
+                        \hline
+                        Displacement&0.66&0\\
+                        \hline
+                    \end{tabular}
+                }
+            };
+            \node[align=center] at (0, -2) {
+                A coefficient of 0 does not mean the predictor has\\no association with the outcome! Why?
+            };
+        }
+        \only<15>{
+            \node[fill=white, draw=black] at (0, 0) {
+                \includegraphics[width=10cm]{data/ridge_vs_lasso.png}
             };
         }
     \end{tikzpicture}
 \end{frame}
 
-% \begin{frame}{Shrinkage: LASSO}
-%     \begin{tikzpicture}
-%         \node[] at (-5.25, -3.5) {};
-%         \node[] at (5.25, 3.5) {};
+\begin{frame}{Shrinkage: Summary}
+    \centering
+    \vfill
+    \begin{tikzpicture}
+        \node[] at (-5.25, 3.25) {};
+        \node[] at (5.25, -3.25) {};
 
-%         \only<1-2>{
-%             \node[inner sep=0pt] (loss) at (0, 0) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \only<1>{
-%                 \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-%                     $ + \lambda \sum\limits_{j=0}^p$$\beta_j^2$
-%                 };
-%             }
-%             \only<2>{
-%                 \node[anchor=west, inner sep=0pt] (ridge) at (loss.east) {
-%                     $ + \lambda \sum\limits_{j=0}^p$\textcolor{red}{$\beta_j^2$}
-%                 };
-%             }
-%             \node[anchor=east, inner sep=0pt] at (loss.west) {
-%                 $loss_{ridge}$
-%             };
+        \draw[black] (1, 3.25) -- (1, -3.5);
 
-%             \node[inner sep=0pt] (lassomse) at (0, -1.5) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \only<1>{
-%                 \node[anchor=west, inner sep=0pt] (lasso) at (lassomse.east) {
-%                     $ + \lambda \sum\limits_{j=0}^p$$|\beta_j|$
-%                 };
-%             }
-%             \only<2>{
-%                 \node[anchor=west, inner sep=0pt] (lasso) at (lassomse.east) {
-%                     $ + \lambda \sum\limits_{j=0}^p$\textcolor{red}{$|\beta_j|$}
-%                 };
-%             }
-%             \node[anchor=east, inner sep=0pt] at (lassomse.west) {
-%                 $loss_{lasso}$
-%             };
-%         }
-%         \only<3-5>{
-%             \node[fill=white, draw=black, label=Ridge] at (-2.5, 1) {
-%                 \includegraphics[width=3cm]{data/ridge.png}
-%             };
-%             \node[fill=white, draw=black, label=LASSO] at (2.5, 1) {
-%                 \includegraphics[width=3cm]{data/lasso.png}
-%             };
+        \node[inner sep=0pt, font=\footnotesize, anchor=west] (mse) at (-5, 2.2) {
+            $loss_{mse} = \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
+        };
+        \node[anchor=west, font=\footnotesize, align=flush left, text width=3.5cm] at ($ (mse.west) + (6.5, 0) $) {Fits the \textbf{best} model to the data.};
 
-%             \only<4>{
-%                 \node[] at (0, -2) {
-%                     \begin{tabular}{|c|c|c|}
-%                         \hline
-%                         \textbf{Predictor}&\textbf{Ridge}&\textbf{LASSO}\\
-%                         \hline
-%                         Intercept&23.44&23.44\\
-%                         \hline
-%                         Weight&-5.59&-4.78\\
-%                         \hline
-%                         Year&2.75&2.00\\
-%                         \hline
-%                         Acceleration&0.19&0\\
-%                         \hline
-%                         Displacement&0.66&0\\
-%                         \hline
-%                     \end{tabular}
-%                 };
-%             }
-%             \only<5>{
-%                 \node[align=center,red,font=\bfseries] at (0, -2) {
-%                     A coefficient of 0 does not mean the predictor has\\no association with the outcome!
-%                 };
-%             }
-%         }
-%         \only<6>{
-%             \node[fill=white, draw=black, anchor=east] (intuition) at (4.3, 0) {
-%                 \includegraphics[
-%                     height=5cm,
-%                     trim={9cm 0 0 0},
-%                     clip
-%                 ]{data/lasso_intuition.png}
-%             };
-%             \node[anchor=south, text depth=0] at ($ (intuition.north east) - (2.3, 0) $) {Ridge};
-%             \node[anchor=south, text depth=0] at ($ (intuition.north east) - (6.3, 0) $) {Lasso};
-%             \node[font=\Huge\selectfont] at ($ (intuition.east) - (6.3, 0) $) {?};
-%             \node[] at (0, -3) {
-%                 \Large{Whiteboard!} \emoji{partying-face}
-%             };
-%         }
-%         \only<7>{
-%             \node[fill=white, draw=black, anchor=east] (intuition) at (4.3, 0) {
-%                 \includegraphics[
-%                     height=5cm
-%                 ]{data/lasso_intuition.png}
-%             };
-%             \node[anchor=south, text depth=0] at ($ (intuition.north east) - (2.3, 0) $) {Ridge};
-%             \node[anchor=south, text depth=0] at ($ (intuition.north east) - (6.3, 0) $) {Lasso};
-%         }
-%         \only<8>{
-%             \node[fill=white, draw=black] at (0, 0) {
-%                 \includegraphics[width=10cm]{data/ridge_vs_lasso.png}
-%             };
-%         }
-%     \end{tikzpicture}
-% \end{frame}
+        \only<2-3>{
+            \node[inner sep=0pt, font=\footnotesize, anchor=west] (ridgemse) at (-5, 0) {
+                $loss_{ridge}= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2 + \lambda \sum\limits_{j=0}^p \beta_j^2$
+            };
+            \node[anchor=west, font=\footnotesize, align=flush left, text width=3.5cm] at ($ (ridgemse.west) + (6.5, 0) $) {Fits the \textbf{best} model to the data while \textbf{shrinking} coefficients towards zero.};
+        }
 
+        \only<3>{
+            \node[inner sep=0pt, font=\footnotesize, anchor=west] (lassomse) at (-5, -2.2) {
+                $loss_{lasso} = \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2 + \lambda \sum\limits_{j=0}^p |\beta_j|$
+            };
 
-% \begin{frame}{Shrinkage: Summary} % LASSO
-%     \centering
-%     \vfill
-%     \begin{tikzpicture}
-%         \node[] at (-3, -4) {};
-%         \node[] at (6.8, 3) {};
-
-%         \draw[black] (3.2, 3) -- (3.2, -3.9);
-
-%         \node[inner sep=0pt] (mse) at (0, 2.2) {
-%             $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%         };
-%         \node[anchor=east, inner sep=0pt] at (mse.west) {
-%             $loss_{mse}$
-%         };
-%         \node[anchor=west, align=left] at ($ (mse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data.};
-
-%         \only<2-3>{
-%             \node[inner sep=0pt] (ridgemse) at (0, 0) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \node[anchor=west, inner sep=0pt] (lasso) at (ridgemse.east) {
-%                 $ + \lambda \sum\limits_{j=0}^p \beta_j^2$
-%             };
-%             \node[anchor=east, inner sep=0pt] at (ridgemse.west) {
-%                 $loss_{ridge}$
-%             };
-%             \node[anchor=west, align=left] at ($ (ridgemse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data while\\\textbf{shrinking} coefficients\\towards zero.};
-%         }
-
-%         \only<3>{
-%             \node[inner sep=0pt] (lassomse) at (0, -2.2) {
-%                 $= \sum\limits_{i=0}^n \left( y_i - \sum\limits_{j=0}^p \beta_j x_{ij} \right)^2$
-%             };
-%             \node[anchor=west, inner sep=0pt] (lasso) at (lassomse.east) {
-%                 $ + \lambda \sum\limits_{j=0}^p |\beta_j|$
-%             };
-%             \node[anchor=east, inner sep=0pt] at (lassomse.west) {
-%                 $loss_{lasso}$
-%             };
-
-%             \node[anchor=west, align=left] at ($ (lassomse.west) + (4.7, 0) $) {Fits the \textbf{best} model\\to the data while\\\textbf{shrinking} coefficients\\towards zero such\\that some variables\\are effectively \textbf{removed}.};
-%         }
-%     \end{tikzpicture}
-%     \vfill
-% \end{frame}
-
-% \section{Assignment 3}
-
-% \begin{frame}{Assignment 3}
-%     \footnotesize{\url{https://uio.instructure.com/courses/53357/assignments/118667?module_item_id=962921}}
-% \end{frame}
-
-% \begin{frame}{Coding tips: Separation of concerns} % Spaghetti
-%     \centering
-%     \begin{tikzpicture}
-%         \node[] at (0, -7.55) {};
-%         \only<1-2>{
-%             \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
-% \# Read and clean data^^J
-% path = '/Users/esten/Downloads/Auto.csv'^^J
-% df = pd.read_csv(path)^^J
-% ^^J
-% \# Split data^^J
-% train = df.iloc[:int(len(df) * 0.8)]^^J
-% validation = df.iloc[int(len(df) * 0.8):]^^J
-% ^^J
-% \# Define input and output variables^^J
-% predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
-% target = 'mpg'^^J
-% ^^J
-% \# Define necessary data structures for state^^J
-% chosen_predictors = []^^J
-% mses = []^^J
-% ^^J
-% while len(predictors) > 0:^^J
-% { }{ }{ }{ }best_predictor = \{'mse': float('inf'), 'predictor': None\}^^J
-% ^^J
-% { }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
-% { }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
-% ^^J
-% { }{ }{ }{ }{ }{ }{ }{ }\# Fit and evaluate model^^J
-% { }{ }{ }{ }{ }{ }{ }{ }model = LinearRegression()^^J
-% { }{ }{ }{ }{ }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
-% { }{ }{ }{ }{ }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
-% { }{ }{ }{ }{ }{ }{ }{ }test_mse = np.mean((validation[target] - predictions) ** 2)^^J
-% ^^J
-% { }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
-% { }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
-% { }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = \{'mse': test_mse, 'predictor': predictor\}^^J
-% ^^J
-% { }{ }{ }{ }\# Update state^^J
-% { }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
-% { }{ }{ }{ }mses.append(best_predictor['mse'])^^J
-% { }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
-%             }
-%             \only<2>{
-%                 \node[
-%                     anchor=north west,
-%                     fill=purple,
-%                     inner sep=0pt,
-%                     outer sep=0pt,
-%                     minimum width=0.9\textwidth,
-%                     minimum height=2.55cm,
-%                     opacity=0.2,
-%                     align=right,
-%                 ] (setup) at ($ (code.north west) + (0.01, -0.01) $) {};
-%                 \node[anchor=north east, inner sep=2pt] at (setup.north east) {\textcolor{red}{\tiny{Setup}}};
-
-%                 \node[
-%                     anchor=north west,
-%                     fill=green,
-%                     inner sep=0pt,
-%                     outer sep=0pt,
-%                     minimum width=0.9\textwidth,
-%                     minimum height=3.478cm,
-%                     opacity=0.2
-%                 ] (selection) at (setup.south west) {};
-%                 \node[anchor=north east, inner sep=2pt] at (selection.north east) {\textcolor{green}{\tiny{Selection}}};
-
-%                 \node[
-%                     anchor=north west,
-%                     fill=blue,
-%                     inner sep=0pt,
-%                     outer sep=0pt,
-%                     minimum width=0.9\textwidth - 0.65cm,
-%                     minimum height=1cm,
-%                     opacity=0.2
-%                 ] (training) at ($ (selection.north west) + (0.6, -0.98) $) {};
-%                 \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
-
-%                 \node[
-%                     anchor=north west,
-%                     fill=orange,
-%                     inner sep=0pt,
-%                     outer sep=0pt,
-%                     minimum width=0.9\textwidth - 0.39cm,
-%                     minimum height=0.83cm,
-%                     opacity=0.2
-%                 ] (state) at ($ (selection.north west) + (0.34, -2.6) $) {};
-%                 \node[anchor=north east, inner sep=2pt] at (state.north east) {\textcolor{orange}{\tiny{Housekeeping}}};
-%             }
-%         }
-%         \only<3>{
-%             \PythonInputNode{1}{(0, 0)}{code}{0.9\textwidth}{4}{
-% \# Read and clean data^^J
-% path = '/Users/esten/Downloads/Auto.csv'^^J
-% df = pd.read_csv(path)^^J
-% ^^J
-% \# Split data^^J
-% train = df.iloc[:int(len(df) * 0.8)]^^J
-% validation = df.iloc[int(len(df) * 0.8):]^^J
-% ^^J
-% \# Define input and output variables^^J
-% predictors = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'year']^^J
-% target = 'mpg'^^J
-% ^^J
-% \# Define necessary data structures for state^^J
-% chosen_predictors = []^^J
-% mses = []^^J
-% ^^J
-% def fit_and_evaluate(model: LinearRegression, train: pd.DataFrame, validation: pd.DataFrame, variables: List[str], target: str):^^J
-% { }{ }{ }{ }""" Fit a given model on a training dataset using a given set of variables and return MSE from a validation dataset. """^^J
-% { }{ }{ }{ }model.fit(train[potential_predictors], train[target])^^J
-% { }{ }{ }{ }predictions = model.predict(validation[potential_predictors])^^J
-% ^^J
-% { }{ }{ }{ }return np.mean((validation[target] - predictions) ** 2)^^J
-% ^^J
-% while len(predictors) > 0:^^J
-% { }{ }{ }{ }best_predictor = {'mse': float('inf'), 'predictor': None}^^J
-% ^^J
-% { }{ }{ }{ }for predictor in set(predictors) - set(chosen_predictors):^^J
-% { }{ }{ }{ }{ }{ }{ }{ }potential_predictors = chosen_predictors + [predictor]^^J
-% { }{ }{ }{ }{ }{ }{ }{ }test_mse = fit_and_evaluate(LinearRegression(), train, validation, variables=potential_predictors,target=target)^^J
-% ^^J
-% { }{ }{ }{ }{ }{ }{ }{ }\# Compare model with previous best^^J
-% { }{ }{ }{ }{ }{ }{ }{ }if test_mse < best_predictor['mse']:^^J
-% { }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }{ }best_predictor = {'mse': test_mse, 'predictor': predictor}^^J
-% ^^J
-% { }{ }{ }{ }\# Update state^^J
-% { }{ }{ }{ }chosen_predictors.append(best_predictor['predictor'])^^J
-% { }{ }{ }{ }mses.append(best_predictor['mse'])^^J
-% { }{ }{ }{ }predictors = [p for p in predictors if p != best_predictor['predictor']]^^J
-%             }
-%             \node[
-%                 anchor=north west,
-%                 fill=blue,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=0.9\textwidth - 0.14cm,
-%                 minimum height=1.2cm,
-%                 opacity=0.2
-%             ] (training) at ($ (code.north west) + (0.07, -2.65) $) {};
-%             \node[anchor=north east, inner sep=2pt] at (training.north east) {\textcolor{blue}{\tiny{Modelling}}};
-
-%             \node[
-%                 anchor=north west,
-%                 draw=blue,
-%                 line width=0.5pt,
-%                 inner sep=0pt,
-%                 outer sep=0pt,
-%                 minimum width=0.9\textwidth - 2.1cm,
-%                 minimum height=0.2cm
-%             ] (training) at ($ (code.north west) + (0.65, -4.78) $) {};
-%         }
-%     \end{tikzpicture}
-% \end{frame}
+            \node[anchor=west, font=\footnotesize, align=flush left, text width=3.5cm] at ($ (lassomse.west) + (6.5, 0) $) {Fits the \textbf{best} model to the data while \textbf{shrinking} coefficients towards zero such that some variables are effectively \textbf{removed}.};
+        }
+    \end{tikzpicture}
+    \vfill
+\end{frame}
