@@ -263,3 +263,44 @@
 
     \end{tikzpicture}
 \end{frame}
+
+\begin{frame}{Assignment 2: Interpretation}
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            xmajorgrids=true,
+            ymajorgrids=true,
+            tick style={draw=none},
+            xlabel={year},
+            ylabel={mpg},
+            xmin=69.1,
+            xmax=82.9,
+        ]
+            \addplot[
+                only marks,
+                mark=*,
+                color=blue,
+                opacity=0.25,
+                mark size=3pt
+            ] table[
+                col sep=comma,
+                y=mpg,
+                x=year
+            ] {data/Auto.csv};
+            \only<2-3>{
+                \addplot[
+                    very thick,
+                    blue,
+                    domain=69:83,
+                ] {-47+0.95*x};
+            }
+            \only<3>{
+                \addplot[
+                    very thick,
+                    red,
+                    domain=69:83,
+                ] {-28+0.7*x};
+            }
+        \end{axis}
+    \end{tikzpicture}
+\end{frame}
