@@ -901,10 +901,87 @@ while len(chosen_predictors) < len(predictors):^^J
     \end{tikzpicture}
 }
 
+\newcommand{\mseintuitionunivariate}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=5cm,
+            xlabel=$\beta$,
+            ylabel=mse,
+            ymajorticks=false,
+            xmajorticks=false,
+            xmin=-1,
+            xmax=1
+        ]
+            \addplot[
+                thick,
+                red,
+                domain=-1:1
+            ] {x^2};
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\mseintuitionbivariate}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=5cm,
+            xlabel={$\beta_1$},
+            ylabel={$\beta_2$},
+            zlabel=mse,
+            domain=-3:3,
+            y domain=-3:3,
+            view={30}{15},
+            colormap/viridis,
+            grid=major,
+            xmajorticks=false,
+            ymajorticks=false,
+            zmajorticks=false,
+            zmin=-0.2
+        ]
+        \addplot3[surf, samples=30, opacity=0.5] {x^2 + y^2};
+
+        \ifnum#1>0
+            \addplot3[
+                only marks,
+                orange,
+                thick,
+                mark size=3pt,
+                mark=x
+            ] coordinates {
+                (0, 0, -0.1)
+            };
+        \fi
+
+        \ifnum#1=2
+            \addplot3[
+                only marks,
+                orange,
+                thick,
+                mark size=2pt,
+            ] coordinates {
+                (2.45, 0, 6)
+            };
+        \fi
+        \ifnum#1>2
+            \addplot3[
+                domain=0:360,
+                samples=100,
+                samples y=0,
+                thick,
+                color=orange,
+            ] ({sqrt(6)*cos(x)}, {sqrt(6)*sin(x)}, 6);
+        \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
 \begin{frame}{Shrinkage: Ridge regression} % MSE
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, -3) {};
-        \node[draw=black] at (5.25, 3) {};
+        \node[] at (-5.25, -3) {};
+        \node[] at (5.25, 3) {};
 
         \only<1-3>{
             \node[inner sep=0pt, anchor=west] (loss) at (-2, 0) {
@@ -949,13 +1026,13 @@ while len(chosen_predictors) < len(predictors):^^J
                 $\ell=\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2+\alert<6>{\lambda}\sum\limits_{j=0}^p \beta_j^2$\\[0.25cm]
             };
         }
-        \only<7-8,11-25>{
+        \only<7-8,11,17-25>{
             \node[align=center] at (2.675, 0) {
                 $\hat{y}= \beta_1x_1 + \beta_2x_2$\\[0.25cm]
                 $\ell=\alert<11-19>{\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2}+\alert<20-23>{\sum\limits_{j=0}^p \beta_j^2}$\\[0.25cm]
             };
         }
-        \only<8>{
+        \only<8, 11-13>{
             \node[] at (-2.657, 0) {
                 \ridgeintuition{1}
             };
@@ -979,16 +1056,35 @@ while len(chosen_predictors) < len(predictors):^^J
             };
         }
         \only<12>{
+            \node[] at (2.675, 0.37) {
+                \mseintuitionunivariate
+            };
+        }
+        \only<13>{
+            \node[] at (2.675, 0.37) {
+                \mseintuitionbivariate{0}
+            };
+        }
+        \only<14>{
+            \node[] at (2.675, 0.37) {
+                \mseintuitionbivariate{1}
+            };
             \node[] at (-2.657, 0) {
                 \ridgeintuition{4}
             };
         }
-        \only<13-15>{
+        \only<15>{
+            \node[] at (2.675, 0.37) {
+                \mseintuitionbivariate{2}
+            };
             \node[] at (-2.657, 0) {
                 \ridgeintuition{5}
             };
         }
         \only<16>{
+            \node[] at (2.675, 0.37) {
+                \mseintuitionbivariate{3}
+            };
             \node[] at (-2.657, 0) {
                 \ridgeintuition{6}
             };
