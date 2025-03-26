@@ -1,0 +1,69 @@
+\documentclass{beamer}
+
+\usetheme{PSY9511}
+
+\usepackage{pgfplots}
+
+\usepgfplotslibrary{fillbetween}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+
+\title{PSY9511: Seminar 4}
+\subtitle{Model selection, validation and testing}
+\author{Esten H. Leonardsen}
+\date{\today}
+
+\colorlet{cases}{red}
+\colorlet{controls}{blue}
+
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}
+
+    \begin{frame}{Outline}
+        \begin{enumerate}
+            \item Loss functions and performance metrics
+            \item Strategies for model evaluation
+            \begin{itemize}
+                \item Training and validation split
+                \item (Stratification)
+                \item (Leave-one-out cross-validation)
+                \item Cross-validation
+                \item Bootstrap
+            \end{itemize}
+            \item The theoretical basis for model evaluation
+            \item Strategies for model selection \textbf{and} evaluation
+            \begin{itemize}
+                \item Train/validation/test split
+                \item Nested cross-validation
+            \end{itemize}
+            \item Assignment 4
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}{Motivation}
+        \begin{tikzpicture}
+            \node[text width=10cm] at (0, 1) {
+                \begin{enumerate}
+                    \item Reporting inflated modelling performance due to suboptimal testing practices
+                    \item Using inappropriate measures for model performance (often accuracy)
+                \end{enumerate}
+            };
+
+            \visible<2>{
+                \draw[-stealth, line width=5pt] (0, -0.5) -- (0, -1.7);
+                \node[align=flush left, text width=10cm, font=\bfseries] at (0.4, -3) {
+                    We believe that our models are better than they actually are, which yields false conclusions
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \input{sections/loss}
+    \input{sections/evaluation}
+    \input{sections/selection}
+    \input{sections/assignment4}
+\end{document}

@@ -1,0 +1,42 @@
+\frametitle{Coding tips: R}
+\begin{center}
+            \begin{tikzpicture}
+                \RInputNode{(0, 0)}{badnode}{0.9\textwidth}{5}{
+                    data <- read.csv('Auto.csv')^^J
+                    data[] <- lapply(data, function(x) replace(x, x == '?', NA))^^J
+                    ^^J
+                    train <- data[1:200,]^^J
+                    test <- data[200:nrow(data),]^^J
+                    ^^J
+                    test$cylinders <- (test$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    train$cylinders <- (train$cylinders - mean(train$cylinders)) / sd(train$cylinders)^^J
+                    test$weight <- (test$weight - mean(train$weight)) / sd(train$weight)^^J
+                    train$weight <- (train$weight - mean(train$weight)) / sd(train$weight)^^J
+                    test$year <- (test$year - mean(train$year)) / sd(train$year)^^J
+                    train$year <- (train$year - mean(train$year)) / sd(train$year)^^J
+                }
+                \RInputNode{($ (badnode.south west) - (0, 0.2) $)}{goodnode}{0.9\textwidth}{5}{
+                    data <- read.csv('~/Downloads/Auto.csv')^^J
+                    data[] <- lapply(data, function(x) replace(x, x == '?', NA))^^J
+                    ^^J
+                    train <- data[1:200,]^^J
+                    test <- data[200:nrow(data),]^^J
+                    ^^J
+                    standardize <- function(train, test, column) {^^J
+                      train <- copy(train)^^J
+                      test <- copy(test)^^J
+                      ^^J
+                      test[,column] <- (test[column] - mean(train[,column])) / sd(train[,column])^^J
+                      train[,column] <- (train[column] - mean(train[,column])) / sd(train[,column])^^J
+                      ^^J
+                      return(list(train=train, test=test))^^J
+                    }^^J
+                    ^^J
+                    for (column in c('cylinders', 'weight', 'year')) {^^J
+                      result <- standardize(train, test, column)^^J
+                      train <- result$train^^J
+                      test <- result$test^^J
+                    }
+                }
+            \end{tikzpicture}
+        \end{center}

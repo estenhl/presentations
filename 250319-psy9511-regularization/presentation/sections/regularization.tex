@@ -2,29 +2,38 @@
 \section{Regularization}
 
 \begin{frame}{Regularization: Background}
-    \only<1-4>{
+    \only<1-5>{
         \begin{tikzpicture}
             \node[] at (-5.25, -3) {};
             \node[] at (5.25, 3) {};
 
-            \only<1-2>{
+            \only<1>{
+                \node[align=left, text width=10.5cm] at (0, 0) {
+                    \textbf{Regularization}: A set of techniques to explicitly reduce the complexity of our models to reduce overfitting.
+                    \begin{itemize}
+                        \item Encouraging our models to learn broader and more general patterns in the training data instead of memorizing it
+                    \end{itemize}
+                };
+            }
+
+            \only<2-3>{
                 \node[anchor=west] at (-3.8, 2.5) {
                     $y \sim \beta_0 + \beta_1 * x_1 + \beta_2 * x_2$
                 };
             }
-            \only<3>{
+            \only<4>{
                 \node[anchor=west] at (-3.8, 2.5) {
                     $y \sim \beta_0 + \beta_1 * x_1 + \beta_2 * x_2 + \beta_3 * x_3 + \beta_4 * x_4$
                 };
             }
 
-            \only<2-3>{
+            \only<3-4>{
                 \node[draw=black, fill=white] at (0, -0.5){
                     \includegraphics[width=8cm]{data/overfitting.png}
                 };
             }
 
-            \only<4>{
+            \only<5>{
                 \PythonInputNode{1}{(-4, 2)}{code}{0.9\textwidth}{7}{
                     import pandas as pd^^J
                     ^^J
@@ -54,7 +63,7 @@
             \item Shrinkage
             \begin{enumerate}
                 \alert<6>{\item[a.] LASSO}
-                \alert<6>{\item[b.] Ridge Regression}
+                \alert<6>{\item[b.] Ridge regression}
             \end{enumerate}
             \item Dimensionality reduction: Lecture 6 and self-study
         \end{enumerate}
@@ -772,7 +781,7 @@ while len(chosen_predictors) < len(predictors):^^J
 
         \only<1-5, 7-11>{
             \node[] at (0, 3) {
-                $y \sim \beta_0 + \alert<2-9>{\beta_1}x_1 + \alert<2-9>{\beta_2}x_2 + \alert<2-9>{\beta_3}x_3 + \alert<2-9>{\beta_4}x_4 + \alert<2-9>{\beta_5}x_5 + \beta_6x_6$
+                $y \sim \beta_0 + \alert<2-9>{\beta_1}x_1 + \alert<2-9>{\beta_2}x_2 + \alert<2-9>{\beta_3}x_3 + \alert<2-9>{\beta_4}x_4 + \alert<2-9>{\beta_5}x_5 + \alert<2-9>{\beta_6}x_6$
             };
         }
         \only<3-5, 7-11>{
@@ -781,9 +790,9 @@ while len(chosen_predictors) < len(predictors):^^J
             };
         }
         \only<4-5, 7-11>{
-            \node[anchor=north west, align=left, text width=10.5cm] at (-5.25, 2) {
+            \node[anchor=north west, align=flush left, text width=10.5cm] at (-5.25, 2) {
                 \begin{enumerate}
-                    \item $\beta_1 = 0 \implies \text{One less degree of freedom in our function}$\\
+                    \item $\beta_1 = 0 \implies \text{One less degree of freedom in our function space}$\\
                     \item<7-> $\text{A little more bias} \implies \text{A lot less variance}$\\
                     \item<11> $\text{Parameters depend on eachother} \implies \text{Fewer degrees of freedom}$
                 \end{enumerate}
@@ -990,7 +999,7 @@ while len(chosen_predictors) < len(predictors):^^J
         }
         \only<1>{
             \node[anchor=east, inner sep=0pt] at (loss.west) {
-                $loss_{mse}$
+                $loss_{RSS}$
             };
         }
         \only<2>{
@@ -1342,7 +1351,7 @@ horsepower after: -0.00 (1.00)^^J
         \only<6-13>{
             \node[align=center] at (2.675, 0) {
                 $\hat{y}= \beta_1x_1 + \beta_2x_2$\\[0.25cm]
-                $\ell=\alert<6>{\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2}+\alert<7-12>{\sum\limits_{j=0}^p \beta_j^2}$\\[0.25cm]
+                $\ell=\alert<6>{\sum\limits_{i=0}^n \left( y_i - \hat{y}_i \right)^2}+\alert<7-12>{\sum\limits_{j=0}^p |\beta_j|}$\\[0.25cm]
             };
         }
         \only<6>{

@@ -1,0 +1,434 @@
+
+
+\section{Model selection and evaluation}
+
+\begin{frame}[t]{Model selection and evaluation: Rationale}
+    \vspace{1cm}
+    \begin{itemize}
+        \item Model evaluation via cross-validation is sufficient if we want to estimate the out-of-sample error of a \textbf{known model}.
+        \item Very often we want to know whether a set of predictors are informative for an outcome \textbf{given the best possible model}.
+        \item In that case, we have to both \textbf{choose the best model}, and \textbf{estimate its performance}.
+        \item If we choose the model based on regular cross-validation, the performance estimate will (likely) be inflated
+        \visible<2>{\item[\rightarrow] We need a more advanced strategy}
+     \end{itemize}
+\end{frame}
+
+\begin{frame}{Model selection and evaluation: Train/validation/test}
+    \centering
+    \begin{tikzpicture}
+        \visible<1>{
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+        }
+        \visible<2-5>{
+            \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+            \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+
+            \node[minimum height=0.5cm, minimum width=4.5cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Training}] (train) at (full.west) {};
+            \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Validation}] (val) at (train.east) {};
+            \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Test}] (test) at (val.east) {};
+        }
+        \visible<3-5>{
+            \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (model) at ($ (train) - (0, 2.5) $) {Model\\fitting};
+
+            \draw[->] ($ (train.south) - (0, 0.5) $) -- (model.north);
+        }
+        \visible<4-5>{
+            \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (eval) at ($ (val) - (0, 2.5) $) {Model\\selection};
+
+            \draw[->] ($ (val.south) - (0, 0.5) $) -- (eval.north);
+            \draw[->] (model.east) -- (eval.west) node [midway, above, sloped] {\scriptsize{Models}};
+        }
+        \visible<5>{
+            \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (testing) at ($ (test) - (0, 2.5) $) {Test};
+            \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (testing) - (0, 1.5) $) {Out-of-sample\\performance};
+
+            \draw[->] ($ (test.south) - (0, 0.5) $) -- (testing.north);
+            \draw[->] ($ (testing.south) - (0, 00) $) -- (score.north);
+            \draw[->] (eval.east) -- (testing.west) node [midway, above, sloped] {};
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\newsavebox{\innercv}
+\sbox{\innercv}{%
+    \begin{tikzpicture}[transform canvas={scale=0.3}]
+        \node[] at (-4.5, 1) {};
+        \node[] at (6.5, -5) {};
+
+        \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full) at (0, 0) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+
+        \node[anchor=west] (error1) at ($ (full.east) + (0.5, 0) $) {Error};
+        \draw[->] (full.east) -- (error1.west);
+
+        \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full2) at (0, -1) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p21) at (full2.west) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p22) at (p21.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p23) at (p22.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p24) at (p23.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p25) at (p24.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p26) at (p25.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p27) at (p26.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p28) at (p27.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p29) at (p28.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p210) at (p29.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p211) at (p210.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p212) at (p211.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p213) at (p212.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p214) at (p213.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p215) at (p214.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p216) at (p215.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p217) at (p216.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p218) at (p217.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p219) at (p218.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p220) at (p219.east) {};
+
+        \node[anchor=west] (error2) at ($ (full2.east) + (0.5, 0) $) {Error};
+        \draw[->] (full2.east) -- (error2.west);
+
+        \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full3) at (0, -2) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p31) at (full3.west) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p32) at (p31.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p33) at (p32.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p34) at (p33.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p35) at (p34.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p36) at (p35.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p37) at (p36.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p38) at (p37.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p39) at (p38.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p310) at (p39.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p311) at (p310.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p312) at (p311.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p313) at (p312.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p314) at (p313.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p315) at (p314.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p316) at (p315.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p317) at (p316.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p318) at (p317.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p319) at (p318.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p320) at (p319.east) {};
+
+        \node[anchor=west] (error3) at ($ (full3.east) + (0.5, 0) $) {Error};
+        \draw[->] (full3.east) -- (error3.west);
+
+        \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full4) at (0, -3) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p41) at (full4.west) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p42) at (p41.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p43) at (p42.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p44) at (p43.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p45) at (p44.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p46) at (p45.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p47) at (p46.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p48) at (p47.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p49) at (p48.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p410) at (p49.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p411) at (p410.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p412) at (p411.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p413) at (p412.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p414) at (p413.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p415) at (p414.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p416) at (p415.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p417) at (p416.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p418) at (p417.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p419) at (p418.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p420) at (p419.east) {};
+
+        \node[anchor=west] (error4) at ($ (full4.east) + (0.5, 0) $) {Error};
+        \draw[->] (full4.east) -- (error4.west);
+
+        \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full5) at (0, -4) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p51) at (full5.west) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p52) at (p51.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p53) at (p52.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=blue!20, anchor=west, inner sep=0pt, outer sep=0pt] (p54) at (p53.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p55) at (p54.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p56) at (p55.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p57) at (p56.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p58) at (p57.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p59) at (p58.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p510) at (p59.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p511) at (p510.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p512) at (p511.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p513) at (p512.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p514) at (p513.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p515) at (p514.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p516) at (p515.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p517) at (p516.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p518) at (p517.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p519) at (p518.east) {};
+        \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=green!20, anchor=west, inner sep=0pt, outer sep=0pt] (p520) at (p519.east) {};
+
+        \node[anchor=west] (error5) at ($ (full5.east) + (0.5, 0) $) {Error};
+        \draw[->] (full5.east) -- (error5.west);
+
+        \draw[red, dashed] (error1.north east) rectangle (error5.south west);
+        \node[anchor=north] at (error5.south) {\textcolor{red}{Average}};
+    \end{tikzpicture}
+}
+
+\begin{frame}{Model selection and evaluation: Nested cross-validation}
+    \only<1-7>{
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-4.5, 1) {};
+            \node[] at (6.5, -5) {};
+
+            \only<1>{
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p1) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p2) at (p1.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p3) at (p2.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p4) at (p3.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p5) at (p4.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p6) at (p5.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p7) at (p6.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p8) at (p7.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p9) at (p8.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p10) at (p9.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p11) at (p10.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p12) at (p11.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p13) at (p12.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p14) at (p13.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p15) at (p14.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p16) at (p15.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=gray!20, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+            }
+            \visible<2->{
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20, label=\small{Dataset}] (full) at (0, 0) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p1) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p2) at (p1.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p3) at (p2.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p4) at (p3.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p5) at (p4.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p6) at (p5.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p7) at (p6.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p8) at (p7.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p9) at (p8.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p10) at (p9.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p11) at (p10.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p12) at (p11.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p13) at (p12.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p14) at (p13.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p15) at (p14.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p16) at (p15.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p17) at (p16.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p18) at (p17.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p19) at (p18.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p20) at (p19.east) {};
+
+                \node[minimum height=0.5cm, minimum width=6cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Training and validation}] (train) at (full.west) {};
+                \node[minimum height=0.5cm, minimum width=1.5cm, draw=none, fill=none, anchor=west, label=below:\footnotesize{Test}] (test) at (train.east) {};
+            }
+            \visible<3-4>{
+                \node[] (innercv) at ($ (train.south) - (0, 1.63) $) {
+                    \usebox{\innercv}
+                };
+
+                \draw[->] ($ (train.south) - (0, 0.5) $) -- (innercv.north);
+            }
+            \visible<4>{
+                \node[draw=black, dashed, align=center, font=\small\linespread{0.9}\selectfont] (testing) at ($ (test) - (0, 2.5) $) {Performance\\evaluation};
+                \node[align=center, font=\small\linespread{0.9}\selectfont] (score) at ($ (testing) - (0, 1.5) $) {Error};
+
+                \draw[->] ($ (test.south) - (0, 0.5) $) -- (testing.north);
+                \draw[->] (testing.south) -- (score.north);
+                \draw[->] ($ (testing.west) - (1.2, 0) $) -- (testing.west) node [midway, above] {\footnotesize{Model}};
+            }
+            \visible<5->{
+                \node[align=center, font=\small\linespread{0.9}\selectfont, anchor=west] (error) at ($ (full.east) + (0.5, 0) $) {Error};
+                \draw[->] (full.east) -- (error.west);
+            }
+            \visible<6->{
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full2) at (0, -1) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p21) at (full2.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p22) at (p21.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p23) at (p22.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p24) at (p23.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p25) at (p24.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p26) at (p25.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p27) at (p26.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p28) at (p27.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p29) at (p28.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p210) at (p29.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p211) at (p210.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p212) at (p211.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p213) at (p212.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p214) at (p213.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p215) at (p214.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p216) at (p215.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p217) at (p216.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p218) at (p217.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p219) at (p218.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p220) at (p219.east) {};
+
+                \node[align=center, font=\small\linespread{0.9}\selectfont, anchor=west] (error2) at ($ (full2.east) + (0.5, 0) $) {Error};
+                \draw[->] (full2.east) -- (error2.west);
+
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full3) at (0, -2) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p31) at (full3.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p32) at (p31.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p33) at (p32.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p34) at (p33.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p35) at (p34.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p36) at (p35.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p37) at (p36.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p38) at (p37.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p39) at (p38.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p310) at (p39.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p311) at (p310.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p312) at (p311.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p313) at (p312.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p314) at (p313.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p315) at (p314.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p316) at (p315.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p317) at (p316.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p318) at (p317.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p319) at (p318.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p320) at (p319.east) {};
+
+                \node[align=center, font=\small\linespread{0.9}\selectfont, anchor=west] (error3) at ($ (full3.east) + (0.5, 0) $) {Error};
+                \draw[->] (full3.east) -- (error3.west);
+
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full4) at (0, -3) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p41) at (full4.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p42) at (p41.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p43) at (p42.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p44) at (p43.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p45) at (p44.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p46) at (p45.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p47) at (p46.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p48) at (p47.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p49) at (p48.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p410) at (p49.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p411) at (p410.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p412) at (p411.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p413) at (p412.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p414) at (p413.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p415) at (p414.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p416) at (p415.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p417) at (p416.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p418) at (p417.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p419) at (p418.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p420) at (p419.east) {};
+
+                \node[align=center, font=\small\linespread{0.9}\selectfont, anchor=west] (error4) at ($ (full4.east) + (0.5, 0) $) {Error};
+                \draw[->] (full4.east) -- (error4.west);
+
+                \node[minimum height=0.5cm, minimum width=7.5cm, draw=black, fill=gray!20] (full5) at (0, -4) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p51) at (full5.west) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p52) at (p51.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p53) at (p52.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, fill=red!20, anchor=west, inner sep=0pt, outer sep=0pt] (p54) at (p53.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p55) at (p54.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p56) at (p55.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p57) at (p56.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p58) at (p57.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p59) at (p58.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p510) at (p59.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p511) at (p510.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p512) at (p511.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p513) at (p512.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p514) at (p513.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p515) at (p514.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p516) at (p515.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p517) at (p516.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p518) at (p517.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p519) at (p518.east) {};
+                \node[minimum height=0.5cm, minimum width=0.375cm, draw=black, anchor=west, inner sep=0pt, outer sep=0pt, shading=axis, left color=green!40, right color=blue!40, shading angle=45] (p520) at (p519.east) {};
+
+                \node[align=center, font=\small\linespread{0.9}\selectfont, anchor=west] (error5) at ($ (full5.east) + (0.5, 0) $) {Error};
+                \draw[->] (full5.east) -- (error5.west);
+            }
+            \visible<7>{
+                \draw[red, dashed] (error.north west) rectangle (error5.south east);
+
+                \node[anchor=north] at (error5.south) {\textcolor{red}{Average}};
+            }
+        \end{tikzpicture}
+    }
+    \only<8>{
+        Performs $k$ outer cross-validations, each performing $k-1$ inner cross validations, and uses the best models from the inner loop to predict in the outer loop.
+        \begin{itemize}
+            \item[\textcolor{green}{+}] Uses all data to train models
+            \item[\textcolor{green}{+}] \textbf{Unbiased estimate of out-of-sample error}
+            \item[\textcolor{red}{-}] \textbf{Very} computationally expensive
+            \item[\textcolor{red}{-}] Hard to interpret beyond performance: We now have either $k$, or $k^2$ models that might behave in different ways
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}{Model selection and evaluation: Summary}
+    \begin{tikzpicture}
+        \node[text width=11cm] at (0, 0) {
+            \begin{itemize}
+                \item Whenever a modelling choice is made on the basis of performance in a dataset, \textbf{we have to assume the performance achieved by the chosen model is inflated}
+                \item If n is big ($\geq 10000$), a single train/validation/test split is often sufficient
+                \item When possible, use nested cross-validation to select the best model and estimate the out-of-sample error
+            \end{itemize}
+        };
+        \visible<2>{
+            \node[minimum height=1.6cm, minimum width=10.6cm, draw=red, label=above:\Large{\textcolor{red}{!!!!!}}] at (0.1, 1) {};
+        }
+    \end{tikzpicture}
+\end{frame}
