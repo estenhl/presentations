@@ -7,6 +7,7 @@
 \usepackage{pgfplotstable}
 \usepackage{tikz}
 
+\usepgfplotslibrary{colormaps}
 \usepgfplotslibrary{fillbetween}
 \usepgfplotslibrary{groupplots}
 
@@ -663,13 +664,6 @@
 	}
 
 	\newcommand{\downstreamplot}[7]{
-		%1: Filename
-		%2: Column
-		%3: Ytick position
-		%4: Ylabel
-		%5: Xticks
-		%6: Legend (boolean flag)
-
 		\begin{tikzpicture}
 			\begin{axis}[
 				height=6.5cm,
@@ -704,13 +698,6 @@
 	}
 
 	\newcommand{\finetuneplot}[7]{
-		%1: Filename
-		%2: Column
-		%3: Ytick position
-		%4: Ylabel
-		%5: Xticks
-		%6: Legend (boolean flag)
-
 		\begin{tikzpicture}
 			\begin{axis}[
 				height=6.5cm,
@@ -742,10 +729,66 @@
 		\end{tikzpicture}
 	}
 
+	\newcommand{\heatmap}[3][]{
+		\nextgroupplot[
+			view={0}{90},
+			colormap/temp,
+			ymin=0,
+			xmin=0,
+			xmajorticks=false,
+			ymajorticks=false,
+			point meta min=-1,
+			point meta max=1,
+			#1,
+			title=#3,
+			title style={
+				text depth=0,
+				font=\bfseries,
+				yshift=-0.2cm
+			}
+		]
+			\addplot3 [
+				surf,
+				shader=flat corner, % Ensures flat shading between grid points
+				mesh/rows=64,
+				mesh/cols=64
+			] table [
+				col sep=comma,
+				x=x,
+				y=y,
+				z=value,
+			] {data/encodings/#2.csv};
+	}
+
+	\newsavebox{\encodings}
+	\sbox{\encodings}{
+		\begin{tikzpicture}
+			\begin{groupplot}[
+				group style={
+					group size=2 by 1,
+					horizontal sep=0.3cm
+				},
+				height=5.5cm,
+				width=5.5cm
+			]
+				\heatmap{sfcn-reg}{Brain age}
+				\heatmap[
+					colorbar right,
+					colorbar style={
+						ylabel={Correlation},
+						ytick={-1,0,1},
+						tick style={draw=none},
+						ylabel style={yshift=0.2cm}
+					}
+				]{sfcn-multi}{Multi-task}
+			\end{groupplot}
+		\end{tikzpicture}
+	}
+
 	\begin{frame}{Results}
 		\begin{tikzpicture}
-			\node[draw=black] at (-5.25, -3.5) {};
-			\node[draw=black] at (5.25, 3.5) {};
+			\node[] at (-5.25, -3.5) {};
+			\node[] at (5.25, 3.5) {};
 
 			\only<1>{
 				\node[anchor=west] (multival) at (-5, 1.75) {
@@ -769,6 +812,11 @@
 			}
 			\only<2>{
 				\node[] at (0, 0) {
+					\usebox{\encodings}
+				};
+			}
+			\only<3>{
+				\node[] at (0, 0) {
 					\downstreamplot{data/downstream/age.csv}{loss}{left}{Relative Absolute Error}{{100, 250, 500, 1000, 2500}}{
 						\downstreamtrace{data/downstream/age.csv}{pretrained}{loss}
 
@@ -779,7 +827,7 @@
 					}{north east}
 				};
 			}
-			\only<3>{
+			\only<4>{
 				\node[text width=10cm] at (0, 0.5) {
 					\begin{itemize}
 						\item Each entry is the average over 100 bootstrapped training samples of size $n$
@@ -796,7 +844,7 @@
 					\end{itemize}
 				};
 			}
-			\only<4>{
+			\only<5>{
 				\node[] at (0, 0) {
 					\downstreamplot{data/downstream/age_top.csv}{loss}{left}{Relative Absolute Error}{{100, 200, 300, 400, 500}}{
 						\downstreamtrace{data/downstream/age_top.csv}{pretrained}{loss}
@@ -808,7 +856,7 @@
 					}{north east}
 				};
 			}
-			\only<5>{
+			\only<6>{
 				\node[] at (0, 0) {
 					\downstreamplot{data/downstream/ad.csv}{loss}{left}{Relative Absolute Error}{{100, 200, 300, 400, 500}}{
 						\downstreamtrace[densely dotted]{data/downstream/reg.csv}{finetune}{loss}
@@ -822,7 +870,7 @@
 					}{south east}
 				};
 			}
-			\only<6>{
+			\only<7>{
 				\node[] at (0, 0) {
 					\downstreamplot{data/downstream/scz.csv}{loss}{left}{Relative Absolute Error}{{100, 200, 300, 400, 500}}{
 						\downstreamtrace{data/downstream/linear_scz.csv}{linear}{loss}
@@ -834,7 +882,7 @@
 					}{north west}
 				};
 			}
-			\only<7>{
+			\only<8>{
 				\node[] at (0, 0) {
 					\finetuneplot{data/downstream/asd.csv}{loss}{left}{Relative Absolute Error}{{100, 450, 800, 1150, 1500}}{
 						\errortrace{data/downstream/linear_asd.csv}{linear}{loss}
@@ -844,8 +892,8 @@
 					}{north west}
 				};
 			}
-			\only<8>{
-				\node[text width=10cm] at (0, 0) {
+			\only<9>{
+				\node[text width=10cm, align=flush left] at (0, 0) {
 					Why does the deep learning model not behave asymptotically?
 					\begin{itemize}
 						\item It shouldn't (bad luck?)
@@ -858,14 +906,5 @@
 			}
 
 		\end{tikzpicture}
-		% 1. Predictive results
-		% 2. Feature redundancy
-		% 3. Brain age transfer learning
-		% 4. Transfer learning setup
-		% 5. Brain age transfer learning 2
-		% 6. AD transfer learning
-		% 7. SCZ/BP transfer learning
-		% 8. ASD transfer learning
-		% 9. Hypotheses
 	\end{frame}
 \end{document}

@@ -155,6 +155,21 @@
                     domain=0.6:1.0
                 ] (x, 10-x^7+0.5*x^4);
             \fi
+
+            \ifnum#1=7
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=0:1,
+                    opacity=0.25
+                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
+                \addplot[
+                    very thick,
+                    black,
+                    domain=0:1.0
+                ] (x, 3.94*x^3-24.81*x^2+29.49*x+0.31);
+            \fi
         \end{axis}
     \end{tikzpicture}
 }
@@ -194,6 +209,11 @@
     \datasetplot{6}
 }
 
+\newsavebox{\singlesplinebox}
+\sbox{\singlesplinebox}{
+    \datasetplot{7}
+}
+
 \newcommand{\gammadistribution}{
     \begin{tikzpicture}
         \begin{axis}[
@@ -214,7 +234,7 @@
     \end{tikzpicture}
 }
 
-\begin{frame}{Non-linear models: Nothing to be afraid of}
+\begin{frame}{Non-linear models: Nothing to worry about}
     \begin{tikzpicture}
         \RInputNode{(0, 1.5)}{rnode}{10cm}{8}{
             formula <- ...^^J
@@ -318,14 +338,14 @@
             };
         }
         \visible<16>{
-            \PythonInputNode{1}{(-5, 3)}{gammanode}{10cm}{8}{
+            \PythonInputNode{1}{(-4.25, 3)}{gammanode}{9.1cm}{8}{
                 from sklearn.linear_model import GammaRegressor^^J
                 ^^J
                 model = GammaRegressor()^^J
                 model.fit(X, y)^^J
             }
 
-            \PythonInputNode{2}{($ (gammanode.south west) - (0, 0.2) $)}{glmnode}{10cm}{8}{
+            \PythonInputNode{2}{($ (gammanode.south west) - (0, 0.2) $)}{glmnode}{9.1cm}{8}{
                 import statsmodels.api as sm^^J
                 ^^J
                 link = sm.genmod.families.links.Log()^^J
@@ -333,7 +353,7 @@
                 model.fit()
             }
 
-            \RInputNode{($ (glmnode.south west) - (0, 0.7) $)}{rnode}{10cm}{8}{
+            \RInputNode{($ (glmnode.south west) - (0, 0.7) $)}{rnode}{9.1cm}{8}{
                 formula <- ...^^J
                 result <- glm(formula, family=Gamma(link="log"), data=data)^^J
             }
@@ -352,60 +372,58 @@
             };
         }
 
-        \visible<2-3>{
+        \visible<2>{
             \node[] at (0, 1) {
                 \usebox{\splinebox}
             };
         }
-
-        \visible<2>{
-            \node[anchor=north west, text width=10cm] at (-3.6, -1.5) {
-                \underline{Splines: Piecewise polynomial functions}
+         \visible<3>{
+            \node[] at (0, 1) {
+                \usebox{\singlesplinebox}
             };
         }
 
-        \visible<3>{
+
+        \visible<2>{
             \node[anchor=north west, text width=10cm] at (-3.6, -1.5) {
-                \underline{Splines: Piecewise polynomial functions}
+                \textbf{Piecewise polynomial functions:}
                 \begin{itemize}
                     \item Regression splines (ISL, Chapter 7.4)
+                \end{itemize}
+            };
+        }
+        \visible<3>{
+            \node[anchor=north west, text width=10cm] at (-3.6, -1.5) {
+                \textbf{A single, complex, polynomial function:}
+                \begin{itemize}
                     \item Smoothing splines (This lecture)
                 \end{itemize}
             };
         }
 
-        \visible<4,8>{
+        \visible<4-8>{
             \node[] at (0, 0) {
-                $\sum\limits_{i=1}^n(y_i - g(x_i))^2 + \lambda\int g''(t)^2dt$
+                $\alert<6>{\sum\limits_{i=1}^n(y_i - \alert<5>{g(x_i)})^2} + \alert<8>{\lambda}\alert<7>{\int g''(t)^2dt}$
             };
         }
 
         \visible<5>{
-            \node[] at (0, 0) {
-                $\sum\limits_{i=1}^n(y_i - {\color{red}g(x_i)})^2 + \lambda\int g''(t)^2dt$
-            };
-            \node[text=red] (model) at (-0.7, 1) {
+            \node[text=orange] (model) at (-0.7, 1) {
                 $\hat{y}_i=g(x_i)$
             };
-            \draw[red, -stealth] (model.south) -- +(0, -0.4);
+            \draw[orange, -stealth] (model.south) -- +(0, -0.4);
         }
         \visible<6>{
-            \node[] at (0, 0) {
-                ${\color{red}\sum\limits_{i=1}^n(y_i - g(x_i))^2} + \lambda\int g''(t)^2dt$
-            };
-            \node[text=red] (mse) at (-1.2, -1) {
+            \node[text=orange] (mse) at (-1.2, -1) {
                 $\sum (y_i - \hat{y}_i)^2$
             };
-            \draw[red, -stealth] (mse.north) -- +(0, 0.4);
+            \draw[orange, -stealth] (mse.north) -- +(0, 0.4);
         }
         \visible<7>{
-            \node[] at (0, 0) {
-                $\sum\limits_{i=1}^n(y_i - g(x_i))^2 + \lambda{\color{red}\int g''(t)^2dt}$
-            };
-            \node[text=red] (penalty) at (1.5, -1) {
+            \node[text=orange] (penalty) at (1.5, -1) {
                 Large when $g$ is wiggly
             };
-            \draw[red, -stealth] (penalty.north) -- +(0, 0.4);
+            \draw[orange, -stealth] (penalty.north) -- +(0, 0.4);
         }
         \visible<8>{
             \node[align=center, anchor=north] (mse) at (-1.2, -1) {
@@ -419,15 +437,15 @@
             };
             \draw[-stealth] (penalty.north) -- +(0, 0.5);
 
-            \node[align=center, anchor=south] (lambda) at (0.55, 1) {
+            \node[align=center, anchor=south, text=orange] (lambda) at (0.55, 1) {
                 Balances what is\\
                 most important
             };
-            \draw[-stealth] (lambda.south) -- +(0, -0.5);
+            \draw[-stealth, orange] (lambda.south) -- +(0, -0.5);
         }
-        \visible<9>{
+        \only<9>{
             \node[] at (0, 0) {
-                \tiny{\url{http://localhost:8888/notebooks/notebooks/Smoothing\%20spline.ipynb}}
+                \fontsize{7}{8}\selectfont{\url{http://localhost:8888/notebooks/notebooks/Smoothing\%20spline.ipynb}}
             };
         }
         \visible<10-11>{

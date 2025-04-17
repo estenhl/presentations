@@ -1,0 +1,60 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{PSY9511}
+
+\usepackage{array}
+\usepackage{emoji}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usepgfplotslibrary{groupplots}
+
+\usetikzlibrary{calc}
+
+\title{PSY9511: Seminar 5}
+\subtitle{Unsupervised learning}
+\author{Esten H. Leonardsen}
+\date{24.10.24}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\begin{document}
+	\begin{frame}
+	 	\maketitle
+	\end{frame}
+
+    \begin{frame}{Outline}
+        \begin{enumerate}
+            \item Exercise 4
+            \item Overview of unsupervised learning
+            \item Clustering
+            \begin{itemize}
+                \item K-means
+                \item Hierarchical
+            \end{itemize}
+            \item Dimensionality reduction
+            \begin{itemize}
+                \item Principal component analysis (PCA)
+                \item Independent component analysis (ICA)
+                \item Partial least squares (PLS)
+            \end{itemize}
+        \end{enumerate}
+    \end{frame}
+
+    \input{sections/exercise4.tex}
+    \input{sections/unsupervised.tex}
+    \input{sections/clustering.tex}
+    \input{sections/reduction.tex}
+
+\end{document}
