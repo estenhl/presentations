@@ -161,7 +161,7 @@
             \draw[-Latex] (input) -- (model);
 
             \node[anchor=west] (output) at ($ (model.east) + (0.77, 0) $) {
-                ladybug
+                Ladybug
             };
             \draw[-Latex] (model) -- (output);
         }
@@ -367,24 +367,242 @@
             \draw[-Latex] (input) -- (model);
 
             \node[anchor=west] (output) at ($ (model.east) + (0.77, 0) $) {
-                ladybug
+                Ladybug
             };
             \draw[-Latex] (model) -- (output);
+        }
+        \only<6-13>{
+
+            \node[] at (0, -2.5) {
+                $n^i_j = f(\sum\limits_{k=0}^n w^{i}_{jk} n^{i-1}_k)$
+            };
         }
         \only<13>{
             \node[anchor=north] (pass) at (model.south) {
                 \textbf{\textit{Forward pass}}
             };
             \draw[-stealth] (pass.south west) -- (pass.south east);
-
-            \node[] at (0, -2.5) {
-                $n^i_j = f(\sum\limits_{k=0}^n w^{i}_{jk} n^{i-1}_k)$
-            };
         }
     \end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Artificial neural networks: Explainability}
+    \only<1-8>{
+        \begin{tikzpicture}
+            \node[draw=black] at (-5.25, -3.25) {};
+            \node[draw=black] at (5.25, 3.25) {};
+
+            \node[
+                draw=black,
+                fill=cyan!15,
+                minimum height=3cm,
+                minimum width=4.3cm
+            ] (model) at (0, 1) {};
+            \node[
+                anchor=south,
+                font=\small
+            ] at (model.north) {Artificial neural network};
+
+            \def\hsep{0.7}
+            \def\vsep{0.5}
+            \def\edgecolor{gray}
+            \def\edgeopacity{0.5}
+            \def\neuroncolour{gray}
+
+            \only<1-6>{
+                \neuron{n00}{black!25}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
+                \neuron{n01}{black!90}{($ (model) + (-2 * \hsep, -\vsep) $)}
+                \neuron{n02}{black!72}{($ (model) + (-2 * \hsep, 0) $)}
+                \neuron{n03}{black!99}{($ (model) + (-2 * \hsep, \vsep) $)}
+                \neuron{n04}{black!10}{($ (model) + (-2 * \hsep, 2 * \vsep) $)}
+            }
+            \only<7->{
+                \neuron{n00}{red!25!black}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
+                \neuron{n01}{red!90!black}{($ (model) + (-2 * \hsep, -\vsep) $)}
+                \neuron{n02}{yellow!15!red}{($ (model) + (-2 * \hsep, 0) $)}
+                \neuron{n03}{red!99!black}{($ (model) + (-2 * \hsep, \vsep) $)}
+                \neuron{n04}{red!10!black}{($ (model) + (-2 * \hsep, 2 * \vsep) $)}
+            }
+            \only<1-5>{
+                \neuron{n10}{black!55}{($ (model) + (-\hsep, -1.5 * \vsep) $)}
+                \neuron{n11}{black!92}{($ (model) + (-\hsep, -0.5 * \vsep) $)}
+                \neuron{n12}{black!31}{($ (model) + (-\hsep, 0.5 * \vsep) $)}
+                \neuron{n13}{black!7}{($ (model) + (-\hsep, 1.5 * \vsep) $)}
+            }
+            \only<6->{
+                \neuron{n10}{red!55!black}{($ (model) + (-\hsep, -1.5 * \vsep) $)}
+                \neuron{n11}{yellow!20!red}{($ (model) + (-\hsep, -0.5 * \vsep) $)}
+                \neuron{n12}{yellow!90!red}{($ (model) + (-\hsep, 0.5 * \vsep) $)}
+                \neuron{n13}{red!7!black}{($ (model) + (-\hsep, 1.5 * \vsep) $)}
+            }
+
+            \only<1-4>{
+                \neuron{n20}{black!50}{($ (model) + (0, -\vsep) $)}
+                \neuron{n21}{black!10}{(model)}
+                \neuron{n22}{black!100}{($ (model) + (0, \vsep) $)}
+            }
+            \only<5->{
+                \neuron{n20}{red!90!black}{($ (model) + (0, -\vsep) $)}
+                \neuron{n21}{red!30!black}{(model)}
+                \neuron{n22}{yellow!70!red}{($ (model) + (0, \vsep) $)}
+            }
+
+            \only<1-3>{
+                \neuron{n30}{black!75}{($ (model) + (\hsep, -0.5 * \vsep) $)}
+                \neuron{n31}{black!65}{($ (model) + (\hsep, 0.5 * \vsep) $)}
+            }
+            \only<4->{
+                \neuron{n30}{yellow!40!red}{($ (model) + (\hsep, -0.5 * \vsep) $)}
+                \neuron{n31}{red!65!black}{($ (model) + (\hsep, 0.5 * \vsep) $)}
+            }
+
+            \only<1-2>{
+                \neuron{n40}{black!95}{($ (model) + (2 * \hsep, 0) $)}
+            }
+            \only<3->{
+                \neuron{n40}{red}{($ (model) + (2 * \hsep, 0) $)}
+            }
+
+            \only<1-7>{
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n00);
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n01);
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n02);
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n03);
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n04);
+            }
+            \only<8>{
+                \draw[stealth-, red, opacity=\edgeopacity] (model.west) -- (n00);
+                \draw[stealth-, red, opacity=\edgeopacity] (model.west) -- (n01);
+                \draw[stealth-, red, opacity=\edgeopacity] (model.west) -- (n02);
+                \draw[stealth-, red, opacity=\edgeopacity] (model.west) -- (n03);
+                \draw[stealth-, red, opacity=\edgeopacity] (model.west) -- (n04);
+            }
+
+            \only<1-6,7->{
+                \foreach \i in {0,...,4} {
+                    \foreach \j in {0,...,3} {
+                        \draw[\edgecolor, opacity=\edgeopacity] (n0\i) -- (n1\j);
+                    }
+                }
+            }
+            \only<7>{
+                \foreach \i in {0,...,4} {
+                    \foreach \j in {0,...,3} {
+                        \draw[stealth-, red, opacity=\edgeopacity] (n0\i) -- (n1\j);
+                    }
+                }
+            }
+
+            \only<1-5,6->{
+                \foreach \i in {0,...,3} {
+                    \foreach \j in {0,...,2} {
+                        \draw[\edgecolor, opacity=\edgeopacity] (n1\i) -- (n2\j);
+                    }
+                }
+            }
+            \only<6>{
+                \foreach \i in {0,...,3} {
+                    \foreach \j in {0,...,2} {
+                        \draw[stealth-, red, opacity=\edgeopacity] (n1\i) -- (n2\j);
+                    }
+                }
+            }
+
+            \only<1-4,6->{
+                \foreach \i in {0,...,2} {
+                    \foreach \j in {0,...,1} {
+                        \draw[\edgecolor, opacity=\edgeopacity] (n2\i) -- (n3\j);
+                    }
+                }
+            }
+            \only<5>{
+                \foreach \i in {0,...,2} {
+                    \foreach \j in {0,...,1} {
+                        \draw[stealth-, red, opacity=\edgeopacity] (n2\i) -- (n3\j);
+                    }
+                }
+
+            }
+
+            \only<1-3,5->{
+                \foreach \i in {0,...,1} {
+                    \draw[\edgecolor, opacity=\edgeopacity] (n3\i) -- (n40);
+                }
+            }
+            \only<4>{
+                \foreach \i in {0,...,1} {
+                    \draw[stealth-, red, opacity=\edgeopacity] (n3\i) -- (n40);
+                }
+            }
+
+            \only<1-2>{
+                \draw[-stealth, \edgecolor, opacity=\edgeopacity] (n40) -- (model.east);
+            }
+            \only<3->{
+                \draw[stealth-, red, opacity=\edgeopacity] (n40) -- (model.east);
+            }
+
+            \only<1>{
+                \node[anchor=north] (pass) at (model.south) {
+                    \textbf{\textit{Forward pass}}
+                };
+                \draw[-stealth] (pass.south west) -- (pass.south east);
+
+                \node[] at (0, -2.5) {
+                    $n^i_j = f(\sum\limits_{k} w^{i}_{jk} n^{(i-1)}_k)$
+                };
+            }
+            \only<1-7>{
+                \node[anchor=east, draw=black, inner sep=0pt, outer sep=3pt] (input) at ($ (model.west) + (-0.77, 0) $) {
+                    \includegraphics[width=2cm]{data/ladybug.png}
+                };
+                \draw[-Latex] (input) -- (model);
+            }
+            \only<1-2>{
+                \node[anchor=west] (output) at ($ (model.east) + (0.77, 0) $) {
+                    Ladybug
+                };
+                \draw[-Latex] (model) -- (output);
+            }
+            \only<2->{
+                \node[anchor=north, text=red] (pass) at (model.south) {
+                    \textbf{\textit{Backward pass}}
+                };
+                \draw[stealth-, red] (pass.south west) -- (pass.south east);
+
+                \node[] at (0, -2.5) {
+                    $R^{i-1}_j=\sum\limits_{k} \dfrac{n^{(i-1)}_jw^{(i-1)}_{jk}}{\sum\limits_{l} n^{(i-1)}_lw^{(i-1)}_{lk}}R^i_k$
+                };
+            }
+            \only<3->{
+                \node[anchor=west, text=red] (output) at ($ (model.east) + (0.77, 0) $) {
+                    Ladybug
+                };
+                \draw[Latex-,red] (model) -- (output);
+            }
+            \only<8>{
+                \node[anchor=east, draw=black, inner sep=0pt, outer sep=3pt] (input) at ($ (model.west) + (-0.77, 0) $) {
+                    \includegraphics[width=2cm]{data/ladybug_explanation.png}
+                };
+                \draw[Latex-,red] (input) -- (model);
+            }
+        \end{tikzpicture}
+    }
+    \only<9-11>{
+        \textbf{Reasons to use use explainable AI:}
+        \begin{itemize}
+            \item Sanity check models
+            \item Building trust among users
+            \item<10-> Scientific discovery
+            \item<11> Characterize heterogeneity in groups we consider (somewhat) homogeneous
+        \end{itemize}
+    }
+    \only<12>{
+        Elaboration
+    }
+\end{frame}
+
+\begin{frame}{Explainable AI: Caveats}
     \begin{tikzpicture}
         \node[draw=black] at (-5.25, -3.25) {};
         \node[draw=black] at (5.25, 3.25) {};
@@ -398,111 +616,29 @@
         \node[
             anchor=south,
             font=\small
-        ] at (model.north) {Artificial neural network};
+        ] at (model.north) {Predictive model};
 
-        \def\hsep{0.7}
-        \def\vsep{0.5}
-        \def\edgecolor{gray}
-        \def\edgeopacity{0.5}
-        \def\neuroncolour{gray}
+        \node[anchor=east, draw=black, inner sep=0pt, outer sep=3pt] (input) at ($ (model.west) + (-0.77, 0) $) {
+            \includegraphics[width=2cm]{data/bird.png}
+        };
+        \draw[-Latex] (input) -- (model);
 
-        \neuron{n00}{black!25}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
-        \neuron{n01}{black!90}{($ (model) + (-2 * \hsep, -\vsep) $)}
-        \neuron{n02}{black!72}{($ (model) + (-2 * \hsep, 0) $)}
-        \neuron{n03}{black!99}{($ (model) + (-2 * \hsep, \vsep) $)}
-        \neuron{n04}{black!10}{($ (model) + (-2 * \hsep, 2 * \vsep) $)}
+        \node[anchor=west] (output) at ($ (model.east) + (0.77, 0) $) {
+            Bird
+        };
+        \draw[-Latex] (model) -- (output);
 
-        \neuron{n10}{black!55}{($ (model) + (-\hsep, -1.5 * \vsep) $)}
-        \neuron{n11}{black!92}{($ (model) + (-\hsep, -0.5 * \vsep) $)}
-        \neuron{n12}{black!31}{($ (model) + (-\hsep, 0.5 * \vsep) $)}
-        \neuron{n13}{black!7}{($ (model) + (-\hsep, 1.5 * \vsep) $)}
-
-        \neuron{n20}{black!50}{($ (model) + (0, -\vsep) $)}
-        \neuron{n21}{black!10}{(model)}
-        \neuron{n22}{black!100}{($ (model) + (0, \vsep) $)}
-
-        \neuron{n30}{black!75}{($ (model) + (\hsep, -0.5 * \vsep) $)}
-        \neuron{n31}{black!65}{($ (model) + (\hsep, 0.5 * \vsep) $)}
-
-        \only<1-2>{
-            \neuron{n40}{black!95}{($ (model) + (2 * \hsep, 0) $)}
-        }
-        \only<3>{
-            \neuron{n40}{red}{($ (model) + (2 * \hsep, 0) $)}
-        }
-
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n00);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n01);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n02);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n03);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n04);
-
-        \foreach \i in {0,...,4} {
-            \foreach \j in {0,...,3} {
-                \draw[\edgecolor, opacity=\edgeopacity] (n0\i) -- (n1\j);
-            }
-        }
-
-        \foreach \i in {0,...,3} {
-            \foreach \j in {0,...,2} {
-                \draw[\edgecolor, opacity=\edgeopacity] (n1\i) -- (n2\j);
-            }
-        }
-
-        \foreach \i in {0,...,2} {
-            \foreach \j in {0,...,1} {
-                \draw[\edgecolor, opacity=\edgeopacity] (n2\i) -- (n3\j);
-            }
-        }
-
-        \foreach \i in {0,...,1} {
-            \draw[\edgecolor, opacity=\edgeopacity] (n3\i) -- (n40);
-        }
-
-        \only<1-2>{
-            \draw[-stealth, \edgecolor, opacity=\edgeopacity] (n40) -- (model.east);
-        }
-        \only<3>{
-            \draw[stealth-, red, opacity=\edgeopacity] (n40) -- (model.east);
-        }
-
-        \only<1>{
-            \node[anchor=north] (pass) at (model.south) {
-                \textbf{\textit{Forward pass}}
+        \only<2-3>{
+            \node[draw=black, inner sep=0pt] (explanation) at (0, -2.3) {
+                \includegraphics[width=2cm]{data/edgedetector.png}
             };
-            \draw[-stealth] (pass.south west) -- (pass.south east);
-
-            \node[] at (0, -2.5) {
-                $n^i_j = f(\sum\limits_{k} w^{i}_{jk} n^{(i-1)}_k)$
-            };
-        }
-        \only<1-3>{
-            \node[anchor=east, draw=black, inner sep=0pt, outer sep=3pt] (input) at ($ (model.west) + (-0.77, 0) $) {
-                \includegraphics[width=2cm]{data/ladybug.png}
-            };
-            \draw[-Latex] (input) -- (model);
-        }
-        \only<1-2>{
-            \node[anchor=west] (output) at ($ (model.east) + (0.77, 0) $) {
-                ladybug
-            };
-            \draw[-Latex] (model) -- (output);
         }
         \only<2>{
-            \node[anchor=north, text=red] (pass) at (model.south) {
-                \textbf{\textit{Backward pass}}
-            };
-            \draw[stealth-, red] (pass.south west) -- (pass.south east);
-
-            \node[] at (0, -2.5) {
-                $R^{i-1}_j=\sum\limits_{k} \dfrac{n^{(i-1)}_jw^{(i-1)}_{jk}}{\sum\limits_{l} n^{(i-1)}_lw^{(i-1)}_{lk}}R^i_k$
-            };
+            \draw[-stealth, line width=4pt, gray] (model) -- (explanation);
         }
-        \only<3->{
-            \node[anchor=west, text=red] (output) at ($ (model.east) + (0.77, 0) $) {
-                ladybug
-            };
-            \draw[Latex-,red] (model) -- (output);}
-    \end{tikzpicture}
+        \only<3>{
 
+            \draw[-stealth, line width=4pt, gray] ($ (input.south) + (0, 0.1) $) to [out=270, in=180] (explanation);
+        }
+    \end{tikzpicture}
 \end{frame}
