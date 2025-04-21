@@ -198,334 +198,6 @@
     \end{tikzpicture}
 \end{frame}
 
-\newcommand{\mriside}[4]{
-    \def\mridepth{0.75}
-
-    \node[inner sep=0pt] (input) at (#1, #2) {
-        \includegraphics[height=#3, width=#3]{#4}
-    };
-
-    \draw[fill=black] (input.north west) --
-        ($ (input.north west) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        (input.north east) -- cycle;
-    \draw[fill=black] (input.north east) --
-        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.south east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        (input.south east) -- cycle;
-    \draw[] (input.north west) --
-        ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        (input.south west) -- cycle;
-    \draw[] (input.north east) --
-        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        (input.south east) -- cycle;
-    \draw[] ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
-    \draw[] ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
-        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
-}
-
-
-\newcommand{\inputside}[3]{
-    \mriside{#1}{#2}{#3}{data/mri_sagittal.png}
-}
-
-\newcommand{\heatmapside}[3]{
-    \mriside{#1}{#2}{#3}{data/combined_sagittal.png}
-}
-
-\newcommand{\convside}[6]{
-    \def\sidex{#1}
-    \def\sidey{#2}
-    \def\sidewidth{#3}
-    \def\sideheight{#4}
-    \def\sidefillcolour{#5}
-    \def\sidename{#6}
-
-    \node[
-        fill=\sidefillcolour,
-        inner sep=0pt,
-        outer sep=0pt,
-        minimum width=\sidewidth,
-        minimum height=\sideheight,
-        draw=black
-    ] (\sidename) at (\sidex, \sidey) {};
-}
-
-\newcommand{\convtop}[4]{
-    \def\topbase{#1}
-    \def\topwidth{#2}
-    \def\topheight{#3}
-    \def\topfillcolour{#4}
-
-    \draw[fill=\topfillcolour,draw=black] #1 --
-        ($ #1 + (#3, #3) $) --
-        ($ #1 + (#3+#2, #3) $) --
-        ($ #1 + (#2, 0) $);
-}
-
-\newcommand{\convfront}[3]{
-    \def\frontbase{#1}
-    \def\frontsize{#2}
-    \def\frontfillcolour{#3}
-
-    \draw[black, fill=\frontfillcolour] #1 --
-        ($ #1 + (1*#2, 1*#2) $) --
-        ($ #1 + (1*#2, 1*#2 - 2*#2) $) --
-        ($ #1 + (0, -2*#2) $);
-}
-
-\newcommand{\convchannel}[7]{
-    \def\channelx{#1}
-    \def\channely{#2}
-    \def\channelnodedepth{#3}
-    \def\channelnodesize{#4}
-    \def\channelnodecount{#5}
-    \def\channelcolour{#6}
-    \def\includefront{#7}
-
-    \def\huemin{20}
-    \def\huemax{80}
-
-    \pgfmathsetmacro{\iterations}{#5-1}
-    \foreach \i in {0,...,\iterations} {
-        \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
-        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
-
-        \foreach \j in {0,...,\iterations} {
-            \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
-            \ifnum\j=0
-                \pgfmathsetmacro{\innerhue}{\hue}
-            \fi
-
-            \ifnum\includefront=1
-                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
-            \fi
-
-            \ifnum\i=0
-                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
-            \fi
-        }
-    }
-}
-\newcommand{\lrpchannel}[6]{
-    \def\channelx{#1}
-    \def\channely{#2}
-    \def\channelnodedepth{#3}
-    \def\channelnodesize{#4}
-    \def\channelnodecount{#5}
-    \def\includefront{#6}
-
-    \colorlet{bgcolour}{black!85}
-
-    \pgfmathsetmacro{\iterations}{#5-1}
-    \foreach \i in {0,...,\iterations} {
-        \pgfmathsetmacro{\hue}{int(random(-150, 100))}
-        \colorlet{fillcolour}{bgcolour}
-
-        \colorlet{lrpcolour}{red}
-        \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
-
-        \ifnum\coinflip=1
-            \colorlet{lrpcolour}{blue}
-        \fi
-
-        \ifnum\hue>0
-            \colorlet{fillcolour}{lrpcolour!\hue!bgcolour}
-        \fi
-
-        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{fillcolour}{n\i0}
-
-        \foreach \j in {0,...,\iterations} {
-            \pgfmathsetmacro{\innerhue}{int(random(-150, 100))}
-            \colorlet{innerfillcolour}{bgcolour}
-
-            \ifnum\innerhue>0
-                \colorlet{innerfillcolour}{lrpcolour!\innerhue!bgcolour}
-            \fi
-
-            \ifnum\j=0
-                \colorlet{innerfillcolour}{fillcolour}
-            \fi
-
-            \ifnum\includefront=1
-                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{innerfillcolour}
-            \fi
-
-            \ifnum\i=0
-                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{innerfillcolour}
-            \fi
-        }
-    }
-}
-
-
-\newcommand{\convlayer}[7]{
-    \def\layerx{#1}
-    \def\layery{#2}
-    \def\layernodedepth{#3}
-    \def\layernodesize{#4}
-    \def\layernodecount{#5}
-    \def\layerdepth{#6}
-    \def\layercolour{#7}
-
-    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
-    \foreach \i in {0,...,\layeriterations}{
-        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
-        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
-        \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\layercolour}{\islast}
-    }
-}
-\newcommand{\lrplayer}[6]{
-    \def\layerx{#1}
-    \def\layery{#2}
-    \def\layernodedepth{#3}
-    \def\layernodesize{#4}
-    \def\layernodecount{#5}
-    \def\layerdepth{#6}
-
-    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
-    \foreach \i in {0,...,\layeriterations}{
-        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
-        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
-        \lrpchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\islast}
-    }
-}
-
-\newcommand{\modelarrow}[5]{
-    \begin{scope}[transparency group, opacity=0.5]
-        \draw[-stealth, line width=2pt, #3] #1 to [in=#4, out=#5] #2;
-    \end{scope}
-}
-\newcommand{\cnnarrow}[3]{
-    \modelarrow{#1}{#2}{#3}{180}{0}
-}
-\newcommand{\lrparrow}[3]{
-    \modelarrow{#1}{#2}{#3}{0}{180}
-}
-
-\newcommand{\cnn}[6]{
-    \def\xmin{#1}
-    \def\ymin{#2}
-    \def\nodedepth{#3}
-    \def\nodesize{#4}
-    \def\modelcolour{#5}
-    \def\annotate{#6}
-
-    \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
-    \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
-
-    \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
-    \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
-
-    \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
-    \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
-
-    \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
-
-    \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
-                        (#1 + 5.13, #2 + 1.43) --
-                        (#1 + 5.13, #2 - 1.42) --
-                        (#1 + 0.22, #2 - 1.42) -- cycle;
-    \node[anchor=south, text depth=0, font=\scriptsize\selectfont] at (#1 + 2.675, #2 + 1.43) {
-        \textbf{3D Convolutional Neural Network}
-    };
-}
-\newcommand{\lrp}[4]{
-    \def\xmin{#1}
-    \def\ymin{#2}
-    \def\nodedepth{#3}
-    \def\nodesize{#4}
-
-    \lrplayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{black}
-    \lrparrow{(#1+2.2, #2)}{(#1 + 0.95, #2)}{black}
-
-    \lrplayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{black}
-    \lrparrow{(#1+3.5, #2)}{(#1 + 2.43, #2)}{black}
-
-    \lrplayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{black}
-    \lrparrow{(#1+5, #2)}{(#1 + 3.75, #2)}{black}
-
-    \lrplayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{black}
-
-    \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
-        (#1 + 5.13, #2 + 1.43) --
-        (#1 + 5.13, #2 - 1.42) --
-        (#1 + 0.22, #2 - 1.42) -- cycle;
-    \node[anchor=south, text depth=0, font=\scriptsize\selectfont] at (#1 + 2.675, #2 + 1.43) {
-        \textbf{3D Convolutional Neural Network}
-    };
-}
-
-\newcommand{\cnnbox}[1]{
-    \begin{tikzpicture}
-        \node[draw=black] at (-2.5, 0) {};
-        \node[draw=black] at (7.6, 0) {};
-
-        \ifnum#1=0
-            \node[
-                font=\scriptsize\linespread{0.9}\selectfont,
-                align=left,
-                anchor=west
-            ] (output) at (5.5, 0) {
-                Diagnostic\\status
-            };
-        \fi
-        \ifnum#1=1
-            \node[
-                font=\scriptsize\linespread{0.9}\selectfont,
-                align=left,
-                anchor=west
-            ] (output) at (5.5, 0) {
-                Predicted\\probability\\of dementia
-            };
-        \fi
-        \ifnum#1=2
-            \node[
-                font=\scriptsize\linespread{0.9}\selectfont,
-                align=left,
-                anchor=west,
-                text=red
-            ] (output) at (5.5, 0) {
-                Predicted\\probability\\of dementia
-            };
-        \fi
-
-        \ifnum#1<2
-            \inputside{-1.4}{0}{1.5cm}
-            \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{black}
-
-            \cnn{0}{0}{0.066}{0.15}{black}{1}
-
-            \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
-        \fi
-
-        \ifnum#1=2
-            \heatmapside{-1.4}{0}{1.5cm}
-            \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
-            \lrp{0}{0}{0.066}{0.15}
-            \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
-        \fi
-
-    \end{tikzpicture}
-}
-
-\newsavebox{\cnntraining}
-\sbox{\cnntraining}{
-    \cnnbox{0}
-}
-\newsavebox{\cnnpredictions}
-\sbox{\cnnpredictions}{
-    \cnnbox{1}
-}
-
-\newsavebox{\cnnheatmap}
-\sbox{\cnnheatmap}{
-    \cnnbox{2}
-}
-
 \newsavebox{\dementiapredictions}
 \sbox{\dementiapredictions}{
 
@@ -599,8 +271,8 @@
 
 
     \begin{tikzpicture}
-        \node[draw=black] at (-5.25, 3.5) {};
-        \node[draw=black] at (5.25, -3.5) {};
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.25, -3.5) {};
 
         \only<1-4,6-7>{
             \node[minimum height=\datasetheight, minimum width=\datasetwidth, fill=trainsplit, draw=black, anchor=west] (d00) at (-5, 2.5) {};
@@ -705,12 +377,12 @@
 
 
         \only<1-2>{
-            \node[label={[text depth=0]above:LRP}] at (-2.25, 0) {
+            \node[label={[text depth=0]above:Explainable AI}] at (-2.25, 0) {
 				\includegraphics[width=0.31\textwidth]{data/dementia.png}
 			};
         }
         \only<2>{
-			\node[label={[text depth=0]above:GingerALE}] at (2.25, 0) {
+			\node[label={[text depth=0]above:Human researchers}] at (2.25, 0) {
 				\includegraphics[width=0.31\textwidth]{data/ALE.png}
 			};
         }
@@ -898,19 +570,19 @@
             \fi
 
             \ifnum#1=4
-                \node[] at (axis cs: 1.05, 0.155) {
+                \node[] at (axis cs: 1.025, 0.155) {
                     \usebox{\prognosticbaseline}
                 };
                 \node[anchor=west] at (axis cs: 1.34, 0.158) {\footnotesize{0.51}};
             \fi
             \ifnum#1=5
-                \node[] at (axis cs: 1.05, 0.155) {
+                \node[] at (axis cs: 1.025, 0.155) {
                     \usebox{\prognosticpredictions}
                 };
 			    \node[anchor=west] at (axis cs: 1.34, 0.261) {\footnotesize{0.88}};
             \fi
             \ifnum#1=6
-                \node[] at (axis cs: 1.05, 0.155) {
+                \node[] at (axis cs: 1.025, 0.155) {
                     \usebox{\prognosticheatmaps}
                 };
 			    \node[anchor=west] at (axis cs: 1.34, 0.262) {\footnotesize{0.90}};
@@ -928,6 +600,26 @@
 \newsavebox{\mcioutline}
 \sbox{\mcioutline}{
     \mciconcept{1}
+}
+\newsavebox{\mcitimepoint}
+\sbox{\mcitimepoint}{
+    \mciconcept{2}
+}
+\newsavebox{\mcifuture}
+\sbox{\mcifuture}{
+    \mciconcept{3}
+}
+\newsavebox{\mcibaseline}
+\sbox{\mcibaseline}{
+    \mciconcept{4}
+}
+\newsavebox{\mcipredictions}
+\sbox{\mcipredictions}{
+    \mciconcept{5}
+}
+\newsavebox{\mciheatmaps}
+\sbox{\mciheatmaps}{
+    \mciconcept{6}
 }
 
 
@@ -1020,63 +712,249 @@
     \end{tikzpicture}
 }
 
+\newcommand{\mriwidth}{2.2cm}
+\newcommand{\gap}{0.00cm}
+
+\definecolor{color0}{rgb}{0.62, 0.004, 0.259}
+\definecolor{color1}{rgb}{0.755, 0.154, 0.291}
+\definecolor{color2}{rgb}{0.866, 0.29, 0.298}
+\definecolor{color3}{rgb}{0.943, 0.406, 0.268}
+\definecolor{color4}{rgb}{0.975, 0.557, 0.323}
+\definecolor{color5}{rgb}{0.993, 0.709, 0.403}
+\definecolor{color6}{rgb}{0.995, 0.832, 0.506}
+\definecolor{color7}{rgb}{0.998, 0.926, 0.625}
+\definecolor{color8}{rgb}{0.998, 0.999, 0.746}
+\definecolor{color9}{rgb}{0.937, 0.975, 0.65}
+\definecolor{color10}{rgb}{0.838, 0.935, 0.609}
+\definecolor{color11}{rgb}{0.693, 0.876, 0.639}
+\definecolor{color12}{rgb}{0.527, 0.811, 0.645}
+\definecolor{color13}{rgb}{0.368, 0.725, 0.662}
+\definecolor{color14}{rgb}{0.24, 0.582, 0.721}
+\definecolor{color15}{rgb}{0.267, 0.441, 0.698}
+\definecolor{color16}{rgb}{0.369, 0.31, 0.635}
+
+\newcommand{\correlationplot}[4]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=1.71 * \mriwidth,
+            width=1.71 * \mriwidth,
+            xmajorticks=false,
+            ylabel=#3,
+            ytick={0, 2, 4, 6, 8},
+            yticklabels=#2,
+            xmin=-1,
+            xmax=17,
+            ymin=0,
+            ymax=9,
+            every tick label/.append style={font=\tiny},
+            ytick pos=left,
+            scatter/classes={
+                ADNI_EF={color0, draw=black},
+                ADNI_MEM={color1, draw=black},
+                CDCARE={color2, draw=black},
+                CDCOMMUN={color3, draw=black},
+                CDGLOBAL={color4, draw=black},
+                CDHOME={color5, draw=black},
+                CDJUDGE={color6, draw=black},
+                CDMEMORY={color7, draw=black},
+                CDORIENT={color8, draw=black},
+                FAQTOTAL={color9, draw=black},
+                GDTOTAL={color10, draw=black},
+                MMSCORE={color11, draw=black},
+                NPISCORE={color12, draw=black},
+                PHC_EXF={color13, draw=black},
+                PHC_LAN={color14, draw=black},
+                PHC_MEM={color15, draw=black},
+                PHC_VSP={color16, draw=black}
+            },
+            y label style={at={(-0.1,0.5)}},
+            ymajorgrids=true,
+            ytick style={draw=none},
+            clip=false,
+            grid style={draw=gray!20},
+            axis line style={draw=gray!70}
+        ]
+            \addplot[
+                only marks,
+                scatter,
+                scatter src=explicit symbolic
+            ] table [
+                col sep=comma,
+                x=index,
+                y=component_#1,
+                meta=symptom
+            ] {data/correlations.csv};
+            \addplot[dashed,red, thick] coordinates {
+                (-1, 2.76)
+                (17, 2.76)
+            };
+            #4
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\firstcorrelations}
+\sbox{\firstcorrelations}{%
+    \correlationplot{0}{{0, 2, 4, 6, 8}}{\scriptsize{$-log_{10}(p)$}}{
+        \node[] at (axis cs: 14, 6.19) {\tiny{PHC\_LAN}};
+    }
+}
+\newsavebox{\secondcorrelations}
+\sbox{\secondcorrelations}{%
+    \correlationplot{1}{{,,}}{{}}{
+        \node[] at (axis cs: 9, 3.74) {\tiny{FAQTOTAL}};
+    }
+}
+\newsavebox{\thirdcorrelations}
+\sbox{\thirdcorrelations}{%
+    \correlationplot{2}{{,,}}{{}}{
+        \node[] at (axis cs: 0, 6.44) {\tiny{ADNI\_EF}};
+        \node[] at (axis cs: 13, 7.95) {\tiny{PHC\_EXF}};
+    }
+}
+\newsavebox{\fourthcorrelations}
+\sbox{\fourthcorrelations}{%
+    \correlationplot{3}{{,,}}{{}}{
+        \node[] at (axis cs: 0, 9.02) {\tiny{ADNI\_EF}};
+        \node[] at (axis cs: 13, 8.75) {\tiny{PHC\_EXF}};
+        \node[] at (axis cs: 14, 5.84) {\tiny{PHC\_LAN}};
+        \node[] at (axis cs: 6, 5.18) {\tiny{CDJUDGE}};
+        \node[] at (axis cs: 11, 3.99) {\tiny{MMSCORE}};
+    }
+}
+
+\newcommand{\cognitiveplot}[1]{
+    \hspace{-0.6cm}
+    \begin{tikzpicture}
+        \node[] (first) at (0, 0) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_0.png}
+        };
+
+        \node[anchor=west] (second) at ($ (first.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_1.png}
+        };
+
+        \node[anchor=west] (third) at ($ (second.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_2.png}
+        };
+
+        \node[anchor=west] (fourth) at ($ (third.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_3.png}
+        };
+
+        \ifnum#1=1
+            \node[anchor=north west] (first-correlation) at ($ (first.south west) + (-0.86, 0.1) $) {
+                \usebox{\firstcorrelations}
+            };
+            \node[anchor=north west] (second-correlation) at ($ (first-correlation.north east) - (0.76, 0) $) {
+                \usebox{\secondcorrelations}
+            };
+            \node[anchor=north west] (third-correlation) at ($ (second-correlation.north east) - (0.71, 0) $) {
+                \usebox{\thirdcorrelations}
+            };
+            \node[anchor=north west] (fourth-correlation) at ($ (third-correlation.north east) - (0.74, -0.21) $) {
+                \usebox{\fourthcorrelations}
+            };
+        \fi
+
+    \end{tikzpicture}
+    \hspace{-0.6cm}
+}
+
+\newsavebox{\cognitiveheatmaps}
+\sbox{\cognitiveheatmaps}{
+    \cognitiveplot{0}
+}
+
+\newsavebox{\cognitivecorrelations}
+\sbox{\cognitivecorrelations}{
+    \cognitiveplot{1}
+}
+
 \begin{frame}{Explainable dementia classification: Application}
     \begin{tikzpicture}
         \node[] at (-5.25, 3.5) {};
         \node[] at (5.5, -3.5) {};
 
-        \visible<1>{
+        \only<1>{
             \node[] at (0, 0) {
                 \usebox{\mcitrajectories}
             };
         }
 
-        \visible<2>{
+        \only<2>{
             \node[] at (0, 0) {
                 \usebox{\mcigroups}
             };
         }
 
-        \visible<3>{
+        \only<3>{
             \node[anchor=west] at (-5, 0) {
                 \usebox{\mcioutline}
             };
         }
-        % \visible<6>{
-        %     \node[anchor=west] at (-5, 0) {
-        %         \usebox{\mcitimepoint}
-        %     };
-        % }
-        % \visible<7>{
-        %     \node[anchor=west] at (-5, 0) {
-        %         \usebox{\mcifuture}
-        %     };
-        % }
-        % \visible<8>{
-        %     \node[anchor=west] at (-5, 0) {
-        %         \usebox{\mcibaseline}
-        %     };
-        % }
-        % \visible<9>{
-        %     \node[anchor=west] at (-5, 0) {
-        %         \usebox{\mcipredictions}
-        %     };
-        % }
-        % \visible<10>{
-        %     \node[anchor=west] at (-5, 0) {
-        %         \usebox{\mciheatmaps}
-        %     };
-        % }
-        % \visible<11>{
-        %     \node[] at (0, 0) {
-        %         \usebox{\cognitivecorrelations}
-        %     };
-        % }
-        % \visible<12>{
-        %     \node[] at (0, 0) {
-        %         \includegraphics[height=7cm]{data/morphological.png}
-        %     };
-        % }
+        \only<4>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcitimepoint}
+            };
+        }
+        \only<5>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcifuture}
+            };
+        }
+        \only<6>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcibaseline}
+            };
+        }
+        \only<7>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcipredictions}
+            };
+        }
+        \only<8>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mciheatmaps}
+            };
+        }
+        \visible<9>{
+            \node[inner sep=0pt, outer sep=0pt, anchor=north east] at (4.6, 3) {
+                \usebox{\cognitiveheatmaps}
+            };
+        }
+        \visible<10>{
+            \node[inner sep=0pt, outer sep=0pt, anchor=north east] at (5, 3) {
+                \usebox{\cognitivecorrelations}
+            };
+        }
+        \visible<11>{
+            \node[text width=10cm] at (0, 0) {
+                We used explainable AI to generate heatmaps characterizing the manifestation of dementia-related aberrations in individual brains
+                {\small
+                    \begin{itemize}
+                        \item Information in the heatmaps allowed us to predict progression from mild cognitive impairment to dementia with an AUC of 0.9 after 5 years
+                        \item Distinct patterns in the heatmaps were associated with decline in various cognitive domains
+                    \end{itemize}
+                }
+            };
+        }
 
     \end{tikzpicture}
 \end{frame}

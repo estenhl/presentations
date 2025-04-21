@@ -1,0 +1,365 @@
+\newcommand{\mriside}[4]{
+    \def\mridepth{0.75}
+
+    \node[inner sep=0pt] (input) at (#1, #2) {
+        \includegraphics[height=#3, width=#3]{#4}
+    };
+
+    \draw[fill=black] (input.north west) --
+        ($ (input.north west) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.north east) -- cycle;
+    \draw[fill=black] (input.north east) --
+        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south east) -- cycle;
+    \draw[] (input.north west) --
+        ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south west) -- cycle;
+    \draw[] (input.north east) --
+        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south east) -- cycle;
+    \draw[] ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
+    \draw[] ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
+}
+
+
+\newcommand{\inputside}[3]{
+    \mriside{#1}{#2}{#3}{data/mri_sagittal.png}
+}
+
+\newcommand{\heatmapside}[3]{
+    \mriside{#1}{#2}{#3}{data/combined_sagittal.png}
+}
+
+\newcommand{\convside}[6]{
+    \def\sidex{#1}
+    \def\sidey{#2}
+    \def\sidewidth{#3}
+    \def\sideheight{#4}
+    \def\sidefillcolour{#5}
+    \def\sidename{#6}
+
+    \node[
+        fill=\sidefillcolour,
+        inner sep=0pt,
+        outer sep=0pt,
+        minimum width=\sidewidth,
+        minimum height=\sideheight,
+        draw=black
+    ] (\sidename) at (\sidex, \sidey) {};
+}
+
+\newcommand{\convtop}[4]{
+    \def\topbase{#1}
+    \def\topwidth{#2}
+    \def\topheight{#3}
+    \def\topfillcolour{#4}
+
+    \draw[fill=\topfillcolour,draw=black] #1 --
+        ($ #1 + (#3, #3) $) --
+        ($ #1 + (#3+#2, #3) $) --
+        ($ #1 + (#2, 0) $);
+}
+
+\newcommand{\convfront}[3]{
+    \def\frontbase{#1}
+    \def\frontsize{#2}
+    \def\frontfillcolour{#3}
+
+    \draw[black, fill=\frontfillcolour] #1 --
+        ($ #1 + (1*#2, 1*#2) $) --
+        ($ #1 + (1*#2, 1*#2 - 2*#2) $) --
+        ($ #1 + (0, -2*#2) $);
+}
+
+\newcommand{\convchannel}[7]{
+    \def\channelx{#1}
+    \def\channely{#2}
+    \def\channelnodedepth{#3}
+    \def\channelnodesize{#4}
+    \def\channelnodecount{#5}
+    \def\channelcolour{#6}
+    \def\includefront{#7}
+
+    \def\huemin{20}
+    \def\huemax{80}
+
+    \pgfmathsetmacro{\iterations}{#5-1}
+    \foreach \i in {0,...,\iterations} {
+        \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
+        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
+
+        \foreach \j in {0,...,\iterations} {
+            \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
+            \ifnum\j=0
+                \pgfmathsetmacro{\innerhue}{\hue}
+            \fi
+
+            \ifnum\includefront=1
+                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
+            \fi
+
+            \ifnum\i=0
+                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
+            \fi
+        }
+    }
+}
+\newcommand{\lrpchannel}[6]{
+    \def\channelx{#1}
+    \def\channely{#2}
+    \def\channelnodedepth{#3}
+    \def\channelnodesize{#4}
+    \def\channelnodecount{#5}
+    \def\includefront{#6}
+
+    \colorlet{bgcolour}{black!85}
+
+    \pgfmathsetmacro{\iterations}{#5-1}
+    \foreach \i in {0,...,\iterations} {
+        \pgfmathsetmacro{\hue}{int(random(-150, 100))}
+        \colorlet{fillcolour}{bgcolour}
+
+        \colorlet{lrpcolour}{red}
+        \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+        \ifnum\coinflip=1
+            \colorlet{lrpcolour}{blue}
+        \fi
+
+        \ifnum\hue>0
+            \colorlet{fillcolour}{lrpcolour!\hue!bgcolour}
+        \fi
+
+        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{fillcolour}{n\i0}
+
+        \foreach \j in {0,...,\iterations} {
+            \pgfmathsetmacro{\innerhue}{int(random(-150, 100))}
+            \colorlet{innerfillcolour}{bgcolour}
+
+            \ifnum\innerhue>0
+                \colorlet{innerfillcolour}{lrpcolour!\innerhue!bgcolour}
+            \fi
+
+            \ifnum\j=0
+                \colorlet{innerfillcolour}{fillcolour}
+            \fi
+
+            \ifnum\includefront=1
+                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{innerfillcolour}
+            \fi
+
+            \ifnum\i=0
+                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{innerfillcolour}
+            \fi
+        }
+    }
+}
+
+
+\newcommand{\convlayer}[7]{
+    \def\layerx{#1}
+    \def\layery{#2}
+    \def\layernodedepth{#3}
+    \def\layernodesize{#4}
+    \def\layernodecount{#5}
+    \def\layerdepth{#6}
+    \def\layercolour{#7}
+
+    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+    \foreach \i in {0,...,\layeriterations}{
+        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+        \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\layercolour}{\islast}
+    }
+}
+\newcommand{\lrplayer}[6]{
+    \def\layerx{#1}
+    \def\layery{#2}
+    \def\layernodedepth{#3}
+    \def\layernodesize{#4}
+    \def\layernodecount{#5}
+    \def\layerdepth{#6}
+
+    \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+    \foreach \i in {0,...,\layeriterations}{
+        \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+        \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+        \lrpchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\islast}
+    }
+}
+
+\newcommand{\modelarrow}[5]{
+    \begin{scope}[transparency group, opacity=0.5]
+        \draw[-stealth, line width=2pt, #3] #1 to [in=#4, out=#5] #2;
+    \end{scope}
+}
+\newcommand{\cnnarrow}[3]{
+    \modelarrow{#1}{#2}{#3}{180}{0}
+}
+\newcommand{\lrparrow}[3]{
+    \modelarrow{#1}{#2}{#3}{0}{180}
+}
+
+\newcommand{\cnn}[6]{
+    \def\xmin{#1}
+    \def\ymin{#2}
+    \def\nodedepth{#3}
+    \def\nodesize{#4}
+    \def\modelcolour{#5}
+    \def\annotate{#6}
+
+    \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+    \cnnarrow{(#1 + 0.95, #2)}{(#1+2.2, #2)}{#5}
+
+    \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+    \cnnarrow{(#1 + 2.43, #2)}{(#1+3.5, #2)}{#5}
+
+    \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+    \cnnarrow{(#1 + 3.75, #2)}{(#1+5, #2)}{#5}
+
+    \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+
+    \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
+                        (#1 + 5.13, #2 + 1.43) --
+                        (#1 + 5.13, #2 - 1.42) --
+                        (#1 + 0.22, #2 - 1.42) -- cycle;
+    \node[anchor=south, text depth=0, font=\scriptsize\selectfont] at (#1 + 2.675, #2 + 1.43) {
+        \textbf{3D Convolutional Neural Network}
+    };
+}
+\newcommand{\lrp}[4]{
+    \def\xmin{#1}
+    \def\ymin{#2}
+    \def\nodedepth{#3}
+    \def\nodesize{#4}
+
+    \lrplayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{black}
+    \lrparrow{(#1+2.2, #2)}{(#1 + 0.95, #2)}{black}
+
+    \lrplayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{black}
+    \lrparrow{(#1+3.5, #2)}{(#1 + 2.43, #2)}{black}
+
+    \lrplayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{black}
+    \lrparrow{(#1+5, #2)}{(#1 + 3.75, #2)}{black}
+
+    \lrplayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{black}
+
+    \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
+        (#1 + 5.13, #2 + 1.43) --
+        (#1 + 5.13, #2 - 1.42) --
+        (#1 + 0.22, #2 - 1.42) -- cycle;
+    \node[anchor=south, text depth=0, font=\scriptsize\selectfont] at (#1 + 2.675, #2 + 1.43) {
+        \textbf{3D Convolutional Neural Network}
+    };
+}
+
+\newcommand{\cnnbox}[1]{
+    \begin{tikzpicture}
+        \node[] at (-2.5, 0) {};
+        \node[] at (7.6, 0) {};
+
+        \ifnum#1=0
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (5.5, 0) {
+                Diagnostic\\status
+            };
+        \fi
+        \ifnum#1=1
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (5.5, 0) {
+                Predicted\\probability\\of dementia
+            };
+        \fi
+        \ifnum#1=2
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (5.5, 0) {
+                Chronological\\age
+            };
+        \fi
+        \ifnum#1=3
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (5.5, 0) {
+                Apparent\\brain age
+            };
+        \fi
+        \ifnum#1=4
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west,
+                text=red
+            ] (output) at (5.5, 0) {
+                Predicted\\probability\\of dementia
+            };
+        \fi
+        \ifnum#1=5
+            \node[
+                font=\scriptsize\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (5.5, 0) {
+                Apparent\\brain age
+            };
+        \fi
+
+        \ifnum#1<4
+            \inputside{-1.4}{0}{1.5cm}
+            \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{black}
+
+            \cnn{0}{0}{0.066}{0.15}{black}{1}
+
+            \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
+        \fi
+
+        \ifnum#1>3
+            \heatmapside{-1.4}{0}{1.5cm}
+            \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
+            \lrp{0}{0}{0.066}{0.15}
+            \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
+        \fi
+
+    \end{tikzpicture}
+}
+
+\newsavebox{\cnntraining}
+\sbox{\cnntraining}{
+    \cnnbox{0}
+}
+\newsavebox{\cnnpredictions}
+\sbox{\cnnpredictions}{
+    \cnnbox{1}
+}
+\newsavebox{\cnnbrainage}
+\sbox{\cnnbrainage}{
+    \cnnbox{2}
+}
+\newsavebox{\cnnbrainagepreds}
+\sbox{\cnnbrainagepreds}{
+    \cnnbox{3}
+}
+\newsavebox{\cnnheatmap}
+\sbox{\cnnheatmap}{
+    \cnnbox{4}
+}
+\newsavebox{\lrpbrainage}
+\sbox{\lrpbrainage}{
+    \cnnbox{5}
+}
