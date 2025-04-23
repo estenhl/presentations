@@ -298,7 +298,7 @@
             \draw[-stealth] (d03) -- (search);
             \draw[-stealth] (fit) -- (search);
         }
-        \only<2-3>{
+        \visible<2-3>{
             \node[] at (0, -1.5) {
                 \usebox{\cnntraining}
             };
@@ -430,11 +430,11 @@
     \end{tikzpicture}
 \end{frame}
 
-\newcommand{\prognostic}[1]{
-    \definecolor{baseline}{HTML}{FAEAB1}
-    \definecolor{preds}{HTML}{E5BA73}
-    \definecolor{maps}{HTML}{C58940}
+\definecolor{baseline}{HTML}{FAEAB1}
+\definecolor{preds}{HTML}{E5BA73}
+\definecolor{maps}{HTML}{C58940}
 
+\newcommand{\prognostic}[1]{
     \begin{tikzpicture}
         \begin{axis}[
             height=2.9cm,
@@ -889,8 +889,8 @@
 
 \begin{frame}{Explainable dementia classification: Application}
     \begin{tikzpicture}
-        \node[] at (-5.25, 3.5) {};
-        \node[] at (5.5, -3.5) {};
+        \node[draw=black] at (-5.25, 3.5) {};
+        \node[draw=black] at (5.5, -3.5) {};
 
         \only<1>{
             \node[] at (0, 0) {
@@ -924,15 +924,27 @@
                 \usebox{\mcibaseline}
             };
         }
+        \only<6-8>{
+            \node[circle, inner sep=1.3pt, draw=black, fill=baseline] (baselinelegend) at (0.7, -2.4) {};
+            \node[anchor=west, font=\scriptsize, text depth=0, inner sep=2pt] at (baselinelegend.east) {Baseline};
+        }
         \only<7>{
             \node[anchor=west] at (-5, 0) {
                 \usebox{\mcipredictions}
             };
         }
+        \only<7-8>{
+            \node[circle, inner sep=1.3pt, draw=black, fill=preds] (predictionlegend) at ($ (baselinelegend) - (0, 0.3) $) {};
+            \node[anchor=west, font=\scriptsize, text depth=0, inner sep=2pt] at (predictionlegend.east) {Predictions};
+        }
         \only<8>{
             \node[anchor=west] at (-5, 0) {
                 \usebox{\mciheatmaps}
             };
+        }
+        \only<8>{
+            \node[circle, inner sep=1.3pt, draw=black, fill=maps] (heatmaplegend) at ($ (predictionlegend) - (0, 0.3) $) {};
+            \node[anchor=west, font=\scriptsize, text depth=0, inner sep=2pt] at (heatmaplegend.east) {Heatmaps};
         }
         \visible<9>{
             \node[inner sep=0pt, outer sep=0pt, anchor=north east] at (4.6, 3) {
