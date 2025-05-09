@@ -27,7 +27,7 @@
 \title{PSY9511: Seminar 8}
 \subtitle{Sequence modelling (with an emphasis on language)}
 \author{Esten H. Leonardsen}
-\date{14.11.24}
+\date{\today}
 
 \titlegraphic{
 	\centering
@@ -47,7 +47,6 @@
 
     \begin{frame}{Overview}
         \begin{enumerate}
-            \item Exercise 5
             \item Language modelling
             \begin{enumerate}
                 \item Introduction and motivation
@@ -59,8 +58,6 @@
             \end{enumerate}
         \end{enumerate}
     \end{frame}
-
-    \input{sections/exercise5.tex}
 
     \section{Language modelling}
 
@@ -2095,194 +2092,6 @@
         \end{tikzpicture}
     }
 
-    \newsavebox{\firstsine}
-    \sbox{\firstsine}{%
-        \drawsines{1}
-    }
-    \newsavebox{\allsines}
-    \sbox{\allsines}{%
-        \drawsines{2}
-    }
-
-    \begin{frame}{Transformers: Positional encoding}
-        \begin{tikzpicture}
-            \node[] at (0, 0) {};
-            \node[] at (10, 7) {};
-            \def\nodesize{12pt}
-
-            \only<1-7>{
-                \node[anchor=north] at (5, 6.5) {
-                    The movie was great.
-                };
-            }
-            \only<2-7>{
-                \node[] (the) at (2, 5) {the};
-                \node[] (movie) at (4, 5) {movie};
-                \node[] (was) at (6, 5) {was};
-                \node[] (great) at (8, 5) {great};
-                \draw[-stealth] (3.6, 6) -- (the.north);
-                \draw[-stealth] (4.5, 6) -- (movie.north);
-                \draw[-stealth] (5.5, 6) -- (was.north);
-                \draw[-stealth] (6.2, 6) -- (great.north);
-            };
-            \only<3-7>{
-                \node[] (theidx) at (2, 4) {4};
-                \node[] (movieidx) at (4, 4) {17};
-                \node[] (wasidx) at (6, 4) {91};
-                \node[] (greatidx) at (8, 4) {52};
-                \draw[-stealth] (the) -- (theidx.north);
-                \draw[-stealth] (movie) -- (movieidx.north);
-                \draw[-stealth] (was) -- (wasidx.north);
-                \draw[-stealth] (great) -- (greatidx.north);
-            };
-            \only<4-7>{
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt] (n00) at (2, 3) {\tiny{0.5}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n10) at (n00.south) {\tiny{0.3}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n20) at (n10.south) {\tiny{0.7}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n30) at (n20.south) {\tiny{0.0}};
-
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt] (n01) at (4, 3) {\tiny{0.2}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n11) at (n01.south) {\tiny{0.0}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n21) at (n11.south) {\tiny{1.0}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n31) at (n21.south) {\tiny{0.3}};
-
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt] (n02) at (6, 3) {\tiny{1.0}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n12) at (n02.south) {\tiny{0.1}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n22) at (n12.south) {\tiny{0.2}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n32) at (n22.south) {\tiny{0.8}};
-
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt] (n03) at (8, 3) {\tiny{0.8}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n13) at (n03.south) {\tiny{0.4}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n23) at (n13.south) {\tiny{0.2}};
-                \node[draw=black, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=north] (n33) at (n23.south) {\tiny{0.6}};
-
-                \draw[-stealth] (theidx) -- (n00);
-                \draw[-stealth] (movieidx) -- (n01);
-                \draw[-stealth] (wasidx) -- (n02);
-                \draw[-stealth] (greatidx) -- (n03);
-            }
-            \only<5>{
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p00) at (n00.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p10) at (n10.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p20) at (n20.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p30) at (n30.east) {};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p01) at (n01.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p11) at (n11.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p21) at (n21.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p31) at (n31.east) {};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p02) at (n02.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p12) at (n12.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p22) at (n22.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p32) at (n32.east) {};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p03) at (n03.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p13) at (n13.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p23) at (n23.east) {};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red] (p33) at (n33.east) {};
-            }
-            \only<6>{
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p00) at (n00.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p10) at (n10.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p20) at (n20.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p30) at (n30.east) {0};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p01) at (n01.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p11) at (n11.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p21) at (n21.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p31) at (n31.east) {1};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p02) at (n02.east) {2};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p12) at (n12.east) {2};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p22) at (n22.east) {2};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p32) at (n32.east) {3};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p03) at (n03.east) {3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p13) at (n13.east) {3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p23) at (n23.east) {3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, font=\tiny] (p33) at (n33.east) {3};
-            }
-            \only<7>{
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p00) at (n00.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p10) at (n10.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p20) at (n20.east) {0};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p30) at (n30.east) {0};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p01) at (n01.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p11) at (n11.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p21) at (n21.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p31) at (n31.east) {0.3};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p02) at (n02.east) {0.6};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p12) at (n12.east) {0.6};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p22) at (n22.east) {0.6};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p32) at (n32.east) {0.6};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p03) at (n03.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p13) at (n13.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, red, font=\tiny] (p23) at (n23.east) {1};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red, font=\tiny] (p33) at (n33.east) {1};
-            }
-            \only<8>{
-                \node[] at (5.45, 6) {
-                    \usebox{\firstsine}
-                };
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p00) at (n00.east) {0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p10) at (n10.east) {0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p20) at (n20.east) {0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p30) at (n30.east) {0.9};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p01) at (n01.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p11) at (n11.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p21) at (n21.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p31) at (n31.east) {0.3};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p02) at (n02.east) {-0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p12) at (n12.east) {-0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p22) at (n22.east) {-0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p32) at (n32.east) {-0.3};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p03) at (n03.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p13) at (n13.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p23) at (n23.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, red,font=\tiny] (p33) at (n33.east) {-0.9};
-            }
-            \only<9>{
-                \node[] at (5.45, 6) {
-                    \usebox{\allsines}
-                };
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, firstcolor,font=\tiny] (p00) at (n00.east) {0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, secondcolor,font=\tiny] (p10) at (n10.east) {0.5};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, thirdcolor,font=\tiny] (p20) at (n20.east) {-0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, fourthcolor,font=\tiny] (p30) at (n30.east) {1.0};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, firstcolor,font=\tiny] (p01) at (n01.east) {0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, secondcolor,font=\tiny] (p11) at (n11.east) {0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, thirdcolor,font=\tiny] (p21) at (n21.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, fourthcolor,font=\tiny] (p31) at (n31.east) {0.8};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, firstcolor,font=\tiny] (p02) at (n02.east) {-0.3};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, secondcolor,font=\tiny] (p12) at (n12.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, thirdcolor,font=\tiny] (p22) at (n22.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, fourthcolor,font=\tiny] (p32) at (n32.east) {-0.9};
-
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, firstcolor,font=\tiny] (p03) at (n03.east) {-0.9};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, secondcolor,font=\tiny] (p13) at (n13.east) {0.8};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, thirdcolor,font=\tiny] (p23) at (n23.east) {-0.5};
-                \node[draw=red, minimum width=\nodesize, minimum height=\nodesize, inner sep=0pt, outer sep=0pt, anchor=west, fourthcolor,font=\tiny] (p33) at (n33.east) {-0.6};
-            }
-        \end{tikzpicture}
-    \end{frame}
-    \begin{frame}{Transformers: Embedding}
-        \centering
-        \begin{tikzpicture}
-            \node[inner sep=0pt, draw=black] at (5, 3.2) {
-                \includegraphics[width=4cm]{data/transformer.png}
-            };
-            \node[draw=red, thick, minimum width=1cm, minimum height=0.28cm] at (5.65, 4.98) {};
-        \end{tikzpicture}
-    \end{frame}
     \begin{frame}{Transformers: Demo}
         \centering
         \begin{tikzpicture}
@@ -2304,6 +2113,7 @@
             }
         \end{tikzpicture}
     \end{frame}
+
     \begin{frame}{Transformers}
         Transformers: Revolutionized language modelling by combining feed forward neural networks with multihead attention and positional endcodings (and infinite data and compute)
             \begin{itemize}
