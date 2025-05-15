@@ -356,6 +356,70 @@
     \end{tikzpicture}
 }
 
+\newcommand{\dementiapredictions}{
+    \newcommand{\ymin}{-0.35}
+    \newcommand{\ymax}{1.05}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            name=distributions,
+            height=0.5\textwidth,
+            width=0.94\textwidth,
+            xtick pos=bottom,
+            ymajorticks=false,
+            xmin=0,
+            xmax=1,
+            ymin=\ymin,
+            ymax=\ymax,
+            xlabel=\small{Predicted probability of dementia},
+            every tick label/.append style={font=\small}
+        ]
+            \addplot[
+                name path=controls,
+                draw=blue,
+                very thick
+            ] table [
+                col sep=comma,
+                x=prediction,
+                y=controls
+            ]{data/dementia/test_distributions.csv};
+
+            \addplot[
+                name path=cases,
+                draw=red,
+                very thick
+            ] table [
+                col sep=comma,
+                x=prediction,
+                y=cases
+            ]{data/dementia/test_distributions.csv};
+
+            \addplot[name path=zero, draw=black] coordinates {(0,0) (1,0)};
+            \addplot[fill=blue, opacity=0.2] fill between [of=zero and controls];
+            \addplot[fill=red, opacity=0.2] fill between [of=zero and cases];
+
+            \addplot[
+                scatter/classes={
+                    control={blue, draw=black, opacity=0.5},
+                    case={red, draw=black, opacity=0.5}
+                },
+                scatter,
+                mark=*,
+                only marks,
+                point meta=explicit symbolic
+            ] table [
+                col sep=comma,
+                y expr=\thisrow{y} * -0.15 - 0.1,
+                meta=class,
+            ] {data/dementia/test_predictions.csv};
+            \addplot[dashed] coordinates {(0.5, \ymin) (0.5, \ymax)};
+        \end{axis}
+
+        \node[anchor=south west] at ($ (distributions.south east) + (0,0.45) $) {\footnotesize{Controls}};
+        \node[anchor=south west] at ($ (distributions.south east) + (0,0.0) $) {\footnotesize{Cases}};
+    \end{tikzpicture}
+}
+
 
 \begin{frame}{Modelling}
     \begin{tikzpicture}
@@ -370,10 +434,64 @@
                 \dementiasubsets
             };
         }
-        \only<2>{
+        \only<2,4>{
             \node[] at (0, 0) {
-                \cnnbox{0}
+                \cnnbox{0}{Patient or healthy control}
             };
+        }
+        \only<3>{
+            \node[] at (0, 0) {
+                \dementiapredictions
+            };
+        }
+        \only<5>{
+            \node[] at (0, 0) {
+                \cnnbox{1}{Patient or healthy control}
+            };
+        }
+        \only<6>{
+			\node[
+				minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+                anchor=west
+			] (box1) at (-5.25, 0) {};
+			\node[anchor=south] at (box1.south) {
+				\includegraphics[width=0.31\textwidth]{data/dementia/subject1.png}
+			};
+			\node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box2) at ($ (box1.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box2.south) {
+				\includegraphics[width=0.31\textwidth]{data/dementia/subject2.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Partient 2};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box3) at ($ (box2.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box3.south) {
+				\includegraphics[width=0.31\textwidth]{data/dementia/subject3.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+        }
+         \visible<7-8>{
+            \node[label={[text depth=0]above:LRP}] at (-2.25, 0) {
+				\includegraphics[width=0.31\textwidth]{data/dementia/dementia_average.png}
+			};
+        }
+        \visible<8>{
+			\node[label={[text depth=0]above:GingerALE}] at (2.25, 0) {
+				\includegraphics[width=0.31\textwidth]{data/dementia/ALE.png}
+			};
         }
     \end{tikzpicture}
 \end{frame}
