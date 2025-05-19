@@ -356,6 +356,113 @@
     \end{tikzpicture}
 }
 
+
+\newcommand{\diceplot}[1]{
+    \def\legendsize{\footnotesize}
+    \def\legendnodesep{2pt}
+    \def\legenddistance{1}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=7cm,
+            height=7cm,
+            ylabel=\footnotesize{Dice coefficient},
+            xlabel=\footnotesize{Binarization threshold percentile},
+            ymin=0,
+            ymax=1,
+            xmin=0,
+            xmax=0.99,
+            tick label style={font=\scriptsize},
+            xtick={0, 0.2, 0.4, 0.6, 0.8, 0.99},
+            xticklabels={0, 20, 40, 60, 80, 99},
+            xtick style={draw=none},
+            ytick style={draw=none},
+            xmajorgrids=true,
+            ymajorgrids=true
+        ]
+            \addplot[very thick,draw=dementiadice] table [col sep=comma, x=thresholds, y=test] {data/dice.csv};\label{trace:dementia}
+
+            \ifnum#1=1
+                \addplot[very thick,draw=sexdice] table [col sep=comma, x=thresholds, y=sex] {data/dice.csv};\label{trace:sex}
+                \addplot[very thick,draw=weightsdice] table [col sep=comma, x=thresholds, y=randomized_weights] {data/dice.csv};\label{trace:weights}
+                \addplot[very thick,draw=imagesdice] table [col sep=comma, x=thresholds, y=randomized_images] {data/dice.csv};\label{trace:images}
+            \fi
+
+            \addplot[only marks, fill=dementiadice, draw=dementiadice, mark size=3] coordinates {
+                (0.5, 0.6131)
+                (0.7, 0.5296)
+                (0.9, 0.4291)
+            };
+            \node[anchor=north, inner sep=01, fill=white, draw=black] at (axis cs: 0.5,0.5831) {\legendsize{0.61}};
+            \node[anchor=north, inner sep=\annotationpadding] at (axis cs: 0.7,0.5296) {\legendsize{0.52}};
+            \node[anchor=north, inner sep=\annotationpadding] at (axis cs: 0.9,0.4191) {\legendsize{0.41}};
+            \node[anchor=south, inner sep=\annotationpadding] at (axis cs: 0.5,0.6131) {
+                \includegraphics[
+                    width=\slicewidth,
+                    clip=true,
+                    trim = 192mm 232mm 0mm 0mm
+                ]{data/test_50.png}
+            };
+            \node[anchor=south, inner sep=\annotationpadding] at (axis cs: 0.7,0.5296) {
+                \includegraphics[
+                    width=\slicewidth,
+                    clip=true,
+                    trim = 192mm 232mm 0mm 0mm
+                ]{data/test_70.png}
+            };
+            \node[anchor=south, inner sep=\annotationpadding] at (axis cs: 0.9,0.4291) {
+                \includegraphics[
+                    width=\slicewidth,
+                    clip=true,
+                    trim = 192mm 232mm 0mm 0mm
+                ]{data/test_90.png}
+            };
+            % Legend
+            \ifnum#1=1
+                \node[
+                    anchor=south west,
+                    draw=black,
+                    fill=white,
+                    minimum width=3.45cm,
+                    minimum height=1.22cm
+                ] at (axis cs: 0.015, 0.015) {};
+                \node[
+                    circle,
+                    draw=imagesdice,
+                    fill=imagesdice,
+                    anchor=south west,
+                    inner sep=\legendnodesep
+                ] (rwnode) at (axis cs: 0.035, 0.045) {};
+                \node[anchor=west, text depth=0] (rw) at (rwnode.east) {\legendsize{Randomized images}};
+                \node[
+                    circle,
+                    draw=weightsdice,
+                    fill=weightsdice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (rinode) at ($ (rwnode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (rinode.east) {\legendsize{Randomized weights}};
+                \node[
+                    circle,
+                    draw=sexdice,
+                    fill=sexdice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (sexnode) at ($ (rinode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (sexnode.east) {\legendsize{Sex}};
+                \node[
+                    circle,
+                    draw=dementiadice,
+                    fill=dementiadice,
+                    anchor=south,
+                    inner sep=\legendnodesep
+                ] (demnode) at ($ (sexnode.north) + (0, \legenddistance) $) {};
+                \node[anchor=west, text depth=0] at (demnode.east) {\legendsize{Dementia}};
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
 \newcommand{\dementiapredictions}{
     \newcommand{\ymin}{-0.35}
     \newcommand{\ymax}{1.05}
