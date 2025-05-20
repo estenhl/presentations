@@ -139,8 +139,8 @@
             \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
         }
         \only<5>{
-            \node[anchor=west, text depth=0] (healthy) at (3.5, 0.15) {
-                Healthy
+            \node[anchor=west, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 0.15) {
+                Healthy\\control
             };
             \node[anchor=west, text depth=0] (patient) at (3.5, -0.65) {
                 Patient
@@ -150,23 +150,49 @@
             \cnnarrow{(2.61, -0.25)}{(patient.west)}{black}
         }
         \only<6>{
-            \node[anchor=west, text depth=0, text=black!25] (healthy) at (3.5, 0.15) {
-                Healthy
+            \node[anchor=west, text=black!25, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 0.15) {
+                Healthy\\control
             };
-            \node[anchor=west, text depth=0] (patient) at (3.5, -0.65) {
+            \node[anchor=west, text depth=0, font=\small] (patient) at (3.5, -0.65) {
                 Patient
             };
 
             \cnnarrow{(2.61, -0.25)}{(healthy.west)}{black!25}
             \cnnarrow{(2.61, -0.25)}{(patient.west)}{black}
-            \node[] at (-4, -1.7) {
-                Healthy
+            \node[font=\small\linespread{0.9}\selectfont, align=center, anchor=north] at (-4, -1.45) {
+                Healthy\\control
             };
         }
         \only<4-6>{
             \pgfmathsetseed{42}
             \node[] at (0, 0) {
                 \cnn{0}{0}{0.066}{0.15}{black}{0}{0}
+            };
+        }
+
+        \only<7-8>{
+            \mriside{-4}{-0.25}{1.5cm}{0.75}{data/mri_sagittal.png}
+            \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
+            \pgfmathsetseed{43}
+            \node[] at (0, 0) {
+                \cnn{0}{0}{0.066}{0.15}{black}{0}{0}
+            };
+        }
+        \only<7>{
+            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+                Predicted\\probability\\of dementia
+            };
+            \cnnarrow{(2.61, -0.25)}{(prediction.west)}{black}
+        }
+        \only<8>{
+            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+                0.92
+            };
+            \cnnarrow{(2.61, -0.25)}{(prediction.west)}{black}
+        }
+        \only<9>{
+            \node[] at (0, 0) {
+                Combined results
             };
         }
     \end{tikzpicture}

@@ -2,12 +2,15 @@
 
 \usetheme{UiO}
 
+\usepackage{array}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 
 \usepgfplotslibrary{fillbetween}
 
-\title{Examining the brain with explainable artificial intelligence}
+\usetikzlibrary{arrows.meta}
+
+\title{Exploring the brain with explainable artificial intelligence}
 \subtitle{Characterizing diversity in patients with dementia}
 \author{Esten H. Leonardsen}
 \date{\today}
@@ -19,110 +22,105 @@
 
     \input{sections/cnn.tex}
 
-    \begin{frame}{Dementia}
-        \begin{tikzpicture}
-            \node[] at (-5.25, -3.5) {};
-            \node[] at (5.25, 3.5) {};
+    % \begin{frame}{Dementia}
+    %     \begin{tikzpicture}
+    %         \node[] at (-5.25, -3.5) {};
+    %         \node[] at (5.25, 3.5) {};
 
-            \only<1>{
-                \node[] at (0, 0) {
-                    Dementia clinical
-                };
-            }
-            \only<2>{
-                \node[] at (0, 0) {
-                    Dementia neuroimaging
-                };
-            }
-            \only<3>{
-                \node[] at (0, 0) {
-                    Dementia prevalence
-                };
-            }
-            \only<4>{
-                \node[] at (0, 0) {
-                    Dementia heterogeneity
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
+    %         \only<1>{
+    %             \node[] at (0, 0) {
+    %                 Dementia clinical
+    %             };
+    %         }
+    %         \only<2>{
+    %             \node[] at (0, 0) {
+    %                 Dementia neuroimaging
+    %             };
+    %         }
+    %         \only<3>{
+    %             \node[] at (0, 0) {
+    %                 Dementia prevalence
+    %             };
+    %         }
+    %         \only<4>{
+    %             \node[] at (0, 0) {
+    %                 Dementia heterogeneity
+    %             };
+    %         }
+    %     \end{tikzpicture}
+    % \end{frame}
 
-    \input{sections/methodology}
+    % \input{sections/methodology}
+    % \input{sections/xai.tex}
 
-    \begin{frame}{Explainable artificial intelligence}
-        \begin{tikzpicture}
-            \node[] at (-5.25, -3.5) {};
-            \node[] at (5.25, 3.5) {};
+    % \begin{frame}{Explainable AI and dementia}
+    %     \begin{tikzpicture}
+    %         \node[] at (-5.25, -3.5) {};
+    %         \node[] at (5.25, 3.5) {};
 
-            \only<1>{
-                \node[] at (0, 0) {
-                    Neural network
-                };
-            }
-            \only<2>{
-                \node[] at (0, 0) {
-                    Forward pass
-                };
-            }
-            \only<3>{
-                \node[] at (0, 0) {
-                    Explainability
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
+    %         \only<1>{
+    %             \mriside{-4}{-0.25}{1.5cm}{0.75}{data/mri_sagittal.png}
+    %             \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
+    %             \pgfmathsetseed{43}
+    %             \node[] at (0, 0) {
+    %                 \cnn{0}{0}{0.066}{0.15}{black}{0}{0}
+    %             };
+    %             \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+    %                 0.92
+    %             };
+    %             \cnnarrow{(2.61, -0.25)}{(prediction.west)}{black}
+    %         }
 
-    \begin{frame}{Explainable AI and dementia}
-        \begin{tikzpicture}
-            \node[] at (-5.25, -3.5) {};
-            \node[] at (5.25, 3.5) {};
+    %         \only<2>{
+    %             \mriside{-4}{-0.25}{1.5cm}{0.75}{data/combined_sagittal.png}
+    %             \lrparrow{($ (input.center) + (2.5, 0) $)}{(input.east)}{red}
+    %             \pgfmathsetseed{43}
+    %             \node[] at (0.16, 0) {
+    %                 \lrp{0}{0}{0.066}{0.15}
+    %             };
+    %             \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+    %                 0.92
+    %             };
+    %             \lrparrow{(prediction.west)}{(2.61, -0.25)}{red}
+    %         }
 
-            \only<1>{
-                \node[] at (0, 0) {
-                    Examples
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
+    %         \only<3>{
+    %             \node[
+    %                 minimum height=0.41\textwidth,
+    %                 minimum width=0.32\textwidth,
+    %                 fill=black,
+    %                 anchor=west
+    %             ] (box1) at (-5.25, 0) {};
+    %             \node[anchor=south] at (box1.south) {
+    %                 \includegraphics[width=0.31\textwidth]{data/subject1.png}
+    %             };
+    %             \node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
 
-    \begin{frame}{Explainable AI: Caveats}
-        \begin{tikzpicture}
-            \node[] at (-5.25, -3.5) {};
-            \node[] at (5.25, 3.5) {};
+    %             \node
+    %                 [minimum height=0.41\textwidth,
+    %                 minimum width=0.32\textwidth,
+    %                 fill=black,
+    %                 anchor=west
+    %             ] (box2) at ($ (box1.east) + (0.05,0) $) {};
+    %             \node[anchor=south] at (box2.south) {
+    %                 \includegraphics[width=0.31\textwidth]{data/subject2.png}
+    %             };
+    %             \node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Partient 2};
 
-            \only<1>{
-                \node[] at (0, 0) {
-                    Prediction
-                };
-            }
-            \only<2>{
-                \node[] at (0, 0) {
-                    Edge detector
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
+    %             \node
+    %                 [minimum height=0.41\textwidth,
+    %                 minimum width=0.32\textwidth,
+    %                 fill=black,
+    %                 anchor=west
+    %             ] (box3) at ($ (box2.east) + (0.05,0) $) {};
+    %             \node[anchor=south] at (box3.south) {
+    %                 \includegraphics[width=0.31\textwidth]{data/subject3.png}
+    %             };
+    %             \node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+    %         }
+    %     \end{tikzpicture}
+    % \end{frame}
 
-    \begin{frame}{Explainable AI and dementia}
-        \begin{tikzpicture}
-            \node[] at (-5.25, -3.5) {};
-            \node[] at (5.25, 3.5) {};
-
-            \only<1>{
-                \node[] at (0, 0) {
-                    Dementia average
-                };
-            }
-            \only<2>{
-                \node[] at (0, 0) {
-                    ALE average
-                };
-            }
-            \only<3>{
-                \node[] at (0, 0) {
-                    Overlaps
-                };
-            }
-        \end{tikzpicture}
-    \end{frame}
+    % \input{sections/sanity.tex}
+    \input{sections/results.tex}
 \end{document}
