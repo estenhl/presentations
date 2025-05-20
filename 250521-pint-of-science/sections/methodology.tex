@@ -44,7 +44,7 @@
     \begin{tikzpicture}
         \begin{axis}[
             width=0.6\textwidth,
-            height=0.6\textwidth,
+            height=0.8\textwidth,
             xmin=46,
             xmax=99,
             ymin=-1.6,
@@ -103,8 +103,70 @@
 
             \node[anchor=south west, font=\legendfont] at (axis cs: 43, 0.02) {\textbf{FEMALE}};
             \node[anchor=north west, font=\legendfont] at (axis cs: 43, -0.02) {\textbf{MALE}};
-            \node[anchor=south, font=\legendfont, align=center] (n) at (axis cs: 76, -1.4) {\textbf{n=1708}};
+            \node[anchor=south, font=\legendfont, align=center] (n) at (axis cs: 76, -1.2) {\textbf{n=1708}};
         \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\dementiapredictions}{
+
+    \newcommand{\ymin}{-0.35}
+    \newcommand{\ymax}{1.05}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            name=distributions,
+            height=0.6\textwidth,
+            width=9.58cm,
+            xtick pos=bottom,
+            ymajorticks=false,
+            xmajorticks=false,
+            xmin=0,
+            xmax=1,
+            ymin=\ymin,
+            ymax=\ymax,
+            axis line style={draw=none}
+        ]
+            \addplot[
+                name path=controls,
+                draw=controls-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=prediction,
+                y=controls
+            ]{data/test_distributions.csv};
+
+            \addplot[
+                name path=cases,
+                draw=cases-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=prediction,
+                y=cases
+            ]{data/test_distributions.csv};
+            \addplot[name path=zero, draw=black] coordinates {(0,0) (1,0)};
+            \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and controls];
+            \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and cases];
+            \addplot[
+                scatter/classes={
+                    control={controls-default, draw=black, opacity=0.5},
+                    case={cases-default, draw=black, opacity=0.5}
+                },
+                scatter,
+                mark=*,
+                only marks,
+                point meta=explicit symbolic
+            ] table [
+                col sep=comma,
+                y expr=\thisrow{y} * -0.15 - 0.1,
+                meta=class,
+            ] {data/test_predictions.csv};
+        \end{axis}
+
+        \node[anchor=south west] at ($ (distributions.south east) + (0,0.63) $) {\footnotesize{Controls}};
+        \node[anchor=south west] at ($ (distributions.south east) + (0,0.12) $) {\footnotesize{Patients}};
     \end{tikzpicture}
 }
 
@@ -114,17 +176,17 @@
         \node[draw=black] at (5.25, 3.5) {};
 
         \only<1>{
-            \node[] at (-3, 0) {
+            \node[] at (-2.8, 0) {
                 \mris{0}
             };
         }
         \only<2-3>{
-            \node[] at (-3, 0) {
+            \node[] at (-2.8, 0) {
                 \mris{1}
             };
         }
         \only<2>{
-            \node[] at (2.5, 0) {
+            \node[] at (2.5, -0.15) {
                 \dataset
             };
         }
@@ -135,64 +197,77 @@
             };
         }
         \only<5-6>{
-            \mriside{-4}{-0.25}{1.5cm}{0.75}{data/sagittal/0.png}
+            \mriside{-4}{1.45}{1.5cm}{0.75}{data/sagittal/0.png}
             \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
         }
         \only<5>{
-            \node[anchor=west, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 0.15) {
+            \node[anchor=west, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 1.85) {
                 Healthy\\control
             };
-            \node[anchor=west, text depth=0] (patient) at (3.5, -0.65) {
+            \node[anchor=west, text depth=0] (patient) at (3.5, 1.05) {
                 Patient
             };
 
-            \cnnarrow{(2.61, -0.25)}{(healthy.west)}{black}
-            \cnnarrow{(2.61, -0.25)}{(patient.west)}{black}
+            \cnnarrow{(2.61, 1.45)}{(healthy.west)}{black}
+            \cnnarrow{(2.61, 1.45)}{(patient.west)}{black}
         }
         \only<6>{
-            \node[anchor=west, text=black!25, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 0.15) {
+            \node[anchor=west, text=black!25, font=\small\linespread{0.9}\selectfont, text width=2cm] (healthy) at (3.5, 1.85) {
                 Healthy\\control
             };
-            \node[anchor=west, text depth=0, font=\small] (patient) at (3.5, -0.65) {
+            \node[anchor=west, text depth=0, font=\small] (patient) at (3.5, 1.05) {
                 Patient
             };
 
-            \cnnarrow{(2.61, -0.25)}{(healthy.west)}{black!25}
-            \cnnarrow{(2.61, -0.25)}{(patient.west)}{black}
-            \node[font=\small\linespread{0.9}\selectfont, align=center, anchor=north] at (-4, -1.45) {
+            \cnnarrow{(2.61, 1.45)}{(healthy.west)}{black!25}
+            \cnnarrow{(2.61, 1.45)}{(patient.west)}{black}
+            \node[font=\small\linespread{0.9}\selectfont, align=center, anchor=north] at (-4, 0.25) {
                 Healthy\\control
             };
         }
         \only<4-6>{
             \pgfmathsetseed{42}
-            \node[] at (0, 0) {
+            \node[] at (0, 1.7) {
                 \cnn{0}{0}{0.066}{0.15}{black}{0}{0}
             };
         }
 
-        \only<7-8>{
-            \mriside{-4}{-0.25}{1.5cm}{0.75}{data/mri_sagittal.png}
+        \only<7-9>{
+            \mriside{-4}{1.45}{1.5cm}{0.75}{data/mri_sagittal.png}
             \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
             \pgfmathsetseed{43}
-            \node[] at (0, 0) {
+            \node[] at (0, 1.7) {
                 \cnn{0}{0}{0.066}{0.15}{black}{0}{0}
             };
         }
         \only<7>{
-            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, 1.45) {
                 Predicted\\probability\\of dementia
             };
-            \cnnarrow{(2.61, -0.25)}{(prediction.west)}{black}
+            \cnnarrow{(2.61, 1.45)}{(prediction.west)}{black}
         }
-        \only<8>{
-            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, -0.25) {
+        \only<8-10>{
+            \node[minimum width=8cm, left color=controls-default, right color=cases-default, text=white, draw=black, font=\small\bfseries\selectfont, inner sep=2pt] at (0, -2.75) {Predicted probability of dementia};
+            \node[anchor=north] at (-4, -3.02) {0};
+            \node[anchor=north] at (0, -3.02) {0.5};
+            \node[anchor=north] at (4, -3.02) {1};
+        }
+        \only<8-9>{
+            \node[anchor=west, text width=3cm, font=\small\linespread{0.9}\selectfont] (prediction) at (3.3, 1.45) {
                 0.92
             };
-            \cnnarrow{(2.61, -0.25)}{(prediction.west)}{black}
+            \cnnarrow{(2.61, 1.45)}{(prediction.west)}{black}
+            \draw[very thick] (3.36, -3.12) -- (3.36, -2.38);
         }
         \only<9>{
-            \node[] at (0, 0) {
-                Combined results
+            \node[font=\small] at (-4, 0.1) {
+                Patient
+            };
+            \node[circle, fill=cases-default, draw=black, minimum size=0.14cm, inner sep=0pt, opacity=0.75] at (3.36, -2.2) {};
+        }
+        \only<10>{
+            \node[anchor=south] at (0.576, -2.65) {
+                \dementiapredictions
             };
         }
     \end{tikzpicture}
