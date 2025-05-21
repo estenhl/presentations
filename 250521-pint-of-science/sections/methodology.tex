@@ -169,8 +169,8 @@
 
 \begin{frame}{Methodology}
     \begin{tikzpicture}
-        \node[] at (-5.25, -3.5) {};
-        \node[] at (5.25, 3.5) {};
+        \node[draw=black] at (-5.25, -3.5) {};
+        \node[draw=black] at (5.25, 3.5) {};
 
         \only<1>{
             \node[] at (-2.8, 0) {
@@ -189,9 +189,18 @@
         }
 
         \only<3>{
-            \node[align=center, draw=black, fill=gray!50, minimum height=2.2cm, minimum width=3.7cm] at (2.5, 0) {
+            \node[draw=black, fill=gray, minimum height=2.2cm, minimum width=3.7cm] (model) at (3.2, 0) {};
+            \node[minimum height=2.2cm, minimum width=3.7cm, opacity=0.15] at (3.2, 0) {
+                \includegraphics[height=2cm]{data/gears.png}
+            };
+            \node[align=center, minimum height=2.2cm, minimum width=3.7cm, font=\normalfont\linespread{0.9}\bfseries\selectfont, text=white] at (3.2, 0) {
                 Machine learning\\model
             };
+
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=4pt] (-0.5, 1.65) to [out=0, in=180] ($ (model.west) + (0, 0.22) $);
+                \draw[-stealth, line width=4pt] (-0.495, -1.595) to [out=0, in=180] ($ (model.west) - (0, 0.22) $);
+            \end{scope}
         }
         \only<5-6>{
             \mriside{-4}{1.45}{1.5cm}{0.75}{data/sagittal/0.png}
