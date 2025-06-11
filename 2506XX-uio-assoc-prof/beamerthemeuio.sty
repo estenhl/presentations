@@ -1,0 +1,155 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{UiO}[2024/09/15 PSY9511 Beamer Style]
+
+\usetheme{metropolis}
+
+\RequirePackage[export]{adjustbox}
+\RequirePackage{array}
+\RequirePackage{hyperref}
+\RequirePackage{listings}
+\RequirePackage{tikz}
+\RequirePackage{transparent}
+
+\hypersetup{
+    linkcolor=white
+}
+
+\usetikzlibrary{calc}
+
+\definecolor{uiored}{HTML}{DD0000}
+\definecolor{uiolightred}{HTML}{FB6666}
+\definecolor{uioredtone}{HTML}{FEE0E0}
+\definecolor{uioblue}{HTML}{3E31D6}
+\definecolor{uiolightblue}{HTML}{86A4F7}
+\definecolor{uioblueone}{HTML}{E6ECFF}
+\definecolor{uiogreen}{HTML}{2EC483}
+\definecolor{uiolightgreen}{HTML}{6CE1AB}
+\definecolor{uiogreentone}{HTML}{CEFFDF}
+\definecolor{uioorange}{HTML}{FEA11B}
+\definecolor{uiolightorange}{HTML}{FDCB87}
+\definecolor{uioorangetone}{HTML}{FFE8D4}
+\definecolor{uioyellow}{HTML}{FFFEA7}
+\definecolor{uiogray}{HTML}{B2B3B7}
+
+\colorlet{mainbackground}{uiored}
+
+\setbeamercolor{frametitle}{bg=mainbackground, fg=white}
+\setbeamercolor{title separator}{fg=mainbackground}
+\setbeamercolor{progress bar in section page}{fg=white, bg=uiogray}
+
+\def\logowidth{4cm}
+
+\makeatletter
+\setbeamertemplate{section page}
+{
+  \begingroup
+
+    \vspace{4.3cm}
+    {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
+    {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
+
+    \vspace*{2.8cm}
+    \begin{center}
+        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
+    \end{center}
+
+  \endgroup
+}
+\makeatother
+
+\AtBeginSection{
+  {
+    \setbeamercolor{background canvas}{bg=uiored}
+    \setbeamercolor{section title}{fg=white}
+    \frame[plain,c,noframenumbering]{\sectionpage}
+    \setbeamercolor{background canvas}{bg=black!2}
+  }
+}
+
+\newcounter{finalframenumber}
+\setcounter{finalframenumber}{\inserttotalframenumber}
+\addtocounter{finalframenumber}{+1}
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.55cm]current page.south east); % Draw filled rectangle
+
+            % Logo
+            \node[anchor=west, yshift=0.275cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
+
+            % Title and subtitle
+            \node[align=center, yshift=0.275cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.03cm]\textcolor{white}{\insertsubtitle}};
+
+            % Page number
+            \node[anchor=east, yshift=0.275cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
+        \end{tikzpicture}
+    \fi
+}
+
+\defbeamertemplate*{title page}{customized}[1][]
+{
+    \begin{columns}
+        \begin{column}{\paperwidth}
+            \vspace{0.125cm}
+            \begin{tikzpicture}
+                \node[anchor=south west, draw=black] (upper left) at (-6.4, 4.52825) {};
+                \node[anchor=north east, draw=black] (lower right) at (6.4, -4.52825) {};
+                \fill[uiored] (upper left.north west) rectangle (lower right.south east);
+                \node[text width=7.8cm, anchor=north west, text=white, align=flush left] (title) at (-5.6, 3.8) {\usebeamerfont{title}\inserttitle};
+                \node[text width=7.8cm, anchor=north west, text=white, align=flush left] (subtitle) at ($ (title.south west) + (0, 0) $) {\usebeamerfont{subtitle}\insertsubtitle};
+                \node[anchor=north east, inner sep=0pt] at (6.3, 4.7) {
+                    \scalebox{-1}[1]{\includegraphics[height=9.3cm]{data/brain.png}}
+                };
+
+                \node[anchor=south west] (selfie) at (-5.6, -3) {
+                    \includegraphics[height=2cm]{data/esten1.jpg}
+                };
+                \node[anchor=west, align=flush left, text width=5.5cm, text=white, font=\scriptsize\linespread{0.9}\selectfont] at (selfie.east) {
+                    \textbf{Esten H. Leonardsen}\\[0.1cm]
+                    Postdoctoral research fellow, Department of Psychology, University of Oslo\\[0.1cm]
+                    Chief Scientific Officer, baba.vision
+                };
+                \node[anchor=south] at (0, -4.8) {
+                    \includegraphics[height=1cm]{data/uio_logo_full_white_no.png}
+                };
+
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+}
+
+
+\setbeamertemplate{endpage}{%
+    \begin{frame}[plain]
+        \begin{columns}
+            \begin{column}{\paperwidth}
+                \vspace{0.125cm}
+                \begin{tikzpicture}
+                    \node[anchor=south west, draw=black] (upper left) at (-6.4, 4.52825) {};
+                    \node[anchor=north east, draw=black] (lower right) at (6.4, -4.52825) {};
+                    \fill[uiored] (upper left.north west) rectangle (lower right.south east);
+
+                    \node[anchor=north east, inner sep=0pt] at (6.3, 4.7) {
+                        \scalebox{-1}[1]{\includegraphics[height=9.3cm]{data/brain.png}}
+                    };
+
+                    \node[anchor=south] at (0, -4.8) {
+                        \includegraphics[height=1cm]{data/uio_logo_full_white_no.png}
+                    };
+                    \node[anchor=south west, font=\Large\selectfont, text=white] at (-6, 0) {
+                        Thank you for your attention!
+                    };
+                    \node[anchor=north west, text=white] at (-6, 0) {
+                        estenhl@uio.no
+                    };
+
+                \end{tikzpicture}
+            \end{column}
+        \end{columns}
+    \end{frame}
+}
+
+\AtEndDocument{\usebeamertemplate{endpage}}
