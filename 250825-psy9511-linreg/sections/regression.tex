@@ -1248,15 +1248,20 @@
                 \end{cases}$
             };
         }
-        \only<13-14>{
+        \only<13-15>{
             \node[] at (0, 0.5) {
                 \combinationplot{2}
             };
         }
-        \only<14>{
+        \only<14-15>{
             \node[align=center] at (0, -3.1) {
                 $\widehat{mpg}=\beta_0+\beta_1\times\text{chevrolet}+\beta_2\times\text{horsepower}$\\
                 $+\beta_3\times\text{chevrolet}\times\text{horsepower}$
+            };
+        }
+        \only<15>{
+            \node[rotate=45, draw=black, fill=white] at (0.5, 1) {
+                \textbf{\Huge{Blackboard!}}
             };
         }
     \end{tikzpicture}
@@ -1286,19 +1291,6 @@
             \ifnum#1>1
                 \addplot[
                     only marks,
-                ] coordinates {
-                    (105, 23.5)
-                };
-                \draw[|-|, dashed] (axis cs: 105, 17.5) -- (axis cs: 105, 29.5);
-                \node[anchor=south, align=center, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 105, 29.5) {
-                    Prediction\\
-                    interval
-                };
-            \fi
-
-            \ifnum#1>2
-                \addplot[
-                    only marks,
                     opacity=0.2
                 ] coordinates {
                     (140, 22)
@@ -1311,6 +1303,19 @@
                 \draw[|-|, densely dotted, red, thick] (axis cs: 140, 16) -- (axis cs: 140, 20);
                 \node[anchor=south, align=center, red, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 140, 23) {
                     Confidence\\
+                    interval
+                };
+            \fi
+
+            \ifnum#1>2
+                \addplot[
+                    only marks,
+                ] coordinates {
+                    (105, 23.5)
+                };
+                \draw[|-|, dashed] (axis cs: 105, 17.5) -- (axis cs: 105, 29.5);
+                \node[anchor=south, align=center, font=\scriptsize\linespread{0.8}\selectfont] at (axis cs: 105, 29.5) {
+                    Prediction\\
                     interval
                 };
             \fi
