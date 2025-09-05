@@ -1,0 +1,42 @@
+\frametitle{Shrinkage: Feature standardization}
+\vfill
+        \centering
+        \begin{tikzpicture}
+            \node[] at (0, 0) {\underline{\textbf{z-score standardization}}};
+
+            \node[] at (0, -0.7) {
+                $\mathbf{x} = \frac{\mathbf{x} - \mu_x}{\sigma_x^2}$
+            };
+
+            \node[
+                minimum width=\codewidth,
+                text width=\codewidth,
+                align=left,
+                inner sep=0pt,
+                outer sep=0pt,
+                draw=black,
+                label={[blue,
+                        anchor=north east,
+                        font=\ttfamily\fontsize{5}{6}\selectfont,
+                        inner sep=0pt,
+                        outer sep=0pt,
+                        xshift=-3pt,
+                        yshift=-3pt
+                       ]north west:In{[}1{]}:},
+            ] (pythoncode) at (0, -3) {
+                \begin{lstlisting}[style=PythonStyle, linewidth=\codewidth]
+for col in predictors:
+    print(f'{col}: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+
+# z-score standardization
+for col in predictors:
+    df[col] = (df[col] - np.mean(df[col])) / np.std(df[col])
+
+for col in predictors:
+    print(f'{col} after: {np.mean(df[col]):.2f} ({np.std(df[col]):.2f})')
+                \end{lstlisting}
+            };
+            \node[] at (4.5, -7.5) {};
+            \node[] at (-5, 0.5) {};
+        \end{tikzpicture}
+        \vfill
