@@ -52,7 +52,7 @@
             }
         \end{tikzpicture}
     }
-    \only<5-6>{
+    \only<6-7>{
         \begin{enumerate}
             \item Variable selection
             \begin{enumerate}
@@ -62,8 +62,8 @@
             \end{enumerate}
             \item Shrinkage
             \begin{enumerate}
-                \alert<6>{\item[a.] LASSO}
-                \alert<6>{\item[b.] Ridge regression}
+                \alert<7>{\item[a.] LASSO}
+                \alert<7>{\item[b.] Ridge regression}
             \end{enumerate}
             \item Dimensionality reduction: Lecture 6 and self-study
         \end{enumerate}
@@ -115,30 +115,32 @@
     \end{tikzpicture}
 }
 
-\begin{frame}{Variable selection}
+\begin{frame}{Variable selection: Motivation}
     \begin{tikzpicture}
         \node[] at (-5.25, -3) {};
         \node[] at (5.25, 3) {};
 
-        \only<1-4>{
-            \node[align=flush left, anchor=north west, text width=10cm] (insight) at (-5.2, 3) {
-                \textbf{Insight}\\
-                The number of predictors we are using in our linear model directly impacts its complexity.
+        \only<1-3>{
+            \node[align=flush left, anchor=north west, text width=10.5cm] (insight) at (-5.2, 3) {
+                The number of predictors we are using in our linear model directly impacts its complexity, allowing us to balance the bias-variance trade off by varying the number of predictors.
             };
         }
-        \only<2-4>{
+        \only<2-3>{
             \node[align=flush left, anchor=north west, text width=10cm] (motivation) at ($ (insight.south west) + (0, 0) $) {
-                \textbf{Motivation}\\
-                To reduce model complexity (and therefore risk of overfitting), \alert<3>{avoid problems due to collinearity}, and simplify subsequent interpretations we want to reduce the number of predictors.
+                Fewer predictors also mean that
+                \begin{itemize}
+                    \alert<3>{\item We avoid problems due to collinearity.}
+                    \item There are less coefficients to be interpreted.
+                \end{itemize}
             };
         }
-        \only<4>{
-            \node[align=flush left, anchor=north west, text width=10cm] at ($ (motivation.south west) + (0, 0) $) {
+        \only<4-5>{
+            \node[align=flush left, text width=10.5cm] at (0, 0) {
                 \textbf{Formal problem specification}\\
-                We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.
+                We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields \alert<5>{the best (linear) model} for predicting $y$.
             };
         }
-        \only<5>{
+        \only<6>{
             \node[] at (0, 0) {
                 \usebox{\predictors}
             };
@@ -194,12 +196,10 @@ MSE: 29.68, predictors: ('cylinders', 'displacement', 'horsepower', 'weight', 'y
         \end{tikzpicture}
     }
     \only<4>{
-        %\vspace{0.25cm}
 
         \textcolor{green}{+} \textbf{Positives}\\
         \textbullet{ }Guaranteed to find the optimal solution.\\
         \textbullet{ }Simple implementation\\
-        %\vspace{0.25cm}
 
         \textcolor{red}{-} \textbf{Drawbacks}\\
         \textbullet{ }Need to train many ($2^{|P|}$) models.
@@ -242,7 +242,7 @@ MSE: 29.68, predictors: ('cylinders', 'displacement', 'horsepower', 'weight', 'y
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
         \vspace{0.25cm}
         \textbf{Solution}\\
-        Start with no predictors. Iteratively add the predictor that yields the \alert<2>{best model} until all are included.\\
+        Start by fitting a model with no predictors. Iteratively add the predictor that yields the \alert<2>{best model} until all are included.\\
 
         \only<13>{
             \vspace{0.25cm}
@@ -753,7 +753,7 @@ while len(chosen_predictors) < len(predictors):^^J
         We have a set of predictors $P=\{x_0, x_1, ...\}$ and a target variable $y$, and we want to find the subset $p \subseteq P$ that yields the best (linear) model for predicting $y$.\\
         \vspace{0.25cm}
         \textbf{Solution}\\
-        Start with \alert<2>{all} predictors. Iteratively \alert<2>{remove} the predictor that yields the best model until all you have none left.\\
+        Start by fitting a model with \alert<2>{all} predictors. Iteratively \alert<2>{remove} the predictor that yields the best model until all you have none left.\\
         \vspace{0.25cm}
         \textcolor{green}{+} \textbf{Positives}\\
         \textbullet{ }Need to train fewer models.\\
