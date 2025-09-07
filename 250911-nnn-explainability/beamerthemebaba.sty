@@ -1,0 +1,136 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Baba}[2024/01/23 baba.vision theme]
+
+\usetheme{metropolis}
+
+\RequirePackage[export]{adjustbox}
+\RequirePackage{array}
+\RequirePackage{hyperref}
+\RequirePackage{listings}
+\RequirePackage{ragged2e}
+\RequirePackage{tikz}
+\RequirePackage{transparent}
+
+\usetikzlibrary{calc}
+
+\hypersetup{
+    linkcolor=white
+}
+
+\definecolor{babagreen}{HTML}{40ffce}
+\definecolor{babalightblue}{HTML}{228ec9}
+\definecolor{babadarkblue}{HTML}{09284a}
+
+\colorlet{mainbackground}{babadarkblue}
+
+\setbeamercolor{frametitle}{bg=babadarkblue, fg=white}
+\setbeamercolor{progress bar in section page}{fg=babadarkblue, bg=black!2}
+
+\def\logowidth{4cm}
+
+\makeatletter
+\setbeamertemplate{section page}
+{
+    \begingroup
+    \begin{columns}
+        \begin{column}{\paperwidth}
+            \begin{tikzpicture}
+                \node[] (upper left) at (-6.264, 4.82) {};
+                \node[] (lower right) at (6.264, -4.82) {};
+                \node[text width=10.7cm, align=flush left, anchor=south west] at (-5.764, -0.5) {
+                    \usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead
+                };
+                \draw[babadarkblue] (-5.764, -0.5) -- (5.764, -0.5);
+
+                \node[anchor=south] at (0, -4.82) {
+                   \includegraphics[height=0.6cm]{data/babatext.png}
+                };
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    \endgroup
+}
+\makeatother
+
+\AtBeginSection{
+  {
+    \setbeamercolor{section title}{fg=babadarkblue}
+    \frame[plain,c,noframenumbering]{\sectionpage}
+  }
+}
+
+\newcounter{finalframenumber}
+\setcounter{finalframenumber}{\inserttotalframenumber}
+\addtocounter{finalframenumber}{+1}
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.55cm]current page.south east);
+
+            \node[yshift=0.275cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}};
+        \end{tikzpicture}
+    \fi
+}
+
+\defbeamertemplate*{title page}{customized}[1][]
+{
+    \begin{columns}
+        \begin{column}{\paperwidth}
+            \begin{tikzpicture}
+                \node[] (upper left) at (-6.264, 4.82) {};
+                \node[] (lower right) at (6.264, -4.82) {};
+
+                \node[anchor=north west, inner sep=0pt] at (-6.264, 4.7) {
+                    {\transparent{0.5}{\includegraphics[height=9.4cm]{data/brain.png}}}
+                };
+
+                \node[text width=7.8cm, anchor=north west, text=babadarkblue, align=flush left, inner sep=0pt] (title) at (-1.5, 3) {
+                    \usebeamerfont{title}\inserttitle\\
+                    \usebeamerfont{subtitle}\insertsubtitle
+                };
+                \node[anchor=south west, inner sep=0pt, draw=black] (selfie) at (-1.5, -2.9) {
+                    \includegraphics[height=2cm]{data/esten1.jpg}
+                };
+                \node[anchor=west, align=flush left, text width=5cm, text=babadarkblue, font=\scriptsize\linespread{0.9}\selectfont] at (selfie.east) {
+                    \textbf{Esten H. Leonardsen}\\[0.15cm]
+                    Chief Scientific Officer, baba.vision\\[0.15cm]
+                    Post-doc at the Department of Psychology, Universitet i Oslo
+                };
+                \node[anchor=south] at (0, -4.82) {
+                   \includegraphics[height=0.6cm]{data/babatext.png}
+                };
+
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+}
+
+
+\setbeamertemplate{endpage}{%
+    \begin{frame}[plain]
+        \begin{columns}
+            \begin{column}{\paperwidth}
+                \begin{tikzpicture}
+                    \node[] (upper left) at (-6.264, 4.82) {};
+                    \node[] (lower right) at (6.264, -4.82) {};
+
+                    \node[anchor=north west, inner sep=0pt] at (-6.264, 4.7) {
+                        {\transparent{0.5}{\includegraphics[height=9.4cm]{data/brain.png}}}
+                    };
+                    \node[text width=7.8cm, anchor=north west, text=babadarkblue, align=flush left, inner sep=0pt, align=left] (thank) at (-1.5, 0) {
+                        \textbf{Thank you for your attention!}\\
+                        \small{esten@baba-vision.com}
+                    };
+                    \node[anchor=south] at (0, -4.82) {
+                        \includegraphics[height=0.6cm]{data/babatext.png}
+                     };
+                \end{tikzpicture}
+            \end{column}
+        \end{columns}
+    \end{frame}
+}
+
+\AtEndDocument{\usebeamertemplate{endpage}}
