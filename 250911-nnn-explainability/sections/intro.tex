@@ -75,7 +75,7 @@
 
     \def\hsep{0.7}
     \def\vsep{0.5}
-    \def\edgecolor{gray}
+    \def\edgecolour{gray}
     \def\edgeopacity{0.5}
     \def\neuroncolour{gray}
 
@@ -88,12 +88,23 @@
             draw=black,
             fill=babalightblue!50,
             minimum height=2.8cm,
-            minimum width=4.3cm
-        ] (model) at (0, 1) {};
-        \node[
-            anchor=south,
-            font=\small
-        ] at (model.north) {Artificial neural network};
+            minimum width=4.3cm,
+            label=above:\small{Artificial neural network}
+        ] (model) at (0, 2) {};
+
+        \node[anchor=east] (input) at ($ (model.west) - (0.75, 0) $) {
+            \only<1-4>{Input}
+            \only<5>{4}
+            \only<6->{\includegraphics[width=2cm]{data/ladybug.png}}
+        };
+        \node[anchor=west, align=left] (output) at ($ (model.east) + (0.75, 0) $) {
+            \only<1-4>{Output}
+            \only<5>{13.5}
+            \only<6->{Ladybug}
+        };
+
+        \draw[-stealth, line width=2pt] (input) -- (model.west);
+        \draw[-stealth, line width=2pt] (model.east) -- (output);
 
         \neuron{n00}{\neuroncolour}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
         \neuron{n01}{\neuroncolour}{($ (model) + (-2 * \hsep, -\vsep) $)}
@@ -115,12 +126,76 @@
 
         \neuron{n40}{\neuroncolour}{($ (model) + (2 * \hsep, 0) $)}
 
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n00);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n01);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n02);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n03);
-        \draw[-stealth, \edgecolor, opacity=\edgeopacity] (model.west) -- (n04);
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n00);
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n01);
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n02);
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n03);
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n04);
 
+        \foreach \j in {0,...,4} {
+            \foreach \k in {0,...,3} {
+                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n0\j) -- (n1\k);
+            }
+        }
+        \foreach \j in {0,...,3} {
+            \foreach \k in {0,...,2} {
+                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n1\j) -- (n2\k);
+            }
+        }
+        \foreach \j in {0,...,2} {
+            \foreach \k in {0,...,1} {
+                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n2\j) -- (n3\k);
+            }
+        }
+        \foreach \j in {0,...,1} {
+            \foreach \k in {0,...,0} {
+                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n3\j) -- (n4\k);
+            }
+        }
 
+        \only<2->{
+            \node[circle, fill=\neuroncolour, minimum size=0.6cm] (an) at ($ (model.south) - (0, 1.65) $) {};
+            \node[align=center, font=\small\linespread{0.9}\selectfont] at ($ (an) + (0, 0.8) $) {Artificial\\neuron};
+
+            \node[
+                anchor=east,
+                alt=<9>{text=red}{}
+            ] (x1) at ($ (an) - (1.25, -0.5) $) {
+                \only<2>{$x_1$}
+                \only<3->{5}
+            };
+            \node[anchor=east] (x2) at ($ (an) - (1.25, 0) $) {
+                \only<2>{$x_2$}
+                \only<3->{1}
+            };
+            \node[anchor=east] (x3) at ($ (an) - (1.25, 0.5) $) {
+                \only<2>{$x_3$}
+                \only<3->{8}
+            };
+            \node[anchor=west] (y) at ($ (an) + (1.25, 0) $) {
+                \only<2>{$y$}
+                \only<3->{11}
+            };
+
+            \draw[-stealth] (x1) -- (an);
+            \draw[-stealth] (x2) -- (an);
+            \draw[-stealth] (x3) -- (an);
+            \draw[-stealth] (an) -- (y);
+        }
+
+        \only<4,7-9>{
+            \node[font=\footnotesize] (equation) at ($ (an.south) - (0, 0.75) $) {max(0, 5*1+1*4+8*0.25)=11};
+        }
+        \only<8-9>{
+            \node[font=\scriptsize, inner sep=1pt, text=red] (term1) at ($ (equation.south) - (0.52, 0.2) $) {5};
+            \node[font=\scriptsize, inner sep=1pt, text=red] (term2) at ($ (equation.south) - (-0.03, 0.2) $) {4};
+            \node[font=\scriptsize, inner sep=1pt, text=red] (term3) at ($ (equation.south) - (-0.85, 0.2) $) {2};
+
+            \draw[-stealth, red] (term1) -- ($ (term1.north) + (0, 0.2) $);
+            \draw[-stealth, red] (term2) --($ (term2.north) + (0, 0.2) $);
+            \draw[-stealth, red] (term3) --($ (term3.north) + (0, 0.2) $);
+        }
+
+        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n40) -- (model.east);
     \end{tikzpicture}
 \end{frame}
