@@ -45,7 +45,7 @@
                 \includegraphics[width=10cm]{data/mckinsey.png}
             };
             \node[anchor=south, font=\tiny, text width=10.5cm, align=flush center] at (0, -3.75) {
-                McKinsey \& Company, The state of AI: How organizations are rewiring to capture value, \textit{\url{https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai}} (2025)
+                McKinsey \& Company, \textit{The state of AI: How organizations are rewiring to capture value} (2025), \url{https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai}
             };
         }
         \only<2>{
@@ -69,8 +69,12 @@
 \end{frame}
 
 \begin{frame}{What is explainable AI?}
-    \newcommand{\neuron}[3]{
-        \node[circle, draw=black, fill=####2] (####1) at ####3 {};
+    \newcommand{\neuron}[5]{
+        \node[
+            circle,
+            draw=black,
+            alt=<####2>{fill=####3}{fill=####4}
+        ] (####1) at ####5 {};
     }
 
     \def\hsep{0.7}
@@ -95,7 +99,8 @@
         \node[anchor=east] (input) at ($ (model.west) - (0.75, 0) $) {
             \only<1-4>{Input}
             \only<5>{4}
-            \only<6->{\includegraphics[width=2cm]{data/ladybug.png}}
+            \only<6-9>{\includegraphics[width=2cm]{data/ladybug.png}}
+            \only<10>{\includegraphics[width=2cm]{data/ladybug_explanation.png}}
         };
         \node[anchor=west, align=left] (output) at ($ (model.east) + (0.75, 0) $) {
             \only<1-4>{Output}
@@ -103,90 +108,106 @@
             \only<6->{Ladybug}
         };
 
-        \draw[-stealth, line width=2pt] (input) -- (model.west);
-        \draw[-stealth, line width=2pt] (model.east) -- (output);
+        \draw[alt=<10>{stealth-, red}{-stealth}, line width=2pt] (input) -- (model.west);
+        \draw[alt=<10>{stealth-, red}{-stealth}, line width=2pt] (model.east) -- (output);
 
-        \neuron{n00}{\neuroncolour}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
-        \neuron{n01}{\neuroncolour}{($ (model) + (-2 * \hsep, -\vsep) $)}
-        \neuron{n02}{\neuroncolour}{($ (model) + (-2 * \hsep, 0) $)}
-        \neuron{n03}{\neuroncolour}{($ (model) + (-2 * \hsep, \vsep) $)}
-        \neuron{n04}{\neuroncolour}{($ (model) + (-2 * \hsep, 2 * \vsep) $)}
+        \neuron{n00}{10}{red!25!black}{\neuroncolour}{($ (model) + (-2 * \hsep, -2 * \vsep) $)}
+        \neuron{n01}{10}{red!90!black}{\neuroncolour}{($ (model) + (-2 * \hsep, -\vsep) $)}
+        \neuron{n02}{10}{yellow!15!red}{\neuroncolour}{($ (model) + (-2 * \hsep, 0) $)}
+        \neuron{n03}{10}{red!99!black}{\neuroncolour}{($ (model) + (-2 * \hsep, \vsep) $)}
+        \neuron{n04}{10}{red!10!black}{\neuroncolour}{($ (model) + (-2 * \hsep, 2 * \vsep) $)}
 
-        \neuron{n10}{\neuroncolour}{($ (model) + (-\hsep, -1.5 * \vsep) $)}
-        \neuron{n11}{\neuroncolour}{($ (model) + (-\hsep, -0.5 * \vsep) $)}
-        \neuron{n12}{\neuroncolour}{($ (model) + (-\hsep, 0.5 * \vsep) $)}
-        \neuron{n13}{\neuroncolour}{($ (model) + (-\hsep, 1.5 * \vsep) $)}
+        \neuron{n10}{10}{red!55!black}{\neuroncolour}{($ (model) + (-\hsep, -1.5 * \vsep) $)}
+        \neuron{n11}{10}{yellow!20!red}{\neuroncolour}{($ (model) + (-\hsep, -0.5 * \vsep) $)}
+        \neuron{n12}{10}{yellow!90!red}{\neuroncolour}{($ (model) + (-\hsep, 0.5 * \vsep) $)}
+        \neuron{n13}{10}{red!7!black}{\neuroncolour}{($ (model) + (-\hsep, 1.5 * \vsep) $)}
 
-        \neuron{n20}{\neuroncolour}{($ (model) + (0, -\vsep) $)}
-        \neuron{n21}{\neuroncolour}{(model)}
-        \neuron{n22}{\neuroncolour}{($ (model) + (0, \vsep) $)}
+        \neuron{n20}{10}{red!90!black}{\neuroncolour}{($ (model) + (0, -\vsep) $)}
+        \neuron{n21}{10}{red!30!black}{\neuroncolour}{(model)}
+        \neuron{n22}{10}{yellow!70!red}{\neuroncolour}{($ (model) + (0, \vsep) $)}
 
-        \neuron{n30}{\neuroncolour}{($ (model) + (\hsep, -0.5 * \vsep) $)}
-        \neuron{n31}{\neuroncolour}{($ (model) + (\hsep, 0.5 * \vsep) $)}
+        \neuron{n30}{10}{yellow!40!red}{\neuroncolour}{($ (model) + (\hsep, -0.5 * \vsep) $)}
+        \neuron{n31}{10}{red!65!black}{\neuroncolour}{($ (model) + (\hsep, 0.5 * \vsep) $)}
 
-        \neuron{n40}{\neuroncolour}{($ (model) + (2 * \hsep, 0) $)}
+        \neuron{n40}{10}{red}{\neuroncolour}{($ (model) + (2 * \hsep, 0) $)}
 
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n00);
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n01);
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n02);
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n03);
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (model.west) -- (n04);
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (model.west) -- (n00);
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (model.west) -- (n01);
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (model.west) -- (n02);
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (model.west) -- (n03);
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (model.west) -- (n04);
 
         \foreach \j in {0,...,4} {
             \foreach \k in {0,...,3} {
-                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n0\j) -- (n1\k);
+                \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (n0\j) -- (n1\k);
             }
         }
         \foreach \j in {0,...,3} {
             \foreach \k in {0,...,2} {
-                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n1\j) -- (n2\k);
+                \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (n1\j) -- (n2\k);
             }
         }
         \foreach \j in {0,...,2} {
             \foreach \k in {0,...,1} {
-                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n2\j) -- (n3\k);
+                \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (n2\j) -- (n3\k);
             }
         }
         \foreach \j in {0,...,1} {
             \foreach \k in {0,...,0} {
-                \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n3\j) -- (n4\k);
+                \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (n3\j) -- (n4\k);
             }
         }
 
+        \draw[alt=<10>{red, stealth-}{\edgecolour, -stealth}, opacity=\edgeopacity] (n40) -- (model.east);
+
         \only<2->{
-            \node[circle, fill=\neuroncolour, minimum size=0.6cm] (an) at ($ (model.south) - (0, 1.65) $) {};
+            \node[
+                circle,
+                alt=<9-10>{fill=red!40, draw=red}{fill=\neuroncolour, draw=black},
+                minimum size=0.6cm
+            ] (an) at ($ (model.south) - (0, 1.65) $) {};
             \node[align=center, font=\small\linespread{0.9}\selectfont] at ($ (an) + (0, 0.8) $) {Artificial\\neuron};
 
             \node[
                 anchor=east,
-                alt=<9>{text=red}{}
+                alt=<9-10>{text=red}{}
             ] (x1) at ($ (an) - (1.25, -0.5) $) {
                 \only<2>{$x_1$}
                 \only<3->{5}
             };
-            \node[anchor=east] (x2) at ($ (an) - (1.25, 0) $) {
+            \node[
+                anchor=east,
+                alt=<9-10>{text=red}{}
+            ] (x2) at ($ (an) - (1.25, 0) $) {
                 \only<2>{$x_2$}
-                \only<3->{1}
+                \only<3-8>{1}
+                \only<9-10>{4}
             };
-            \node[anchor=east] (x3) at ($ (an) - (1.25, 0.5) $) {
+            \node[
+                anchor=east,
+                alt=<9-10>{text=red}{}
+            ] (x3) at ($ (an) - (1.25, 0.5) $) {
                 \only<2>{$x_3$}
-                \only<3->{8}
+                \only<3-8>{8}
+                \only<9-10>{2}
             };
-            \node[anchor=west] (y) at ($ (an) + (1.25, 0) $) {
+            \node[
+                anchor=west
+            ] (y) at ($ (an) + (1.25, 0) $) {
                 \only<2>{$y$}
                 \only<3->{11}
             };
 
-            \draw[-stealth] (x1) -- (an);
-            \draw[-stealth] (x2) -- (an);
-            \draw[-stealth] (x3) -- (an);
-            \draw[-stealth] (an) -- (y);
+            \draw[alt=<9-10>{stealth-, red}{-stealth}] (x1) -- (an);
+            \draw[alt=<9-10>{stealth-, red}{-stealth}] (x2) -- (an);
+            \draw[alt=<9-10>{stealth-, red}{-stealth}] (x3) -- (an);
+            \draw[alt=<9-10>{stealth-, red}{-stealth}] (an) -- (y);
         }
 
-        \only<4,7-9>{
+        \only<4,7-10>{
             \node[font=\footnotesize] (equation) at ($ (an.south) - (0, 0.75) $) {max(0, 5*1+1*4+8*0.25)=11};
         }
-        \only<8-9>{
+        \only<8-10>{
             \node[font=\scriptsize, inner sep=1pt, text=red] (term1) at ($ (equation.south) - (0.52, 0.2) $) {5};
             \node[font=\scriptsize, inner sep=1pt, text=red] (term2) at ($ (equation.south) - (-0.03, 0.2) $) {4};
             \node[font=\scriptsize, inner sep=1pt, text=red] (term3) at ($ (equation.south) - (-0.85, 0.2) $) {2};
@@ -196,6 +217,6 @@
             \draw[-stealth, red] (term3) --($ (term3.north) + (0, 0.2) $);
         }
 
-        \draw[-stealth, \edgecolour, opacity=\edgeopacity] (n40) -- (model.east);
+
     \end{tikzpicture}
 \end{frame}

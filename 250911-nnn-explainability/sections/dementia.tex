@@ -1,0 +1,964 @@
+
+
+\definecolor{cases-default}{HTML}{EB5353}
+\definecolor{controls-default}{HTML}{0079FF}
+\definecolor{healthy-default}{HTML}{36AE7C}
+
+\newcommand{\scannersubplot}[3]{
+    \nextgroupplot[
+            axis lines=center,
+            axis y line=none,
+            xmin=46,
+            xmax=99,
+            ymin=-1.65,
+            ymax=1.5,
+            xmajorticks=false,
+            axis line style={-}
+        ]
+
+            \addplot[name path=zero, draw=none] coordinates {(46, 0) (99, 0)};
+            \addplot[
+                name path=fcases,
+                draw=cases-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y=F-cases
+            ]{#1};
+            \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and fcases];
+
+            \addplot[
+                name path=fcontrols,
+                draw=controls-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y=F-controls
+            ]{#1};
+            \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and fcontrols];
+
+            \addplot[
+                name path=mcases,
+                draw=cases-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y expr=\thisrow{M-cases} * -1
+            ]{#1};
+            \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and mcases];
+
+            \addplot[
+                name path=mcontrols,
+                draw=controls-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y expr=\thisrow{M-controls} * -1
+            ]{#1};
+            \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and mcontrols];
+
+            \node[anchor=south] at (axis cs: 72.5,0.85) {\tiny{#2}};
+            \node[anchor=north] at (axis cs: 72.5,-1) {\tiny{\textbf{n=#3}}};
+}
+
+\newsavebox{\fulldementiadataset}
+\sbox{\fulldementiadataset}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=0.35\textwidth,
+            xmin=46,
+            xmax=99,
+            ymin=-1.6,
+            ymax=1.2,
+            xtick={55,60,65,70,75,80,85,90,95},
+            axis lines=center,
+            axis y line=none,
+            clip=false
+        ]
+            \addplot[name path=zero, draw=none] coordinates {(47,0) (97,0)};
+
+            \addplot[
+                name path=fcases,
+                draw=cases-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y=F-cases
+            ]{data/dementia_dataset/dementia_full.csv};\label{trace:cases}
+            \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and fcases];
+
+            \addplot[
+                name path=fcontrols,
+                draw=controls-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y=F-controls
+            ]{data/dementia_dataset/dementia_full.csv};\label{trace:controls}
+            \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and fcontrols];
+
+            \addplot[
+                name path=mcases,
+                draw=cases-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,y
+                expr=\thisrow{M-cases} * -1
+            ]{data/dementia_dataset/dementia_full.csv};
+            \addplot[fill=cases-default, opacity=0.2] fill between [of=zero and mcases];
+
+            \addplot[
+                name path=mcontrols,
+                draw=controls-default,
+                very thick
+            ] table [
+                col sep=comma,
+                x=x,
+                y expr=\thisrow{M-controls} * -1
+            ]{data/dementia_dataset/dementia_full.csv};
+            \addplot[fill=controls-default, opacity=0.2] fill between [of=zero and mcontrols];
+
+            \node[anchor=south west] at (axis cs: 46, 0.07) {\textbf{FEMALE}};
+            \node[anchor=north west] at (axis cs: 46, -0.07) {\textbf{MALE}};
+            \node[anchor=south, font=\footnotesize\selectfont, align=center] (n) at (axis cs: 72.5,-1.8) {n=1708};
+            \node[anchor=south west,font=\footnotesize\selectfont, align=left] at ($(n.south east) + (110,0) $) {
+                \ref{trace:controls} Controls\\[-0.1cm]
+                \ref{trace:cases} Patients
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\dementiasubsets}
+\sbox{\dementiasubsets}{
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group size=5 by 2,
+                horizontal sep=0.25cm,
+                vertical sep=0.25cm
+            },
+            height=0.28\textwidth,
+            width=0.314\textwidth
+        ]
+            \scannersubplot{data/dementia_dataset/dementia_ADNI_30T.csv}{ADNI 3.0T}{506}
+            \scannersubplot{data/dementia_dataset/dementia_oasis3_30T.csv}{OASIS3 3.0T}{438}
+            \scannersubplot{data/dementia_dataset/dementia_ADNI_15T.csv}{ADNI 1.5T}{290}
+            \scannersubplot{data/dementia_dataset/dementia_Oslo_GE750.csv}{Oslo GE750}{226}
+            \scannersubplot{data/dementia_dataset/dementia_AIBL_10.csv}{AIBL Site 1}{92}
+            \scannersubplot{data/dementia_dataset/dementia_addneuromed_GE_MEDICAL_SYSTEMS.csv}{ANM GE}{74}
+            \scannersubplot{data/dementia_dataset/dementia_miriad_15_T_Signa.csv}{MIRIAD}{38}
+            \scannersubplot{data/dementia_dataset/dementia_AIBL_20.csv}{AIBL Site 2}{22}
+            \scannersubplot{data/dementia_dataset/dementia_addneuromed_PICKER_International_Inc.csv}{ANM Picker}{12}
+            \scannersubplot{data/dementia_dataset/dementia_oasis3_15T.csv}{OASIS3 1.5T}{10}
+        \end{groupplot}
+    \end{tikzpicture}
+}
+
+\newcommand{\dementiapredictions}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=3.5cm,
+            width=8cm,
+            xlabel=\textbf{Prediction},
+            ylabel=\textbf{Cohort},
+            xtick={0, 1},
+            xticklabels={Healthy, Dementia},
+            ytick={1, 2},
+            yticklabels={Controls, Patients},
+            xtick pos=bottom,
+            ytick pos=left,
+            xlabel style={
+                at={(axis description cs:0.5,-0.1)}
+            }
+        ]
+            \addplot+[
+                boxplot prepared={
+                    median=0.08,
+                    upper quartile=0.21,
+                    lower quartile=0.04,
+                    upper whisker=0.48,
+                    lower whisker=0
+                },
+                draw=black,
+                fill=controls-default
+            ] coordinates {};
+            \addplot+[
+                only marks,
+                mark=*,
+                draw=black,
+                fill=red,
+                mark options={
+                    fill=controls-default,
+                    opacity=0.1
+                }
+            ] coordinates {
+                (0.50446737, 1)
+                (0.50301045, 1)
+                (0.8623527, 1)
+                (0.5224974, 1)
+                (0.7995614, 1)
+                (0.72703606, 1)
+                (0.6828119, 1)
+                (0.9235332, 1)
+                (0.49864507, 1)
+                (0.76377636, 1)
+                (0.8327935, 1)
+                (0.9408187, 1)
+                (0.98629504, 1)
+                (0.66696477, 1)
+                (0.80282503, 1)
+                (0.86055464, 1)
+                (0.90125066, 1)
+                (0.98291415, 1)
+                (0.6314192, 1)
+                (0.77041364, 1)
+                (0.5979652, 1)
+                (0.7827456, 1)
+                (0.9518579, 1)
+                (0.99622357, 1)
+                (0.99328387, 1)
+                (0.69867474, 1)
+                (0.6601426, 1)
+                (0.75362796, 1)
+                (0.7569201, 1)
+                (0.5105941, 1)
+                (0.6899047, 1)
+                (0.71893066, 1)
+                (0.57259643, 1)
+                (0.9819919, 1)
+                (0.5338644, 1)
+                (0.57063895, 1)
+                (0.6915874, 1)
+                (0.53687215, 1)
+                (0.6003495, 1)
+                (0.54097295, 1)
+                (0.9115054, 1)
+                (0.6653496, 1)
+                (0.8144589, 1)
+                (0.9939644, 1)
+                (0.960153, 1)
+                (0.9648322, 1)
+                (0.6721609, 1)
+                (0.48370066, 1)
+                (0.8403382, 1)
+                (0.71983075, 1)
+                (0.72373754, 1)
+                (0.97700036, 1)
+                (0.78138167, 1)
+                (0.5741908, 1)
+                (0.55037045, 1)
+                (0.60542965, 1)
+                (0.74589527, 1)
+                (0.66231793, 1)
+                (0.9737994, 1)
+                (0.97011316, 1)
+                (0.73134863, 1)
+                (0.73491704, 1)
+                (0.9212756, 1)
+                (0.73766065, 1)
+                (0.7221923, 1)
+                (0.9278477, 1)
+                (0.998459, 1)
+                (0.5751162, 1)
+                (0.64807665, 1)
+                (0.9903199, 1)
+                (0.6751649, 1)
+                (0.6104782, 1)
+                (0.99662316, 1)
+                (0.6976316, 1)
+                (0.55103743, 1)
+                (0.99890363, 1)
+                (0.9999541, 1)
+                (0.75735366, 1)
+                (0.6077365, 1)
+                (0.970043, 1)
+                (0.85138136, 1)
+                (0.5465968, 1)
+                (0.99242157, 1)
+                (0.9150392, 1)
+                (0.8648588, 1)
+                (0.52396196, 1)
+                (0.75622225, 1)
+                (0.7811335, 1)
+                (0.9982332, 1)
+                (0.59327227, 1)
+                (0.9919817, 1)
+                (0.8797925, 1)
+                (0.8329868, 1)
+                (0.5257523, 1)
+                (0.82573485, 1)
+                (0.5419094, 1)
+                (0.7384044, 1)
+                (0.96513677, 1)
+                (0.5511491, 1)
+                (0.93219143, 1)
+                (0.81861705, 1)
+                (0.54127866, 1)
+            };
+            \addplot+[
+                boxplot prepared={
+                    median=0.95,
+                    upper quartile=0.99,
+                    lower quartile=0.67,
+                    upper whisker=1,
+                    lower whisker=0.20
+                },
+                draw=black,
+                fill=cases-default
+            ] coordinates {};
+            \addplot+[
+                only marks,
+                mark=*,
+                draw=black,
+                mark options={
+                    fill=cases-default,
+                    opacity=0.1
+                }
+            ] coordinates {
+                (0.11294349, 2)
+                (0.14141159, 2)
+                (0.047518212, 2)
+                (0.035283785, 2)
+                (0.18220703, 2)
+                (0.08105849, 2)
+                (0.18563321, 2)
+                (0.18436697, 2)
+                (0.18438818, 2)
+                (0.106455594, 2)
+                (0.16512504, 2)
+                (0.037674535, 2)
+                (0.116673164, 2)
+                (0.022512339, 2)
+                (0.04461377, 2)
+                (0.01521102, 2)
+                (0.081032276, 2)
+                (0.03708474, 2)
+                (0.041679956, 2)
+                (0.04825165, 2)
+                (0.07813377, 2)
+                (0.19328135, 2)
+                (0.059010953, 2)
+                (0.087162666, 2)
+                (0.17256281, 2)
+                (0.115628816, 2)
+                (0.049699314, 2)
+                (0.022067336, 2)
+                (0.09318608, 2)
+                (0.043719042, 2)
+                (0.09821392, 2)
+                (0.049812526, 2)
+                (0.053025473, 2)
+                (0.026935639, 2)
+                (0.07707973, 2)
+                (0.089302234, 2)
+                (0.11172331, 2)
+                (0.14193982, 2)
+                (0.04984702, 2)
+                (0.11108907, 2)
+                (0.04263115, 2)
+                (0.079762705, 2)
+                (0.03469864, 2)
+                (0.017143656, 2)
+                (0.048551403, 2)
+                (0.122921765, 2)
+                (0.11892662, 2)
+                (0.09896589, 2)
+                (0.1929691, 2)
+                (0.037067875, 2)
+                (0.19084817, 2)
+                (0.11711612, 2)
+                (0.13370761, 2)
+                (0.11053958, 2)
+                (0.048200555, 2)
+                (0.012198591, 2)
+                (0.0012190987, 2)
+                (0.0006263061, 2)
+                (0.021543678, 2)
+                (0.15559466, 2)
+                (0.019410677, 2)
+                (0.12729207, 2)
+                (0.011612348, 2)
+                (0.081171475, 2)
+                (0.030508395, 2)
+                (0.040783383, 2)
+                (0.00087664387, 2)
+                (0.17205802, 2)
+                (0.06274164, 2)
+                (0.09376377, 2)
+                (0.15760471, 2)
+                (0.1451328, 2)
+                (0.14305037, 2)
+                (0.13085763, 2)
+                (0.0953999, 2)
+                (0.091083504, 2)
+                (0.19047028, 2)
+                (0.18113527, 2)
+                (0.10130572, 2)
+                (0.15542361, 2)
+                (0.09163013, 2)
+                (0.13151047, 2)
+                (0.071478605, 2)
+                (0.071758784, 2)
+                (0.1452744, 2)
+                (0.09954041, 2)
+                (0.07047755, 2)
+                (0.15672913, 2)
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\predictionbox}
+\sbox{\predictionbox}{
+    \dementiapredictions
+}
+
+\begin{frame}[t]{XAI and dementia}
+    \centering
+    \vfill
+
+    \begin{tikzpicture}
+        \node[] at (-5.25, 3.25) {};
+        \node[] at (5.25, -3.25) {};
+
+        \only<1>{
+            \node[anchor=north] at (0, 3.35) {
+                \usebox{\fulldementiadataset}
+            };
+            \node[] at (0, -1.1) {
+                \usebox{\dementiasubsets}
+            };
+
+            \node[anchor=south, font=\tiny, text width=10.5cm, align=flush center] at (0, -3.75) {
+            Leonardsen et al., \textit{Constructing personalized characterizations of structural brain aberrations in patients with dementia using explainable artificial intelligence} (2024), \url{https://www.nature.com/articles/s41746-024-01123-7}
+            };
+        }
+        \only<2-6>{
+            \inputside{-4}{1.5}{1.5cm}
+        }
+        \only<3->{
+            \node[
+                font=\linespread{0.9}\selectfont,
+                align=left,
+                anchor=west
+            ] (output) at (3.4, 1.5) {
+                Dementia\\patient\\or healthy \\control?
+            };
+        }
+        \only<4-6>{
+            \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.3}{1.5}{0.066}{0.15}{black}{1}
+            \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
+        }
+        \only<5>{
+            \node[] at (-0.6, -2) {
+                \usebox{\predictionbox}
+            };
+        }
+        \only<7>{
+            \heatmapside{-4}{1.5}{1.5cm}
+            \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
+            \lrp{-2.3}{1.5}{0.066}{0.15}
+            \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
+
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\newcommand{\annotation}[4]{
+    \node[anchor=#4,align=center,font=\scriptsize\linespread{0.8}\selectfont,inner sep=2.5pt] at (axis cs: #2,#3) {#1};
+}
+
+\newsavebox{\regions}
+\sbox{\regions}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=0.6\textwidth,
+            ylabel=Human-rated importance,
+            xlabel=AI-rated importance,
+            ticks=none,
+            xmin=0,
+            xmax=1.25,
+            ymin=0,
+            ymax=1.1,
+            axis y line=left,
+            axis x line=bottom,
+            ylabel style={
+                align=center
+            }
+        ]
+            \addplot[only marks, fill=babalightblue, draw=black] table [col sep=comma, x=lrp, y=ale] {data/test_mean.csv};
+            \annotation{Left Accumbens}{0.906}{1}{south}
+            \annotation{Right Accumbens}{0.731}{0.914}{north}
+            \annotation{Left Amygdala}{1}{0.719}{south}
+            \annotation{Right Amygdala}{0.767}{0.699}{north}
+            \annotation{Parahippocampal\\Gyrus}{0.594}{0.415}{south}
+            \annotation{Heschl's\\Gyrus}{0.785}{0.276}{south}
+            \annotation{Lingual\\Gyrus}{0.517}{0.312}{north}
+            \annotation{Planum\\Temporale}{0.407}{0.159}{north}
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\begin{frame}{XAI and dementia: Validation}
+    \begin{tikzpicture}
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.25, -3.5) {};
+
+        \only<1>{
+            \node[
+				minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+                anchor=west
+			] (box1) at (-5.25, 0) {};
+			\node[anchor=south] at (box1.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject1.png}
+			};
+			\node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box2) at ($ (box1.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box2.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject2.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Patient 2};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box3) at ($ (box2.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box3.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject3.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+        }
+
+        \only<2-3>{
+            \node[label={[text depth=0]above:Explainable AI}] at (-2.25, 0) {
+				\includegraphics[width=0.31\textwidth]{data/dementia.png}
+			};
+        }
+        \only<3>{
+			\node[label={[text depth=0]above:Human researchers}] at (2.25, 0) {
+				\includegraphics[width=0.31\textwidth]{data/ALE.png}
+			};
+        }
+        \only<4>{
+            \node[] at (0, 0) {
+                \usebox{\regions}
+            };
+        }
+
+    \end{tikzpicture}
+\end{frame}
+
+\definecolor{baseline}{HTML}{FAEAB1}
+\definecolor{preds}{HTML}{E5BA73}
+\definecolor{maps}{HTML}{C58940}
+
+\newcommand{\prognostic}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=2.9cm,
+            width=4.08cm,
+            xmajorticks=false,
+            xmin=0.5,
+            xmax=5.5,
+            ymin=0,
+            ymax=1,
+            ylabel=\footnotesize{AUC},
+            ymajorticks=false,
+            ymajorgrids=true
+        ]
+
+            \addplot[mark=*, draw=black, mark options={fill=maps}] coordinates {
+                (1, 0.743)
+                (2, 0.786)
+                (3, 0.808)
+                (4, 0.867)
+                (5, 0.903)
+            };
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
+
+\newsavebox{\prognosticheatmaps}
+\sbox{\prognosticheatmaps}{
+    \prognostic
+}
+
+\newcommand{\mciconcept}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=0.6\textwidth,
+            width=0.8\textwidth,
+            xlabel={Age},
+            ylabel={Cognitive function},
+            ticks=none,
+            axis x line=bottom,
+            axis y line=left,
+            y axis line style={-|},
+            xmin=0,
+            xmax=1.4,
+            ymin=0,
+            ymax=1,
+            clip=false
+        ]
+            \addplot[draw=healthy-default, smooth, line width=4pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.63)
+                (0.9, 0.72)
+                (1.4, 0.67)
+            };
+            \addplot[draw=controls-default, smooth, line width=4pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.63)
+                (0.9, 0.61)
+                (1.4, 0.54)
+            };
+            \addplot[draw=cases-default, smooth, line width=4pt, opacity=0.5] coordinates {
+                (0, 0.9)
+                (0.25, 0.87)
+                (0.5, 0.77)
+                (0.6, 0.72)
+                (0.8, 0.625)
+                (1.1, 0.48)
+                (1.4, 0.3)
+            };
+            \addplot[dashed] coordinates {
+                (0, 0.65)
+                (1.4, 0.65)
+            };
+            \addplot[dashed] coordinates {
+                (0, 0.4)
+                (1.4, 0.4)
+            };
+            \node[anchor=south west] at (axis cs: 0, 0.64) {\footnotesize{Normal cognition}};
+            \node[anchor=north west] at (axis cs: 0, 0.66) {\footnotesize{Mild cognitive impairment}};
+            \node[anchor=north west] at (axis cs: 0, 0.41) {\footnotesize{Dementia}};
+
+            \ifnum#1<3
+                \node[anchor=west] at (axis cs: 1.4, 0.67) {\textcolor{healthy-default}{\footnotesize{Improving (n=80)}}};
+                \node[anchor=west] at (axis cs: 1.4, 0.53) {\textcolor{controls-default}{\footnotesize{Stable (n=754)}}};
+                \node[anchor=west] at (axis cs: 1.4, 0.3) {\textcolor{cases-default}{\footnotesize{Progressive (n=354)}}};
+            \fi
+
+            \ifnum#1>0
+                \draw[-stealth, red, thick] (axis cs: 0.8, 0.8) -- (axis cs: 0.8, 0.67);
+                \node[anchor=south] at (axis cs: 0.8, 0.8) {\textcolor{red}{\footnotesize{t}}};
+            \fi
+
+            \ifnum#1>1
+                \draw[densely dotted] (axis cs: 0.9, 0.8) -- (axis cs: 0.9, 0.3);
+                \draw[densely dotted] (axis cs: 1, 0.8) -- (axis cs: 1, 0.3);
+                \draw[densely dotted] (axis cs: 1.1, 0.8) -- (axis cs: 1.1, 0.3);
+                \draw[densely dotted] (axis cs: 1.2, 0.8) -- (axis cs: 1.2, 0.3);
+                \draw[densely dotted] (axis cs: 1.3, 0.8) -- (axis cs: 1.3, 0.3);
+                \node[anchor=south] at (axis cs: 0.9, 0.8) {\footnotesize{t+1}};
+                \node[anchor=south] at (axis cs: 1, 0.8) {\footnotesize{t+2}};
+                \node[anchor=south] at (axis cs: 1.1, 0.8) {\footnotesize{t+3}};
+                \node[anchor=south] at (axis cs: 1.2, 0.8) {\footnotesize{t+4}};
+                \node[anchor=south] at (axis cs: 1.3, 0.8) {\footnotesize{t+5}};
+            \fi
+
+            \ifnum#1=3
+                \node[] at (axis cs: 1.025, 0.155) {
+                    \usebox{\prognosticheatmaps}
+                };
+			    \node[anchor=west] at (axis cs: 1.34, 0.262) {\footnotesize{0.90}};
+            \fi
+
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\mcitrajectories}
+\sbox{\mcitrajectories}{
+    \mciconcept{0}
+}
+\newsavebox{\mcitimepoint}
+\sbox{\mcitimepoint}{
+    \mciconcept{1}
+}
+\newsavebox{\mcifuture}
+\sbox{\mcifuture}{
+    \mciconcept{2}
+}
+\newsavebox{\mciheatmaps}
+\sbox{\mciheatmaps}{
+    \mciconcept{3}
+}
+
+\newcommand{\mriwidth}{2.2cm}
+\newcommand{\gap}{0.00cm}
+
+\definecolor{color0}{rgb}{0.62, 0.004, 0.259}
+\definecolor{color1}{rgb}{0.755, 0.154, 0.291}
+\definecolor{color2}{rgb}{0.866, 0.29, 0.298}
+\definecolor{color3}{rgb}{0.943, 0.406, 0.268}
+\definecolor{color4}{rgb}{0.975, 0.557, 0.323}
+\definecolor{color5}{rgb}{0.993, 0.709, 0.403}
+\definecolor{color6}{rgb}{0.995, 0.832, 0.506}
+\definecolor{color7}{rgb}{0.998, 0.926, 0.625}
+\definecolor{color8}{rgb}{0.998, 0.999, 0.746}
+\definecolor{color9}{rgb}{0.937, 0.975, 0.65}
+\definecolor{color10}{rgb}{0.838, 0.935, 0.609}
+\definecolor{color11}{rgb}{0.693, 0.876, 0.639}
+\definecolor{color12}{rgb}{0.527, 0.811, 0.645}
+\definecolor{color13}{rgb}{0.368, 0.725, 0.662}
+\definecolor{color14}{rgb}{0.24, 0.582, 0.721}
+\definecolor{color15}{rgb}{0.267, 0.441, 0.698}
+\definecolor{color16}{rgb}{0.369, 0.31, 0.635}
+
+\newcommand{\correlationplot}[4]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=1.71 * \mriwidth,
+            width=1.71 * \mriwidth,
+            xmajorticks=false,
+            ylabel=#3,
+            ytick={0, 2, 4, 6, 8},
+            yticklabels=#2,
+            xmin=-1,
+            xmax=17,
+            ymin=0,
+            ymax=9,
+            every tick label/.append style={font=\tiny},
+            ytick pos=left,
+            scatter/classes={
+                ADNI_EF={color0, draw=black},
+                ADNI_MEM={color1, draw=black},
+                CDCARE={color2, draw=black},
+                CDCOMMUN={color3, draw=black},
+                CDGLOBAL={color4, draw=black},
+                CDHOME={color5, draw=black},
+                CDJUDGE={color6, draw=black},
+                CDMEMORY={color7, draw=black},
+                CDORIENT={color8, draw=black},
+                FAQTOTAL={color9, draw=black},
+                GDTOTAL={color10, draw=black},
+                MMSCORE={color11, draw=black},
+                NPISCORE={color12, draw=black},
+                PHC_EXF={color13, draw=black},
+                PHC_LAN={color14, draw=black},
+                PHC_MEM={color15, draw=black},
+                PHC_VSP={color16, draw=black}
+            },
+            y label style={at={(-0.1,0.5)}},
+            ymajorgrids=true,
+            ytick style={draw=none},
+            clip=false,
+            grid style={draw=gray!20},
+            axis line style={draw=gray!70}
+        ]
+            \addplot[
+                only marks,
+                scatter,
+                scatter src=explicit symbolic
+            ] table [
+                col sep=comma,
+                x=index,
+                y=component_#1,
+                meta=symptom
+            ] {data/correlations.csv};
+            \addplot[dashed,red, thick] coordinates {
+                (-1, 2.76)
+                (17, 2.76)
+            };
+            #4
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\firstcorrelations}
+\sbox{\firstcorrelations}{%
+    \correlationplot{0}{{0, 2, 4, 6, 8}}{\scriptsize{$-log_{10}(p)$}}{
+        \node[] at (axis cs: 14, 6.19) {\tiny{PHC\_LAN}};
+    }
+}
+\newsavebox{\secondcorrelations}
+\sbox{\secondcorrelations}{%
+    \correlationplot{1}{{,,}}{{}}{
+        \node[] at (axis cs: 9, 3.74) {\tiny{FAQTOTAL}};
+    }
+}
+\newsavebox{\thirdcorrelations}
+\sbox{\thirdcorrelations}{%
+    \correlationplot{2}{{,,}}{{}}{
+        \node[] at (axis cs: 0, 6.44) {\tiny{ADNI\_EF}};
+        \node[] at (axis cs: 13, 7.95) {\tiny{PHC\_EXF}};
+    }
+}
+\newsavebox{\fourthcorrelations}
+\sbox{\fourthcorrelations}{%
+    \correlationplot{3}{{,,}}{{}}{
+        \node[] at (axis cs: 0, 9.02) {\tiny{ADNI\_EF}};
+        \node[] at (axis cs: 13, 8.75) {\tiny{PHC\_EXF}};
+        \node[] at (axis cs: 14, 5.84) {\tiny{PHC\_LAN}};
+        \node[] at (axis cs: 6, 5.18) {\tiny{CDJUDGE}};
+        \node[] at (axis cs: 11, 3.99) {\tiny{MMSCORE}};
+    }
+}
+
+\newcommand{\cognitiveplot}[1]{
+    \hspace{-0.6cm}
+    \begin{tikzpicture}
+        \node[] (first) at (0, 0) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_0.png}
+        };
+
+        \node[anchor=west] (second) at ($ (first.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_1.png}
+        };
+
+        \node[anchor=west] (third) at ($ (second.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_2.png}
+        };
+
+        \node[anchor=west] (fourth) at ($ (third.east) + (\gap, 0) $) {
+            \includegraphics[
+                width=\mriwidth,
+                clip=true,
+                trim = 192mm 232mm 0mm 0mm
+            ]{data/components/component_3.png}
+        };
+
+        \ifnum#1=1
+            \node[anchor=north west] (first-correlation) at ($ (first.south west) + (-0.86, 0.1) $) {
+                \usebox{\firstcorrelations}
+            };
+            \node[anchor=north west] (second-correlation) at ($ (first-correlation.north east) - (0.76, 0) $) {
+                \usebox{\secondcorrelations}
+            };
+            \node[anchor=north west] (third-correlation) at ($ (second-correlation.north east) - (0.71, 0) $) {
+                \usebox{\thirdcorrelations}
+            };
+            \node[anchor=north west] (fourth-correlation) at ($ (third-correlation.north east) - (0.74, -0.21) $) {
+                \usebox{\fourthcorrelations}
+            };
+        \fi
+
+    \end{tikzpicture}
+    \hspace{-0.6cm}
+}
+
+\newsavebox{\cognitiveheatmaps}
+\sbox{\cognitiveheatmaps}{
+    \cognitiveplot{0}
+}
+
+\newsavebox{\cognitivecorrelations}
+\sbox{\cognitivecorrelations}{
+    \cognitiveplot{1}
+}
+
+\begin{frame}{XAI and dementia: Clinical applications}
+    \begin{tikzpicture}
+        \node[] at (-5.25, 3.5) {};
+        \node[] at (5.5, -3.5) {};
+
+        \only<1>{
+                        \node[
+				minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+                anchor=west
+			] (box1) at (-5.25, 0) {};
+			\node[anchor=south] at (box1.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject1.png}
+			};
+			\node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box2) at ($ (box1.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box2.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject2.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Patient 2};
+
+			\node
+				[minimum height=0.41\textwidth,
+				minimum width=0.32\textwidth,
+				fill=black,
+				anchor=west
+			] (box3) at ($ (box2.east) + (0.05,0) $) {};
+			\node[anchor=south] at (box3.south) {
+				\includegraphics[width=0.31\textwidth]{data/subject3.png}
+			};
+			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+        }
+
+        \only<2>{
+            \node[] at (0, 0) {
+                \usebox{\mcitrajectories}
+            };
+        }
+
+        \only<3>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcitimepoint}
+            };
+        }
+        \only<4>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mcifuture}
+            };
+        }
+        \only<5>{
+            \node[anchor=west] at (-5, 0) {
+                \usebox{\mciheatmaps}
+            };
+        }
+        \visible<6>{
+            \node[inner sep=0pt, outer sep=0pt, anchor=north east] at (4.6, 3) {
+                \usebox{\cognitiveheatmaps}
+            };
+        }
+        \visible<7>{
+            \node[inner sep=0pt, outer sep=0pt, anchor=north east] at (5, 3) {
+                \usebox{\cognitivecorrelations}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
