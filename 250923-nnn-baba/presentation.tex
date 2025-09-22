@@ -2,6 +2,8 @@
 
 \usetheme{Baba}
 
+\usepackage{emoji}
+
 \usetikzlibrary{overlay-beamer-styles}
 
 \hypersetup{
@@ -22,6 +24,8 @@
         \titlepage
     \end{frame}
 
+    \input{utils/cnn}
+
     \begin{frame}{Background}
         \begin{tikzpicture}
             \node[] at (-5.25, 3.5) {};
@@ -37,15 +41,15 @@
             }
             \only<2>{
                 \node[inner sep=0pt, draw=black] at (0, 0) {
-                    \includegraphics[width=8.5cm]{data/worsening.png}
-                };
-                \node[anchor=south, font=\tiny, text width=10cm, align=flush center] at (0, -3.75) {
-                    Van Dyck, C. H., Swanson, C. J., Aisen, P., Bateman, R. J., Chen, C., Gee, M., ... \& Iwatsubo, T. (2023). Lecanemab in early Alzheimer’s disease. \textit{New England Journal of Medicine}.
+                    \includegraphics[width=6cm]{data/ema.png}
                 };
             }
             \only<3>{
                 \node[inner sep=0pt, draw=black] at (0, 0) {
-                    \includegraphics[width=7cm]{data/eisai.png}
+                    \includegraphics[width=8.5cm]{data/worsening.png}
+                };
+                \node[anchor=south, font=\tiny, text width=10cm, align=flush center] at (0, -3.75) {
+                    Van Dyck, C. H., Swanson, C. J., Aisen, P., Bateman, R. J., Chen, C., Gee, M., ... \& Iwatsubo, T. (2023). Lecanemab in early Alzheimer’s disease. \textit{New England Journal of Medicine}.
                 };
             }
             \only<4>{
@@ -55,6 +59,120 @@
                 \node[anchor=south, font=\tiny, text width=10cm, align=flush center] at (0, -3.75) {
                     Villain, N., Planche, V., \& Levy, R. (2022). High-clearance anti-amyloid immunotherapies in Alzheimer's disease. Part 1: Meta-analysis and review of efficacy and safety data, and medico-economical aspects. \textit{Revue neurologique}.
                 };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{The baba.vision treatment support suite}
+        \begin{tikzpicture}
+            \node[] at (-5.25, 3.5) {};
+            \node[] at (5.25, -3.5) {};
+
+            \only<1-3>{
+                \node[draw=black, inner sep=0pt, rounded corners=0.2cm] at (0, 0) {
+                    \includegraphics[width=8cm]{data/prototype.png}
+                };
+            }
+
+            \only<2>{
+                \node[minimum height=1.55cm, minimum width=3.4cm, draw=red, thick] at (1.93, -1.25) {};
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-2.75, -1.56) {};
+            }
+
+            \only<3>{
+                \node[minimum height=1cm, minimum width=3.4cm, draw=red, thick] at (1.93, -2.5) {};
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-2.75, -0.57) {};
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-0.92, -1.56) {};
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-0.92, -2.62) {};
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{Explainable Artificial Intelligence}
+        \begin{tikzpicture}
+            \node[] at (-5.25, 3.5) {};
+            \node[] at (5.25, -3.5) {};
+
+            \only<1-2,4>{
+                \cnn{-2.3}{1.5}{0.066}{0.15}{black}{1}
+            }
+            \only<2,4>{
+                \inputside{-4}{1.5}{1.5cm}
+                \node[
+                    font=\linespread{0.9}\selectfont,
+                    align=left,
+                    anchor=west
+                ] (output) at (3.4, 1.5) {
+                    Dementia\\patient?
+                };
+                \cnnarrow{(input.east)}{($ (input.center) + (2, 0) $)}{black}
+                \cnnarrow{($ (output.west) - (0.54, 0) $)}{($ (output.west) + (0.1, 0) $)}{black}
+            }
+            \visible<3>{
+                \node[inner sep=2pt, fill=white, draw=black] at (0, 0) {
+                    \includegraphics[width=5cm]{data/grodem.png}
+                };
+                \node[minimum width=0.6cm, minimum height=5.1cm, draw=red, thick] at (-0.35, 0) {};
+
+                \node[anchor=south, font=\tiny, text width=10cm, align=flush center] at (0, -3.75) {
+                    Grødem, et al., (2024). A minimalistic approach to classifying Alzheimer's disease using simple and extremely small convolutional neural networks. \textit{Journal of Neuroscience Methods}.
+                };
+            }
+            \only<4>{
+                \node[align=left, text width=7cm] at (0, -2) {
+                    \begin{itemize}
+                        \item[\textcolor{green}{+}] Produces very accurate predictions\\
+                        \item[\textcolor{red}{-}] Very hard to understand
+                    \end{itemize}
+                };
+            }
+            \only<5>{
+                \node[
+                    font=\linespread{0.9}\selectfont,
+                    align=left,
+                    anchor=west
+                ] (output) at (3.4, 1.5) {
+                    Dementia\\patient?
+                };
+                \heatmapside{-4}{1.5}{1.5cm}
+                \lrparrow{($ (input.center) + (2, 0) $)}{(input.east)}{black}
+                \lrp{-2.3}{1.5}{0.066}{0.15}
+                \lrparrow{($ (output.west) + (0.1, 0) $)}{($ (output.west) - (0.54, 0) $)}{black}
+            }
+            \only<6>{
+                \node[label={[text depth=0]above:Explainable AI}] at (-2.25, 0) {
+                    \includegraphics[width=0.31\textwidth]{data/dementia.png}
+                };
+
+                \node[label={[text depth=0]above:Human researchers}] at (2.25, 0) {
+                    \includegraphics[width=0.31\textwidth]{data/ALE.png}
+                };
+
+                \node[anchor=south, font=\tiny, text width=10.5cm, align=flush center] at (0, -3.75) {
+                    Leonardsen et al., (2024). Constructing personalized characterizations of structural brain aberrations in patients with dementia using explainable artificial intelligence, \textit{npj Digital Medicine}
+                };
+            }
+        \end{tikzpicture}
+    \end{frame}
+
+    \begin{frame}{The baba.vision treatment support suite}
+        \begin{tikzpicture}
+            \node[] at (-5.25, 3.5) {};
+            \node[] at (5.25, -3.5) {};
+
+            \only<1-2>{
+                \node[draw=black, inner sep=0pt, rounded corners=0.2cm] at (0, 0) {
+                    \includegraphics[width=8cm]{data/prototype.png}
+                };
+            }
+
+            \only<1>{
+                \node[minimum height=2.64cm, minimum width=7.95cm, draw=red, thick] at (-0.02, 1.24) {};
+            }
+
+            \only<2>{
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-0.92, -0.57) {};
+                \node[minimum height=0.7cm, minimum width=1.8cm, draw=red, thick] at (-2.75, -2.62) {};
             }
         \end{tikzpicture}
     \end{frame}
