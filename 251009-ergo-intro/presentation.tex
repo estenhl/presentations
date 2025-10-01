@@ -2,15 +2,51 @@
 
 \usetheme{UiO}
 
+\usepackage{array}
 \usepackage{emoji}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+\usetikzlibrary{arrows.meta}
 
 \title{En introduksjon til kunstig intelligens}
 \subtitle{Og dets rolle i medisinsk forskning}
 \author{Esten H. Leonardsen}
 \date{\today}
 
-\newcommand{\neuron}[2]{
-    \node[circle, draw=black, fill=cyan, minimum size=0.3cm] (#1) at #2 {};
+\def\systemfont{\footnotesize}
+
+\def\vsep{0.5}
+\def\hsep{0.65}
+\def\edgeopacity{0.5}
+
+\newcommand{\neuron}[3][uiogreen]{
+    \node[circle, draw=black, fill=#1, minimum size=0.3cm] (#2) at #3 {};
+}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+\pgfplotsset{
+    discard if/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\def\pgfmathresult{inf}
+            \else
+                \tempa\tempb
+            \fi
+        }
+    }
 }
 
 
@@ -19,205 +55,9 @@
 	 	\titlepage
 	\end{frame}
 
-    \begin{frame}{Hva er kunstig intelligens?}
-        \begin{tikzpicture}
-            \def\systemfont{\footnotesize}
+    \input{sections/cnn}
+    %\input{sections/ai}
+    %\input{sections/medical}
+    \input{sections/xai}
 
-            \node[draw=black] at (-7, -3.25) {};
-            \node[draw=black] at (7, 3.25) {};
-
-            \only<1>{
-                \node[anchor=west, inner sep=0pt, draw=black, label=below:\tiny{ChatGPT}] at (-7, 0) {
-                    \includegraphics[width=4.1cm]{data/chatgpt.png}
-                };
-                \node[inner sep=0pt, draw=black, label=below:\tiny{Spot}] at (-0.5, 1.5) {
-                    \includegraphics[width=3cm]{data/spot.jpg}
-                };
-                \node[inner sep=0pt, draw=black, label=below:\tiny{Sophia}] at (2.7, 1.5) {
-                    \includegraphics[width=3cm]{data/sophia.jpg}
-                };
-                \node[inner sep=0pt, draw=black, label=below:\tiny{AlphaFold}] at (1, -1.5) {
-                    \includegraphics[width=4cm]{data/alphafold.png}
-                };
-            }
-
-            \only<2-4,9,13-14,18>{
-                \node[circle, fill=blue!60, minimum size=6cm, anchor=north] (ai) at (-4, 3.25) {};
-                \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (ai.north) - (0, 0.1) $) {Kunstig\\intelligens};
-
-                \only<2>{
-                    \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def1) at (-0.5, 3.25) {
-                        \textbf{Kunstig intelligens}\\
-                        Teknologi som løser oppgaver som krever en eller annen form for intelligens
-                    };
-                }
-                \only<3->{
-                    \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def1) at (-0.5, 3.25) {
-                        \textbf{Kunstig intelligens}\\
-                        Et fagfelt som produserer teknologi som løser oppgaver som krever en eller annen form for intelligens
-                    };
-                }
-
-                \only<4->{
-                    \node[align=center, font=\small\linespread{0.9}\selectfont, text=white] at ($ (ai.north) + (1.3, -1.5) $) {Regelstyrte\\systemer};
-                }
-
-                \only<9->{
-                    \node[circle, fill=purple!60, anchor=south, minimum size=4.1cm] (ml) at ($ (ai.south) + (0, 0.05) $) {};
-                    \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (ml.north) - (0, 0.3) $) {Maskinlæring};
-                }
-                \only<13->{
-                    \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def2) at (def1.south west) {
-                        \textbf{Maskinlæring}\\
-                        Teknologi som lærer seg å løse problemer ved å finne nyttige mønstre i treningsdata
-                    };
-                }
-                \only<14->{
-                    \node[circle, fill=red!60, anchor=south, minimum size=3cm] (dl) at ($ (ml.south) + (0, 0.06) $) {};
-                    \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (dl.north) - (0, 0.1) $) {Dyp\\læring};
-                }
-                \only<18>{
-                    \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def3) at (def2.south west) {
-                    \textbf{Dyp læring}\\
-                        Teknologi som bruker kunstige nevrale nettverk for å løse maskinlæringsproblemer
-                    };
-                }
-            }
-            \only<5-8>{
-                \node[draw=black, fill=gray!90, minimum width=6cm, minimum height=2cm, rounded corners=0.1cm, text=white, text depth=2.35cm, font=\systemfont] (system) at (0, 1) {Ekspertsystem};
-
-                \only<6->{
-                    \node[draw=black, label=below:\systemfont{Prediksjon}, anchor=west] (output) at ($ (system.south east) + (1, 0.9825) $) {
-                        \systemfont{Influensa}
-                    };
-
-                    \node[] (notepad) at ($ (system.south west) + (-1, 0.9825) $) {\Large{\emoji{spiral-notepad}}};
-                    \node[anchor=east, inner sep=-2pt] at (notepad.west) {\Huge{\emoji{man-health-worker}}};
-
-                    \draw[-stealth] (notepad.east) -- ($ (system.south west) + (0, 0.9825) $);
-                    \draw[-stealth] ($ (system.south east) + (0, 0.9825) $) -- (output);
-                }
-
-                \only<7->{
-                    \node[fill=gray!80, minimum width=4cm, minimum height=2.3cm, rounded corners=0.1cm, text=white, text depth=1.8cm, draw=black, font=\systemfont, anchor=south] (rule) at ($ (system.south) + (0, 0.05) $) {Regelmotor};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom1) at ($ (rule.south) + (0, 1.25) $) {Feber};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom2) at ($ (rule.south) + (0, 0.65) $) {Hoster};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom3) at ($ (rule.south) + (0, 0.05) $) {Sår hals};
-
-                    \draw[-stealth] ($ (system.south west) + (0, 0.9825) $) -- ($ (rule.south west) + (0, 0.9325) $);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom1.west);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom2.west);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom3.west);
-                    \draw[-stealth] (symptom1.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] (symptom2.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] (symptom3.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] ($ (rule.south east) + (0, 0.9325) $) -- ($ (system.south east) + (0, 0.9825) $);
-                }
-                \only<8>{
-                    \node[] (expert) at ($ (system.south) - (0, 1.75) $) {
-                        \Huge{\emoji{woman-scientist}}
-                    };
-                    \draw[-stealth, dashed] (expert) -- (rule.south);
-                }
-            }
-            \only<10-12>{
-                \only<10>{
-                    \node[draw=black, fill=gray!90, minimum width=6cm, minimum height=2cm, rounded corners=0.1cm, text=white, text depth=2.35cm, font=\systemfont] (system) at (0, 1) {Ekspertsystem};
-                    \node[fill=gray!80, minimum width=4cm, minimum height=2.3cm, rounded corners=0.1cm, text=white, text depth=1.8cm, draw=black, font=\systemfont, anchor=south] (rule) at ($ (system.south) + (0, 0.05) $) {Regelmotor};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom1) at ($ (rule.south) + (0, 1.25) $) {Feber};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom2) at ($ (rule.south) + (0, 0.65) $) {Hoster};
-                    \node[draw=black, fill=white, rounded corners=0.05cm, font=\systemfont, minimum width=1.7cm, minimum height=0.55cm, anchor=south] (symptom3) at ($ (rule.south) + (0, 0.05) $) {Sår hals};
-
-                    \draw[-stealth] ($ (system.south west) + (0, 0.9825) $) -- ($ (rule.south west) + (0, 0.9325) $);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom1.west);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom2.west);
-                    \draw[-stealth] ($ (rule.south west) + (0, 0.9325) $) -- (symptom3.west);
-                    \draw[-stealth] (symptom1.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] (symptom2.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] (symptom3.east) -- ($ (rule.south east) + (0, 0.9325) $);
-                    \draw[-stealth] ($ (rule.south east) + (0, 0.9325) $) -- ($ (system.south east) + (0, 0.9825) $);
-
-                    \node[] (expert) at ($ (system.south) - (0, 1.75) $) {
-                        \Huge{\emoji{woman-scientist}}
-                    };https://chatgpt.com/
-                    \draw[-stealth, dashed] (expert) -- (rule.south);
-                }
-                \only<11->{
-                    \node[draw=black, fill=gray!90, minimum width=6cm, minimum height=2cm, rounded corners=0.1cm, text=white, text depth=2.35cm, font=\systemfont] (system) at (0, 1) {Maskinlæringssystem};
-                    \node[fill=gray!80, minimum width=4cm, minimum height=2.3cm, rounded corners=0.1cm, text=white, draw=black, font=\systemfont, anchor=south] (rule) at ($ (system.south) + (0, 0.05) $) {
-                        \includegraphics[width=3cm]{data/cogwheels.png}
-                    };
-                    \draw[-stealth] ($ (system.south west) + (0, 0.9825) $) -- ($ (rule.south west) + (0, 0.9325) $);
-                    \draw[-stealth] ($ (rule.south east) + (0, 0.9325) $) -- ($ (system.south east) + (0, 0.9825) $);
-                }
-                \only<12>{
-                    \node[] (expert) at ($ (system.south) - (0, 1.75) $) {
-                        \Huge{\emoji{bar-chart}}
-                    };
-                    \draw[-stealth, dashed] (expert) -- (rule.south);
-                }
-
-                \node[draw=black, label=below:\systemfont{Prediksjon}, anchor=west] (output) at ($ (system.south east) + (1, 0.9825) $) {
-                    \systemfont{Influensa}
-                };
-
-                \node[] (notepad) at ($ (system.south west) + (-1, 0.9825) $) {\Large{\emoji{spiral-notepad}}};
-                \node[anchor=east, inner sep=-2pt] at (notepad.west) {\Huge{\emoji{man-health-worker}}};
-
-                \draw[-stealth] (notepad.east) -- ($ (system.south west) + (0, 0.9825) $);
-                \draw[-stealth] ($ (system.south east) + (0, 0.9825) $) -- (output);
-            }
-            \only<15-17>{
-                \node[draw=black, fill=gray!90, minimum width=6cm, minimum height=2cm, rounded corners=0.1cm, text=white, text depth=2.35cm, font=\systemfont] (system) at (0, 1) {Maskinlæringssystem};
-                \node[fill=gray!80, minimum width=4cm, minimum height=2.3cm, rounded corners=0.1cm, text=white, draw=black, font=\systemfont, anchor=south] (rule) at ($ (system.south) + (0, 0.05) $) {
-                    \only<15>{\includegraphics[width=3cm]{data/cogwheels.png}}
-                };
-
-                \only<16->{
-                    \def\vsep{0.5}
-                    \def\hsep{0.75}
-
-                    \neuron{n00}{($ (rule) + (-2*\hsep, 2*\vsep) $)}
-                    \neuron{n01}{($ (rule) + (-2*\hsep, \vsep) $)}
-                    \neuron{n02}{($ (rule) + (-2*\hsep, 0) $)}
-                    \neuron{n03}{($ (rule) + (-2*\hsep, -1*\vsep) $)}
-                    \neuron{n04}{($ (rule) + (-2*\hsep, -2*\vsep) $)}
-
-                    \neuron{n10}{($ (rule) + (-1*\hsep, 1.5*\vsep) $)}
-                    \neuron{n11}{($ (rule) + (-1*\hsep, 0.5*\vsep) $)}
-                    \neuron{n12}{($ (rule) + (-1*\hsep, -0.5*\vsep) $)}
-                    \neuron{n13}{($ (rule) + (-1*\hsep, -1.5*\vsep) $)}
-
-                    \neuron{n20}{($ (rule) + (0, \vsep) $)}
-                    \neuron{n21}{($ (rule) + (0, 0) $)}
-                    \neuron{n22}{($ (rule) + (0, -1*\vsep) $)}
-
-                    \neuron{n30}{($ (rule) + (\hsep, 0.5*\vsep) $)}
-                    \neuron{n31}{($ (rule) + (\hsep, -0.5*\vsep) $)}
-
-                    \neuron{n40}{($ (rule) + (2*\hsep, 0) $)}
-                }
-
-
-                \draw[-stealth] ($ (system.south west) + (0, 0.9825) $) -- ($ (rule.south west) + (0, 0.9325) $);
-
-                \draw[-stealth] ($ (rule.south east) + (0, 0.9325) $) -- ($ (system.south east) + (0, 0.9825) $);
-
-                \node[] (expert) at ($ (system.south) - (0, 1.75) $) {
-                    \Huge{\emoji{bar-chart}}
-                };https://chatgpt.com/
-                \draw[-stealth, dashed] (expert) -- (rule.south);
-
-                \node[draw=black, label=below:\systemfont{Prediksjon}, anchor=west] (output) at ($ (system.south east) + (1, 0.9825) $) {
-                    \systemfont{Influensa}
-                };
-
-                \node[] (notepad) at ($ (system.south west) + (-1, 0.9825) $) {\Large{\emoji{spiral-notepad}}};
-                \node[anchor=east, inner sep=-2pt] at (notepad.west) {\Huge{\emoji{man-health-worker}}};
-
-                \draw[-stealth] (notepad.east) -- ($ (system.south west) + (0, 0.9825) $);
-                \draw[-stealth] ($ (system.south east) + (0, 0.9825) $) -- (output);
-            }
-        \end{tikzpicture}
-    \end{frame}
 \end{document}
