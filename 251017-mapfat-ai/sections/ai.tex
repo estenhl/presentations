@@ -10,13 +10,16 @@
                 \includegraphics[width=4.1cm]{data/chatgpt.png}
             };
             \node[inner sep=0pt, draw=black, label=below:\tiny{Spot}] at (-0.5, 1.5) {
-                \includegraphics[width=3cm]{data/spot.jpg}
+                \includegraphics[width=2.5cm]{data/spot.jpg}
             };
-            \node[inner sep=0pt, draw=black, label=below:\tiny{Sophia}] at (2.7, 1.5) {
-                \includegraphics[width=3cm]{data/sophia.jpg}
+            \node[inner sep=0pt, draw=black, label=below:\tiny{Sophia}] at (2.7, 1.9) {
+                \includegraphics[width=2.5cm]{data/sophia.jpg}
             };
-            \node[inner sep=0pt, draw=black, label=below:\tiny{AlphaFold}] at (1, -1.5) {
-                \includegraphics[width=4cm]{data/alphafold.png}
+            \node[inner sep=0pt, draw=black, label=below:\tiny{AlphaFold}] at (1, -1.8) {
+                \includegraphics[width=3cm]{data/alphafold.png}
+            };
+            \node[inner sep=0pt, draw=black, label=below:\tiny{AlphaZero}] at (4.5, -1.1) {
+                \includegraphics[width=2.7cm]{data/chess.png}
             };
         }
 
@@ -48,7 +51,7 @@
             \only<13->{
                 \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def2) at (def1.south west) {
                     \textbf{Machine learning}\\
-                    Technologies that learn to solve problems by finding patterns in training data
+                    A set of techniques to solve problems by allowing machines to find patterns in training data
                 };
             }
             \only<14->{
@@ -58,7 +61,7 @@
             \only<18>{
                 \node[align=flush left, anchor=north west, text width=7.2cm, font=\small\linespread{0.95}\selectfont] (def3) at (def2.south west) {
                 \textbf{Deep learning}\\
-                    Technologies that rely on artificial neural networks to solve machine learning problems
+                    Machine learning approaches that rely on artificial neural networks
                 };
             }
         }
@@ -260,14 +263,78 @@
     \end{tikzpicture}
 \end{frame}
 
+\newcommand{\brainsize}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=8cm,
+            height=3.8cm,
+            xlabel=\footnotesize{Alder},
+            ylabel=\footnotesize{Hjernestørrelse},
+            xmajorticks=false,
+            ymajorticks=false,
+            axis lines=left,
+            xmin=2,
+            xmax=13,
+            ymin=935,
+            ymax=1600
+        ]
+            \addplot[
+                only marks,
+                uioblue,
+                opacity=0.5
+            ] table [
+                col sep=comma,
+                x=x,
+                y=y
+            ] {data/brainsize.csv};
+
+            \ifnum#1=1
+                \addplot[
+                    samples=100,
+                    domain=2:15,
+                    very thick,
+                    uioblue
+                ] {
+                    1064.062904437416+x*36.95459273
+                };
+            \fi
+            \ifnum#1=2
+                \addplot[
+                    samples=100,
+                    domain=2:15,
+                    very thick,
+                    uioblue
+                ] {
+                    400+1100*(1-e^(-x/3))
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
 \begin{frame}{Why do we use artificial neural networks?}
     \begin{tikzpicture}
-        \node[] at (-7, -3.25) {};
-        \node[] at (7, 3.25) {};
+        \node[draw=black] at (-7, -3.25) {};
+        \node[draw=black] at (7, 3.25) {};
 
         \visible<1-4>{
             \node[anchor=east] (input) at (-3, 1.25) {$\text{input}$};
             \node[anchor=west] (output) at (3, 1.25) {$\text{output}$};
+        }
+        \visible<2>{
+            \node[] at (-0.25, -1.85) {
+                \brainsize{0}
+            };
+        }
+        \visible<3>{
+            \node[] at (-0.25, -1.85) {
+                \brainsize{1}
+            };
+        }
+        \visible<4>{
+            \node[] at (-0.25, -1.85) {
+                \brainsize{2}
+            };
         }
         \visible<5>{
             \node[anchor=east, inner sep=0pt, draw=black] (input) at (-3, 1.25) {
@@ -275,8 +342,23 @@
             };
             \node[anchor=west] (output) at (3, 1.25) {$\text{ladybug}$};
         }
+        \visible<6>{
+            \node[anchor=east, inner sep=0pt] (input2) at (-4, 2.75) {
+                {\Huge{\emoji{spiral-notepad}}}
+            };
+            \node[anchor=east, inner sep=0pt, draw=black] (input) at (-4, 1.25) {
+                \includegraphics[width=1.5cm]{data/mri_sagittal.png}
+            };
+            \node[anchor=east, inner sep=0pt] (input3) at (-4, -0.25) {
+                {\Huge{\emoji{chart-decreasing}}}
+            };
+            \node[anchor=west, align=left] (output) at (3, 1.25) {
+                Clinical\\
+                prediction
+            };
+        }
 
-        \visible<1-2,4-5>{
+        \visible<1-2,4-6>{
             \node[fill=gray!80, minimum width=4cm, minimum height=2.9cm, rounded corners=0.1cm, text=white, draw=black, font=\systemfont, anchor=south, text depth=2.4cm] (rule) at (0, 0) {
                 Artificial neural network
             };
@@ -324,6 +406,11 @@
             \draw[black, opacity=\edgeopacity] (n30) -- (n40);
             \draw[black, opacity=\edgeopacity] (n31) -- (n40);
             \draw[black, opacity=\edgeopacity] (n40) -- ($ (rule.south east) + (0, 1.25) $);
+        }
+
+        \only<6>{
+            \draw[-stealth] (input2) -- ($ (rule.south west) + (0, 1.25) $);
+            \draw[-stealth] (input3) -- ($ (rule.south west) + (0, 1.25) $);
         }
 
         \visible<3>{
