@@ -1,0 +1,179 @@
+
+\newcommand{\pubmed}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5.5cm,
+            width=12cm,
+            xlabel={År},
+            ylabel={Antall publikasjoner},
+            axis lines=left,
+            xtick pos=bottom,
+            ytick pos=left,
+            xmin=2000,
+            xmax=2025,
+            xtick={2000, 2005, 2010, 2015, 2020},
+            xticklabels={2000, 2005, 2010, 2015, 2020}
+        ]
+            \addplot[
+                uiogreen,
+                thick,
+                mark=*
+            ] table[col sep=comma, x=Year, y=Count] {data/pubmed.csv};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\classification}{
+    \definecolor{MS}{HTML}{264653}
+    \definecolor{AD}{HTML}{2a9d8f}
+    \definecolor{PD}{HTML}{8ab17d}
+    \definecolor{MDD}{HTML}{e9c46a}
+    \definecolor{SCZ}{HTML}{f4a261}
+    \definecolor{BP}{HTML}{e76f51}
+
+    \def\marksize{3pt}
+    \def\markopacity{0.5}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=7.2cm,
+            width=12cm,
+            xlabel=År,
+            ylabel=Treffsikkerhet,
+            xtick pos=bottom,
+            ytick pos=left,
+            xtick={2000, 2005, 2010, 2015, 2020},
+            xticklabels={2000, 2005, 2010, 2015, 2020},
+            xmin=2011,
+            xmax=2023,
+            ytick style={draw=none},
+            ymajorgrids=true,
+            ymin=61.5,
+            ymax=100,
+            legend style={
+                font=\scriptsize,
+                legend cell align=left,
+                at={(rel axis cs: 0.02, 0.03)},
+                anchor=south west
+            },
+            clip=false,
+            x label style={yshift=5}
+        ]
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{MS/HC},
+                MS
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{AD/HC},
+                AD
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{PD/HC},
+                PD
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{MDD/HC},
+                MDD
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{SCZ/HC},
+                SCZ
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addplot[
+                only marks,
+                mark=*,
+                mark size=\marksize,
+                opacity=\markopacity,
+                discard if not={diagnosis}{BP/HC},
+                BP
+            ] table [col sep=comma, x=year, y=accuracy] {data/trial_lecture_data.csv};
+
+            \addlegendentry{Multippel sklerose (n=30)}
+            \addlegendentry{Alzheimers sykdom (n=139)}
+            \addlegendentry{Parkinsons sykdom (n=19)}
+            \addlegendentry{Depresjon (n=3)}
+            \addlegendentry{Schizofreni (n=29)}
+            \addlegendentry{Bipolar lidelse (n=3)}
+
+            \addplot[thick, MS] coordinates {
+                (2011, 94.14) (2023, 94.14)
+            };
+            \node[text=MS, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 94.14) {94.14\%};
+            \addplot[thick, AD] coordinates {
+                (2011, 92.92) (2023, 92.92)
+            };
+            \node[text=AD, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 92.92) {92.92\%};
+            \addplot[thick, PD] coordinates {
+                (2011, 91.8) (2023, 91.8)
+            };
+            \node[text=PD, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 91.8) {91.91\%};
+            \addplot[thick, MDD] coordinates {
+                (2011, 85.11) (2023, 85.11)
+            };
+            \node[text=MDD, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 85.11) {85.11\%};
+            \addplot[thick, SCZ] coordinates {
+                (2011, 82.18) (2023, 82.18)
+            };
+            \node[text=SCZ, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 82.18) {82.18\%};
+            \addplot[thick, BP] coordinates {
+                (2011, 67.66) (2023, 67.66)
+            };
+            \node[text=BP, font=\tiny\bfseries, anchor=west, inner sep=2pt] at (axis cs: 2023, 67.66) {67.66\%};
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\begin{frame}{Kunstig intelligens og hjerneavbildning}
+    \begin{tikzpicture}
+        \node[draw=black] at (-7, -3.25) {};
+        \node[draw=black] at (7, 3.25) {};
+
+        \only<1>{
+            \node[] at (-0.8, 0.5) {
+                \pubmed
+            };
+            \node[anchor=south, font=\tiny, text width=10.5cm, align=flush center] at (0, -3.4) {
+                Artikler som inneholder "neuroimaging OG (artificial intelligence ELLER machine learning ELLER deep learning)" fra https://pubmed.ncbi.nlm.nih.gov
+            };
+        }
+        \only<2>{
+            \mriside{-4.5}{-0.2175}{1.5cm}{data/mri_sagittal.png}
+            \cnnarrow{(input.east)}{($ (input.center) + (3, 0) $)}{black}
+            \cnn{-2.7}{-0.2175}{0.1}{0.15}{uiogreen}{1}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, -0.2175) + (0, 0.5) $) {Pasient};
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, -0.2175) - (0, 0.5) $) {Frisk\\kontroll};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+        \only<3>{
+            \node[] at (0, 0) {
+                \classification
+            };
+        }
+    \end{tikzpicture}
+\end{frame}

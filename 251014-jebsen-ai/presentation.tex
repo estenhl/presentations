@@ -1,0 +1,36 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{UiO}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{overlay-beamer-styles}
+
+\title{Kunstig intelligens og hjerneavbildning}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}
+
+    \input{sections/cnn.tex}
+    \input{sections/intro.tex}
+    \input{sections/quality.tex}
+    \input{sections/xai.tex}
+\end{document}
