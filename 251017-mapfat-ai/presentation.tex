@@ -5,6 +5,8 @@
 \usepackage{emoji}
 \usepackage{pgfplots}
 
+\usetikzlibrary{overlay-beamer-styles}
+
 \title{Integrating complex multimodal health data for clinical prediction with artificial intelligence}
 \author{Esten H. Leonardsen}
 \date{\today}
@@ -18,13 +20,71 @@
 \newcommand{\neuron}[3][uiogreen]{
     \node[circle, draw=black, fill=#1, minimum size=0.3cm] (#2) at #3 {};
 }
+\newcommand{\nn}[2]{
+    \begin{tikzpicture}
+        \node[fill=gray!80, minimum width=3cm, minimum height=2cm, rounded corners=0.1cm, text=white, draw=black, font=\systemfont, anchor=south, text depth=1.5cm] (#2) at (0, 0) {
+            #1
+        };
+
+
+        \neuron{n20}{($ (#2.south) + (0, 0.75) + (-1*\hsep, -1*\vsep) $)}
+        \neuron{n21}{($ (n20) + (0, \vsep) $)}
+        \neuron{n22}{($ (n20) + (0, 2*\vsep) $)}
+
+        \neuron{n30}{($ (n20) + (\hsep, 0.5*\vsep) $)}
+        \neuron{n31}{($ (n20) + (\hsep, 1.5*\vsep) $)}
+
+        \neuron{n40}{($ (n20) + (2*\hsep, \vsep) $)}
+
+        \foreach \j in {0,...,2} {
+            \draw[black, opacity=\edgeopacity] ($ (#2.south west) + (0, 0.75) $) -- (n2\j);
+        }
+
+        \foreach \j in {0,...,2} {
+            \foreach \k in {0,...,1} {
+                \draw[black, opacity=\edgeopacity] (n2\j) -- (n3\k);
+            }
+        }
+        \draw[black, opacity=\edgeopacity] (n30) -- (n40);
+        \draw[black, opacity=\edgeopacity] (n31) -- (n40);
+        \draw[black, opacity=\edgeopacity] (n40) -- ($ (#2.south east) + (0, 0.75) $);
+    \end{tikzpicture}
+}
+\newcommand{\encoder}[2]{
+    \begin{tikzpicture}
+        \node[fill=gray!80, minimum width=2cm, minimum height=1.9cm, rounded corners=0.1cm, text=white, draw=black, font=\systemfont, anchor=south, text depth=1.4cm] (#2) at (0, 0) {
+            #1
+        };
+
+
+        \neuron{#2n20}{($ (#2.south) + (0, 0.75) + (-0.5*\hsep, -1*\vsep) $)}
+        \neuron{#2n21}{($ (#2n20) + (0, \vsep) $)}
+        \neuron{#2n22}{($ (#2n20) + (0, 2*\vsep) $)}
+
+        \neuron{#2n30}{($ (#2n20) + (\hsep, 0.5*\vsep) $)}
+        \neuron{#2n31}{($ (#2n20) + (\hsep, 1.5*\vsep) $)}
+
+        \foreach \j in {0,...,2} {
+            \draw[black, opacity=\edgeopacity] ($ (#2.south west) + (0, 0.75) $) -- (#2n2\j);
+        }
+
+        \foreach \j in {0,...,2} {
+            \foreach \k in {0,...,1} {
+                \draw[black, opacity=\edgeopacity] (#2n2\j) -- (#2n3\k);
+            }
+        }
+    \end{tikzpicture}
+}
+
 
 \begin{document}
 	\begin{frame}
 	 	\titlepage
 	\end{frame}
 
-	%\input{sections/ai.tex}
+	\input{sections/cnn.tex}
+	\input{sections/ai.tex}
 	\input{sections/multimodal.tex}
+	\input{sections/xai.tex}
 
 \end{document}
