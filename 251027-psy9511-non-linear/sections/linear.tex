@@ -2,6 +2,7 @@
 
 
 \newcommand{\datasetplot}[1]{
+    \pgfmathsetseed{42}
     \begin{tikzpicture}
         \begin{axis}[
             height=5cm,
@@ -10,7 +11,6 @@
             xmax=1,
             xtick pos=bottom,
             ytick pos=left,
-            %ymajorticks=false,
             xlabel=$x$,
             ylabel=$y$,
             ymin=-0.1,
@@ -35,6 +35,40 @@
                 ] (x, x^3 + rand * 0.2);
             \fi
             \ifnum#1=2
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=-1:1,
+                    opacity=0.5
+                ] coordinates {
+                    (0.1, 0)
+                    (0.15, 0)
+                    (0.22, 0)
+                    (0.4, 0)
+                    (0.25, 0)
+                    (0.55,0)
+                    (0.43, 0)
+                    (0.51, 0)
+                };
+                \addplot[
+                    only marks,
+                    blue,
+                    samples=100,
+                    domain=-1:1,
+                    opacity=0.5
+                ] coordinates {
+                    (0.3, 1)
+                    (0.47, 1)
+                    (0.52, 1)
+                    (0.65, 1)
+                    (0.81, 1)
+                    (0.84,1)
+                    (0.91, 1)
+                    (0.99, 1)
+                };
+            \fi
+            \ifnum#1=3
                 \addplot[
                     only marks,
                     blue,
@@ -121,64 +155,13 @@
                     samples=100,
                     domain=0:1,
                     opacity=0.5
-                ] (x, 20 + x^3 * 5 + rand);
+                ] (x, x^3 + rand * 0.2);
                 \addplot[
                     thick,
                     red,
                     samples=100,
                     domain=0:1
                 ] (x, x^3);
-            \fi
-
-            \ifnum#1=6
-                \addplot[
-                    only marks,
-                    blue,
-                    samples=100,
-                    domain=0:1,
-                    opacity=0.5
-                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
-            \fi
-
-            \ifnum#1=7
-                \addplot[
-                    only marks,
-                    blue,
-                    samples=100,
-                    domain=0:1,
-                    opacity=0.25
-                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
-                \addplot[
-                    very thick,
-                    red,
-                    domain=0:0.2
-                ] (x, 20*x^0.75);
-
-                \addplot[
-                    very thick,
-                    orange,
-                    domain=0.2:0.6
-                ] (x, 3.7+10.5*x^0.95);
-                \addplot[
-                    very thick,
-                    yellow,
-                    domain=0.6:1.0
-                ] (x, 10-x^7+0.5*x^4);
-            \fi
-
-            \ifnum#1=8
-                \addplot[
-                    only marks,
-                    blue,
-                    samples=100,
-                    domain=0:1,
-                    opacity=0.25
-                ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
-                \addplot[
-                    very thick,
-                    black,
-                    domain=0:1.0
-                ] (x, 3.94*x^3-24.81*x^2+29.49*x+0.31);
             \fi
         \end{axis}
     \end{tikzpicture}
@@ -201,7 +184,7 @@
 
 \newsavebox{\loglinearbox}
 \sbox{\loglinearbox}{
-    \datasetplot{2}
+    \datasetplot{3}
 }
 
 \newsavebox{\logregbox}
@@ -214,19 +197,70 @@
     \datasetplot{5}
 }
 
+\newcommand{\splineplot}[1]{
+    \pgfmathsetseed{42}
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=5cm,
+            width=8cm,
+            xmin=0,
+            xmax=1,
+            xtick pos=bottom,
+            ytick pos=left,
+            xlabel=$x$,
+            ylabel=$y$,
+        ]
+            \addplot[
+                only marks,
+                blue,
+                samples=100,
+                domain=0:1,
+                opacity=0.25
+            ] (x, {x <= 0.2 ? 30*x + rand: (x <= 0.7 ? 6 + 10*(x-0.2) + rand: 10 + -5*(x-0.8) + rand)});
+
+
+            \ifnum#1=1
+                \addplot[
+                    very thick,
+                    red,
+                    domain=0:0.2
+                ] (x, 20*x^0.75);
+
+                \addplot[
+                    very thick,
+                    green,
+                    domain=0.2:0.6
+                ] (x, 3.7+10.5*x^0.95);
+                \addplot[
+                    very thick,
+                    purple,
+                    domain=0.6:1.0
+                ] (x, 10-x^7+0.5*x^4);
+            \fi
+
+            \ifnum#1=2
+                \addplot[
+                    very thick,
+                    black,
+                    domain=0:1.0
+                ] (x, 3.94*x^3-24.81*x^2+29.49*x+0.31);
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
 \newsavebox{\complexbox}
 \sbox{\complexbox}{
-    \datasetplot{6}
+    \splineplot{0}
 }
 
 \newsavebox{\splinebox}
 \sbox{\splinebox}{
-    \datasetplot{7}
+    \splineplot{1}
 }
 
 \newsavebox{\singlesplinebox}
 \sbox{\singlesplinebox}{
-    \datasetplot{8}
+    \splineplot{2}
 }
 
 \newcommand{\gammadistribution}{
@@ -242,7 +276,8 @@
             ymin=0,
             ymax=0.2,
             ymajorticks=false,
-            ylabel={Probability density}
+            ylabel={Probability density},
+            xtick pos=bottom
         ]
         \addplot[blue, thick] {x^(2-1)*exp(-x/2)/(2^2*gamma(2))};
         \end{axis}
@@ -274,50 +309,29 @@
         \node[] at (-5.25, -3.5) {};
         \node[] at (5.25, 3.5) {};
 
-        \visible<1-3,5>{
+        \visible<1-5>{
             \node[] at (0, -2.5) {
-                $\hat{y}=$$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
+                $\hat{y}=\alert<4>{\beta_0+\sum\limits_{i=0}^p \beta_ix_i}$
             };
         }
-
-        \visible<2>{
+        \visible<2-8,11-12>{
             \node[] at (0, 1) {
-                \usebox{\linearbox}
-            };
-        }
-        \visible<3-4,12>{
-            \node[] at (0, 1) {
-                \usebox{\exponentialbox}
-            };
-        }
-        \visible<4>{
-            \node[] at (0, -2.5) {
-                $\hat{y}=$\textcolor{red}{$\beta_0+\sum\limits_{i=0}^p \beta_ix_i$}
-            };
-        }
-        \visible<5-6>{
-            \node[] at (0, 1) {
-                \usebox{\logisticbox}
+                \only<2>{\usebox{\linearbox}}%
+                \only<3-4,11>{\usebox{\exponentialbox}}%
+                \only<5>{\usebox{\loglinearbox}}%
+                \only<6>{\usebox{\logisticbox}}%
+                \only<7-8>{\usebox{\logregbox}}%
+                \only<12>{\usebox{\expregbox}}%
             };
         }
         \visible<6>{
             \node[] at (0, -2.5) {
-                $\log\left(\dfrac{p(X)}{1 - p(X)}\right)=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
-            };
-        }
-        \visible<7>{
-            \node[] at (0, -2.5) {
-                $p(X)=\dfrac{e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}{1 + e^{\left(\beta_0+\sum\limits_{i=0}^p \beta_ix_i\right)}}$
+                $\log\left(\dfrac{p(y=1\ |\ X)}{1 - p(y=1\ |\ X)}\right)=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
             };
         }
         \visible<7-8>{
-            \node[] at (0, 1) {
-                \usebox{\logregbox}
-            };
-        }
-        \visible<8>{
             \node[] at (0, -2.5) {
-                $p(X)=\dfrac{e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i} \right)}}{1 + e^{\left({\color{red}\beta_0+\sum\limits_{i=0}^p \beta_ix_i}\right)}}$
+                $p(y=1\ |\ X)=\dfrac{e^{\left(\alert<8>{\beta_0+\sum\limits_{i=0}^p \beta_ix_i}\right)}}{1 + e^{\left(\alert<8>{\beta_0+\sum\limits_{i=0}^p \beta_ix_i}\right)}}$
             };
         }
         \visible<9>{
@@ -331,9 +345,6 @@
             };
         }
         \visible<12>{
-            \node[] at (0, 1) {
-                \usebox{\expregbox}
-            };
             \node[] at (0, -2.5) {
                 $\log(\hat{y})=\beta_0+\sum\limits_{i=0}^p \beta_ix_i$
             };
@@ -346,7 +357,7 @@
         \visible<14>{
             \node[align=flush left, text width=10.1cm] at (0, 0) {
                 \textbf{Generalized linear models (GLMs):}\\
-                Extends upon the regular linear model by associating the predictors to the response via a non-linear link function $f$.
+                Extends the regular linear model by associating the predictors to the response via a non-linear link function $f$.
                 \begin{itemize}
                     \item Requires us to specify $f$ (often determined by investigating the distribution of the response).
                 \end{itemize}
@@ -381,23 +392,13 @@
         \node[] at (-5.25, -3.5) {};
         \node[] at (5.25, 3.5) {};
 
-        \visible<1>{
+        \visible<1-3>{
             \node[] at (0, 1) {
-                \usebox{\complexbox}
+                \only<1>{\usebox{\complexbox}}%
+                \only<2>{\usebox{\splinebox}}%
+                \only<3>{\usebox{\singlesplinebox}}
             };
         }
-
-        \visible<2>{
-            \node[] at (0, 1) {
-                \usebox{\splinebox}
-            };
-        }
-         \visible<3>{
-            \node[] at (0, 1) {
-                \usebox{\singlesplinebox}
-            };
-        }
-
 
         \visible<2>{
             \node[anchor=north west, text width=10cm] at (-3.6, -1.5) {
@@ -484,17 +485,11 @@
         \visible<12>{
             \node[align=flush left, text width=10.1cm] at (0, 0) {
                 \textbf{Generalized additive models (GAMs):}\\
-                Extends upon the regular linear model by allowing for non-linear functions $f_j$ to be fitted for each predictor $x_j$.
+                Extends the linear model by allowing non-linear functions $f_j$ (i.e. splines) to be fitted for each predictor $x_j$.
                 \begin{itemize}
                     \item Does not allow for interactions between predictors.
                 \end{itemize}
             };
         }
-        \visible<13>{
-            \node[] at (0, 0) {
-                \href{run:RStudio /Users/esten/phd/presentations/241024-psy9511-non-linear/scripts/gam.R}{scripts/gam.R}
-            };
-        }
-
     \end{tikzpicture}
 \end{frame}
