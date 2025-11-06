@@ -1,0 +1,297 @@
+\section{Decision support}
+
+	\begin{frame}[t]{Decision support: Content personalization}
+		\textbf{Helping users decide what to listen to}
+		\vspace{0.3cm}
+		\begin{center}
+			\begin{tikzpicture}
+				\node[] {
+					\includegraphics[width=9cm]{data/spotify.png}
+				};
+			\end{tikzpicture}
+		\end{center}
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item Recommends content to users based on their history.
+			\item Has been around for a long time.
+			\item Extremely intricate trade-offs between exploitation, showing users what they like, and exploration, showing users new content.
+			\item \textbf{Based around recommendation, not clear cut decisions.}
+			\item Can potentially lead to feedback loops?
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[t]{Decision support: Fracture detection}
+		\textbf{Helping doctors detect fractures in X-rays}\\
+		\begin{itemize}
+			\item Bærum sykehus is the first norwegian hospital to implement an AI powered decision support system into the clinic.
+			\item Helps alleviate a 12.5\% year-on-year increase in the prevalence of fractures.
+			\item 60\% to 70\% of all X-rays are normal, but still need to be reviewed by a radiologist.
+		\end{itemize}
+
+		\only<1>{
+			\vspace{0.5cm}
+			\centering
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] {
+					\includegraphics[width=4.5cm]{data/vg.png}
+				};
+			\end{tikzpicture}
+		}
+
+		\only<2-3>{
+			\textbf{Assessing the efficacy of AI in fracture detection (Guermazi et al., 2022)}\\
+		}
+		\only<2>{
+			\vspace{0.3cm}
+			\centering
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] at (0, 0) {
+					\includegraphics[width=3.5cm]{data/boneview.png}
+				};
+				\node[font=\tiny\selectfont] at (0, -2.65) {
+					\href{https://pubs.rsna.org/doi/full/10.1148/radiol.210937}{Improving Radiographic Fracture Recognition Performance and Efficiency Using Artificial Intelligence}, Guermazi, A. et al, \textit{Radiology}, 2022.
+				};
+			\end{tikzpicture}
+		}
+		\only<3>{
+			\begin{itemize}
+				\item AI assistant on its own achieved an area under the receiver operating characteristic curve of 0.97.
+				\item Radiologist in conjunction with the AI assistant achieved a 10.4\% increase in sensitivity (64.8\% to 75.2\%), and an increase in specificity (90.6\% vs 95.6\%).
+				\item \textbf{Assistance from the AI reduced average reading time with 6.3 seconds}.
+			\end{itemize}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision support: COVID-19 severity}
+		\textbf{Helping doctors decide the severity of COVID-19 cases (Wysocki et al., 2023)}\\
+		\begin{itemize}
+			\item 23 healthcare professionals tasked to assess the severity of COVID-19 in ten patients using the COVID-19 Risk in ONcology Evaluation Tool (CORONET) tool.
+			\item <2-> Questioned about their experience using the tool.
+		\end{itemize}
+
+		\vspace{0.2cm}
+		\centering
+
+		\only<1>{
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] at (0, 0) {
+					\includegraphics[width=9cm]{data/covid.png}
+				};
+				\node[font=\tiny\selectfont] at (0, -3.2) {
+					\href{https://www.sciencedirect.com/science/article/pii/S0004370222001795}{Assessing the communication gap between AI models and healthcare professionals ...}, Wysocki, O. et al, \textit{Artificial Intelligence}, 2023.
+				};
+			\end{tikzpicture}
+		}
+		\only<2->{
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] at (0, 0) {
+					\includegraphics[width=9cm]{data/questionnaire.png}
+				};
+				\visible<3>{
+					\node[draw=red, minimum width=6.2cm, minimum height=0.5cm, thick] at (-1.23, -0.85) {};
+				}
+				\visible<4>{
+					\node[draw=red, minimum width=6.3cm, minimum height=1cm, thick] at (-1.3, -0.1) {};
+				}
+			\end{tikzpicture}
+		}
+	\end{frame}
+
+	\begin{frame}{Decision support: Interpretability}
+		\centering
+		\begin{tikzpicture}
+			\node[] at (-5.35, 1.5) {};
+			\node[] at (5.35, -6.1) {};
+
+			\visible<1>{
+				\node[draw=black, dashed] (in) at (-4, -0.75) {Laboratory report};
+
+				\node[draw=black, fill=background] (n00) at (0, 0) {
+					gram stain = gramneg
+				};
+				\node[draw=black, fill=background] (n01) at (0, -0.75) {
+					morphology = rod
+				};
+				\node[draw=black, fill=background] (n02) at (0, -1.5) {
+					aerobicity = anaerobic
+				};
+
+				\node[] (out) at (4, -0.75) {bacteroides};
+
+				\draw[-Latex] (in.east) -- (n00.west);
+				\draw[-Latex] (in.east) -- (n01.west);
+				\draw[-Latex] (in.east) -- (n02.west);
+				\draw[-Latex] (n00.east) -- (out.west);
+				\draw[-Latex] (n01.east) -- (out.west);
+				\draw[-Latex] (n02.east) -- (out.west);
+
+				\draw[fill=background] (-1.85, -2.65) rectangle (1.85, -5.35);
+				\node[anchor=north east] at (1.85, -2.65) {\small{Neural network}};
+
+				\node[draw=black, dashed] (in) at (-4, -4) {Laboratory report};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n00) at (-1.5, -3) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n01) at (-1.5, -3.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n02) at (-1.5, -4) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n03) at (-1.5, -4.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n04) at (-1.5, -5) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n10) at (-0.75, -3.25) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n11) at (-0.75, -3.75) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n12) at (-0.75, -4.25) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n13) at (-0.75, -4.75) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n20) at (0, -3.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n21) at (0, -4) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n22) at (0, -4.5) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n30) at (0.75, -3.75) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n31) at (0.75, -4.25) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n40) at (1.5, -4) {};
+
+				\node[] (out) at (4, -4) {bacteroides};
+
+				\draw[-Latex] (in.east) -- (n00);
+				\draw[-Latex] (in.east) -- (n01);
+				\draw[-Latex] (in.east) -- (n02);
+				\draw[-Latex] (in.east) -- (n03);
+				\draw[-Latex] (in.east) -- (n04);
+
+				\draw[] (n00) -- (n10);
+				\draw[] (n00) -- (n11);
+				\draw[] (n00) -- (n12);
+				\draw[] (n00) -- (n13);
+				\draw[] (n01) -- (n10);
+				\draw[] (n01) -- (n11);
+				\draw[] (n01) -- (n12);
+				\draw[] (n01) -- (n13);
+				\draw[] (n02) -- (n10);
+				\draw[] (n02) -- (n11);
+				\draw[] (n02) -- (n12);
+				\draw[] (n02) -- (n13);
+				\draw[] (n03) -- (n10);
+				\draw[] (n03) -- (n11);
+				\draw[] (n03) -- (n12);
+				\draw[] (n03) -- (n13);
+				\draw[] (n04) -- (n10);
+				\draw[] (n04) -- (n11);
+				\draw[] (n04) -- (n12);
+				\draw[] (n04) -- (n13);
+
+				\draw[] (n10) -- (n20);
+				\draw[] (n10) -- (n21);
+				\draw[] (n10) -- (n22);
+				\draw[] (n11) -- (n20);
+				\draw[] (n11) -- (n21);
+				\draw[] (n11) -- (n22);
+				\draw[] (n12) -- (n20);
+				\draw[] (n12) -- (n21);
+				\draw[] (n12) -- (n22);
+				\draw[] (n13) -- (n20);
+				\draw[] (n13) -- (n21);
+				\draw[] (n13) -- (n22);
+
+				\draw[] (n20) -- (n30);
+				\draw[] (n20) -- (n31);
+				\draw[] (n21) -- (n30);
+				\draw[] (n21) -- (n31);
+				\draw[] (n22) -- (n30);
+				\draw[] (n22) -- (n31);
+
+				\draw[] (n30) -- (n40);
+				\draw[] (n31) -- (n40);
+
+				\draw[-Latex] (n40) -- (out);
+
+				\draw[densely dotted] (-5.3, -2.2) -- (5.3, -2.2);
+				\node[anchor=south west] at (-5.3, -2.2) {Expert system};
+				\node[anchor=north west] at (-5.3, -2.2) {Machine learning};
+			}
+			\visible<2>{
+				\node[inner sep=0pt, draw=black] at (0, -2) {
+					\includegraphics[width=8cm]{data/adverserial.png}
+				};
+				\node[font=\tiny\selectfont, anchor=south] at (0, -6.23) {
+					\href{https://arxiv.org/abs/1412.6572}{Explaining and Harnessing Adversarial Examples}, Goodfellow, I. J. et al., \textit{preprint at arXiv}, 2014
+				};
+			}
+			\visible<3>{
+				\node[inner sep=0pt, draw=black] at (0, -2) {
+					\includegraphics[width=8cm]{data/medical_adverserial.png}
+				};
+				\node[font=\tiny\selectfont, anchor=south] at (0, -6.23) {
+					\href{https://doi.org/10.1126/science.aaw4399}{Adversarial attacks on medical machine learning}, Finlayson, S. G. et al., \textit{Science}, 2019
+				};
+			}
+			\visible<4>{
+				\node[inner sep=0pt, draw=black] at (0, -2) {
+					\includegraphics[width=7.5cm]{data/shap.png}
+				};
+			}
+			\visible<5>{
+				\node[inner sep=0pt, draw=black] at (0, -2) {
+					\includegraphics[width=8cm]{data/gradcam.png}
+				};
+				\node[font=\tiny\selectfont, anchor=south] at (0, -6.23) {
+					\href{https://arxiv.org/abs/1610.02391}{Grad-cam: Visual explanations from deep networks via gradient-based localization}, Selvaraju, R. R. et al., \textit{Proceedings of the IEEE ICCV}, 2017
+				};
+			}
+			\visible<6>{
+				\node[
+					minimum height=0.41\textwidth,
+					minimum width=0.32\textwidth,
+					fill=black,
+					anchor=west
+				] (box1) at (-5.3, -1) {};
+				\node[anchor=south] at (box1.south) {
+					\includegraphics[width=0.31\textwidth]{data/subject1.png}
+				};
+				\node[anchor=north,inner sep=2pt, text=white, font=\footnotesize] at (box1.north) {Patient 1};
+
+				\node
+					[minimum height=0.41\textwidth,
+					minimum width=0.32\textwidth,
+					fill=black,
+					anchor=west
+				] (box2) at ($ (box1.east) + (0.05,0) $) {};
+				\node[anchor=south] at (box2.south) {
+					\includegraphics[width=0.31\textwidth]{data/subject2.png}
+				};
+				\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box2.north) {Patient 2};
+
+				\node
+					[minimum height=0.41\textwidth,
+					minimum width=0.32\textwidth,
+					fill=black,
+					anchor=west
+				] (box3) at ($ (box2.east) + (0.05,0) $) {};
+				\node[anchor=south] at (box3.south) {
+					\includegraphics[width=0.31\textwidth]{data/subject3.png}
+				};
+				\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
+
+				\node[font=\tiny\selectfont, align=center, anchor=south] at (0, -6.23) {
+					\href{https://www.nature.com/articles/s41746-024-01123-7}{Constructing personalized characterizations of structural brain aberrations in patients with dementia}\\using explainable artificial intelligence, Leonardsen, E. H. et al., \textit{Digital Medicine}, 2024
+				};
+			}
+			\visible<7>{
+				\node[label={[text depth=0]above:AI}] at (-2, -1) {
+					\includegraphics[width=0.31\textwidth]{data/dementia.png}
+				};
+
+				\node[label={[text depth=0]above:Human}] at (2, -1) {
+					\includegraphics[width=0.31\textwidth]{data/ALE.png}
+				};
+			}
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}[t]{Decision support: Summary}
+		AI already implemented in many domains for \textbf{decision support}, also those considered high stakes.
+		\begin{itemize}
+			\item Can help improve predictive performance, and reduce time needed from domain experts.
+			\item Lack of understanding of what underlies the decisions made by AI systems is a problem.
+			\item Explainability is a hot topic in research, but still in its infancy.
+		\end{itemize}
+	\end{frame}

@@ -1,0 +1,537 @@
+
+	\section{How does AI make decisions?}
+
+	\begin{frame}{Decision making: Expert systems vs. machine learning} % Comparison
+		\begin{tikzpicture}
+
+			\node[draw=black, fill=background] (n00) at (0, 0) {
+				gram stain = gramneg
+			};
+			\node[draw=black, fill=background] (n01) at (0, -0.75) {
+				morphology = rod
+			};
+			\node[draw=black, fill=background] (n02) at (0, -1.5) {
+				aerobicity = anaerobic
+			};
+
+			\node[anchor=south west] at (-5.3, -2.2) {Expert system};
+
+			\visible<2->{
+				\node[draw=black, dashed] (in) at (-4, -0.75) {Laboratory report};
+
+				\draw[-Latex] (in.east) -- (n00.west);
+				\draw[-Latex] (in.east) -- (n01.west);
+				\draw[-Latex] (in.east) -- (n02.west);
+
+				\node[] (out) at (4, -0.75) {bacteroides};
+
+				\draw[-Latex] (n00.east) -- (out.west);
+				\draw[-Latex] (n01.east) -- (out.west);
+				\draw[-Latex] (n02.east) -- (out.west);
+			}
+
+			\visible<3>{
+				\node[] (doctor) at ($ (n02) - (0, 2.5) $) {
+					\Huge{\emoji{woman-scientist}}
+				};
+				\draw[-stealth, line width=5pt, gray] (doctor) -- (n02);
+			}
+
+			\visible<4->{
+				\draw[densely dotted] (-5.3, -2.2) -- (5.3, -2.2);
+				\node[anchor=north west] at (-5.3, -2.2) {Machine learning};
+
+				\draw[fill=background] (-1.85, -2.65) rectangle (1.85, -5.35);
+				\node[draw=black, dashed] (in) at (-4, -4) {Laboratory report};
+				\node[] (out) at (4, -4) {bacteroides};
+			}
+			\visible<4>{
+				\draw[-Latex] (in.east) -- (-1.85, -4);
+				\draw[-Latex] (1.85, -4) -- (out);
+			}
+
+			\visible<5>{
+				\node[anchor=north east] at (1.85, -2.65) {\small{Neural network}};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n00) at (-1.5, -3) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n01) at (-1.5, -3.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n02) at (-1.5, -4) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n03) at (-1.5, -4.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n04) at (-1.5, -5) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n10) at (-0.75, -3.25) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n11) at (-0.75, -3.75) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n12) at (-0.75, -4.25) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n13) at (-0.75, -4.75) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n20) at (0, -3.5) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n21) at (0, -4) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n22) at (0, -4.5) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n30) at (0.75, -3.75) {};
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n31) at (0.75, -4.25) {};
+
+				\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n40) at (1.5, -4) {};
+
+				\draw[-Latex] (in.east) -- (n00);
+				\draw[-Latex] (in.east) -- (n01);
+				\draw[-Latex] (in.east) -- (n02);
+				\draw[-Latex] (in.east) -- (n03);
+				\draw[-Latex] (in.east) -- (n04);
+
+				\draw[] (n00) -- (n10);
+				\draw[] (n00) -- (n11);
+				\draw[] (n00) -- (n12);
+				\draw[] (n00) -- (n13);
+				\draw[] (n01) -- (n10);
+				\draw[] (n01) -- (n11);
+				\draw[] (n01) -- (n12);
+				\draw[] (n01) -- (n13);
+				\draw[] (n02) -- (n10);
+				\draw[] (n02) -- (n11);
+				\draw[] (n02) -- (n12);
+				\draw[] (n02) -- (n13);
+				\draw[] (n03) -- (n10);
+				\draw[] (n03) -- (n11);
+				\draw[] (n03) -- (n12);
+				\draw[] (n03) -- (n13);
+				\draw[] (n04) -- (n10);
+				\draw[] (n04) -- (n11);
+				\draw[] (n04) -- (n12);
+				\draw[] (n04) -- (n13);
+
+				\draw[] (n10) -- (n20);
+				\draw[] (n10) -- (n21);
+				\draw[] (n10) -- (n22);
+				\draw[] (n11) -- (n20);
+				\draw[] (n11) -- (n21);
+				\draw[] (n11) -- (n22);
+				\draw[] (n12) -- (n20);
+				\draw[] (n12) -- (n21);
+				\draw[] (n12) -- (n22);
+				\draw[] (n13) -- (n20);
+				\draw[] (n13) -- (n21);
+				\draw[] (n13) -- (n22);
+
+				\draw[] (n20) -- (n30);
+				\draw[] (n20) -- (n31);
+				\draw[] (n21) -- (n30);
+				\draw[] (n21) -- (n31);
+				\draw[] (n22) -- (n30);
+				\draw[] (n22) -- (n31);
+
+				\draw[] (n30) -- (n40);
+				\draw[] (n31) -- (n40);
+
+				\draw[-Latex] (n40) -- (out);
+			}
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Loss functions}
+		A loss function formalizes what we want the machine learning model to do:\\
+		\begin{itemize}
+			\item <2-> \textbf{\underline{Classification}}\\
+			\item[] <2-> What is in the image?\\
+			\item[\rightarrow] <3-> \hspace{0.2cm} What is the probability that input is a cat/dog/giraffe/etc.?
+			\item[\rightarrow] <3-> \hspace{0.2cm} $-\dfrac{1}{N}\sum\limits_{i=0}^N \left[ y_i \log \hat{y}_i + (1 - y_i) \log (1 - \hat{y}_i) \right]$
+			\item[] <3-> where $y_i$ is the correct label and $\hat{y}_i$ is the predicted probability.
+			\item <4-> \textbf{\underline{Regression}}\\
+			\item[] <4-> How happy is the person that wrote this sentence on a scale of 1-10?\\
+			\item[\rightarrow] <5> \hspace{0.2cm} $\left(y - \hat{y}\right)^2$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Decision making: Learning} % Update
+		\centering
+		\begin{tikzpicture}
+			\visible<2->{
+				\node[draw=black, inner sep=0pt, label=below:cat] (in) at (-4, -4) {
+					\includegraphics[width=2cm]{data/cat.jpeg}
+				};
+			}
+
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n00) at (-1.5, -3) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n01) at (-1.5, -3.5) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n02) at (-1.5, -4) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n03) at (-1.5, -4.5) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n04) at (-1.5, -5) {};
+
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n10) at (-0.75, -3.25) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n11) at (-0.75, -3.75) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n12) at (-0.75, -4.25) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n13) at (-0.75, -4.75) {};
+
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n20) at (0, -3.5) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n21) at (0, -4) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n22) at (0, -4.5) {};
+
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n30) at (0.75, -3.75) {};
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n31) at (0.75, -4.25) {};
+
+			\node[draw=black, fill=nodefill, circle, inner sep=4pt] (n40) at (1.5, -4) {};
+
+			\visible<1-4>{
+				\draw[] (n00) -- (n10);
+				\draw[] (n00) -- (n11);
+				\draw[] (n00) -- (n12);
+				\draw[] (n00) -- (n13);
+				\draw[] (n01) -- (n10);
+				\draw[] (n01) -- (n11);
+				\draw[] (n01) -- (n12);
+				\draw[] (n01) -- (n13);
+				\draw[] (n02) -- (n10);
+				\draw[] (n02) -- (n11);
+				\draw[] (n02) -- (n12);
+				\draw[] (n02) -- (n13);
+				\draw[] (n03) -- (n10);
+				\draw[] (n03) -- (n11);
+				\draw[] (n03) -- (n12);
+				\draw[] (n03) -- (n13);
+				\draw[] (n04) -- (n10);
+				\draw[] (n04) -- (n11);
+				\draw[] (n04) -- (n12);
+				\draw[] (n04) -- (n13);
+
+				\draw[] (n10) -- (n20);
+				\draw[] (n10) -- (n21);
+				\draw[] (n10) -- (n22);
+				\draw[] (n11) -- (n20);
+				\draw[] (n11) -- (n21);
+				\draw[] (n11) -- (n22);
+				\draw[] (n12) -- (n20);
+				\draw[] (n12) -- (n21);
+				\draw[] (n12) -- (n22);
+				\draw[] (n13) -- (n20);
+				\draw[] (n13) -- (n21);
+				\draw[] (n13) -- (n22);
+
+				\draw[] (n20) -- (n30);
+				\draw[] (n20) -- (n31);
+				\draw[] (n21) -- (n30);
+				\draw[] (n21) -- (n31);
+				\draw[] (n22) -- (n30);
+				\draw[] (n22) -- (n31);
+
+				\draw[] (n30) -- (n40);
+				\draw[] (n31) -- (n40);
+			}
+
+			\visible<2->{
+				\draw[-Latex] (in.east) -- (n00);
+				\draw[-Latex] (in.east) -- (n01);
+				\draw[-Latex] (in.east) -- (n02);
+				\draw[-Latex] (in.east) -- (n03);
+				\draw[-Latex] (in.east) -- (n04);
+			}
+
+			\visible<3->{
+				\node[] (out) at (3, -4) {dog};
+			}
+			\visible<3-4>{
+				\draw[-Latex] (n40) -- (out);
+			}
+
+			\visible<4->{
+				\node[draw=black, dotted, label=below:\small{loss}] (loss) at ($ (out.south) - (0, 1.3) $) {\textcolor{red}{dog $\neq$ cat}};
+			}
+			\visible<4>{
+				\draw[-Latex] (out) -- (loss);
+			}
+
+			\visible<5>{
+				\draw[red] (n00) -- (n10);
+				\draw[red] (n00) -- (n11);
+				\draw[red] (n00) -- (n12);
+				\draw[red] (n00) -- (n13);
+				\draw[red] (n01) -- (n10);
+				\draw[red] (n01) -- (n11);
+				\draw[red] (n01) -- (n12);
+				\draw[red] (n01) -- (n13);
+				\draw[red] (n02) -- (n10);
+				\draw[red] (n02) -- (n11);
+				\draw[red] (n02) -- (n12);
+				\draw[red] (n02) -- (n13);
+				\draw[red] (n03) -- (n10);
+				\draw[red] (n03) -- (n11);
+				\draw[red] (n03) -- (n12);
+				\draw[red] (n03) -- (n13);
+				\draw[red] (n04) -- (n10);
+				\draw[red] (n04) -- (n11);
+				\draw[red] (n04) -- (n12);
+				\draw[red] (n04) -- (n13);
+
+				\draw[red] (n10) -- (n20);
+				\draw[red] (n10) -- (n21);
+				\draw[red] (n10) -- (n22);
+				\draw[red] (n11) -- (n20);
+				\draw[red] (n11) -- (n21);
+				\draw[red] (n11) -- (n22);
+				\draw[red] (n12) -- (n20);
+				\draw[red] (n12) -- (n21);
+				\draw[red] (n12) -- (n22);
+				\draw[red] (n13) -- (n20);
+				\draw[red] (n13) -- (n21);
+				\draw[red] (n13) -- (n22);
+
+				\draw[red] (n20) -- (n30);
+				\draw[red] (n20) -- (n31);
+				\draw[red] (n21) -- (n30);
+				\draw[red] (n21) -- (n31);
+				\draw[red] (n22) -- (n30);
+				\draw[red] (n22) -- (n31);
+
+				\draw[red] (n30) -- (n40);
+				\draw[red] (n31) -- (n40);
+
+				\draw[Latex-,red] (n40) -- (out);
+
+				\draw[Latex-,red] (out) -- (loss);
+			}
+
+			\node[] at (-5, -3) {};
+			\node[] at (3.75, -6.2) {};
+		\end{tikzpicture}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Summary}
+		\textbf{How does a neural network make a decision?}\\
+		By looking for patterns in input data it has learned to recognize based on training to solve a \alert<2>{specific task}, represented by a \alert<2>{loss function}, using \alert<2>{training data}.
+		\visible<2>{
+			\begin{itemize}
+				\item[\textcolor{green}+] The model will get very good at this task.
+				\item[\textcolor{red}-] The model will not take considerations beyond this task, e.g. emotions, justice, morality.
+				\item[\textcolor{green}+] The model applies patterns from its training data that were sufficient to solve the task there.
+				\item[\textcolor{red}-] There is no guarantee these patterns are sufficient in new data.
+				\item[\textcolor{red}-] No guarantee these patterns are ones we want to use (e.g. bias).
+			\end{itemize}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Group work}
+		We are dealing with an automatic system in a bank that automatically decides which of its clients are granted a loan.
+		\begin{itemize}
+			\item In the center of the system is a machine learning model that predicts the probability of a client defaulting. This model is a fully deterministic mathematical construction that takes some numbers as input (e.g. the clients age, sex, income, size of the loan, etc.) and gives a single number as an output. The model was trained on training data originating from previous customers of the bank.
+			\item Around the neural network is a software system which the user interacts with through a website. After the user has input data, the system gives it to the neural network to make a prediction. If the neural network predicts a probability higher than 20\%, the loan is declined. The threshold of 20\% was implemented by a programmer, and decided upon by a business analyst.
+		\end{itemize}
+		A client gets his loan declined. Who or what made the decision?\\
+		\visible<2>{
+			\textcolor{red}{The bank, the software system, the neural network, the programmer, the business analyst, previous customers (represented by the training data), the client (represented by his/her characteristics depicted in the input data)?}
+		}
+	\end{frame}
+
+	\newcommand{\generalizationplot}[1]{
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={Apartment size (sq. m.)},
+				ylabel={Apartment value (NOK)},
+				width=8cm,
+				height=6cm,
+				ymax=6,
+				ymin=-2,
+				xmin=0,
+				xmax=3,
+				ticks=none,
+				axis x line=bottom,
+				axis y line=left
+			]
+
+			\addplot[blue!60, only marks] coordinates {
+				(1, 2)
+				(2, 4)
+			};
+
+			\ifnum#1>0
+				\addplot[green!60, only marks] coordinates {
+					(1.5, 3)
+				};
+			\fi
+			\ifnum#1>1
+				\addplot[red!60, only marks] coordinates {
+					(0.5, 1)
+					(2.5, 5)
+				};
+			\fi
+
+			\end{axis}
+		\end{tikzpicture}
+	}
+
+	\begin{frame}[t]{Decision making: Generalization} % Extrapolation
+		\centering
+		\textbf{There is no guarantee the patterns the model has learned are sufficient in new data.}
+
+		\begin{itemize}
+			\item <2-> "AI that is based on datasets cannot go beyond what is in the data." - Reasoning, Judging, Deciding: The Science of Thinking, Ch. 15
+			\item <3-> While machine learning models are trained on a specific dataset (commonly referred to as the training set), they are almost always evaluated on a different dataset (called the test set).
+		\end{itemize}
+
+		\vspace{0.1cm}
+		\only<4>{
+			\generalizationplot{0}
+		}
+		\only<5>{
+			\generalizationplot{1}
+		}
+		\only<6>{
+			\generalizationplot{2}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Biases} % COMPAS: Accuracy
+		\textbf{There is no guarantee the patterns the models have learned are ones we want to use}
+		\begin{itemize}
+			\item A model can rely on variables we do not want to drive the predictions (age, gender, nationality) due to correlations in training data.
+			\item This can occur even when the model is not explicitly trained to use these variables.
+			\item Thus models perpetuate and potentially amplify societal biases from their training data.
+		\end{itemize}
+
+		\only<2-5>{
+			\textbf{Bias in criminal risk assessment (Dressel \& Farid, 2018)}
+			\begin{itemize}
+				\item Comparison of the ability of COMPAS, a commercial risk assessment software, and non-expert humans to predict re-arrest.
+				\item <4->Both COMPAS and humans were biased against black offenders, even when race was not used in the data.
+				\item <5-> "it is valuable to ask whether we would put these decisions in the hands of random people ..., [which] appear to be indistinguishable."
+			\end{itemize}
+		}
+		\only<3>{
+			\vspace{-6.3cm}
+			\centering
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] at (0, 0) {
+					\includegraphics[width=8cm]{data/compas.jpeg}
+				};
+
+				\node[font=\tiny] at (0, -4) {
+					\href{https://www.science.org/doi/10.1126/sciadv.aao5580}{The accuracy, fairness, and limits of predicting recidivism}, Dressel J. and Farid H., \textit{Science Advances}, 2018
+				};
+			\end{tikzpicture}
+		}
+		\only<6->{
+			\textbf{Bias in hiring (Bertrand \& Mullainathan, 2004)}
+			\begin{itemize}
+				\item Evaluation of bias in human decision making in help-wanted advertisements in the United States.
+				\item[\rightarrow] "Applicants" were given very African American or European-sounding names.
+				\item <7> European names received 50\% more callbacks for interviews.
+				\item <7> Applicants from neighbourhoods considered higher class received more callbacks.
+				\item <7> Employers listing themselves as an "Equal Opportunity Employer" were as biased as others.
+			\end{itemize}
+		}
+		\only<6>{
+			\vspace{0.18cm}
+			\centering
+			{\tiny
+			\href{https://www.nber.org/papers/w9873}{Are Emily and Greg More Employable than Lakisha and Jamal? ...}, Bertrand M. \& Mullainathan S., \textit{American economic review}, 2004
+			}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Theory of mind}
+		\textbf{Does AI consider humans as thinking and feeling beings?}
+		\begin{itemize}
+			\item <2-> "... This is an instance of AI programs lacking true Theory of Mind capability." - Reasoning, Judging, Deciding: The Science of Thinking, Ch. 15
+			\item <2-> Theory of mind: The ability to "track others' unobservable mental states, such as their knowledge, intentions, beliefs, and desires." (Kosinski 2023)
+		\end{itemize}
+
+		\only<3>{
+			\textbf{Pedestrian modelling in self-driving cars (Gulzar et al., 2021)}\\
+			\centering
+			\vspace{0.3cm}
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] (0, 0) {
+					\includegraphics[width=8cm]{data/pedestrian.png}
+				};
+				\node[font=\tiny\selectfont] at (0, -2.57) {
+					\href{https://ieeexplore.ieee.org/abstract/document/9559998}{A Survey on Motion Prediction of Pedestrians and Vehicles for Autonomous Driving}, Gulzar, M. et al, \textit{IEEE Access 9}, 2021.
+
+				};
+			\end{tikzpicture}
+		}
+		\only<4-5>{
+			\textbf{Theory of mind in ChatGPT (Kosinski, 2023)}\\
+			\centering
+			\vspace{0.3cm}
+			\begin{tikzpicture}
+				\only<4>{
+					\node[inner sep=0pt, draw=black, anchor=north] at (0, 0) {
+						\includegraphics[width=9cm]{data/theory_of_mind.png}
+					};
+				}
+				\only<5>{
+					\node[inner sep=0pt, draw=black, anchor=north] at (0, 0) {
+						\includegraphics[width=9cm]{data/theory_of_mind2.png}
+					};
+				}
+
+				\node[font=\tiny\selectfont] at (0, -4.55) {
+					\href{https://arxiv.org/abs/2302.02083}{Theory of Mind Might Have Spontaneously Emerged in Large Language Models}, Kosinski, M., \textit{preprint at arXiv}, 2023.
+				};
+			\end{tikzpicture}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Creativity}
+		\textbf{Can AI create anything that is truly new?}
+		\begin{itemize}
+			\item <2-> "AI does not truly create" - Reasoning, Judging, Deciding: The Science of Thinking, Ch. 15
+			\item <2-> "AI lacks true imagination" - Reasoning, Judging, Deciding: The Science of Thinking, Ch. 15
+		\end{itemize}
+
+		\only<3>{
+			\centering
+			\vspace{0.2cm}
+			\begin{tikzpicture}
+				\node[label=below:{Imagen: A cute corgi lives in a house made out of sushi}, inner sep=0pt, draw=black] {
+					\includegraphics[width=4.5cm]{data/corgi.jpeg}
+				};
+			\end{tikzpicture}
+		}
+		\only<4>{
+			\textbf{GPT-4 displays creative mathematical thinking (Bubeck et al., 2023)}
+			\begin{itemize}
+				\item "The conversation reflects profound understanding of the undergraduate-level
+				mathematical concepts discussed, as well as a significant extent of creativity"
+			\end{itemize}
+			\vspace{0.3cm}
+			\centering
+			\begin{tikzpicture}
+				\node[inner sep=0pt, draw=black] at (0, 0){
+					\includegraphics[width=10cm]{data/ksat}
+				};
+
+				\node[font=\tiny] at (0, -2.2) {
+					\href{https://arxiv.org/pdf/2303.12712.pdf}{Sparks of artificial general intelligence: Early experiments with gpt-4}, Bubeck, S. et al., \textit{preprint at arXiv}, 2023.
+				};
+			\end{tikzpicture}
+		}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Wisdom}
+		\textbf{Are AIs wise?}
+		\begin{itemize}
+			\item "... the expertise in the domain of fundamental life pragmatics, such as life planning or life review. It requires a rich factual knowledge about life matters, rich procedural knowledge about life problems, knowledge of different life contexts and values or priorities, and knowledge about the unpredictability of life." - easoning, Judging, Deciding: The Science of Thinking, Ch. 15 (adopted from Birren and Svensson, attributed to Baltes and Smith)
+			\item <2>Current AI relies on correlations in data, not causal understanding.
+			\item <2>Lacks commonsense understanding (which can lead to surprising errors).
+			\item <2>Mostly unimodal (e.g. relies only on text) and non-causal, little opportunity to interact with the world.
+			\item <2>\textbf{Little introspection towards its own limits or uncertainties.}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[t]{Decision making: Summary}
+		\textbf{How does AI make decisions?}
+		\begin{itemize}
+			\item Learns to solve a \textit{very} specific problem.
+			\item Relies on correlations in training data.
+		\end{itemize}
+		\textbf{What can we expect from decisions made by AI systems?}
+		\begin{itemize}
+			\item Usually very good at the task it was trained for.
+			\item Lacks moral judgement, empathy and sense of justice.
+			\item Dangerous to rely on decisions based on input data that is out-of-distribution (extrapolation).
+			\item Potentially biased (but so are humans).
+			\item Uncertain whether they can imagine other actors with their own goals and desires.
+			\item Uncertain whether they can create anything that is truly new.
+			\item Lacks wisdom, a fundamental understanding of the world, and common sense.
+			\item \textbf{Reliable and objective (in one sense of the word)}
+			\item[\textcolor{red}{$\rightarrow$}] <2> \textcolor{red}{What is wisdom, creativity? (Have we learned nothing from our old friend Turing?)}
+		\end{itemize}
+	\end{frame}

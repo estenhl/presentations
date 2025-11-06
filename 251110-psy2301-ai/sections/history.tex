@@ -1,0 +1,598 @@
+\section{The history of artificial intelligence}
+
+\newcommand{\imagenetplot}[1]{
+    \begin{tikzpicture}
+        \begin{axis}[
+            ylabel={Error rate},
+            xlabel={Year},
+            xtick={2010, 2012, 2014, 2016, 2018, 2020},
+            xticklabels={2010, 2012, 2014, 2016, 2018, 2020},
+            ytick={0, 10, 20, 30},
+            yticklabels={0\%, 10\%, 20\%, 30\%},
+            ytick style={draw=none},
+            ytick pos=left,
+            xtick pos=bottom,
+            ymajorgrids=true,
+            ymax=29,
+            ymin=0,
+            xmin=2009,
+            xmax=2021,
+            width=8cm,
+            height=5cm
+        ]
+            \ifnum#1=0
+                \addplot[mark=*, purple,thick] coordinates {
+                    (2010, 28.2)
+                    (2011, 25.8)
+                };
+            \fi
+            \ifnum#1=1
+                \addplot[mark=*, purple,thick] coordinates {
+                    (2010, 28.2)
+                    (2011, 25.8)
+                    (2012, 16.4)
+                };
+            \fi
+            \ifnum#1>1
+                \addplot[mark=*, purple,thick] coordinates {
+                    (2010, 28.2)
+                    (2011, 25.8)
+                    (2012, 16.4)
+                    (2013, 11.7)
+                    (2014, 7.3)
+                    (2015, 3.5)
+                    (2016, 3.0)
+                    (2017, 2.3)
+                    (2018, 1.8)
+                    (2019, 1.3)
+                    (2020, 0.9)
+                };
+            \fi
+
+            \node[anchor=north, inner sep=5pt] at (axis cs: 2010, 28.2) {
+                \small{28.2}
+            };
+            \node[anchor=north, inner sep=5pt] at (axis cs: 2011, 25.8) {
+                \small{25.8}
+            };
+
+            \ifnum#1>0
+                \node[anchor=north, inner sep=5pt] at (axis cs: 2012, 16.4) {
+                    \small{16.4}
+                };
+
+                \addplot[densely dotted] coordinates {
+                    (2011.5, 30)
+                    (2011.5, 0)
+                };
+            \fi
+            \ifnum#1>1
+                \node[anchor=north, inner sep=5pt] at (axis cs: 2013, 11.7) {
+                    \small{11.7}
+                };
+                \node[anchor=north, inner sep=5pt] at (axis cs: 2014, 7.3) {
+                    \small{7.3}
+                };
+                \node[anchor=north, inner sep=5pt] at (axis cs: 2015, 3.5) {
+                    \small{3.5}
+                };
+                \node[anchor=south, inner sep=5pt] at (axis cs: 2016, 3.0) {
+                    \small{3.0}
+                };
+                \node[anchor=south, inner sep=5pt] at (axis cs: 2017, 2.3) {
+                    \small{2.3}
+                };
+                \node[anchor=south, inner sep=5pt] at (axis cs: 2018, 1.8) {
+                    \small{1.8}
+                };
+                \node[anchor=south, inner sep=5pt] at (axis cs: 2019, 1.3) {
+                    \small{1.3}
+                };
+                \node[anchor=south, inner sep=5pt] at (axis cs: 2020, 0.9) {
+                    \small{\textbf{0.9}}
+                };
+            \fi
+            \ifnum#1>2
+                \addplot[dashed, red] coordinates {
+                    (2009, 5.1)
+                    (2021, 5.1)
+                };
+
+                \node[anchor=south east] at (axis cs: 2021, 5.1) {
+                    \textcolor{red}{\small{Human level}}
+                };
+            \fi
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newsavebox{\imagenetold}
+\sbox{\imagenetold}{
+    \imagenetplot{0}
+}
+\newsavebox{\imagenetcnn}
+\sbox{\imagenetcnn}{
+    \imagenetplot{1}
+}
+\newsavebox{\imagenetrecent}
+\sbox{\imagenetrecent}{
+    \imagenetplot{2}
+}
+\newsavebox{\imagenethuman}
+\sbox{\imagenethuman}{
+    \imagenetplot{3}
+}
+
+\begin{frame}{The history of artificial intelligence}
+    \definecolor{activehistory}{HTML}{E71D36}
+    \colorlet{passivehistory}{gray}
+
+    \newcommand{\historynode}[4]{
+        \pgfmathsetmacro{\ycoord}{ifthenelse(####3==1, 2.95, 2.55)}
+        \pgfmathsetmacro{\anchorval}{ifthenelse(####3==1, "south", "north")}
+
+        \node[
+            circle,
+            draw=####4,
+            fill=####4
+        ] at (####1, 2.75) {};
+        \node[
+            anchor=\anchorval,
+            baseline,
+            text=####4,
+            align=center,
+            font=\small\linespread{0.9}\selectfont,
+            inner sep=0pt,
+            align=center
+        ] at (####1, \ycoord) {####2};
+    }
+
+    \newcommand{\activenode}[3]{
+        \historynode{####1}{####2}{####3}{activehistory}
+    }
+
+    \newcommand{\passivenode}[3]{
+        \historynode{####1}{####2}{####3}{passivehistory}
+    }
+
+    \newcommand{\conditionalreference}[6]{
+        \visible<####1>{
+            \node[font=\tiny\selectfont, text depth=0] at (0, -4) {
+                \href{####2}{####3}, {####4}, \textit{####5}, ####6
+            };
+        }
+    }
+
+    \begin{tikzpicture}
+        \node[draw=black] at (-5.25, 3.5) {};
+        \node[draw=black] at (5.25, -4.2) {};
+
+        \draw[very thick, passivehistory] (-4.75, 2.75) -- (-4.55, 2.75);
+        \only<1>{
+            \activenode{-4.55}{Talos\\($\sim$300 BC)}{1}
+            \node[draw=black, inner sep=0pt, label=below:{\tiny{Source: ChatGPT 5}}] at (0, -0.5) {
+                \includegraphics[width=3.5cm]{data/talos.png}
+            };
+        }
+        \only<2->{
+            \draw[very thick, gray] (-4.55, 2.75)  -- (-3.65, 2.75) {};
+            \passivenode{-4.55}{Talos\\($\sim$300 BC)}{1}
+        }
+
+        \only<2>{
+            \activenode{-3.65}{Golem\\($\sim$1600)}{0}
+            \node[draw=black, inner sep=0pt, label=below:{\tiny{Source: ChatGPT 5}}] at (0, -0.5) {
+                \includegraphics[width=3.5cm]{data/golem.png}
+            };
+        }
+        \only<3->{
+            \draw[very thick, gray] (-3.65, 2.75)  -- (-3.35, 2.75) {};
+            \passivenode{-3.65}{Golem\\($\sim$1600)}{0}
+
+        }
+
+        \only<3>{
+            \activenode{-3.35}{Frankenstein\\($\sim$1831)}{1}
+            \node[draw=black, inner sep=0pt, label=below:{\tiny{Source: ChatGPT 5}}] at (0, -0.5) {
+                \includegraphics[width=3.5cm]{data/frankenstein.png}
+            };
+        }
+        \only<4->{
+            \draw[very thick, gray] (-3.35, 2.75)  -- (-2.5, 2.75) {};
+            \passivenode{-3.35}{Frankenstein\\($\sim$1831)}{1}
+            \draw[black] (-2.925, 2.9) -- (-2.975, 2.8) --(-2.875, 2.7) -- (-2.925, 2.6);
+
+        }
+
+        \only<4-5>{
+            \activenode{-2.5}{Turing\\test\\(1950)}{0}
+            \node[
+                inner sep=0pt,
+                draw=black,
+                label=below:{Alan Turing},
+                anchor=west
+            ] at (-4.5, -1) {
+                \includegraphics[width=3.5cm]{data/turing.jpeg}
+            };
+        }
+        \only<5>{
+            \node[
+                inner sep=0pt,
+                draw=black,
+                anchor=east
+            ] (patient) at (4.5, -1) {
+                \includegraphics[width=4cm]{data/thinking.png}
+            };
+        }
+        \conditionalreference{5}{https://link.springer.com/chapter/10.1007/978-1-4020-6710-5_3}{Computing Machinery and Intelligence}{A. M. Turing}{Mind}{1950}
+
+        \only<6->{
+            \draw[very thick, gray] (-2.5, 2.75)  -- (-1.8875, 2.75) {};
+            \passivenode{-2.5}{Turing\\test\\(1950)}{0}
+        }
+        \only<6-7>{
+            \activenode{-1.8875}{Dartmouth\\(1956)}{1}
+        }
+        \only<6>{
+            \node[inner sep=0pt] (patient) at (0, -1) {
+                \includegraphics[width=6cm]{data/dartmouth.png}
+            };
+        }
+        \only<7>{
+            \node[inner sep=0pt, align=center] (patient) at (0, -1) {
+                "We propose that a 2-month, 10-man study of artificial intelligence\\
+                be carried out [...]. An attempt will be made to find how to make\\
+                machines use language, form abstractions and concepts, solve kinds\\
+                of problems now reserved for humans, and improve themselves. We think\\
+                that a significant advance can be made in [...] a summer."\\
+                \textbf{- Proposal, Dartmouth summer school (1956)}
+            };
+        }
+        \only<8->{
+            \passivenode{-1.8875}{Dartmouth\\(1956)}{1}
+            \draw[very thick, passivehistory] (-1.8875, 2.75)  -- (-1.5, 2.75) {};
+        }
+        \only<8-9>{
+            \activenode{-1.5}{Perceptron\vphantom{i}\\(1958)}{0}
+
+            \node[draw=black, inner sep=5pt, fill=white] (patient) at (-2, -1) {
+                \includegraphics[width=4cm]{data/neuron.png}
+            };
+        }
+
+        \conditionalreference{8}{https://opentextbc.ca/introductiontopsychology/chapter/3-1-the-neuron-is-the-building-block-of-the-nervous-system/}{The neuron is the building block of the nervous system}{Stangor, C. and Walinga, J}{Introduction to psychology}{2024}
+
+        \only<9>{
+            \node[circle, draw=black, fill=nodefill, inner sep=2pt, text depth=0] (node) at (3, -1) {+};
+
+            \node[] (x0) at ($ (node) - (1.25, -1) $) {$\mathrm{input}_0$};
+            \node[] (x1) at ($ (node) - (1.25, 0) $) {$\mathrm{input}_1$};
+            \node[] (x2) at ($ (node) - (1.25, 1) $) {$\mathrm{input}_2$};
+
+            \node[align=center] (out) at ($ (node) + (1.25, 0) $) {$\mathrm{output}$\\$\mathrm{(0/1)}$};
+
+            \draw[-Latex] (x0) -- (node) node [midway, above] {\small{$w_0$}};
+            \draw[-Latex] (x1) -- (node) node [midway, below] {\small{$w_1$}};;
+            \draw[-Latex] (x2) -- (node) node [midway, below] {\small{$w_2$}};;
+            \draw[-Latex] (node) -- (out);
+        }
+        \only<10->{
+            \passivenode{-1.5}{Perceptron\vphantom{i}\\(1958)}{0}
+            \draw[very thick, passivehistory] (-1.5, 2.75)  -- (-0.95, 2.75) {};
+        }
+        \only<10>{
+            \activenode{-0.95}{Eliza\\(1964)}{1}
+
+            \node[draw=black, inner sep=5pt, fill=white] (patient) at (0, -1) {
+                \includegraphics[width=7cm]{data/eliza.png}
+            };
+            \node[font=\tiny\selectfont, text depth=0] at (0, -4.1) {
+                \href{https://web.njit.edu/~ronkowit/eliza.html}{ELIZA: a very basic Rogerian psychotherapist chatbot}
+            };
+        }
+
+        \only<11->{
+            \passivenode{-0.95}{Eliza\\(1964)}{1}
+            \draw[very thick, passivehistory] (-1.97, 2.75)  -- (0.5625, 2.75) {};
+        }
+
+        \only<11-12>{
+            \activenode{0.5625}{Expert\vphantom{i}\\systems\\(1980s)}{0}
+        }
+        \only<11>{
+            \node[] (patient) at (0, 0.5) {
+                \Huge{\emoji{face-with-medical-mask}}
+            };
+            \node[draw=black, align=center ] (interface) at ($ (patient.south) - (0, 0.8) $) {
+                User interface
+            };
+
+            \node[draw=black] (inference) at ($ (interface.south) - (0, 0.5) $) {
+                Inference engine
+            };
+            \node[draw=black] (database) at ($ (inference.south) - (0, 0.5) $) {
+                Knowledge database
+            };
+            \node[] (doctor) at ($ (database.south) - (0, 0.9) $) {
+                \Huge{\emoji{woman-scientist}}
+            };
+
+            \draw[-Latex] ($ (patient.south) - (0.1, 0) $) -- ($ (interface.north) - (0.1, 0) $);
+            \draw[Latex-] ($ (patient.south) + (0.1, 0) $) -- ($ (interface.north) + (0.1, 0) $);
+            \draw[-Latex] ($ (interface.south) - (0.1, 0) $) -- ($ (inference.north) - (0.1, 0) $);
+            \draw[Latex-] ($ (interface.south) + (0.1, 0) $) -- ($ (inference.north) + (0.1, 0) $);
+            \draw[Latex-] (inference.south) -- (database.north);
+            \draw[Latex-, dashed] (database.south) -- (doctor.north);
+
+            \draw[densely dotted] ($ (interface.north west) + (-1.3, 0.1) $) rectangle ($ (database.south east) + (1, -0.1) $);
+
+            \node[anchor=north east] at ($ (patient.south) - (0.1, 0.05) $) {\small{Query}};
+            \node[anchor=north west] at ($ (patient.south) - (-0.1, 0.05) $) {\small{Response}};
+        }
+        \only<12>{
+            \node[inner sep=0pt, draw=black] (patient) at (0, -1) {
+                \includegraphics[width=6.5cm]{data/mycin.png}
+            };
+        }
+        \conditionalreference{12}{https://www.sciencedirect.com/science/article/pii/S0020737378800492}{MYCIN}{William van Melle}{International Journal of Man-Machine Studies}{1978}
+
+        \only<13->{
+            \passivenode{0.5625}{Expert\vphantom{i}\\systems\\(1980s)}{0}
+            \draw[very thick, passivehistory] (0.5625, 2.75)  -- (1.175, 2.75) {};
+        }
+        \only<13-17>{
+            \activenode{1.175}{Artificial neural networks\\(1986)}{1}
+        }
+        \only<13>{
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n00) at (0, -1.5) {};
+
+            \node[] (x0) at ($ (n00) - (1.25, 0.75) $) {$\mathrm{input}_0$};
+            \node[] (x1) at ($ (n00) - (1.25, 0) $) {$\mathrm{input}_1$};
+            \node[] (x2) at ($ (n00) - (1.25, -0.75) $) {$\mathrm{input}_2$};
+
+            \node[] (out) at ($ (n00) + (1.25, 0) $) {$\mathrm{output}$};
+
+            \draw[-] (x0.east) -- (n00);
+            \draw[-] (x1.east) -- (n00);
+            \draw[-] (x2.east) -- (n00);
+
+            \draw[->] (n00) -- (out);
+        }
+        \only<14,16>{
+            \node[] (x0) at (-2.75, -0.75) {$\mathrm{input}_0$};
+            \node[] (x1) at ($ (x0) - (0, 0.75) $) {$\mathrm{input}_1$};
+            \node[] (x2) at ($ (x0) - (0, 1.5) $) {$\mathrm{input}_2$};
+
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n00) at ($ (x0) + (1.25, 0.25) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n01) at ($ (x0) + (1.25, -0.25) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n02) at ($ (x0) + (1.25, -0.75) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n03) at ($ (x0) + (1.25, -1.25) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n04) at ($ (x0) + (1.25, -1.75) $) {};
+
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n10) at ($ (x0) + (2, 0) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n11) at ($ (x0) + (2, -0.5) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n12) at ($ (x0) + (2, -1) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n13) at ($ (x0) + (2, -1.5) $) {};
+
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n20) at ($ (x0) + (2.75, -0.25) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n21) at ($ (x0) + (2.75, -0.75) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n22) at ($ (x0) + (2.75, -1.25) $) {};
+
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n30) at ($ (x0) + (3.5, -0.5) $) {};
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill] (n31) at ($ (x0) + (3.5, -1) $) {};
+
+            \node[inner sep=0pt, minimum size=0.4cm, draw=black, circle, fill=nodefill, text depth=0] (n40) at ($ (x0) + (4.25, -0.75) $) {};
+            \node[] (out) at ($ (x0) + (5.5, -0.75) $) {$\mathrm{output}$};
+        }
+        \only<14>{
+            \draw[-] (x0.east) -- (n00);
+            \draw[-] (x0.east) -- (n01);
+            \draw[-] (x0.east) -- (n02);
+            \draw[-] (x0.east) -- (n03);
+            \draw[-] (x0.east) -- (n04);
+            \draw[-] (x1.east) -- (n00);
+            \draw[-] (x1.east) -- (n01);
+            \draw[-] (x1.east) -- (n02);
+            \draw[-] (x1.east) -- (n03);
+            \draw[-] (x1.east) -- (n04);
+            \draw[-] (x2.east) -- (n00);
+            \draw[-] (x2.east) -- (n01);
+            \draw[-] (x2.east) -- (n02);
+            \draw[-] (x2.east) -- (n03);
+            \draw[-] (x2.east) -- (n04);
+
+            \draw[-] (n00) -- (n10);
+            \draw[-] (n00) -- (n11);
+            \draw[-] (n00) -- (n12);
+            \draw[-] (n00) -- (n13);
+            \draw[-] (n01) -- (n10);
+            \draw[-] (n01) -- (n11);
+            \draw[-] (n01) -- (n12);
+            \draw[-] (n01) -- (n13);
+            \draw[-] (n02) -- (n10);
+            \draw[-] (n02) -- (n11);
+            \draw[-] (n02) -- (n12);
+            \draw[-] (n02) -- (n13);
+            \draw[-] (n03) -- (n10);
+            \draw[-] (n03) -- (n11);
+            \draw[-] (n03) -- (n12);
+            \draw[-] (n03) -- (n13);
+            \draw[-] (n04) -- (n10);
+            \draw[-] (n04) -- (n11);
+            \draw[-] (n04) -- (n12);
+            \draw[-] (n04) -- (n13);
+
+            \draw[-] (n10) -- (n20);
+            \draw[-] (n10) -- (n21);
+            \draw[-] (n10) -- (n22);
+            \draw[-] (n11) -- (n20);
+            \draw[-] (n11) -- (n21);
+            \draw[-] (n11) -- (n22);
+            \draw[-] (n12) -- (n20);
+            \draw[-] (n12) -- (n21);
+            \draw[-] (n12) -- (n22);
+            \draw[-] (n13) -- (n20);
+            \draw[-] (n13) -- (n21);
+            \draw[-] (n13) -- (n22);
+
+            \draw[-] (n20) -- (n30);
+            \draw[-] (n20) -- (n31);
+            \draw[-] (n21) -- (n30);
+            \draw[-] (n21) -- (n31);
+            \draw[-] (n22) -- (n30);
+            \draw[-] (n22) -- (n31);
+
+            \draw[-] (n30) -- (n40);
+            \draw[-] (n31) -- (n40);
+
+            \draw[->] (n40) -- (out);
+        }
+        \only<16>{
+            \draw[-] (x0.east) -- (n00);
+            \draw[-] (x0.east) -- (n01);
+            \draw[-] (x0.east) -- (n02);
+            \draw[-] (x0.east) -- (n03);
+            \draw[-] (x0.east) -- (n04);
+            \draw[-] (x1.east) -- (n00);
+            \draw[-] (x1.east) -- (n01);
+            \draw[-] (x1.east) -- (n02);
+            \draw[-] (x1.east) -- (n03);
+            \draw[-] (x1.east) -- (n04);
+            \draw[-] (x2.east) -- (n00);
+            \draw[-] (x2.east) -- (n01);
+            \draw[-] (x2.east) -- (n02);
+            \draw[-] (x2.east) -- (n03);
+            \draw[-] (x2.east) -- (n04);
+
+            \draw[Latex-, red] (n00) -- (n10);
+            \draw[Latex-, red] (n00) -- (n11);
+            \draw[Latex-, red] (n00) -- (n12);
+            \draw[Latex-, red] (n00) -- (n13);
+            \draw[Latex-, red] (n01) -- (n10);
+            \draw[Latex-, red] (n01) -- (n11);
+            \draw[Latex-, red] (n01) -- (n12);
+            \draw[Latex-, red] (n01) -- (n13);
+            \draw[Latex-, red] (n02) -- (n10);
+            \draw[Latex-, red] (n02) -- (n11);
+            \draw[Latex-, red] (n02) -- (n12);
+            \draw[Latex-, red] (n02) -- (n13);
+            \draw[Latex-, red] (n03) -- (n10);
+            \draw[Latex-, red] (n03) -- (n11);
+            \draw[Latex-, red] (n03) -- (n12);
+            \draw[Latex-, red] (n03) -- (n13);
+            \draw[Latex-, red] (n04) -- (n10);
+            \draw[Latex-, red] (n04) -- (n11);
+            \draw[Latex-, red] (n04) -- (n12);
+            \draw[Latex-, red] (n04) -- (n13);
+
+            \draw[Latex-, red] (n10) -- (n20);
+            \draw[Latex-, red] (n10) -- (n21);
+            \draw[Latex-, red] (n10) -- (n22);
+            \draw[Latex-, red] (n11) -- (n20);
+            \draw[Latex-, red] (n11) -- (n21);
+            \draw[Latex-, red] (n11) -- (n22);
+            \draw[Latex-, red] (n12) -- (n20);
+            \draw[Latex-, red] (n12) -- (n21);
+            \draw[Latex-, red] (n12) -- (n22);
+            \draw[Latex-, red] (n13) -- (n20);
+            \draw[Latex-, red] (n13) -- (n21);
+            \draw[Latex-, red] (n13) -- (n22);
+
+            \draw[Latex-, red] (n20) -- (n30);
+            \draw[Latex-, red] (n20) -- (n31);
+            \draw[Latex-, red] (n21) -- (n30);
+            \draw[Latex-, red] (n21) -- (n31);
+            \draw[Latex-, red] (n22) -- (n30);
+            \draw[Latex-, red] (n22) -- (n31);
+
+            \draw[Latex-, red] (n30) -- (n40);
+            \draw[Latex-, red] (n31) -- (n40);
+
+            \draw[Latex-, red] (n40) -- (out);
+        }
+        \only<15,17>{
+            \node[inner sep=0pt, draw=black] (backprop) at (0, -1) {
+                \includegraphics[width=5cm]{data/backprop.png}
+            };
+        }
+        \conditionalreference{15}{https://www.nature.com/articles/323533a0}{Learning representations by back-propagating errors}{Rumelhart, D. et al.}{Nature}{1986}
+
+        \only<17>{
+            \draw[red, thick] ($ (backprop.north) + (-0.55, -1.1) $) -- ($ (backprop.north) + (1.07, -1.1) $);
+        }
+        \only<18->{
+            \passivenode{1.175}{Artificial neural networks\\(1986)}{1}
+            \draw[very thick, passivehistory] (1.175, 2.75)  -- (2.297, 2.75) {};
+        }
+        \only<18>{
+            \activenode{2.297}{Deep blue\vphantom{i}\\(1997)}{0}
+
+            \node[inner sep=0pt, draw=black, label=below:{\tiny{Source: DALL-E}}] (img) at (-2.25, -1) {
+                \includegraphics[width=4cm]{data/chess.png}
+            };
+            \node[anchor=north west, align=left] at ($ (img.north east)  + (0.1, 0) $) {
+                \bullet\hspace{0.1cm}IBMs Deep Blue became the first\\ computer to beat the reigning human\\ world champion in chess.\\
+                \bullet\hspace{0.1cm}Deep blue won with 3\textonehalf { }points to\\ Garry Kasparovs 2\textonehalf{ } after six matches.\\
+                \bullet\hspace{0.1cm}Kasparov famously stated that\\"Deep Blue was intelligent the way your\\programmable alarm clock is intelligent."\\
+            };
+        }
+        \only<19->{
+            \passivenode{2.297}{Deep blue\vphantom{i}\\(1997)}{0}
+            \draw[very thick, passivehistory] (2.297, 2.75)  -- (3.829, 2.75) {};
+        }
+        \only<19-24>{
+            \activenode{3.829}{Deep learning\\(2012)}{1}
+        }
+        \only<19-20>{
+            \node[inner sep=0pt, label=below:\small{Cat}] (img3) at (0, -1) {
+                \includegraphics[width=1.5cm]{data/cat.jpeg}
+            };
+        }
+        \only<20>{
+            \node[inner sep=0pt, label=below:\small{Airplane}, anchor=west] (img4) at ($ (img3.east) + (0.1, 0) $) {
+                \includegraphics[width=1.5cm]{data/airplane.jpeg}
+            };
+            \node[inner sep=0pt, label=below:\small{Shark}, anchor=west] (img5) at ($ (img4.east) + (0.1, 0) $) {
+                \includegraphics[width=1.5cm]{data/shark.jpeg}
+            };
+            \node[inner sep=0pt, label=below:\small{Ladybug}, anchor=east] (img2) at ($ (img3.west) - (0.1, 0) $) {
+                \includegraphics[width=1.5cm]{data/ladybug.png}
+            };
+            \node[inner sep=0pt, label=below:\small{Sunflower}, anchor=east] (img1) at ($ (img2.west) - (0.1, 0) $) {
+                \includegraphics[width=1.5cm]{data/sunflower.jpeg}
+            };
+            \node[] at (0, -2.5) {
+                ImageNet: $\sim$14m images, $\sim$22k categories
+            };
+        }
+        \only<21>{
+            \node[] at (0, -1) {
+                \usebox{\imagenetold}
+            };
+        }
+        \only<22>{
+            \node[] at (0, -1) {
+                \usebox{\imagenetcnn}
+            };
+        }
+        \only<23>{
+            \node[] at (0, -1) {
+                \usebox{\imagenetrecent}
+            };
+        }
+        \only<24>{
+            \node[] at (0, -1) {
+                \usebox{\imagenethuman}
+            };
+        }
+        \visible<25>{
+            \passivenode{3.829}{Deep learning\\(2012)}{1}
+            \draw[very thick, passivehistory] (3.829, 2.75)  -- (4.85, 2.75) {};
+            \activenode{4.85}{ChatGPT\\(2022)}{0}
+
+            \node[inner sep=0pt, draw=black] at (0, -1.25) {
+                \includegraphics[width=4.5cm]{data/chatgpt.png}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
