@@ -1,0 +1,1 @@
+# Create a vector of 100 standard normally distributed numbers and visualize them with a histogram
