@@ -8,13 +8,12 @@
 \RequirePackage{hyperref}
 \RequirePackage{listings}
 \RequirePackage{tikz}
-\RequirePackage{transparent}
+
+\usetikzlibrary{calc}
 
 \hypersetup{
     linkcolor=white
 }
-
-\usetikzlibrary{calc}
 
 \definecolor{uiored}{HTML}{DD0000}
 \definecolor{uiolightred}{HTML}{FB6666}
@@ -44,13 +43,13 @@
 {
   \begingroup
 
-    \vspace{4.3cm}
+    \vspace{4.1cm}
     {\usebeamercolor[fg]{section title}\usebeamerfont{section title}\insertsectionhead}\\[-1ex]
     {\centering\color{white}\rule{\linewidth}{1pt}\par} % the horizontal line
 
-    \vspace*{2.8cm}
+    \vspace*{2.4cm}
     \begin{center}
-        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white.png} % Adjust width and path to your logo as needed
+        \includegraphics[width=\logowidth,valign=c]{data/uio_logo_full_white_no.png} % Adjust width and path to your logo as needed
     \end{center}
 
   \endgroup
@@ -75,16 +74,16 @@
         % Title page, no footer
     \else
         \begin{tikzpicture}[remember picture,overlay]
-            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.55cm]current page.south east); % Draw filled rectangle
+            \fill[mainbackground] (current page.south west) rectangle ([yshift=0.6cm]current page.south east); % Draw filled rectangle
 
             % Logo
-            \node[anchor=west, yshift=0.275cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
+            \node[anchor=west, yshift=0.3cm] at (current page.south west) {\includegraphics[height=1.2cm]{data/uio_logo_white.png}};
 
             % Title and subtitle
-            \node[align=center, yshift=0.275cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.03cm]\textcolor{white}{\insertsubtitle}};
+            \node[align=center, yshift=0.275cm] at (current page.south) {\textcolor{white}{\textbf{\inserttitle}}\\[0.05cm]\textcolor{white}{\insertsubtitle}};
 
             % Page number
-            \node[anchor=east, yshift=0.275cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
+            \node[anchor=east, yshift=0.3cm, xshift=-0.2cm, align=right] at (current page.south east) {\textcolor{white}{\insertframenumber/\inserttotalframenumber}};
         \end{tikzpicture}
     \fi
 }
@@ -93,27 +92,20 @@
 {
     \begin{columns}
         \begin{column}{\paperwidth}
-            \vspace{0.125cm}
+            %\vspace{0.125cm}
             \begin{tikzpicture}
-                \node[anchor=south west, draw=black] (upper left) at (-6.4, 4.52825) {};
-                \node[anchor=north east, draw=black] (lower right) at (6.4, -4.52825) {};
+                \node[anchor=south west, draw=black] (upper left) at (-8, 4.52825) {};
+                \node[anchor=north east, draw=black] (lower right) at (8, -4.52825) {};
                 \fill[uiored] (upper left.north west) rectangle (lower right.south east);
-                \node[text width=7.8cm, anchor=north west, text=white, align=flush left] (title) at (-5.6, 3.8) {\usebeamerfont{title}\inserttitle};
-                \node[text width=7.8cm, anchor=north west, text=white, align=flush left] (subtitle) at ($ (title.south west) + (0, 0) $) {\usebeamerfont{subtitle}\insertsubtitle};
-                \node[anchor=north east, inner sep=0pt] at (6.3, 4.7) {
-                    \scalebox{-1}[1]{\includegraphics[height=9.3cm]{data/brain.png}}
+                \node[text width=10cm, anchor=north west, text=white, align=flush left] (title) at (-7, 3.8) {\usebeamerfont{title}\inserttitle};
+                \node[text width=10cm, anchor=north west, text=white, align=flush left] (subtitle) at ($ (title.south west) + (0, 0) $) {\usebeamerfont{subtitle}\insertsubtitle};
+
+                \node[anchor=north east, inner sep=0pt] at (8, 4.52825) {
+                    \scalebox{-1}[1]{\includegraphics[height=8.7cm]{data/brain.png}}
                 };
 
-                \node[anchor=south west] (selfie) at (-5.6, -3) {
-                    \includegraphics[height=2cm]{data/esten1.jpg}
-                };
-                \node[anchor=west, align=flush left, text width=5.5cm, text=white, font=\scriptsize\linespread{0.9}\selectfont] at (selfie.east) {
-                    \textbf{Esten H. Leonardsen}\\[0.1cm]
-                    Postdoctoral research fellow, Department of Psychology, University of Oslo\\[0.1cm]
-                    Chief Scientific Officer, baba.vision
-                };
-                \node[anchor=south] at (0, -4.8) {
-                    \includegraphics[height=1cm]{data/uio_logo_full_white_no.png}
+                \node[anchor=south] at (0, -4.4) {
+                    \includegraphics[height=1cm]{data/uio_logo_full_white.png}
                 };
 
             \end{tikzpicture}
@@ -128,22 +120,22 @@
             \begin{column}{\paperwidth}
                 \vspace{0.125cm}
                 \begin{tikzpicture}
-                    \node[anchor=south west, draw=black] (upper left) at (-6.4, 4.52825) {};
-                    \node[anchor=north east, draw=black] (lower right) at (6.4, -4.52825) {};
+                    \node[anchor=south west, draw=black] (upper left) at (-8, 4.52825) {};
+                    \node[anchor=north east, draw=black] (lower right) at (8, -4.52825) {};
                     \fill[uiored] (upper left.north west) rectangle (lower right.south east);
 
-                    \node[anchor=north east, inner sep=0pt] at (6.3, 4.7) {
-                        \scalebox{-1}[1]{\includegraphics[height=9.3cm]{data/brain.png}}
+                    \node[anchor=north east, inner sep=0pt] at (8, 4.52825) {
+                        \scalebox{-1}[1]{\includegraphics[height=8.7cm]{data/brain.png}}
                     };
 
-                    \node[anchor=south] at (0, -4.8) {
-                        \includegraphics[height=1cm]{data/uio_logo_full_white_no.png}
+                    \node[anchor=south] at (0, -4.3) {
+                        \includegraphics[height=1cm]{data/uio_logo_full_white.png}
                     };
-                    \node[anchor=south west, font=\Large\selectfont, text=white] at (-6, 0) {
+                    \node[anchor=south west, font=\Large\selectfont, text=white] at (-7, 0) {
                         Thank you for your attention!
                     };
-                    \node[anchor=north west, text=white] at (-6, 0) {
-                        estenhl@uio.no
+                    \node[anchor=north west, text=white] at (-7, 0) {
+                        \href{mailto:estenhl@uio.no}{estenhl@uio.no}
                     };
 
                 \end{tikzpicture}
