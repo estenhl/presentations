@@ -1,0 +1,110 @@
+\section{Transfer learning}
+
+\begin{frame}{How does CNNs work}
+    \begin{tikzpicture}
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
+
+        \only<1-4>{
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, 1.3825) {
+                \includegraphics[width=0.9cm, height=1.8cm]{data/cat.png}
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{1.3825}{0.1}{0.15}{uiogreen}{0}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, 1.3825) + (0, 0.5) $) {Cat};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, 1.3825) - (0, 0.5) $) {Dog};
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+        \only<2-4>{
+            \node[draw=black, inner sep=0pt] at (-1.07, -0.8) {
+                \includegraphics[height=1.1cm]{
+                    data/first.png
+                }
+            };
+        }
+        \only<3-4>{
+            \node[draw=black, inner sep=0pt] at (0.3, -0.8) {
+                \includegraphics[height=1.1cm]{
+                    data/second.png
+                }
+            };
+        }
+        \only<4>{
+            \node[draw=black, inner sep=0pt] at (1.5, -0.8) {
+                \includegraphics[height=1.1cm]{
+                    data/third.png
+                }
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Transfer learning}
+    \begin{tikzpicture}
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
+
+        \only<1-2>{
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, -1.9) {
+                \includegraphics[width=0.9cm, height=1.8cm]{data/caracal.jpg}
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{-1.9}{0.1}{0.15}{gray}{0}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, -1.9) + (0, 0.5) $) {Caracal};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, -1.9) - (0, 0.5) $) {Red fox};
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+
+        \only<2-3,5-6>{
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, 1.9) {
+                \includegraphics[width=0.9cm, height=1.8cm]{data/cat.png}
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{1.9}{0.1}{0.15}{uiogreen}{0}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, 1.9) + (0, 0.5) $) {Cat};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, 1.9) - (0, 0.5) $) {Dog};
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+        \only<3,5-6>{
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (-1.75, 0.6) -- (-1.75, -0.6);
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (-0.25, 0.9) -- (-0.25, -0.9);
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (0.85, 1.3) -- (0.85, -1.3);
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (2.1, 1.5) -- (2.1, -1.5);
+
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, -1.9) {
+                \only<3,5>{%
+                    \includegraphics[width=0.9cm, height=1.8cm]{data/caracal.jpg}
+                }%
+                \only<6>{%
+                    \includegraphics[width=0.9cm, height=1.8cm]{data/xray.png}
+                }%
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{-1.9}{0.1}{0.15}{uiogreen}{0}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, -1.9) + (0, 0.5) $) {
+                \only<3,5>{Caracal}%
+                \only<6>{Bening}%
+            };
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, -1.9) - (0, 0.5) $) {
+                \only<3,5>{Red fox}%
+                \only<6>{Malign}%
+            };
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+        \only<4>{
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, -1.9) {
+                \includegraphics[width=0.9cm, height=1.8cm]{data/caracal.jpg}
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{-1.9}{0.1}{0.15}{uioblue}{0}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, -1.9) + (0, 0.5) $) {Caracal};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, -1.9) - (0, 0.5) $) {Red fox};
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+    \end{tikzpicture}
+\end{frame}
