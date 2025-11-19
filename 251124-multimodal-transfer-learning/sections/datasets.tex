@@ -1,0 +1,351 @@
+
+\newcommand{\yearsize}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=3.8cm,
+            width=6.5cm,
+            xlabel=Year,
+            ylabel={Parameters\\(millions)},
+            xtick pos=bottom,
+            ytick pos=left,
+            ticklabel style={font=\tiny},
+            xtick={2016, 2018, 2020, 2022},
+            xticklabels={2016, 2018, 2020, 2022},
+            every axis label/.style={font=\tiny, align=center}
+        ]
+            \addplot[
+                only marks,
+                uioblue,
+                opacity=0.75
+            ] coordinates {
+                (2016, 23.9)
+                (2016, 60.4)
+                (2017, 20.2)
+                (2017, 88.9)
+                (2018, 3.5)
+                (2019, 66.7)
+                (2021, 119)
+                (2021, 307)
+                (2022, 350.1)
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\performancesize}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            height=3.8cm,
+            width=6.5cm,
+            xlabel={Parameters (millions)},
+            ylabel={Imagenet\\accuracy},
+            xtick pos=bottom,
+            ytick pos=left,
+            ticklabel style={font=\tiny},
+            every axis label/.style={font=\tiny, align=center}
+        ]
+            \addplot[
+                only marks,
+                uioblue,
+                opacity=0.75
+            ] coordinates {
+                (23.9, 77.9)
+                (60.4, 78)
+                (20.2, 77.3)
+                (88.9, 82.5)
+                (3.5, 71.3)
+                (66.7, 84.3)
+                (119, 85.7)
+                (307, 85.2)
+                (350.1, 86.3)
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommand{\stickman}[2]{
+    \node[circle,fill,minimum size=2.5mm,#2] (head) at #1 {};
+    \node[rounded corners=1pt,minimum height=0.65cm,minimum width=0.2cm,fill,below = 0.5pt of head,#2] (body) {};
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(1pt,-0.5pt)}]body.north east) --++(-90:3mm);
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(-1pt,-0.5pt)}]body.north west)--++(-90:3mm);
+    \draw[thick,white,-round cap] (body.south) --++(90:2.75mm);
+}
+
+
+\newcommand{\neuron}[3][uiogreen]{
+    \node[circle, draw=black, fill=#1, minimum size=0.3cm] (#2) at #3 {};
+}
+
+\begin{frame}{MRI datasets for deep learning}
+    \begin{tikzpicture}
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
+
+        \only<1>{
+            \node[circle, fill=uioblue!80, minimum size=6cm, anchor=north] (ai) at (0, 3.25) {};
+            \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (ai.north) - (0, 0.1) $) {Artificial\\intelligence};
+            \node[circle, fill=uioblue!50!uiored!80, anchor=south, minimum size=4.5cm] (ml) at ($ (ai.south) + (0, 0.05) $) {};
+            \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (ml.north) - (0, 0.1) $) {Machine\\learning};
+            \node[circle, fill=uiored!80, anchor=south, minimum size=3cm] (dl) at ($ (ml.south) + (0, 0.06) $) {};
+            \node[white, anchor=north, align=center, font=\small\bfseries\linespread{0.9}\selectfont] at ($ (dl.north) - (0, 0.1) $) {Deep\\learning};
+        }
+        \only<2>{
+            \def\vsep{0.5}
+            \def\hsep{0.65}
+            \def\edgeopacity{0.5}
+
+            \node[] (input0) at (-3.5, -0.75) {
+                $input_0$
+            };
+            \node[] (input1) at (-3.5, 0) {
+                $input_1$
+            };
+            \node[] (input2) at (-3.5, 0.75) {
+                $input_2$
+            };
+            \node[] (output) at (3.5, 0) {
+                $output$
+            };
+
+            \neuron{n00}{($ (0, 0) -  (2*\hsep, 2*\vsep) $)}
+            \neuron{n01}{($ (n00) + (0, 1*\vsep) $)}
+            \neuron{n02}{($ (n00) + (0, 2*\vsep) $)}
+            \neuron{n03}{($ (n00) + (0, 3*\vsep) $)}
+            \neuron{n04}{($ (n00) + (0, 4*\vsep) $)}
+
+            \neuron{n10}{($ (n00) + (\hsep, 0.5*\vsep) $)}
+            \neuron{n11}{($ (n00) + (\hsep, 1.5*\vsep) $)}
+            \neuron{n12}{($ (n00) + (\hsep, 2.5*\vsep) $)}
+            \neuron{n13}{($ (n00) + (\hsep, 3.5*\vsep) $)}
+
+            \neuron{n20}{($ (n00) + (2*\hsep, 1*\vsep) $)}
+            \neuron{n21}{($ (n00) + (2*\hsep, 2*\vsep) $)}
+            \neuron{n22}{($ (n00) + (2*\hsep, 3*\vsep) $)}
+
+            \neuron{n30}{($ (n00) + (3*\hsep, 1.5*\vsep) $)}
+            \neuron{n31}{($ (n00) + (3*\hsep, 2.5*\vsep) $)}
+
+            \neuron{n40}{($ (n00) + (4*\hsep, 2*\vsep) $)}
+
+            \foreach \j in {0,...,4} {
+                \foreach \k in {0,...,2} {
+                    \draw[black, opacity=\edgeopacity,-stealth] (input\k.east) -- (n0\j);
+                }
+                \foreach \k in {0,...,3} {
+                    \draw[black, opacity=\edgeopacity] (n0\j) -- (n1\k);
+                }
+            }
+
+            \foreach \j in {0,...,3} {
+                \foreach \k in {0,...,2} {
+                    \draw[black, opacity=\edgeopacity] (n1\j) -- (n2\k);
+                }
+            }
+
+            \foreach \j in {0,...,2} {
+                \foreach \k in {0,...,1} {
+                    \draw[black, opacity=\edgeopacity] (n2\j) -- (n3\k);
+                }
+            }
+
+            \foreach \j in {0,...,1} {
+                \draw[black, opacity=\edgeopacity] (n3\j) -- (n40);
+            }
+            \draw[black, opacity=\edgeopacity, -stealth] (n40) -- (output);
+        }
+        \only<3>{
+            \node[draw=black, inner sep=0pt, cm={1,1,0,1,(0,0)}] (input) at (-3.5, -0.2175) {
+                \includegraphics[width=0.9cm, height=1.8cm]{data/cat.png}
+            };
+            \cnnarrow{(input.center)}{($ (input.center) + (2, 0) $)}{black}
+            \cnn{-2.7}{-0.2175}{0.1}{0.15}{uiogreen}{1}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at ($ (3.55, -0.2175) + (0, 0.5) $) {Cat};
+            \cnnarrow{($ (output1.west) - (1, 0.5) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output2) at ($ (3.55, -0.2175) - (0, 0.5) $) {Dog};
+            \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+        }
+        \only<4-6>{
+            \node[align=center, anchor=north] at (0, 3.25) {
+                {\tiny
+                    \begin{tabular}{|c|c|c|c|}
+                        \hline
+                        \textbf{Model}&\textbf{Year}&\textbf{Imagenet top-1 accuracy}&\textbf{Parameters}\\
+                        \hline
+                        InceptionV3&2016&77.9\%&23.9M\\
+                        ResNet152V2&2016&78.0\%&60.4M\\
+                        DenseNet201&2017&77.3\%&20.2M\\
+                        NASNetLarge&2017&82.5\%&88.9M\\
+                        MobileNetV2&2018&71.3\%&3.5M\\
+                        EfficientNetB7&2019&84.3\%&66.7M\\
+                        EfficientNetV2L&2021&85.7\%&119.0M\\
+                        Vision Transformer L/16&2021&85.2\%&307M\\
+                        ConvNeXtXLarge&2022&86.3\%&350.1M\\
+                        \hline
+                    \end{tabular}
+                }
+            };
+        }
+        \only<5-6>{
+            \node[anchor=south west] at (-7, -3.5) {
+                \yearsize
+            };
+        }
+        \only<6>{
+            \node[anchor=south east] at (7, -3.5) {
+                \performancesize
+            };
+        }
+        \only<7-12>{
+            \node[align=center, anchor=north] at (0, 3.25) {
+                {\tiny
+                    \begin{tabular}{|>{\centering\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.9cm}|}
+                        \hline
+                        \smash{\visible<7->{\textbf{Dataset}}}&\smash{\visible<7->{\textbf{Size}}}&\smash{\visible<7->{\textbf{Dimensionality}}}\\
+                        \hline
+                        \smash{\visible<7->{MNIST}}&\smash{\visible<7->{$\sim$70K}}&\smash{\visible<7->{28x28 pixels}}\\
+                        \smash{\visible<8->{CIFAR}}&\smash{\visible<8->{$\sim$60K}}&\smash{\visible<8->{32x32 pixels}}\\
+                        \smash{\visible<9->{COCO}}&\smash{\visible<9->{$\sim$330K}}&\smash{\visible<9->{640x640 pixels}}\\
+                        \smash{\visible<9->{ImageNet (21k)}}&\smash{\visible<9->{$\sim$14M}}&\smash{\visible<9->{224x224 pixels}}\\
+                        \smash{\visible<10->{CLIP}}&\smash{\visible<10->{$\sim$400M}}&\smash{\visible<10->{224x224 pixels}}\\
+                        \smash{\visible<10->{JFT-3B}}&\smash{\visible<10->{$\sim$3B}}&\smash{\visible<10->{256x256 pixels}}\\
+                        \smash{\visible<10->{LAION-5B}}&\smash{\visible<10->{$\sim$2.3B}}&\smash{\visible<10->{336x336 pixels}}\\
+                        \hline
+                    \end{tabular}
+                }
+            };
+        }
+        \only<7>{
+            \node[] at (0, -1.5) {
+                \includegraphics[height=3cm]{data/mnist.png}
+            };
+        }
+        \only<8>{
+            \node[] at (0, -1.5) {
+                \includegraphics[height=3cm]{data/cifar.png}
+            };
+        }
+        \only<9>{
+            \node[] at (0, -1.5) {
+                \includegraphics[height=3cm]{data/imagenet.jpeg}
+            };
+        }
+        \only<10>{
+            \node[inner sep=0pt, draw=black] at (0, -1.5) {
+                \includegraphics[height=3cm]{data/laion.png}
+            };
+        }
+        \only<11-12>{
+            \node[align=center, anchor=north] at (0, 0.5) {
+                {\tiny
+                    \begin{tabular}{|>{\centering\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1cm}|>{\centering\arraybackslash}p{1.9cm}|}
+                        \hline
+                        UK Biobank&45,891&256x256x256 voxels\\
+                        ABCD&11,660&256x256x256 voxels\\
+                        \smash{\alert<12>{ADNI}}&\smash{\alert<12>{2,729}}&\smash{\alert<12>{256x256x256 voxels}}\\
+                        \smash{\alert<12>{TOP}}&\smash{\alert<12>{2,222}}&\smash{\alert<12>{256x256x256 voxels}}\\
+                        HBN&1,365&256x256x256 voxels\\
+                        QTIM&1,201&256x256x256 voxels\\
+                        PING&1,176&256x256x256 voxels\\
+                        CoRR&1,156&256x256x256 voxels\\
+                        HCP&1,113&256x256x256 voxels\\
+                        \smash{\alert<12>{OASIS3}}&\smash{\alert<12>{1,062}}&\smash{\alert<12>{256x256x256 voxels}}\\
+                        \hline
+                    \end{tabular}
+                }
+            };
+        }
+        \only<13>{
+            \stickman{(-4.5, -1.7)}{blue}
+            \stickman{(-5, -1.5)}{blue}
+            \stickman{(-3.8, -1.3)}{blue}
+            \stickman{(-4.4, -0.5)}{blue}
+            \stickman{(-5.5, -0.7)}{blue}
+            \stickman{(-4.9, 0)}{blue}
+            \stickman{(-3.8, -0.2)}{blue}
+            \stickman{(-3.3, -0.5)}{blue}
+            \stickman{(-3.1, -1.6)}{blue}
+
+            \stickman{(-6.1, 2.5)}{blue}
+            \stickman{(-5.5, 2)}{blue}
+            \stickman{(-5.4, 3.1)}{blue}
+            \stickman{(-4.9, 2.3)}{blue}
+            \stickman{(-4.3, 2.9)}{blue}
+            \stickman{(-3.9, 1.9)}{blue}
+            \stickman{(-3.7, 3)}{blue}
+
+            \stickman{(-1.8, 1.5)}{blue}
+            \stickman{(-1.3, 2)}{blue}
+            \stickman{(-1.2, 0.9)}{blue}
+            \stickman{(-0.7, 1.5)}{blue}
+            \stickman{(-0.6, 2.6)}{blue}
+        }
+        \only<13-16>{
+            \stickman{(2.5, 3)}{red}
+            \stickman{(3.1, 2.9)}{red}
+            \stickman{(2.8, 1.8)}{blue}
+
+            \stickman{(4.7, 1.4)}{red}
+            \stickman{(5.3, 1.3)}{blue}
+            \stickman{(4.8, 0.2)}{red}
+            \stickman{(5.4, 0.1)}{blue}
+
+            \stickman{(2.8, -1.6)}{red}
+            \stickman{(3.4, -1.9)}{blue}
+            \stickman{(4, -1.7)}{blue}
+        }
+        \only<14-15>{
+            \stickman{(-4.5, -1.7+0.4)}{blue}
+            \stickman{(-5, -1.5+0.4)}{blue}
+            \stickman{(-3.8, -1.3+0.4)}{blue}
+            \stickman{(-4.4, -0.5+0.4)}{blue}
+            \stickman{(-5.5, -0.7+0.4)}{blue}
+            \stickman{(-4.9, 0+0.4)}{blue}
+            \stickman{(-3.8, -0.2+0.4)}{blue}
+            \stickman{(-3.3, -0.5+0.4)}{blue}
+            \stickman{(-3.1, -1.6+0.4)}{blue}
+
+            \stickman{(-6.1, 2.5-0.4)}{blue}
+            \stickman{(-5.5, 2-0.4)}{blue}
+            \stickman{(-5.4, 3.1-0.4)}{blue}
+            \stickman{(-4.9, 2.3-0.4)}{blue}
+            \stickman{(-4.3, 2.9-0.4)}{blue}
+            \stickman{(-3.9, 1.9-0.4)}{blue}
+            \stickman{(-3.7, 3-0.4)}{blue}
+
+            \stickman{(-1.8-1.4, 1.5-0.3)}{blue}
+            \stickman{(-1.3-1.4, 2-0.3)}{blue}
+            \stickman{(-1.2-1.4, 0.9-0.3)}{blue}
+            \stickman{(-0.7-1.4, 1.5-0.3)}{blue}
+            \stickman{(-0.6-1.4, 2.6-0.3)}{blue}
+        }
+        \only<15-16>{
+            \draw[-stealth, line width=0.3cm, draw=black!60] (-1.5, 0) -- (2.5, 0);
+        }
+
+        \only<16>{
+            \stickman{(-4.5, -1.7+0.4)}{blue!80!red}
+            \stickman{(-5, -1.5+0.4)}{blue}
+            \stickman{(-3.8, -1.3+0.4)}{blue!60!red}
+            \stickman{(-4.4, -0.5+0.4)}{blue!70!red}
+            \stickman{(-5.5, -0.7+0.4)}{blue}
+            \stickman{(-4.9, 0+0.4)}{blue}
+            \stickman{(-3.8, -0.2+0.4)}{blue}
+            \stickman{(-3.3, -0.5+0.4)}{blue!20!red}
+            \stickman{(-3.1, -1.6+0.4)}{blue}
+
+            \stickman{(-6.1, 2.5-0.4)}{blue}
+            \stickman{(-5.5, 2-0.4)}{blue!50!red}
+            \stickman{(-5.4, 3.1-0.4)}{blue!84!red}
+            \stickman{(-4.9, 2.3-0.4)}{blue!62!red}
+            \stickman{(-4.3, 2.9-0.4)}{blue}
+            \stickman{(-3.9, 1.9-0.4)}{blue}
+            \stickman{(-3.7, 3-0.4)}{blue!30!red}
+
+            \stickman{(-1.8-1.4, 1.5-0.3)}{blue!74!red}
+            \stickman{(-1.3-1.4, 2-0.3)}{blue}
+            \stickman{(-1.2-1.4, 0.9-0.3)}{blue!46!red}
+            \stickman{(-0.7-1.4, 1.5-0.3)}{blue}
+            \stickman{(-0.6-1.4, 2.6-0.3)}{blue!82 !red}
+        }
+    \end{tikzpicture}
+\end{frame}
