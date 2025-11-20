@@ -4,6 +4,7 @@
 
 \usepackage{amsmath}
 \usepackage{array}
+\usepackage{colortbl}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage{tikz}
@@ -14,13 +15,23 @@
 \usepgfplotslibrary{fillbetween}
 
 \usetikzlibrary{arrows}
+\usetikzlibrary{fadings}
+\usetikzlibrary{matrix}
 \usetikzlibrary{overlay-beamer-styles}
 \usetikzlibrary{positioning}
+\usetikzlibrary{shapes.arrows}
 
 \title{Enabling deep learning in small MRI datasets with transfer learning}
 \author{Esten H. Leonardsen}
 \date{\today}
 
+\newcommand{\stickman}[2]{
+    \node[circle,fill,minimum size=2.5mm,#2] (head) at #1 {};
+    \node[rounded corners=1pt,minimum height=0.65cm,minimum width=0.2cm,fill,below = 0.5pt of head,#2] (body) {};
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(1pt,-0.5pt)}]body.north east) --++(-90:3mm);
+    \draw[line width=0.5mm,round cap-round cap,#2] ([shift={(-1pt,-0.5pt)}]body.north west)--++(-90:3mm);
+    \draw[thick,white,-round cap] (body.south) --++(90:2.75mm);
+}
 
 \begin{document}
 	\begin{frame}
@@ -28,7 +39,8 @@
 	\end{frame}
 
 	\input{sections/cnn.tex}
-    %\input{sections/datasets.tex}
-	%\input{sections/transfer.tex}
+    \input{sections/datasets.tex}
+	\input{sections/transfer.tex}
 	\input{sections/methods.tex}
+
 \end{document}

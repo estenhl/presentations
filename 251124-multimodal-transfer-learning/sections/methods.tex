@@ -58,139 +58,360 @@
         inner sep=1.5pt
     ] at (#2){};
 }
-% \newsavebox{\datasetbox}
-% \sbox{\datasetbox}{
-%     \begin{tikzpicture}
-%         \begin{axis}[
-%             width=0.85\textwidth,
-%             height=0.65\textwidth,
-%             xmin=0,
-%             xmax=100,
-%             ytick=\empty,
-%             axis x line=middle,
-%             axis y line=none,
-%             xtick={10,20,30,40,50,60,70,80,90},
-%             xticklabels={10,20,30,40,50,60,70,80,{}},
-%             x axis line style={|-stealth},
-%             clip=false,
-%             axis on top,
-%             tick label style={font=\footnotesize}
-%         ]
-%             \pgfplotstableread[col sep=comma]{data/train.csv}\datatable
+\newsavebox{\datasetbox}
+\sbox{\datasetbox}{
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.85\textwidth,
+            height=0.65\textwidth,
+            xmin=0,
+            xmax=100,
+            ytick=\empty,
+            axis x line=middle,
+            axis y line=none,
+            xtick={10,20,30,40,50,60,70,80,90},
+            xticklabels={10,20,30,40,50,60,70,80,{}},
+            x axis line style={|-stealth},
+            clip=false,
+            axis on top,
+            tick label style={font=\footnotesize}
+        ]
+            \pgfplotstableread[col sep=comma]{data/train.csv}\datatable
 
 
-%             \addplot[
-%                 name path=zero,
-%             ] coordinates {(0,0) (100,0)};
+            \addplot[
+                name path=zero,
+            ] coordinates {(0,0) (100,0)};
 
-%             \pgfplotsinvokeforeach{ABCD, QTAB, PING, PNC, ds000119, SLIM, QTIM, Beijing, AOMIC-PIOP2, ds000202, AOMIC-PIOP1, AOMIC-ID1000, CoRR, HCP, FCON1000, NIMH, NKI-RS, MPI-LEMON, ds003592, ds000222, SALD, IXI, DLBS, Cam-CAN, UKBB, ADNI}{
-%                 \begingroup
-%                     \addplot [
-%                         draw=none,
-%                         line width=0pt,
-%                         name path=female_#1,
-%                     ] table [
-%                         x=age,
-%                         y expr=1*\thisrow{female_#1}
-%                     ] {\datatable};
+            \pgfplotsinvokeforeach{ABCD, QTAB, PING, PNC, ds000119, SLIM, QTIM, Beijing, AOMIC-PIOP2, ds000202, AOMIC-PIOP1, AOMIC-ID1000, CoRR, HCP, FCON1000, NIMH, NKI-RS, MPI-LEMON, ds003592, ds000222, SALD, IXI, DLBS, Cam-CAN, UKBB, ADNI}{
+                \begingroup
+                    \addplot [
+                        draw=none,
+                        line width=0pt,
+                        name path=female_#1,
+                    ] table [
+                        x=age,
+                        y expr=1*\thisrow{female_#1}
+                    ] {\datatable};
 
-%                     \addplot [
-%                         draw=none,
-%                         line width=0pt,
-%                         name path=male_#1,
-%                     ] table [
-%                         x=age,
-%                         y expr=-1*\thisrow{male_#1}
-%                     ] {\datatable};
-%                 \endgroup
-%             }
-%             \pgfplotsinvokeforeach{male, female}{
-%                 \addplot[fill=ABCD!50] fill between[of=zero and #1_ABCD];
-%                 \addplot[fill=QTAB!50] fill between[of=#1_ABCD and #1_QTAB];
-%                 \addplot[fill=PING!50] fill between[of=#1_QTAB and #1_PING];
-%                 \addplot[fill=PNC!50] fill between[of=#1_PING and #1_PNC];
-%                 \addplot[fill=ds000119!50] fill between[of=#1_PNC and #1_ds000119];
-%                 \addplot[fill=SLIM!50] fill between[of=#1_ds000119 and #1_SLIM];
-%                 \addplot[fill=QTIM!50] fill between[of=#1_SLIM and #1_QTIM];
-%                 \addplot[fill=Beijing!50] fill between[of=#1_QTIM and #1_Beijing];
-%                 \addplot[fill=AOMIC-PIOP2!50] fill between[of=#1_Beijing and #1_AOMIC-PIOP2];
-%                 \addplot[fill=ds000202!50] fill between[of=#1_AOMIC-PIOP2 and #1_ds000202];
-%                 \addplot[fill=AOMIC-PIOP1!50] fill between[of=#1_ds000202 and #1_AOMIC-PIOP1];
-%                 \addplot[fill=AOMIC-ID1000!50] fill between[of=#1_AOMIC-PIOP1 and #1_AOMIC-ID1000];
-%                 \addplot[fill=CoRR!50] fill between[of=#1_AOMIC-ID1000 and #1_CoRR];
-%                 \addplot[fill=HCP!50] fill between[of=#1_CoRR and #1_HCP];
-%                 \addplot[fill=FCON1000!50] fill between[of=#1_HCP and #1_FCON1000];
-%                 \addplot[fill=NIMH!50] fill between[of=#1_FCON1000 and #1_NIMH];
-%                 \addplot[fill=NKI-RS!50] fill between[of=#1_NIMH and #1_NKI-RS];
-%                 \addplot[fill=MPI-LEMON!50] fill between[of=#1_NKI-RS and #1_MPI-LEMON];
-%                 \addplot[fill=ds003592!50] fill between[of=#1_MPI-LEMON and #1_ds003592];
-%                 \addplot[fill=ds000222!50] fill between[of=#1_ds003592 and #1_ds000222];
-%                 \addplot[fill=SALD!50] fill between[of=#1_ds000222 and #1_SALD];
-%                 \addplot[fill=IXI!50] fill between[of=#1_SALD and #1_IXI];
-%                 \addplot[fill=DLBS!50] fill between[of=#1_IXI and #1_DLBS];
-%                 \addplot[fill=Cam-CAN!50] fill between[of=#1_DLBS and #1_Cam-CAN];
-%                 \addplot[fill=UKBB!50] fill between[of=#1_Cam-CAN and #1_UKBB];
-%                 \addplot[fill=ADNI!50] fill between[of=#1_UKBB and #1_ADNI];
-%             }
+                    \addplot [
+                        draw=none,
+                        line width=0pt,
+                        name path=male_#1,
+                    ] table [
+                        x=age,
+                        y expr=-1*\thisrow{male_#1}
+                    ] {\datatable};
+                \endgroup
+            }
+            \pgfplotsinvokeforeach{male, female}{
+                \addplot[fill=ABCD!50] fill between[of=zero and #1_ABCD];
+                \addplot[fill=QTAB!50] fill between[of=#1_ABCD and #1_QTAB];
+                \addplot[fill=PING!50] fill between[of=#1_QTAB and #1_PING];
+                \addplot[fill=PNC!50] fill between[of=#1_PING and #1_PNC];
+                \addplot[fill=ds000119!50] fill between[of=#1_PNC and #1_ds000119];
+                \addplot[fill=SLIM!50] fill between[of=#1_ds000119 and #1_SLIM];
+                \addplot[fill=QTIM!50] fill between[of=#1_SLIM and #1_QTIM];
+                \addplot[fill=Beijing!50] fill between[of=#1_QTIM and #1_Beijing];
+                \addplot[fill=AOMIC-PIOP2!50] fill between[of=#1_Beijing and #1_AOMIC-PIOP2];
+                \addplot[fill=ds000202!50] fill between[of=#1_AOMIC-PIOP2 and #1_ds000202];
+                \addplot[fill=AOMIC-PIOP1!50] fill between[of=#1_ds000202 and #1_AOMIC-PIOP1];
+                \addplot[fill=AOMIC-ID1000!50] fill between[of=#1_AOMIC-PIOP1 and #1_AOMIC-ID1000];
+                \addplot[fill=CoRR!50] fill between[of=#1_AOMIC-ID1000 and #1_CoRR];
+                \addplot[fill=HCP!50] fill between[of=#1_CoRR and #1_HCP];
+                \addplot[fill=FCON1000!50] fill between[of=#1_HCP and #1_FCON1000];
+                \addplot[fill=NIMH!50] fill between[of=#1_FCON1000 and #1_NIMH];
+                \addplot[fill=NKI-RS!50] fill between[of=#1_NIMH and #1_NKI-RS];
+                \addplot[fill=MPI-LEMON!50] fill between[of=#1_NKI-RS and #1_MPI-LEMON];
+                \addplot[fill=ds003592!50] fill between[of=#1_MPI-LEMON and #1_ds003592];
+                \addplot[fill=ds000222!50] fill between[of=#1_ds003592 and #1_ds000222];
+                \addplot[fill=SALD!50] fill between[of=#1_ds000222 and #1_SALD];
+                \addplot[fill=IXI!50] fill between[of=#1_SALD and #1_IXI];
+                \addplot[fill=DLBS!50] fill between[of=#1_IXI and #1_DLBS];
+                \addplot[fill=Cam-CAN!50] fill between[of=#1_DLBS and #1_Cam-CAN];
+                \addplot[fill=UKBB!50] fill between[of=#1_Cam-CAN and #1_UKBB];
+                \addplot[fill=ADNI!50] fill between[of=#1_UKBB and #1_ADNI];
+            }
 
-%             \node[
-%                 anchor=south east,
-%                 font=\footnotesize
-%             ] at (axis cs: 99, 0.0){FEMALE};
-%             \node[
-%                 anchor=north east,
-%                 font=\footnotesize
-%             ] at (axis cs: 99, -0.0){MALE};
+            \node[
+                anchor=south east,
+                font=\footnotesize
+            ] at (axis cs: 99, 0.0){FEMALE};
+            \node[
+                anchor=north east,
+                font=\footnotesize
+            ] at (axis cs: 99, -0.0){MALE};
 
-%             \def\xdiff{35.5}
-%             \def\xmin{102}
-%             \def\ydiff{0.07}
-%             \def\ymin{12.5*\ydiff}
+            \def\xdiff{35.5}
+            \def\xmin{102}
+            \def\ydiff{0.07}
+            \def\ymin{12.5*\ydiff}
 
-%             \datasetlegendnode{ABCD}{axis cs: \xmin, \ymin}
-%             \datasetlegendnode{QTAB}{axis cs: \xmin, \ymin-\ydiff}
-%             \datasetlegendnode{PING}{axis cs: \xmin, \ymin-2*\ydiff}
-%             \datasetlegendnode{PNC}{axis cs: \xmin, \ymin-3*\ydiff}
-%             \datasetlegendnode{ds000119}{axis cs: \xmin, \ymin-4*\ydiff}
-%             \datasetlegendnode{SLIM}{axis cs: \xmin, \ymin-5*\ydiff}
-%             \datasetlegendnode{QTIM}{axis cs: \xmin, \ymin-6*\ydiff}
-%             \datasetlegendnode{Beijing}{axis cs: \xmin, \ymin-7*\ydiff}
-%             \datasetlegendnode{AOMIC-PIOP2}{axis cs: \xmin, \ymin-8*\ydiff}
-%             \datasetlegendnode{ds000202}{axis cs: \xmin, \ymin-9*\ydiff}
-%             \datasetlegendnode{AOMIC-PIOP1}{axis cs: \xmin, \ymin-10*\ydiff}
-%             \datasetlegendnode{AOMIC-ID1000}{axis cs: \xmin, \ymin-11*\ydiff}
-%             \datasetlegendnode{CoRR}{axis cs: \xmin, \ymin-12*\ydiff}
-%             \datasetlegendnode{HCP}{axis cs: \xmin, \ymin-13*\ydiff}
-%             \datasetlegendnode{FCON1000}{axis cs: \xmin, \ymin-14*\ydiff}
-%             \datasetlegendnode{NIMH}{axis cs: \xmin, \ymin-15*\ydiff}
-%             \datasetlegendnode{NKI-RS}{axis cs: \xmin, \ymin-16*\ydiff}
-%             \datasetlegendnode{MPI-LEMON}{axis cs: \xmin, \ymin-17*\ydiff}
-%             \datasetlegendnode{ds003592}{axis cs: \xmin, \ymin-18*\ydiff}
-%             \datasetlegendnode{ds000222}{axis cs: \xmin, \ymin-19*\ydiff}
-%             \datasetlegendnode{SALD}{axis cs: \xmin, \ymin-20*\ydiff}
-%             \datasetlegendnode{IXI}{axis cs: \xmin, \ymin-21*\ydiff}
-%             \datasetlegendnode{DLBS}{axis cs: \xmin, \ymin-22*\ydiff}
-%             \datasetlegendnode{Cam-CAN}{axis cs: \xmin, \ymin-23*\ydiff}
-%             \datasetlegendnode{UKBB}{axis cs: \xmin, \ymin-24*\ydiff}
-%             \datasetlegendnode{ADNI}{axis cs: \xmin, \ymin-25*\ydiff}
+            \datasetlegendnode{ABCD}{axis cs: \xmin, \ymin}
+            \datasetlegendnode{QTAB}{axis cs: \xmin, \ymin-\ydiff}
+            \datasetlegendnode{PING}{axis cs: \xmin, \ymin-2*\ydiff}
+            \datasetlegendnode{PNC}{axis cs: \xmin, \ymin-3*\ydiff}
+            \datasetlegendnode{ds000119}{axis cs: \xmin, \ymin-4*\ydiff}
+            \datasetlegendnode{SLIM}{axis cs: \xmin, \ymin-5*\ydiff}
+            \datasetlegendnode{QTIM}{axis cs: \xmin, \ymin-6*\ydiff}
+            \datasetlegendnode{Beijing}{axis cs: \xmin, \ymin-7*\ydiff}
+            \datasetlegendnode{AOMIC-PIOP2}{axis cs: \xmin, \ymin-8*\ydiff}
+            \datasetlegendnode{ds000202}{axis cs: \xmin, \ymin-9*\ydiff}
+            \datasetlegendnode{AOMIC-PIOP1}{axis cs: \xmin, \ymin-10*\ydiff}
+            \datasetlegendnode{AOMIC-ID1000}{axis cs: \xmin, \ymin-11*\ydiff}
+            \datasetlegendnode{CoRR}{axis cs: \xmin, \ymin-12*\ydiff}
+            \datasetlegendnode{HCP}{axis cs: \xmin, \ymin-13*\ydiff}
+            \datasetlegendnode{FCON1000}{axis cs: \xmin, \ymin-14*\ydiff}
+            \datasetlegendnode{NIMH}{axis cs: \xmin, \ymin-15*\ydiff}
+            \datasetlegendnode{NKI-RS}{axis cs: \xmin, \ymin-16*\ydiff}
+            \datasetlegendnode{MPI-LEMON}{axis cs: \xmin, \ymin-17*\ydiff}
+            \datasetlegendnode{ds003592}{axis cs: \xmin, \ymin-18*\ydiff}
+            \datasetlegendnode{ds000222}{axis cs: \xmin, \ymin-19*\ydiff}
+            \datasetlegendnode{SALD}{axis cs: \xmin, \ymin-20*\ydiff}
+            \datasetlegendnode{IXI}{axis cs: \xmin, \ymin-21*\ydiff}
+            \datasetlegendnode{DLBS}{axis cs: \xmin, \ymin-22*\ydiff}
+            \datasetlegendnode{Cam-CAN}{axis cs: \xmin, \ymin-23*\ydiff}
+            \datasetlegendnode{UKBB}{axis cs: \xmin, \ymin-24*\ydiff}
+            \datasetlegendnode{ADNI}{axis cs: \xmin, \ymin-25*\ydiff}
 
-%             \node[align=center, font=\small\linespread{0.9}\selectfont] at (axis cs: 50, -0.6) {
-%                 68,570 MRIs\\59,923 participants\\26 sources
-%             };
-%         \end{axis}
-%     \end{tikzpicture}
-% }
+            \node[align=center, font=\small\linespread{0.9}\selectfont] at (axis cs: 50, -0.6) {
+                68,570 MRIs\\59,923 participants\\26 sources
+            };
+        \end{axis}
+    \end{tikzpicture}
+}
 
 \begin{frame}{Methods: Training dataset}
-    % \begin{tikzpicture}
-    %     \node[] at (-7, -3.25) {};
-    %     \node[] at (7, 3.25) {};
+    \begin{tikzpicture}
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
 
-    %     \only<1>{
-    %         \node[] at (0, 0) {
-    %             \usebox{\datasetbox}
-    %         };
-    %     }
-    % \end{tikzpicture}
+        \only<1>{
+            \node[] at (0, 0) {
+                \usebox{\datasetbox}
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
 
+\begin{frame}{Methods: Modelling}
+    \begin{tikzpicture}
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
+
+        \only<1-2>{
+            \inputside{-4.5}{-0.2175}{1.5cm}
+            \cnnarrow{(input.east)}{($ (input.center) + (3, 0) $)}{black}
+            \cnn{-2.7}{-0.2175}{0.1}{0.15}{uiogreen}{0}
+        }
+        \only<2>{
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at (3.55, -0.2175) {\Large{?}};
+            \cnnarrow{($ (output1.west) - (1, 0) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+        }
+        \only<3-4>{
+            \stickman{(-4.5, -1.7+0.4)}{uioblue!80!uiored}
+            \stickman{(-5, -1.5+0.4)}{uioblue}
+            \stickman{(-3.8, -1.3+0.4)}{uioblue!60!uiored}
+            \stickman{(-4.4, -0.5+0.4)}{uioblue!70!uiored}
+            \stickman{(-5.5, -0.7+0.4)}{uioblue}
+            \stickman{(-4.9, 0+0.4)}{uioblue}
+            \stickman{(-3.8, -0.2+0.4)}{uioblue}
+            \stickman{(-3.3, -0.5+0.4)}{uioblue!20!uiored}
+            \stickman{(-3.1, -1.6+0.4)}{uioblue}
+
+            \stickman{(-6.1, 2.5-0.4)}{uioblue}
+            \stickman{(-5.5, 2-0.4)}{uioblue!50!uiored}
+            \stickman{(-5.4, 3.1-0.4)}{uioblue!84!uiored}
+            \stickman{(-4.9, 2.3-0.4)}{uioblue!62!uiored}
+            \stickman{(-4.3, 2.9-0.4)}{uioblue}
+            \stickman{(-3.9, 1.9-0.4)}{uioblue}
+            \stickman{(-3.7, 3-0.4)}{uioblue!30!uiored}
+
+            \stickman{(-1.8-1.4, 1.5-0.3)}{uioblue!74!uiored}
+            \stickman{(-1.3-1.4, 2-0.3)}{uioblue}
+            \stickman{(-1.2-1.4, 0.9-0.3)}{uioblue!46!uiored}
+            \stickman{(-0.7-1.4, 1.5-0.3)}{uioblue}
+            \stickman{(-0.6-1.4, 2.6-0.3)}{uioblue!82 !uiored}
+        }
+        \only<3>{
+            \stickman{(2.5, 3)}{uiored}
+            \stickman{(3.1, 2.9)}{uiored}
+            \stickman{(2.8, 1.8)}{uioblue}
+
+            \stickman{(4.7, 1.4)}{uiored}
+            \stickman{(5.3, 1.3)}{uioblue}
+            \stickman{(4.8, 0.2)}{uiored}
+            \stickman{(5.4, 0.1)}{uioblue}
+
+            \stickman{(2.8, -1.6)}{uiored}
+            \stickman{(3.4, -1.9)}{uioblue}
+            \stickman{(4, -1.7)}{uioblue}
+        }
+        \only<4>{
+            \stickman{(2.5, 3)}{uiored}
+            \stickman{(3.1, 2.9)}{uiored}
+            \stickman{(2.8, 1.8)}{uioblue}
+
+            \stickman{(4.7, 1.4)}{uiogreen}
+            \stickman{(5.3, 1.3)}{uioblue}
+            \stickman{(4.8, 0.2)}{uiogreen}
+            \stickman{(5.4, 0.1)}{uioblue}
+
+            \stickman{(2.8, -1.6)}{uioorange}
+            \stickman{(3.4, -1.9)}{uioblue}
+            \stickman{(4, -1.7)}{uioblue}
+        }
+        \only<5>{
+            \node[inner sep=0pt, draw=black] at (0, 0) {
+                \includegraphics[width=12cm]{data/claim.png}
+            };
+            \node[font=\tiny, anchor=south, text width=13cm, align=flush center, inner sep=0pt] at (0, -3.3) {
+                Leonardsen, E. H., Peng, H., Kaufmann, T., Agartz, I., Andreassen, O. A., Celius, E. G., ... \& Wang, Y. (2022). Deep neural networks learn general and clinically relevant representations of the ageing brain. \textit{NeuroImage}, \textit{256}, 119210.
+            };
+        }
+        \only<6>{
+            \node[inner sep=0pt, draw=black] at (0, 0) {
+                \includegraphics[width=8cm]{data/trevor.jpg}
+            };
+            \node[font=\tiny, anchor=south, text width=13cm, align=flush center, inner sep=0pt] at (0, -3.3) {
+                Tan, T. W. K., Nguyen, K. N., Zhang, C., Kong, R., Cheng, S. F., Ji, F., ... \& Australian Imaging Biomarkers and Lifestyle Study of Aging. (2025). Mind the gap: Does brain age improve Alzheimer’s disease prediction?. \textit{Human Brain Mapping}, \textit{46}(12), e70276.
+            };
+            \node[draw=red, thick, minimum height=0.8cm, minimum width=1.2cm, dashed] at (-0.7, 1.5) {};
+        }
+        \only<7-8,10-11>{
+            \node[anchor=west] (ba) at (-7, 0) {
+                Brain age
+            };
+        }
+        \only<8,10-11>{
+            \node[anchor=east, align=center] (ssl) at (7, 0) {
+                Self-supervised\\approaches
+            };
+        }
+        \only<10-11>{
+            \node [
+                double arrow,
+                draw=black,
+                left color=black,
+                right color=white,
+                transform shape,
+                minimum height=5cm,
+                text width=8.4cm,
+                inner sep=0.2cm,
+                anchor=west
+            ] (arrow) at (ba.east) {};
+            \node[font=\scriptsize\bfseries, text=white, anchor=west, text depth=0] at ($ (arrow.west) + (0.4, 0) $) {
+                Specific
+            };
+            \node[font=\scriptsize\bfseries, anchor=east, text depth=0] at ($ (arrow.east) - (0.4, 0) $) {
+                General
+            };
+        }
+        \only<11>{
+            \draw[very thick, red] (-1.2, 0.3) -- (-1.2, -0.3);
+            \node[anchor=north, align=center] at (-1.2, -0.3) {
+                Multi-task\\learning
+            };
+        }
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Methods: Multi-task learning}
+    \begin{tikzpicture}
+        \node[draw=black] at (-7, -3.25) {};
+        \node[draw=black] at (7, 3.25) {};
+
+        \only<1-3>{
+            \inputside{-4.5}{0}{1.5cm}
+            \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
+            \cnn{-2.7}{0}{0.1}{0.15}{uiogreen}{0}
+        }
+        \only<1>{
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at (3.55, 0) {Brain age};
+            \cnnarrow{($ (output1.west) - (1, 0) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+        }
+        \only<2-3>{
+            \node[anchor=west, align=left, font=\normalfont] (output1) at (3.55, 1.66) {Brain age};
+            \cnnarrow{($ (output1.west) - (1, 1.66) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output2) at (3.55, 1) {Sex};
+            \cnnarrow{($ (output2.west) - (1, 1) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output3) at (3.55, 0.33) {Handedness};
+            \cnnarrow{($ (output3.west) - (1, 0.33) $)}{($ (output3.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output4) at (3.55, -0.33) {BMI};
+            \cnnarrow{($ (output4.west) - (1, -0.33) $)}{($ (output4.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.8}\selectfont] (output5) at (3.55, -1) {Fluid\\intelligence};
+            \cnnarrow{($ (output5.west) - (1, -1) $)}{($ (output5.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output6) at (3.55, -1.66) {Neuroticism};
+            \cnnarrow{($ (output6.west) - (1, -1.66) $)}{($ (output6.west) + (0.1, 0) $)}{black}
+
+        }
+        \only<3>{
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (2.1, -2.5) -- (2.1, -0.5);
+        }
+        \begin{scope}[visible on=<4>]
+            \matrix (m) [
+                matrix of nodes,
+                nodes={
+                    rectangle,
+                    draw=black,
+                    minimum width=0.7cm,
+                    minimum height=0.7cm,
+                    anchor=center,
+                    font=\scriptsize,
+                    inner sep=0pt
+                }
+            ] at (0, 1) {
+                |[fill=red]| 1 &
+                0 &
+                |[fill=red!2]| 0.02 &
+                |[fill=red!52]| 0.52 &
+                |[fill=blue!10]| -0.1 &
+                |[fill=blue!4]| -0.04 \\
+                 0 &
+                |[fill=red]| 1 &
+                |[fill=red!3]| 0.03 &
+                |[fill=red!4]| 0.04 &
+                |[fill=blue!15]| -0.15 &
+                |[fill=red!4]| 0.04 \\
+                |[fill=blue!2]| -0.02 &
+                |[fill=red!3]| 0.03 &
+                |[fill=red]| 1 &
+                0 &
+                |[fill=red!3]| 0.03 &
+                |[fill=blue!3]| -0.03 \\
+                |[fill=red!52]| 0.52 &
+                |[fill=red!4]| 0.04 &
+                0 &
+                |[fill=red]| 1 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=blue!5]| -0.05 \\
+                |[fill=blue!10]| -0.1 &
+                |[fill=blue!15]| -0.15 &
+                |[fill=red!3]| 0.03 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=red]| 1 &
+                |[fill=blue!4]| -0.04 \\
+                |[fill=blue!4]| -0.04 &
+                |[fill=red!4]| 0.04 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=blue!5]| -0.05 &
+                |[fill=blue!4]| -0.04 &
+                |[fill=red]| 1 \\
+            };
+
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-1-1.west) $) {Age};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-2-1.west) $) {Sex};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-3-1.west) $) {Handedness};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-4-1.west) $) {BMI};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-5-1.west) $) {Fluid intelligence};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-6-1.west) $) {Neuroticism};
+
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-1.south) $) {Age};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-2.south) $) {Sex};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-3.south) $) {Handedness};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-4.south) $) {BMI};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-5.south) $) {Fluid intelligence};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-6.south) $) {Neuroticism};
+        \end{scope}
+    \end{tikzpicture}
 \end{frame}

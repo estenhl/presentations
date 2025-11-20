@@ -1,0 +1,98 @@
+\frametitle{Methods: Multi-task learning}
+\begin{tikzpicture}
+        \node[draw=black] at (-7, -3.25) {};
+        \node[draw=black] at (7, 3.25) {};
+
+        \only<1-3>{
+            \inputside{-4.5}{0}{1.5cm}
+            \cnnarrow{(input.east)}{($ (input.center) + (2.5, 0) $)}{black}
+            \cnn{-2.7}{0}{0.1}{0.15}{uiogreen}{0}
+        }
+        \only<1>{
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.9}\selectfont] (output1) at (3.55, 0) {Brain age};
+            \cnnarrow{($ (output1.west) - (1, 0) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+        }
+        \only<2-3>{
+            \node[anchor=west, align=left, font=\normalfont] (output1) at (3.55, 1.66) {Brain age};
+            \cnnarrow{($ (output1.west) - (1, 1.66) $)}{($ (output1.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output2) at (3.55, 1) {Sex};
+            \cnnarrow{($ (output2.west) - (1, 1) $)}{($ (output2.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output3) at (3.55, 0.33) {Handedness};
+            \cnnarrow{($ (output3.west) - (1, 0.33) $)}{($ (output3.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output4) at (3.55, -0.33) {BMI};
+            \cnnarrow{($ (output4.west) - (1, -0.33) $)}{($ (output4.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont\linespread{0.8}\selectfont] (output5) at (3.55, -1) {Fluid\\intelligence};
+            \cnnarrow{($ (output5.west) - (1, -1) $)}{($ (output5.west) + (0.1, 0) $)}{black}
+            \node[anchor=west, align=left, font=\normalfont] (output6) at (3.55, -1.66) {Neuroticism};
+            \cnnarrow{($ (output6.west) - (1, -1.66) $)}{($ (output6.west) + (0.1, 0) $)}{black}
+
+        }
+        \only<3>{
+            \draw[-stealth, uiolightred, line width=0.5, line width=4pt] (2.1, -2.5) -- (2.1, -0.5);
+        }
+        \begin{scope}[visible on=<4>]
+            \matrix (m) [
+                matrix of nodes,
+                nodes={
+                    rectangle,
+                    draw=black,
+                    minimum width=0.7cm,
+                    minimum height=0.7cm,
+                    anchor=center,
+                    font=\scriptsize,
+                    inner sep=0pt
+                }
+            ] at (0, 1) {
+                |[fill=red]| 1 &
+                0 &
+                |[fill=red!2]| 0.02 &
+                |[fill=red!52]| 0.52 &
+                |[fill=blue!10]| -0.1 &
+                |[fill=blue!4]| -0.04 \\
+                 0 &
+                |[fill=red]| 1 &
+                |[fill=red!3]| 0.03 &
+                |[fill=red!4]| 0.04 &
+                |[fill=blue!15]| -0.15 &
+                |[fill=red!4]| 0.04 \\
+                |[fill=blue!2]| -0.02 &
+                |[fill=red!3]| 0.03 &
+                |[fill=red]| 1 &
+                0 &
+                |[fill=red!3]| 0.03 &
+                |[fill=blue!3]| -0.03 \\
+                |[fill=red!52]| 0.52 &
+                |[fill=red!4]| 0.04 &
+                0 &
+                |[fill=red]| 1 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=blue!5]| -0.05 \\
+                |[fill=blue!10]| -0.1 &
+                |[fill=blue!15]| -0.15 &
+                |[fill=red!3]| 0.03 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=red]| 1 &
+                |[fill=blue!4]| -0.04 \\
+                |[fill=blue!4]| -0.04 &
+                |[fill=red!4]| 0.04 &
+                |[fill=blue!3]| -0.03 &
+                |[fill=blue!5]| -0.05 &
+                |[fill=blue!4]| -0.04 &
+                |[fill=red]| 1 \\
+            };
+
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-1-1.west) $) {Age};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-2-1.west) $) {Sex};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-3-1.west) $) {Handedness};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-4-1.west) $) {BMI};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-5-1.west) $) {Fluid intelligence};
+            \node[anchor=east, font=\scriptsize, text depth=0] at ($ (m-6-1.west) $) {Neuroticism};
+
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-1.south) $) {Age};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-2.south) $) {Sex};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-3.south) $) {Handedness};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-4.south) $) {BMI};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-5.south) $) {Fluid intelligence};
+            \node[anchor=east, font=\scriptsize, text depth=0, rotate=45] at ($ (m-6-6.south) $) {Neuroticism};
+        \end{scope}
+    \end{tikzpicture}
