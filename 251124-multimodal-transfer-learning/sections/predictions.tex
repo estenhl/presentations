@@ -1,0 +1,221 @@
+
+% \newsavebox{\validationbox}
+% \sbox{\validationbox}{
+%     \begin{tikzpicture}
+%         \begin{axis}[
+%             width=0.85\textwidth,
+%             height=0.65\textwidth,
+%             xmin=0,
+%             xmax=100,
+%             ytick=\empty,
+%             axis x line=middle,
+%             axis y line=none,
+%             xtick={10,20,30,40,50,60,70,80,90},
+%             xticklabels={10,20,30,40,50,60,70,80,{}},
+%             x axis line style={|-stealth},
+%             clip=false,
+%             axis on top,
+%             tick label style={font=\footnotesize}
+%         ]
+%             \pgfplotstableread[col sep=comma]{data/validation.csv}\datatable
+
+
+%             \addplot[
+%                 name path=zero,
+%             ] coordinates {(0,0) (100,0)};
+
+%             \pgfplotsinvokeforeach{ABCD, QTAB, PING, PNC, ds000119, SLIM, QTIM, Beijing, AOMIC-PIOP2, ds000202, AOMIC-PIOP1, AOMIC-ID1000, CoRR, HCP, FCON1000, NIMH, NKI-RS, MPI-LEMON, ds003592, ds000222, SALD, IXI, DLBS, Cam-CAN, UKBB, ADNI}{
+%                 \begingroup
+%                     \addplot [
+%                         draw=none,
+%                         line width=0pt,
+%                         name path=female_#1,
+%                     ] table [
+%                         x=age,
+%                         y expr=1*\thisrow{female_#1}
+%                     ] {\datatable};
+
+%                     \addplot [
+%                         draw=none,
+%                         line width=0pt,
+%                         name path=male_#1,
+%                     ] table [
+%                         x=age,
+%                         y expr=-1*\thisrow{male_#1}
+%                     ] {\datatable};
+%                 \endgroup
+%             }
+%             \pgfplotsinvokeforeach{male, female}{
+%                 \addplot[fill=ABCD!50] fill between[of=zero and #1_ABCD];
+%                 \addplot[fill=QTAB!50] fill between[of=#1_ABCD and #1_QTAB];
+%                 \addplot[fill=PING!50] fill between[of=#1_QTAB and #1_PING];
+%                 \addplot[fill=PNC!50] fill between[of=#1_PING and #1_PNC];
+%                 \addplot[fill=ds000119!50] fill between[of=#1_PNC and #1_ds000119];
+%                 \addplot[fill=SLIM!50] fill between[of=#1_ds000119 and #1_SLIM];
+%                 \addplot[fill=QTIM!50] fill between[of=#1_SLIM and #1_QTIM];
+%                 \addplot[fill=Beijing!50] fill between[of=#1_QTIM and #1_Beijing];
+%                 \addplot[fill=AOMIC-PIOP2!50] fill between[of=#1_Beijing and #1_AOMIC-PIOP2];
+%                 \addplot[fill=ds000202!50] fill between[of=#1_AOMIC-PIOP2 and #1_ds000202];
+%                 \addplot[fill=AOMIC-PIOP1!50] fill between[of=#1_ds000202 and #1_AOMIC-PIOP1];
+%                 \addplot[fill=AOMIC-ID1000!50] fill between[of=#1_AOMIC-PIOP1 and #1_AOMIC-ID1000];
+%                 \addplot[fill=CoRR!50] fill between[of=#1_AOMIC-ID1000 and #1_CoRR];
+%                 \addplot[fill=HCP!50] fill between[of=#1_CoRR and #1_HCP];
+%                 \addplot[fill=FCON1000!50] fill between[of=#1_HCP and #1_FCON1000];
+%                 \addplot[fill=NIMH!50] fill between[of=#1_FCON1000 and #1_NIMH];
+%                 \addplot[fill=NKI-RS!50] fill between[of=#1_NIMH and #1_NKI-RS];
+%                 \addplot[fill=MPI-LEMON!50] fill between[of=#1_NKI-RS and #1_MPI-LEMON];
+%                 \addplot[fill=ds003592!50] fill between[of=#1_MPI-LEMON and #1_ds003592];
+%                 \addplot[fill=ds000222!50] fill between[of=#1_ds003592 and #1_ds000222];
+%                 \addplot[fill=SALD!50] fill between[of=#1_ds000222 and #1_SALD];
+%                 \addplot[fill=IXI!50] fill between[of=#1_SALD and #1_IXI];
+%                 \addplot[fill=DLBS!50] fill between[of=#1_IXI and #1_DLBS];
+%                 \addplot[fill=Cam-CAN!50] fill between[of=#1_DLBS and #1_Cam-CAN];
+%                 \addplot[fill=UKBB!50] fill between[of=#1_Cam-CAN and #1_UKBB];
+%                 \addplot[fill=ADNI!50] fill between[of=#1_UKBB and #1_ADNI];
+%             }
+
+%             \node[
+%                 anchor=south east,
+%                 font=\footnotesize
+%             ] at (axis cs: 99, 0.0){FEMALE};
+%             \node[
+%                 anchor=north east,
+%                 font=\footnotesize
+%             ] at (axis cs: 99, -0.0){MALE};
+
+%             \def\xdiff{35.5}
+%             \def\xmin{102}
+%             \def\ydiff{0.07}
+%             \def\ymin{12.5*\ydiff}
+
+%             \datasetlegendnode{ABCD}{axis cs: \xmin, \ymin}
+%             \datasetlegendnode{QTAB}{axis cs: \xmin, \ymin-\ydiff}
+%             \datasetlegendnode{PING}{axis cs: \xmin, \ymin-2*\ydiff}
+%             \datasetlegendnode{PNC}{axis cs: \xmin, \ymin-3*\ydiff}
+%             \datasetlegendnode{ds000119}{axis cs: \xmin, \ymin-4*\ydiff}
+%             \datasetlegendnode{SLIM}{axis cs: \xmin, \ymin-5*\ydiff}
+%             \datasetlegendnode{QTIM}{axis cs: \xmin, \ymin-6*\ydiff}
+%             \datasetlegendnode{Beijing}{axis cs: \xmin, \ymin-7*\ydiff}
+%             \datasetlegendnode{AOMIC-PIOP2}{axis cs: \xmin, \ymin-8*\ydiff}
+%             \datasetlegendnode{ds000202}{axis cs: \xmin, \ymin-9*\ydiff}
+%             \datasetlegendnode{AOMIC-PIOP1}{axis cs: \xmin, \ymin-10*\ydiff}
+%             \datasetlegendnode{AOMIC-ID1000}{axis cs: \xmin, \ymin-11*\ydiff}
+%             \datasetlegendnode{CoRR}{axis cs: \xmin, \ymin-12*\ydiff}
+%             \datasetlegendnode{HCP}{axis cs: \xmin, \ymin-13*\ydiff}
+%             \datasetlegendnode{FCON1000}{axis cs: \xmin, \ymin-14*\ydiff}
+%             \datasetlegendnode{NIMH}{axis cs: \xmin, \ymin-15*\ydiff}
+%             \datasetlegendnode{NKI-RS}{axis cs: \xmin, \ymin-16*\ydiff}
+%             \datasetlegendnode{MPI-LEMON}{axis cs: \xmin, \ymin-17*\ydiff}
+%             \datasetlegendnode{ds003592}{axis cs: \xmin, \ymin-18*\ydiff}
+%             \datasetlegendnode{ds000222}{axis cs: \xmin, \ymin-19*\ydiff}
+%             \datasetlegendnode{SALD}{axis cs: \xmin, \ymin-20*\ydiff}
+%             \datasetlegendnode{IXI}{axis cs: \xmin, \ymin-21*\ydiff}
+%             \datasetlegendnode{DLBS}{axis cs: \xmin, \ymin-22*\ydiff}
+%             \datasetlegendnode{Cam-CAN}{axis cs: \xmin, \ymin-23*\ydiff}
+%             \datasetlegendnode{UKBB}{axis cs: \xmin, \ymin-24*\ydiff}
+%             \datasetlegendnode{ADNI}{axis cs: \xmin, \ymin-25*\ydiff}
+
+%             \node[align=center, font=\small\linespread{0.9}\selectfont] at (axis cs: 50, -0.6) {
+%                 10,000 MRIs\\10,000 participants\\26 sources
+%             };
+%         \end{axis}
+%     \end{tikzpicture}
+% }
+
+\def\N{100}
+
+\newcommand{\predictionstrace}[1]{
+    \addplot[
+        each nth point={\N},
+        only marks,
+        scatter,
+        scatter src=explicit,
+        mark size=2pt,
+        opacity=0.1,
+    ] table [
+        col sep=comma,
+        x=true,
+        y=predicted,
+        meta=density
+    ] {data/predictions/multi_val_#1.csv};
+}
+
+\newsavebox{\validationpredictions}
+\sbox{\validationpredictions}{
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group size=3 by 2,
+                horizontal sep=0.1cm,
+                vertical sep=0.5cm
+            },
+            height=4cm,
+            width=4cm,
+            xtick pos=bottom,
+            ytick pos=left,
+            tick style={draw=none},
+            xticklabels=\empty,
+            yticklabels=\empty,
+            scaled ticks=false,
+            title style={
+                text depth=0,
+                yshift=-0.25cm,
+                font=\footnotesize
+            }
+        ]
+            \nextgroupplot[
+                title=Age
+            ];
+                \draw[] (rel axis cs: 0,0) -- (rel axis cs: 1,1);
+                \predictionstrace{age}
+
+            \nextgroupplot[
+                title=Sex
+            ];
+                \predictionstrace{sex}
+
+           \nextgroupplot[
+                title=Handedness
+           ];
+                 \predictionstrace{handedness}
+
+            \nextgroupplot[
+                title=BMI
+            ];
+                \draw[] (rel axis cs: 0,0) -- (rel axis cs: 1,1);
+                \predictionstrace{bmi}
+
+            \nextgroupplot[
+                title=Fluid intelligence
+            ];
+                \draw[] (rel axis cs: 0,0) -- (rel axis cs: 1,1);
+                \predictionstrace{fluid_intelligence}
+
+            \nextgroupplot[
+                title=Neuroticism
+            ];
+                \draw[] (rel axis cs: 0,0) -- (rel axis cs: 1,1);
+                \predictionstrace{neuroticism}
+        \end{groupplot}
+    \end{tikzpicture}
+}
+
+\begin{frame}{Results: Validation}
+    \begin{tikzpicture}
+        \node[draw=black] at (-7, -3.25) {};
+        \node[draw=black] at (7, 3.25) {};
+
+        % \only<1>{
+        %     \node[] at (0, 0) {
+        %         \usebox{\validationbox}
+        %     };
+        % }
+
+        \only<2>{
+            \node[] at (0, 0) {
+                \usebox{\validationpredictions}
+            };
+        }
+
+    \end{tikzpicture}
+\end{frame}
