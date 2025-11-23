@@ -452,7 +452,7 @@
 \end{frame}
 
 \begin{frame}{Results: Brain age}
-    If you want to accurately predict brain age in new samples:
+    If you want to accurately predict brain age in new samples with a CNN:
     \begin{itemize}
         \item You should \textit{always} use a pretrained model
         \item In smaller, homogeneous, samples the model should ideally be finetuned, but using a pretrained model off-the-shelf works reasonably well
@@ -529,7 +529,7 @@
                     \legendtrace{baseline}{\baselinemarker} & Baseline\\
                     \visible<2->{\legendtrace{multi-frozen}{\multifrozenmarker}} & \visible<2->{Frozen multi-task}\\
                     \visible<3->{\legendtrace{multi-finetuned}{\multifinetunedmarker}} & \visible<3->{Finetuned multi-task}\\
-                    \visible<3->{\legendtrace{linear}{\linearmarker}} & \visible<3->{Linear}\\
+                    \visible<4->{\legendtrace{linear}{\linearmarker}} & \visible<4->{Linear}\\
                 \end{tabular}
 
             };
@@ -555,7 +555,10 @@
         \node[text width=13cm] at (0, 0) {
             If you want to accurately predict anything\textsuperscript{1} in new samples:
             \begin{itemize}
-                \item If you are using a CNN, you should \textit{always}\textsuperscript{2} use a pretrained model, and a multi-task model outperforms a single-task model even when the pretraining task is closely related to the downstream task
+                \item If you are using a CNN, you should \textit{always}\textsuperscript{2} use a pretrained model.
+                \begin{itemize}
+                    \item The multi-task model outperforms a single-task model even when the pretraining task is closely related to the downstream task
+                \end{itemize}
                 \item However, apparently\textsuperscript{3}, you can get quite far with simple linear models
             \end{itemize}
         };
