@@ -207,6 +207,8 @@
 }
 
 \newcommand{\cnn}[6]{
+    \pgfmathsetseed{42}
+
     \def\xmin{#1}
     \def\ymin{#2}
     \def\nodedepth{#3}
@@ -235,11 +237,14 @@
         };
     \fi
 }
-\newcommand{\lrp}[4]{
+\newcommand{\lrp}[5]{
+    \pgfmathsetseed{42}
+
     \def\xmin{#1}
     \def\ymin{#2}
     \def\nodedepth{#3}
     \def\nodesize{#4}
+    \def\annotate{#5}
 
     \lrplayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{black}
     \lrparrow{(#1+2.2, #2)}{(#1 + 1.04, #2)}{black}
@@ -256,9 +261,12 @@
                         (#1 + 5.4, #2 + 1.43) --
                         (#1 + 5.4, #2 - 1.42) --
                         (#1 + 0.22, #2 - 1.42) -- cycle;
-    \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 2.675, #2 + 1.43) {
-        \textbf{Convolutional neural network}
-    };
+
+    \ifnum#5=1
+        \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 2.675, #2 + 1.43) {
+            \textbf{Convolutional neural network}
+        };
+    \fi
 }
 
 \newcommand{\unet}[5]{
