@@ -1,0 +1,39 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Baba}
+
+\usepackage{emoji}
+\usepackage{pgfplots}
+
+\usetikzlibrary{overlay-beamer-styles}
+
+\title{Bridging the translational gap for artificial intelligence in clinical neuroimaging}
+\author{Esten H. Leonardsen}
+\date{\today}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\newcommand{\neuron}[3][fill=babagreen]{
+    \node[circle, draw=black, minimum size=0.3cm, #1] (#2) at #3 {};
+}
+
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}
+
+    \input{sections/cnn}
+    %\input{sections/intro}
+    \input{sections/xai}
+\end{document}
