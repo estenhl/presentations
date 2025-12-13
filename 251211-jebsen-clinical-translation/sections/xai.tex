@@ -1,9 +1,9 @@
-\section{The black-box problem of artificial intelligence}
+\section{The black-box problem of artificial neural networks}
 
 \begin{frame}{Understanding artificial neural networks}
     \begin{tikzpicture}
-        \node[draw=black] at (-7, -3.25) {};
-        \node[draw=black] at (7, 3.25) {};
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
 
         \only<1-3,8-10>{
             \def\vsep{0.5}
@@ -554,60 +554,21 @@
     \end{tikzpicture}
 }
 
-\newcommand{\annotation}[4]{
-    \node[anchor=#4,align=center,font=\scriptsize\linespread{0.8}\selectfont,inner sep=2.5pt] at (axis cs: #2,#3) {#1};
-}
-
-\newcommand{\regions}{
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\textwidth,
-            height=0.5\textwidth,
-            ylabel=Human-rated importance,
-            xlabel=AI-rated importance,
-            ticks=none,
-            xmin=0,
-            xmax=1.25,
-            ymin=0,
-            ymax=1.1,
-            axis y line=left,
-            axis x line=bottom,
-            ylabel style={
-                align=center
-            }
-        ]
-            \addplot[only marks, fill=uiogreen, draw=black] table [col sep=comma, x=lrp, y=ale] {data/test_mean.csv};
-            \annotation{Left Accumbens}{0.906}{1}{south}
-            \annotation{Right Accumbens}{0.731}{0.914}{north}
-            \annotation{Left Amygdala}{1}{0.719}{south}
-            \annotation{Right Amygdala}{0.767}{0.699}{north}
-            \annotation{Parahippocampal\\Gyrus}{0.594}{0.415}{south}
-            \annotation{Heschl's\\Gyrus}{0.785}{0.276}{south}
-            \annotation{Lingual\\Gyrus}{0.517}{0.312}{north}
-            \annotation{Planum\\Temporale}{0.407}{0.159}{north}
-        \end{axis}
-    \end{tikzpicture}
-}
-
-
 \begin{frame}{Explainable artificial intelligence and dementia}
     \begin{tikzpicture}
-        \node[draw=black] at (-7, -3.25) {};
-        \node[draw=black] at (7, 3.25) {};
+        \node[] at (-7, -3.25) {};
+        \node[] at (7, 3.25) {};
 
         \only<1>{
-            \node[] at (0, 2) {
+            \node[] at (0, 0) {
                 \fulldementiadataset
-            };
-            \node[] at (0, -1.3) {
-                \dementiasubsets
             };
         }
 
-        \only<2-4>{
+        \only<2-3>{
             \mriside{-4.5}{1.5}{1.5cm}{data/mri_sagittal.png}
         }
-        \only<3-4>{
+        \only<3>{
             \cnnarrow{(input.east)}{($ (input.center) + (3, 0) $)}{black}
             \cnn{-2.7}{1.5}{0.1}{0.15}{uiogreen}{1}
             \node[anchor=west, align=left, font=\small\linespread{0.9}\selectfont] (output1) at ($ (3.55, 1.5) + (0, 0.5) $) {Dementia};
@@ -616,18 +577,13 @@
             \cnnarrow{($ (output2.west) - (1, -0.5) $)}{($ (output2.west) + (0.1, 0) $)}{black}
         }
         \only<4>{
-            \node[] at (-0.5, -1.8) {
-                \dementiapredictions
-            };
-        }
-        \only<5>{
             \mriside{-4.5}{1.5}{1.5cm}{data/combined_sagittal.png}
             \lrparrow{($ (input.center) + (3, 0) $)}{(input.east)}{black}
             \lrp{-2.7}{1.5}{0.1}{0.15}{1}
             \node[anchor=west, align=left, font=\small\linespread{0.9}\selectfont] (output1) at ($ (3.55, 1.5) + (0, 0.5) $) {Dementia};
             \lrparrow{($ (output1.west) + (0.1, 0) $)}{($ (output1.west) - (1, 0.5) $)}{black}
         }
-        \only<6>{
+        \only<5>{
             \node[
 				minimum height=0.41\textwidth,
 				minimum width=0.32\textwidth,
@@ -662,28 +618,23 @@
 			\node[anchor=north,inner sep=3pt, text=white, font=\footnotesize] at (box3.north) {Patient 3};
         }
 
-        \only<7-8>{
+        \only<6-7>{
             \node[label={[text depth=0]above:Explainable AI}] at (-2.25, 0) {
 				\includegraphics[width=0.31\textwidth]{data/dementia.png}
 			};
         }
-        \only<8>{
+        \only<7>{
 			\node[label={[text depth=0]above:Human researchers}] at (2.25, 0) {
 				\includegraphics[width=0.31\textwidth]{data/ALE.png}
 			};
         }
-        \only<9>{
-            \node[] at (0, 0) {
-                \regions
-            };
-        }
     \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Explainable artificial intelligence and clinical neuroimaging}
-    Although artificial neural networks very often result in accurate predictions, their opaque nature make it hard to understand how they work.
+\begin{frame}{The black-box problem of artificial intelligence}
+    Although artificial neural networks very often result in accurate predictions, their opaque nature makes it hard to understand their underlying decision processes.
     \begin{itemize}
-        \item Learning shortcuts to solve problems that appear valuable but are really not related to the problem at hand gives rise to "Clever Hans"-predictors.
+        \item Shortcutting the problem by relying on superficial cues rather than genuine understanding can give rise to "Clever Hans"-predictors.
         \item Explainable artificial intelligence provides methodology for probing how these models work, building trust and potentially enabling clinical use.
     \end{itemize}
 \end{frame}
