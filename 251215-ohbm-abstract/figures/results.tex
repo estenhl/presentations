@@ -1,0 +1,136 @@
+\definecolor{multi-finetuned}{HTML}{ef767a}
+\definecolor{baseline}{HTML}{456990}
+\definecolor{linear}{HTML}{49beaa}
+https://chatgpt.com/c/693fdaa2-8324-832b-94da-ae248c949ec0
+\makeatletter
+\pgfdeclareplotmark{triangledown*}{
+  \pgfpathmoveto{\pgfpoint{0}{-1.2\pgfplotmarksize}}
+  \pgfpathlineto{\pgfpoint{1.04\pgfplotmarksize}{0.6\pgfplotmarksize}}
+  \pgfpathlineto{\pgfpoint{-1.04\pgfplotmarksize}{0.6\pgfplotmarksize}}
+  \pgfpathclose
+  \pgfusepathqfillstroke
+}
+\makeatother
+
+\def\linearmarker{*}
+\def\baselinemarker{square*}
+\def\multifinetunedmarker{pentagon*}
+
+\newcommand{\resultstrace}[3]{
+    \addplot+[
+        scatter,
+        draw=#2,
+        mark=#3,
+        very thick,
+        draw opacity=0.75,
+        visualization depends on={\thisrow{#2-significant} \as \significant},
+        scatter/@pre marker code/.code={
+            \pgfplotscolormapdefinemappedcolor\pgfplotspointmetatransformed
+            \def\markopts{
+                fill=#2,
+                fill opacity=0.75*\significant,
+                mark size=5pt
+            }
+            \expandafter\scope\expandafter[\markopts]
+        },
+    ] table [
+        col sep=comma,
+        x=size,
+        y=#2-median,
+        meta=#2-significant
+    ] {#1};
+}
+
+\newcommand{\traceplot}[7]{
+
+        #7
+}
+
+\newcommand{\resultsplot}[6]{
+    \traceplot{#1}{#2}{left}{#3}{#4}{#5}{#6}
+}
+
+\newcommand{\legendtrace}[3][0.75]{
+    \begin{tikzpicture}[baseline={([yshift=-1.5pt]current bounding box.center)}]
+        \draw[draw=#2, thick] (0cm, 0cm) -- (0.5cm, 0cm);
+
+        \path[
+            mark=#3,
+            mark size=4pt,
+            mark options={fill=#2, draw=#2},
+            fill opacity=#1
+        ] plot coordinates {(0.25cm, 0cm)};
+    \end{tikzpicture}
+}
+
+\newcommand{\legendnode}[4][north east]{
+    \node[draw=black, fill=white, anchor=#1, text width=3.3cm] at (#2) {
+        \vspace{-0.07cm}
+        \setlength\tabcolsep{0cm}
+        \begin{tabular}{p{0.53cm} p{2.8cm}}
+            #3
+        \end{tabular}
+        \vspace{0.2cm}\\
+        \begin{tabular}{p{0.53cm} p{3.6cm}}
+            #4
+        \end{tabular}
+    };
+}
+
+\begin{figure}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group size=1 by 2,
+                horizontal sep=0.1cm,
+                vertical sep=1cm,
+                group name=ad
+            },
+            height=7cm,
+            width=\textwidth,
+            xtick pos=bottom,
+            ymajorgrids=true,
+            ytick style={
+                draw=none
+            },
+            xtick={100, 200, 300, 400, 500},
+            ylabel=Area under the ROC-curve,
+            label style={font=\bfseries},
+            title style={font=\large\bfseries, yshift=-0.1cm},
+            tick label style={font=\bfseries},
+            xticklabels={100, 200, 300, 400, 500},
+            ytick={0.5, 0.6, 0.7, 0.8, 0.9, 1},
+            yticklabels={0.5, 0.6, 0.7, 0.8, 0.9, 1}
+        ]
+            \nextgroupplot[
+                ymin=0.5,
+                ymax=1.0,
+                title=AD vs HC classification,
+                xticklabels=\empty
+            ]
+                \resultstrace{data/ad.csv}{multi-finetuned}{\multifinetunedmarker}
+                \resultstrace{data/ad.csv}{baseline}{\baselinemarker}
+                \resultstrace{data/ad.csv}{linear}{\linearmarker}
+
+                \legendnode[south east]{rel axis cs: 0.98, 0.02}{
+                    \legendtrace{linear}{\linearmarker}&\hspace{0.1cm}Linear\\[0.1cm]
+                    \legendtrace{baseline}{\baselinemarker}&\hspace{0.1cm}Baseline\\[0.1cm]
+                    \legendtrace{multi-finetuned}{\multifinetunedmarker}&\hspace{0.1cm}Transfer learning\\
+                }{
+                    \legendtrace[0]{black}{*}&\hspace{0.1cm}$p\geq0.05$\\[0.1cm]
+                    \legendtrace{black}{*}&\hspace{0.1cm}$p<0.05$\\
+                }
+
+            \nextgroupplot[
+                ymin=0.5,
+                ymax=1.0,
+                title=SCZ vs BD classification,
+                xlabel={Dataset size}
+            ]
+                \resultstrace{data/scz.csv}{multi-finetuned}{\multifinetunedmarker}
+                \resultstrace{data/scz.csv}{baseline}{\baselinemarker}
+                \resultstrace{data/scz.csv}{linear}{\linearmarker}
+
+        \end{groupplot}
+    \end{tikzpicture}
+\end{figure}
