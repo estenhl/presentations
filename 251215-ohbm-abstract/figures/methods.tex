@@ -1,0 +1,424 @@
+
+\definecolor{ds002424}{HTML}{FF0028}
+\definecolor{HBN}{HTML}{FF000E}
+\definecolor{ABCD}{HTML}{FF0C00}
+\definecolor{QTAB}{HTML}{FF2D00}
+\definecolor{PING}{HTML}{FF4800}
+\definecolor{ADHD200}{HTML}{FF6800}
+\definecolor{PNC}{HTML}{FF8300}
+\definecolor{ABIDE-II}{HTML}{FFA400}
+\definecolor{ds000119}{HTML}{FFBF00}
+\definecolor{ABIDE-I}{HTML}{FFDF00}
+\definecolor{BRAINMINT}{HTML}{FFFA00}
+\definecolor{SLIM}{HTML}{E8FF00}
+\definecolor{QTIM}{HTML}{C7FF00}
+\definecolor{Beijing}{HTML}{ACFF00}
+\definecolor{AOMIC-PIOP2}{HTML}{8CFF00}
+\definecolor{ds000202}{HTML}{71FF00}
+\definecolor{AOMIC-PIOP1}{HTML}{51FF00}
+\definecolor{AOMIC-ID1000}{HTML}{36FF00}
+\definecolor{CoRR}{HTML}{15FF00}
+\definecolor{HCP}{HTML}{00FF05}
+\definecolor{FCON1000}{HTML}{00FF20}
+\definecolor{ds000171}{HTML}{00FF40}
+\definecolor{TOP}{HTML}{00FF5B}
+\definecolor{SCZ-C}{HTML}{00FF7B}
+\definecolor{NIMH}{HTML}{00FF96}
+\definecolor{NKI-RS}{HTML}{00FFB6}
+\definecolor{MPI-LEMON}{HTML}{00FFD1}
+\definecolor{ds003592}{HTML}{00FFF1}
+\definecolor{ds004302}{HTML}{00F1FF}
+\definecolor{ds000222}{HTML}{00D5FF}
+\definecolor{SALD}{HTML}{00B5FF}
+\definecolor{IXI}{HTML}{009AFF}
+\definecolor{DLBS}{HTML}{0079FF}
+\definecolor{Cam-CAN}{HTML}{005EFF}
+\definecolor{StrokeMRI}{HTML}{003DFF}
+\definecolor{PPMI}{HTML}{0022FF}
+\definecolor{UKBB}{HTML}{0001FF}
+\definecolor{Tao-Wu}{HTML}{1900FF}
+\definecolor{ds000245}{HTML}{3400FF}
+\definecolor{OASIS3}{HTML}{5500FF}
+\definecolor{NEUROCON}{HTML}{9000FF}
+\definecolor{MIRIAD}{HTML}{AC00FF}
+\definecolor{ds004392}{HTML}{CC00FF}
+\definecolor{AIBL}{HTML}{E700FF}
+\definecolor{ADNI}{HTML}{FF00DA}
+
+\newcommand{\datasetlegendnode}[2]{
+    \node[
+        circle,
+        anchor=west,
+        draw=#1,
+        fill=#1!50,
+        label={[text depth=0]right:\footnotesize{#1}},
+        inner sep=2pt
+    ] at (#2){};
+}
+
+\newcommand{\mriside}[4]{
+    \def\mridepth{0.75}
+
+    \node[inner sep=0pt] (input) at (#1, #2) {
+        \includegraphics[height=#3, width=#3]{#4}
+    };
+
+    \draw[fill=black] (input.north west) --
+        ($ (input.north west) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.north east) -- cycle;
+    \draw[fill=black] (input.north east) --
+        ($ (input.north east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) + (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south east) -- cycle;
+    \draw[] (input.north west) --
+        ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south west) -- cycle;
+    \draw[] (input.north east) --
+        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        (input.south east) -- cycle;
+    \draw[] ($ (input.north west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.north east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
+    \draw[] ($ (input.south west) - (0.5 * \mridepth, 0.5 * \mridepth) $) --
+        ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
+}
+
+\newcommand{\convside}[6]{
+    \def\sidex{#1}
+    \def\sidey{#2}
+    \def\sidewidth{#3}
+    \def\sideheight{#4}
+    \def\sidefillcolour{#5}
+    \def\sidename{#6}
+
+    \node[
+        fill=\sidefillcolour,
+        inner sep=0pt,
+        outer sep=0pt,
+        minimum width=\sidewidth,
+        minimum height=\sideheight,
+        draw=black
+    ] (\sidename) at (\sidex, \sidey) {};
+}
+
+\newcommand{\convtop}[4]{
+    \def\topbase{#1}
+    \def\topwidth{#2}
+    \def\topheight{#3}
+    \def\topfillcolour{#4}
+
+    \draw[fill=\topfillcolour,draw=black] #1 --
+        ($ #1 + (#3, #3) $) --
+        ($ #1 + (#3+#2, #3) $) --
+        ($ #1 + (#2, 0) $);
+}
+
+\newcommand{\convfront}[3]{
+    \def\frontbase{#1}
+    \def\frontsize{#2}
+    \def\frontfillcolour{#3}
+
+    \draw[black, fill=\frontfillcolour] #1 --
+        ($ #1 + (1*#2, 1*#2) $) --
+        ($ #1 + (1*#2, 1*#2 - 2*#2) $) --
+        ($ #1 + (0, -2*#2) $);
+}
+
+\newcommand{\convchannel}[7]{
+    \def\channelx{#1}
+    \def\channely{#2}
+    \def\channelnodedepth{#3}
+    \def\channelnodesize{#4}
+    \def\channelnodecount{#5}
+    \def\channelcolour{#6}
+    \def\includefront{#7}
+
+    \def\huemin{20}
+    \def\huemax{80}
+
+    \pgfmathsetmacro{\iterations}{#5-1}
+    \foreach \i in {0,...,\iterations} {
+        \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
+        \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
+
+        \foreach \j in {0,...,\iterations} {
+            \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
+            \ifnum\j=0
+                \pgfmathsetmacro{\innerhue}{\hue}
+            \fi
+
+            \ifnum\includefront=1
+                \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
+            \fi
+
+            \ifnum\i=0
+                \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
+            \fi
+        }
+    }
+}
+
+\newcommand{\modelarrow}[5]{
+    \begin{scope}[transparency group, opacity=0.5]
+        \draw[-stealth, line width=2pt, #3] #1 to [in=#4, out=#5] #2;
+    \end{scope}
+}
+
+\newcommand{\cnnarrow}[3]{
+    \modelarrow{#1}{#2}{#3}{180}{0}
+}
+
+\begin{figure}
+    \begin{subfigure}{\textwidth}
+        \pgfplotstableread[col sep=comma]{data/full.csv}\datatable
+
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=0.73\textwidth,
+                height=0.8\textwidth,
+                xmin=0,
+                xmax=100,
+                ytick=\empty,
+                axis x line=middle,
+                axis y line=none,
+                xtick={10,20,30,40,50,60,70,80,90},
+                xticklabels={10,20,30,40,50,60,70,{},{}},
+                x axis line style={|-stealth},
+                clip=false
+            ]
+                \addplot[
+                    name path=zero,
+                ] coordinates {(0,0) (100,0)};
+
+                \pgfplotsinvokeforeach{ds002424, HBN, ABCD, QTAB, PING, ADHD200, PNC, ABIDE-II, ds000119, ABIDE-I, BRAINMINT, SLIM, QTIM, Beijing, AOMIC-PIOP2, ds000202, AOMIC-PIOP1, AOMIC-ID1000, CoRR, HCP, FCON1000, ds000171, TOP, SCZ-C, NIMH, NKI-RS, MPI-LEMON, ds003592, ds004302, ds000222, SALD, IXI, DLBS, Cam-CAN, StrokeMRI, PPMI, UKBB, Tao-Wu, ds000245, OASIS3, NEUROCON, MIRIAD, ds004392, AIBL, ADNI}{
+                    \begingroup
+                        \addplot [
+                            draw=none,
+                            line width=0pt,
+                            name path=female_#1,
+                        ] table [
+                            x=age,
+                            y expr=1*\thisrow{female_#1}
+                        ] {\datatable};
+
+                        \addplot [
+                            draw=none,
+                            line width=0pt,
+                            name path=male_#1,
+                        ] table [
+                            x=age,
+                            y expr=-1*\thisrow{male_#1}
+                        ] {\datatable};
+                    \endgroup
+                }
+                \pgfplotsinvokeforeach{male, female}{
+                    \addplot[fill=ds002424!50] fill between[of=zero and #1_ds002424];
+                    \addplot[fill=HBN!50] fill between[of=#1_ds002424 and #1_HBN];
+                    \addplot[fill=ABCD!50] fill between[of=#1_HBN and #1_ABCD];
+                    \addplot[fill=QTAB!50] fill between[of=#1_ABCD and #1_QTAB];
+                    \addplot[fill=PING!50] fill between[of=#1_QTAB and #1_PING];
+                    \addplot[fill=ADHD200!50] fill between[of=#1_PING and #1_ADHD200];
+                    \addplot[fill=PNC!50] fill between[of=#1_ADHD200 and #1_PNC];
+                    \addplot[fill=ABIDE-II!50] fill between[of=#1_PNC and #1_ABIDE-II];
+                    \addplot[fill=ds000119!50] fill between[of=#1_ABIDE-II and #1_ds000119];
+                    \addplot[fill=ABIDE-I!50] fill between[of=#1_ds000119 and #1_ABIDE-I];
+                    \addplot[fill=BRAINMINT!50] fill between[of=#1_ABIDE-I and #1_BRAINMINT];
+                    \addplot[fill=SLIM!50] fill between[of=#1_BRAINMINT and #1_SLIM];
+                    \addplot[fill=QTIM!50] fill between[of=#1_SLIM and #1_QTIM];
+                    \addplot[fill=Beijing!50] fill between[of=#1_QTIM and #1_Beijing];
+                    \addplot[fill=AOMIC-PIOP2!50] fill between[of=#1_Beijing and #1_AOMIC-PIOP2];
+                    \addplot[fill=ds000202!50] fill between[of=#1_AOMIC-PIOP2 and #1_ds000202];
+                    \addplot[fill=AOMIC-PIOP1!50] fill between[of=#1_ds000202 and #1_AOMIC-PIOP1];
+                    \addplot[fill=AOMIC-ID1000!50] fill between[of=#1_AOMIC-PIOP1 and #1_AOMIC-ID1000];
+                    \addplot[fill=CoRR!50] fill between[of=#1_AOMIC-ID1000 and #1_CoRR];
+                    \addplot[fill=HCP!50] fill between[of=#1_CoRR and #1_HCP];
+                    \addplot[fill=FCON1000!50] fill between[of=#1_HCP and #1_FCON1000];
+                    \addplot[fill=ds000171!50] fill between[of=#1_FCON1000 and #1_ds000171];
+                    \addplot[fill=TOP!50] fill between[of=#1_ds000171 and #1_TOP];
+                    \addplot[fill=SCZ-C!50] fill between[of=#1_TOP and #1_SCZ-C];
+                    \addplot[fill=NIMH!50] fill between[of=#1_SCZ-C and #1_NIMH];
+                    \addplot[fill=NKI-RS!50] fill between[of=#1_NIMH and #1_NKI-RS];
+                    \addplot[fill=MPI-LEMON!50] fill between[of=#1_NKI-RS and #1_MPI-LEMON];
+                    \addplot[fill=ds003592!50] fill between[of=#1_MPI-LEMON and #1_ds003592];
+                    \addplot[fill=ds004302!50] fill between[of=#1_ds003592 and #1_ds004302];
+                    \addplot[fill=ds000222!50] fill between[of=#1_ds004302 and #1_ds000222];
+                    \addplot[fill=SALD!50] fill between[of=#1_ds000222 and #1_SALD];
+                    \addplot[fill=IXI!50] fill between[of=#1_SALD and #1_IXI];
+                    \addplot[fill=DLBS!50] fill between[of=#1_IXI and #1_DLBS];
+                    \addplot[fill=Cam-CAN!50] fill between[of=#1_DLBS and #1_Cam-CAN];
+                    \addplot[fill=StrokeMRI!50] fill between[of=#1_Cam-CAN and #1_StrokeMRI];
+                    \addplot[fill=PPMI!50] fill between[of=#1_StrokeMRI and #1_PPMI];
+                    \addplot[fill=UKBB!50] fill between[of=#1_PPMI and #1_UKBB];
+                    \addplot[fill=Tao-Wu!50] fill between[of=#1_UKBB and #1_Tao-Wu];
+                    \addplot[fill=ds000245!50] fill between[of=#1_Tao-Wu and #1_ds000245];
+                    \addplot[fill=OASIS3!50] fill between[of=#1_ds000245 and #1_OASIS3];
+                    \addplot[fill=NEUROCON!50] fill between[of=#1_OASIS3 and #1_NEUROCON];
+                    \addplot[fill=MIRIAD!50] fill between[of=#1_NEUROCON and #1_MIRIAD];
+                    \addplot[fill=ds004392!50] fill between[of=#1_MIRIAD and #1_ds004392];
+                    \addplot[fill=AIBL!50] fill between[of=#1_ds004392 and #1_AIBL];
+                    \addplot[fill=ADNI!50] fill between[of=#1_AIBL and #1_ADNI];
+                }
+
+                \node[
+                    anchor=south east
+                ] at (axis cs: 99, 0.0){FEMALE};
+                \node[
+                    anchor=north east
+                ] at (axis cs: 99, -0.0){MALE};
+
+                \def\ymin{0.88}
+                \def\xmin{102}
+                \def\ydiff{0.08}
+                \def\xdiff{35.5}
+
+                \datasetlegendnode{ds002424}{axis cs: \xmin, \ymin}
+                \datasetlegendnode{HBN}{axis cs: \xmin, \ymin-\ydiff}
+                \datasetlegendnode{ABCD}{axis cs: \xmin, \ymin-2*\ydiff}
+                \datasetlegendnode{QTAB}{axis cs: \xmin, \ymin-3*\ydiff}
+                \datasetlegendnode{PING}{axis cs: \xmin, \ymin-4*\ydiff}
+                \datasetlegendnode{ADHD200}{axis cs: \xmin, \ymin-5*\ydiff}
+                \datasetlegendnode{PNC}{axis cs: \xmin, \ymin-6*\ydiff}
+                \datasetlegendnode{ABIDE-II}{axis cs: \xmin, \ymin-7*\ydiff}
+                \datasetlegendnode{ds000119}{axis cs: \xmin, \ymin-8*\ydiff}
+                \datasetlegendnode{ABIDE-I}{axis cs: \xmin, \ymin-9*\ydiff}
+                \datasetlegendnode{BRAINMINT}{axis cs: \xmin, \ymin-10*\ydiff}
+                \datasetlegendnode{SLIM}{axis cs: \xmin, \ymin-11*\ydiff}
+                \datasetlegendnode{QTIM}{axis cs: \xmin, \ymin-12*\ydiff}
+                \datasetlegendnode{Beijing}{axis cs: \xmin, \ymin-13*\ydiff}
+                \datasetlegendnode{AOMIC-PIOP2}{axis cs: \xmin, \ymin-14*\ydiff}
+                \datasetlegendnode{ds000202}{axis cs: \xmin, \ymin-15*\ydiff}
+                \datasetlegendnode{AOMIC-PIOP1}{axis cs: \xmin, \ymin-16*\ydiff}
+                \datasetlegendnode{AOMIC-ID1000}{axis cs: \xmin, \ymin-17*\ydiff}
+                \datasetlegendnode{CoRR}{axis cs: \xmin, \ymin-18*\ydiff}
+                \datasetlegendnode{HCP}{axis cs: \xmin, \ymin-19*\ydiff}
+                \datasetlegendnode{FCON1000}{axis cs: \xmin, \ymin-20*\ydiff}
+                \datasetlegendnode{ds000171}{axis cs: \xmin, \ymin-21*\ydiff}
+                \datasetlegendnode{TOP}{axis cs: \xmin, \ymin-22*\ydiff}
+                \datasetlegendnode{SCZ-C}{axis cs: \xmin+\xdiff, \ymin}
+                \datasetlegendnode{NIMH}{axis cs: \xmin+\xdiff, \ymin-\ydiff}
+                \datasetlegendnode{NKI-RS}{axis cs: \xmin+\xdiff, \ymin-2*\ydiff}
+                \datasetlegendnode{MPI-LEMON}{axis cs: \xmin+\xdiff, \ymin-3*\ydiff}
+                \datasetlegendnode{ds003592}{axis cs: \xmin+\xdiff, \ymin-4*\ydiff}
+                \datasetlegendnode{ds004302}{axis cs: \xmin+\xdiff, \ymin-5*\ydiff}
+                \datasetlegendnode{ds000222}{axis cs: \xmin+\xdiff, \ymin-6*\ydiff}
+                \datasetlegendnode{SALD}{axis cs: \xmin+\xdiff, \ymin-7*\ydiff}
+                \datasetlegendnode{IXI}{axis cs: \xmin+\xdiff, \ymin-8*\ydiff}
+                \datasetlegendnode{DLBS}{axis cs: \xmin+\xdiff, \ymin-9*\ydiff}
+                \datasetlegendnode{Cam-CAN}{axis cs: \xmin+\xdiff, \ymin-10*\ydiff}
+                \datasetlegendnode{StrokeMRI}{axis cs: \xmin+\xdiff, \ymin-11*\ydiff}
+                \datasetlegendnode{PPMI}{axis cs: \xmin+\xdiff, \ymin-12*\ydiff}
+                \datasetlegendnode{UKBB}{axis cs: \xmin+\xdiff, \ymin-13*\ydiff}
+                \datasetlegendnode{Tao-Wu}{axis cs: \xmin+\xdiff, \ymin-14*\ydiff}
+                \datasetlegendnode{ds000245}{axis cs: \xmin+\xdiff, \ymin-15*\ydiff}
+                \datasetlegendnode{OASIS3}{axis cs: \xmin+\xdiff, \ymin-16*\ydiff}
+                \datasetlegendnode{NEUROCON}{axis cs: \xmin+\xdiff, \ymin-17*\ydiff}
+                \datasetlegendnode{MIRIAD}{axis cs: \xmin+\xdiff, \ymin-18*\ydiff}
+                \datasetlegendnode{ds004392}{axis cs: \xmin+\xdiff, \ymin-19*\ydiff}
+                \datasetlegendnode{AIBL}{axis cs: \xmin+\xdiff, \ymin-20*\ydiff}
+                \datasetlegendnode{ADNI}{axis cs: \xmin+\xdiff, \ymin-21*\ydiff}
+            \end{axis}
+        \end{tikzpicture}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \hspace{-0.07cm}%
+        \begin{tikzpicture}
+            \definecolor{convcolour}{HTML}{ff595e}
+            \definecolor{bncolour}{HTML}{ffca3a}
+            \definecolor{relucolour}{HTML}{8ac926}
+            \definecolor{poolcolour}{HTML}{1982c4}
+            \definecolor{globalcolour}{HTML}{6a4c93}
+
+            \mriside{-1.3}{-0.37}{1.5cm}{data/mri_sagittal.png}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (input.east) -- ($ (input.east) + (1, 0) $);
+            \end{scope}
+
+            \convchannel{0}{0}{0.1}{0.15}{12}{convcolour}{1}
+            \convchannel{0.1}{0}{0.1}{0.15}{12}{bncolour}{1}
+            \convchannel{0.2}{0}{0.1}{0.15}{12}{relucolour}{1}
+            \convchannel{0.3}{0}{0.1}{0.15}{12}{poolcolour}{1}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (0.79, -0.37) -- (2, -0.37);
+            \end{scope}
+
+            \convchannel{1.32+0.1}{-0.07}{0.12}{0.15}{10}{convcolour}{1}
+            \convchannel{1.44+0.1}{-0.07}{0.12}{0.15}{10}{bncolour}{1}
+            \convchannel{1.56+0.1}{-0.07}{0.12}{0.15}{10}{relucolour}{1}
+            \convchannel{1.68+0.1}{-0.07}{0.12}{0.15}{10}{poolcolour}{1}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (2.21, -0.37) -- (3, -0.37);
+            \end{scope}
+
+            \convchannel{2.57+0.2}{-0.15}{0.14}{0.15}{8}{convcolour}{1}
+            \convchannel{2.71+0.2}{-0.15}{0.14}{0.15}{8}{bncolour}{1}
+            \convchannel{2.85+0.2}{-0.15}{0.14}{0.15}{8}{relucolour}{1}
+            \convchannel{2.99+0.2}{-0.15}{0.14}{0.15}{8}{poolcolour}{1}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (3.55, -0.37) -- (4.5, -0.37);
+            \end{scope}
+
+            \convchannel{3.75+0.3}{-0.22}{0.16}{0.15}{6}{convcolour}{1}
+            \convchannel{3.91+0.3}{-0.22}{0.16}{0.15}{6}{bncolour}{1}
+            \convchannel{4.07+0.3}{-0.22}{0.16}{0.15}{6}{relucolour}{1}
+            \convchannel{4.23+0.3}{-0.22}{0.16}{0.15}{6}{poolcolour}{1}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (4.83, -0.37) -- (5.5, -0.37);
+            \end{scope}
+
+            \convchannel{4.86+0.4}{-0.3}{0.18}{0.15}{4}{convcolour}{1}
+            \convchannel{5.04+0.4}{-0.3}{0.18}{0.15}{4}{bncolour}{1}
+            \convchannel{5.22+0.4}{-0.3}{0.18}{0.15}{4}{relucolour}{1}
+            \convchannel{5.40+0.4}{-0.3}{0.18}{0.15}{4}{poolcolour}{1}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[-stealth, line width=2pt] (6.03, -0.37) -- (6.8, -0.37);
+            \end{scope}
+
+            \convchannel{5.9+0.5}{-0.37}{0.2}{0.15}{2}{convcolour}{1}
+            \convchannel{6.1+0.5}{-0.37}{0.2}{0.15}{2}{bncolour}{1}
+            \convchannel{6.3+0.5}{-0.37}{0.2}{0.15}{2}{relucolour}{1}
+            \convchannel{6.5+0.5}{-0.37}{0.2}{0.15}{2}{globalcolour}{1}
+
+            %\draw[-stealth] (input.east) -- ($ (input.east) + (8, 0) $);
+
+            \node[anchor=west, font=\small, inner sep=1pt] (o1) at (7.95, 1.66-0.37) {Age};
+            \node[anchor=west, font=\small, inner sep=1pt] (o2) at (7.95, 1-0.37) {Sex};
+            \node[anchor=west, font=\small, inner sep=1pt] (o3) at (7.95, 0.33-0.37) {Handedness};
+            \node[anchor=west, font=\small, inner sep=1pt] (o4) at (7.95, -0.33-0.37) {BMI};
+            \node[anchor=west, align=left, font=\small\linespread{0.9}\selectfont, inner sep=1pt] (o5) at (7.95, -1-0.37) {Fluid\\intelligence};
+            \node[anchor=west, font=\small, inner sep=1pt] (o6) at (7.95, -1.66-0.37) {Neuroticism};
+
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o1.west) - (0.78, 1.66) $) to [in=180, out=0] (o1.west);
+            \end{scope}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o2.west) - (0.78, 1) $) to [in=180, out=0] (o2.west);
+            \end{scope}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o3.west) - (0.78, 0.33) $) to [in=180, out=0] (o3.west);
+            \end{scope}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o4.west) - (0.78, -0.33) $) to [in=180, out=0] (o4.west);
+            \end{scope}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o5.west) - (0.78, -1) $) to [in=180, out=0] (o5.west);
+            \end{scope}
+            \begin{scope}[transparency group, opacity=0.5]
+                \draw[, -stealth, line width=2pt] ($ (o6.west) - (0.78, -1.66) $) to [in=180, out=0] (o6.west);
+            \end{scope}
+
+            \node[draw=black, fill=convcolour, inner sep=3pt] (convnode) at (-1.7, -2.75) {};
+            \node[anchor=west, font=\small] (convtext) at (convnode.east) {Conv3D};
+            \node[draw=black, fill=bncolour, inner sep=3pt] (bnnode) at ($ (convtext.east) + (0.2, 0) $) {};
+            \node[anchor=west, font=\small] (bntext) at (bnnode.east) {BatchNormalization};
+            \node[draw=black, fill=relucolour, inner sep=3pt] (relunode) at ($ (bntext.east) + (0.2, 0) $) {};
+            \node[anchor=west, font=\small] (relutext) at (relunode.east) {ReLU};
+            \node[draw=black, fill=poolcolour, inner sep=3pt] (poolnode) at ($ (relutext.east) + (0.2, 0) $) {};
+            \node[anchor=west, font=\small] (pooltext) at (poolnode.east) {MaxPool};
+            \node[draw=black, fill=globalcolour, inner sep=3pt] (globalnode) at ($ (pooltext.east) + (0.2, 0) $) {};
+            \node[anchor=west, font=\small] (globaltext) at (globalnode.east) {GlobalMaxPool};
+
+        \end{tikzpicture}
+    \end{subfigure}
+\end{figure}
