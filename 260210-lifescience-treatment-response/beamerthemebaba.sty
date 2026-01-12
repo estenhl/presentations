@@ -1,0 +1,125 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Baba}[2024/01/23 baba.vision theme]
+
+\usetheme{metropolis}
+
+\RequirePackage[export]{adjustbox}
+\RequirePackage{array}
+\RequirePackage{hyperref}
+\RequirePackage{listings}
+\RequirePackage{ragged2e}
+\RequirePackage{tikz}
+\RequirePackage{transparent}
+
+\usetikzlibrary{calc}
+
+\hypersetup{
+    linkcolor=white
+}
+
+\definecolor{baba-light-blue}{HTML}{EEF2FE}
+\definecolor{baba-blue}{HTML}{5061D5}
+\definecolor{baba-dark-blue}{HTML}{1D4ED8}
+\definecolor{baba-white}{HTML}{F9F9FB}
+\definecolor{baba-black}{HTML}{19191B}
+\definecolor{baba-light-black}{HTML}{374151}
+\definecolor{baba-green}{HTML}{16A34A}
+\definecolor{baba-red}{HTML}{B91C1C}
+
+\colorlet{mainbackground}{baba-light-blue}
+
+\setbeamercolor{frametitle}{bg=baba-dark-blue, fg=baba-white}
+
+\newcounter{finalframenumber}
+\setcounter{finalframenumber}{\inserttotalframenumber}
+\addtocounter{finalframenumber}{+1}
+
+\def\titlehsep{1.2}
+\def\titlevsep{1.2}
+
+\setbeamertemplate{footline}{
+    \ifnum\insertframenumber=1
+        % Title page, no footer
+    \else
+        \begin{tikzpicture}[remember picture,overlay]
+            \fill[baba-dark-blue] (current page.south west) rectangle ([yshift=0.4cm]current page.south east);
+
+            \node[yshift=0.2cm] at (current page.south) {
+                \includegraphics[width=1.5cm]{data/baba-white.png}
+            };
+            % \node[anchor=west, yshift=0.2cm, xshift=0.2cm, align=right, font=\normalfont, text=baba-white] at (current page.south west) {\event, \@date};
+            \node[anchor=east, yshift=0.2cm, xshift=-0.1cm, align=right, font=\normalfont, text=baba-white] at (current page.south east) {{\insertframenumber/\inserttotalframenumber}};
+        \end{tikzpicture}
+    \fi
+}
+
+\defbeamertemplate*{title page}{customized}[1][]{
+    \begin{columns}
+        \begin{column}{\paperwidth}
+            \begin{tikzpicture}
+                \node[] (upper left) at (-8, 4.52825) {};
+                \node[] (lower left) at (-8, -4.52825) {};
+                \node[] (upper right) at (8, 4.52825) {};
+                \node[] (lower right) at (8, -4.52825) {};
+                \fill[baba-dark-blue] (upper left.north west) rectangle (lower right.south east);
+
+                \node[anchor=east, inner sep=0pt] at ($ (upper right)!0.5!(lower right) - (0.2, 0) $) {
+                    \scalebox{-1}[1]{\transparent{0.5}{\includegraphics[height=8.9cm]{data/brain.png}}}
+                };
+
+                \node[text width=12cm, anchor=north west, text=baba-white, align=flush left, inner sep=0pt] (title) at ($ (upper left) + (\titlehsep, -\titlevsep) $) {
+                    \usebeamerfont{title}\inserttitle\\
+                    \usebeamerfont{subtitle}\insertsubtitle
+                };
+                \node[anchor=north west, text=baba-white, font=\small, inner sep=0pt] at ($ (title.south west) + (0, -0.25) $) {
+                    \event, \@date
+                };
+                \node[anchor=south west, inner sep=0pt, draw=black] (selfie) at ($ (lower left) + (\titlehsep, \titlevsep) $) {
+                    \includegraphics[height=2.5cm]{data/esten1.jpg}
+                };
+                \node[anchor=west, align=flush left, text width=5cm, text=baba-white, font=\footnotesize\linespread{0.9}\selectfont] at (selfie.east) {
+                    \textbf{Esten H. Leonardsen}\\[0.3cm]
+                    Chief Scientific Officer, baba.vision\\[0.2cm]
+                    Post-doctoral research fellow, Department of Psychology, University of Oslo
+                };
+
+                \node[anchor=south] at ($ (lower left)!0.5!(lower right) + (0, 0.1) $) {
+                    \includegraphics[width=3cm]{data/baba-white.png}
+                };
+
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+}
+
+
+\setbeamertemplate{endpage}{%
+    \begin{frame}[plain]
+        \begin{columns}
+            \begin{column}{\paperwidth}
+                \begin{tikzpicture}
+                    \node[] (upper left) at (-8, 4.52825) {};
+                    \node[] (lower left) at (-8, -4.52825) {};
+                    \node[] (upper right) at (8, 4.52825) {};
+                    \node[] (lower right) at (8, -4.52825) {};
+                    \fill[baba-dark-blue] (upper left.north west) rectangle (lower right.south east);
+
+                    \node[anchor=east, inner sep=0pt] at ($ (upper right)!0.5!(lower right) - (0.2, 0) $) {
+                        \scalebox{-1}[1]{\transparent{0.5}{\includegraphics[height=8.9cm]{data/brain.png}}}
+                    };
+
+                    \node[text width=7.8cm, anchor=west, text=baba-white, align=flush left, inner sep=0pt, align=left] (thank) at ($ (upper left)!0.5!(lower left) + (\titlehsep, 0) $) {
+                        \usebeamerfont{title}Thank you for your attention!\\
+                        \usebeamerfont{subtitle}esten@baba-vision.com
+                    };
+
+                    \node[anchor=south] at ($ (lower left)!0.5!(lower right) + (0, 0.1) $) {
+                        \includegraphics[width=3cm]{data/baba-white.png}
+                    };
+                \end{tikzpicture}
+            \end{column}
+        \end{columns}
+    \end{frame}
+}
+
+\AtEndDocument{\usebeamertemplate{endpage}}
