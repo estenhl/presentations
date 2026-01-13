@@ -1,6 +1,10 @@
+\PassOptionsToPackage{table}{xcolor}
+
 \documentclass[aspectratio=169]{beamer}
 
+\usepackage{array}
 \usepackage{enumitem}
+\usepackage{ragged2e}
 \usepackage{tikz}
 
 \usetikzlibrary{arrows}
@@ -114,13 +118,24 @@
                 \node[draw=black] at (7, 3.25) {};
 
                 \stickman{(-3.5, 0.2)}
-                \node[draw=black, rounded corners=0.5, align=center, font=\scriptsize] at (0, -0.14) {
+                \node[draw=black, rounded corners=0.1cm, align=center, font=\small\bfseries, fill=baba-light-black, inner sep=7pt, text=baba-white, draw=none] (assessment) at (0, -0.14) {
                     Treatment\\
                     eligibility\\
-                    criteria
+                    assessment
                 };
-                \node[align=left, anchor=west] at (3.5, 1.36) {Treatment\\candidate};
-                \node[align=left, anchor=west] at (3.5, -1.64) {Contraindicated\\patient};
+                \node[align=left, anchor=west, font=\small] (yes) at (3.5, 0.86) {Treatment\\candidate};
+                \node[align=left, anchor=west, font=\small] (no) at (3.5, -1.14) {Not eligible};
+
+                \draw[-stealth, baba-light-black, line width=4pt, opacity=0.75] (-3, -0.14) -- (assessment);
+
+                \begin{scope}[transparency group, opacity=0.75]
+                    \draw[-stealth, baba-green, line width=4pt] (assessment) to [in=180, out=0] (yes);
+                \end{scope}
+
+                \begin{scope}[transparency group, opacity=0.75]
+                    \draw[-stealth, baba-red, line width=4pt] (assessment) to [in=180, out=0] (no);
+                \end{scope}
+
             \end{tikzpicture}
         }
         \centering
@@ -186,28 +201,186 @@
             ($ (input.south east) - (0.5 * \mridepth, 0.5 * \mridepth) $);
     }
 
+    \newcommand{\convside}[6]{
+        \def\sidex{#1}
+        \def\sidey{#2}
+        \def\sidewidth{#3}
+        \def\sideheight{#4}
+        \def\sidefillcolour{#5}
+        \def\sidename{#6}
+
+        \node[
+            fill=\sidefillcolour,
+            inner sep=0pt,
+            outer sep=0pt,
+            minimum width=\sidewidth,
+            minimum height=\sideheight,
+            draw=black
+        ] (\sidename) at (\sidex, \sidey) {};
+    }
+
+    \newcommand{\convtop}[4]{
+        \def\topbase{#1}
+        \def\topwidth{#2}
+        \def\topheight{#3}
+        \def\topfillcolour{#4}
+
+        \draw[fill=\topfillcolour,draw=black] #1 --
+            ($ #1 + (#3, #3) $) --
+            ($ #1 + (#3+#2, #3) $) --
+            ($ #1 + (#2, 0) $);
+    }
+
+    \newcommand{\convfront}[3]{
+        \def\frontbase{#1}
+        \def\frontsize{#2}
+        \def\frontfillcolour{#3}
+
+        \draw[black, fill=\frontfillcolour] #1 --
+            ($ #1 + (1*#2, 1*#2) $) --
+            ($ #1 + (1*#2, 1*#2 - 2*#2) $) --
+            ($ #1 + (0, -2*#2) $);
+    }
+
+    \newcommand{\convchannel}[7]{
+        \def\channelx{#1}
+        \def\channely{#2}
+        \def\channelnodedepth{#3}
+        \def\channelnodesize{#4}
+        \def\channelnodecount{#5}
+        \def\channelcolour{#6}
+        \def\includefront{#7}
+
+        \def\huemin{20}
+        \def\huemax{80}
+
+        \pgfmathsetmacro{\iterations}{#5-1}
+        \foreach \i in {0,...,\iterations} {
+            \pgfmathsetmacro{\hue}{int(random(\huemin, \huemax))}
+            \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{#6!\hue}{n\i0}
+
+            \foreach \j in {0,...,\iterations} {
+                \pgfmathsetmacro{\innerhue}{int(random(\huemin, \huemax))}
+                \ifnum\j=0
+                    \pgfmathsetmacro{\innerhue}{\hue}
+                \fi
+
+                \ifnum\includefront=1
+                    \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{#6!\innerhue}
+                \fi
+
+                \ifnum\i=0
+                    \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{#6!\innerhue}
+                \fi
+            }
+        }
+    }
+
+    \newcommand{\convlayer}[7]{
+        \def\layerx{#1}
+        \def\layery{#2}
+        \def\layernodedepth{#3}
+        \def\layernodesize{#4}
+        \def\layernodecount{#5}
+        \def\layerdepth{#6}
+        \def\layercolour{#7}
+
+        \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+        \foreach \i in {0,...,\layeriterations}{
+            \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+            \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+            \convchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\layercolour}{\islast}
+        }
+    }
+
+    \newcommand{\modelarrow}[6][-]{
+        \begin{scope}[transparency group, opacity=0.75]
+            \draw[#1, line width=7pt, #4] #2 to [in=#5, out=#6] #3;
+        \end{scope}
+    }
+    \newcommand{\cnnarrow}[3]{
+        \modelarrow{#1}{#2}{#3}{180}{0}
+    }
+
+    \newcommand{\cnn}[6]{
+        \pgfmathsetseed{42}
+
+        \def\xmin{#1}
+        \def\ymin{#2}
+        \def\nodedepth{#3}
+        \def\nodesize{#4}
+        \def\modelcolour{#5}
+        \def\annotate{#6}
+
+        \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
+        \cnnarrow{(#1 + 1.04, #2)}{(#1+2.2, #2)}{black}
+
+        \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+        \cnnarrow{(#1 + 2.59, #2)}{(#1+3.5, #2)}{black}
+
+        \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+        \cnnarrow{(#1 + 3.96, #2)}{(#1+5, #2)}{black}
+
+        \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+
+        \ifnum #6=1
+            \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
+                                (#1 + 5.4, #2 + 1.43) --
+                                (#1 + 5.4, #2 - 1.42) --
+                                (#1 + 0.22, #2 - 1.42) -- cycle;
+            \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 2.675, #2 + 1.43) {
+                \textbf{Convolutional neural network}
+            };
+        \fi
+    }
 
     \begin{frame}{Explainable artificial intelligence}
         \begin{tikzpicture}
             \node[draw=black] at (-7, -3.25) {};
             \node[draw=black] at (7, 3.25) {};
 
-            \mriside{-5.75}{0}{1.5cm}{data/slice_110.png}
+            \mriside{-5.9}{0}{1.5cm}{data/slice_110.png}
 
-            \node[anchor=east, align=left] (output) at (6.85, 0) {Treatment\\eligibility};
+            \node[anchor=east, align=left, font=\small] (output) at (7.1, 0) {Eligible for\\treatment?};
 
-            \def\vsep{0.75}
+            \only<1>{
+                \renewcommand{\arraystretch}{1.2}
+                {\scriptsize
+                \node[draw=black, inner sep=0pt] (features) at (0, 0) {
+                    \begin{tabular}{|>{\centering\arraybackslash}m{2.5cm}|>{\centering\arraybackslash}m{1.2cm}|}
+                        \hline
+                        \multicolumn{2}{|c|}{\cellcolor{baba-light-black}\textcolor{baba-white}{\textbf{MRI-derived features}}}\\
+                        \hline
+                        Presence of macrohemorrhages&No\\
+                        \hline
+                        Number of microhemorrhages&2\\
+                        \hline
+                        Presence of superficial siderosis&No\\
+                        \hline
+                        Presence of vasogenic edema&No\\
+                        \hline
+                        Number of lacunar strokes&1\\
+                        \hline
+                        White matter hyperintensity load&Moderate\\
+                        \hline
+                    \end{tabular}
+                };
+                }
 
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule0) at ($ (input.east)!0.5!(output) + (0, 2.5*\vsep) $) {Presence of macrohemorrhages};
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule1) at ($ (input.east)!0.5!(output) + (0, 1.5*\vsep) $) {Number of microhemorrhages};
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule2) at ($ (input.east)!0.5!(output) + (0, 0.5*\vsep) $) {Presence of superficial siderosis};
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule3) at ($ (input.east)!0.5!(output) + (0, -0.5*\vsep) $) {Presence of vasogenic edema};
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule4) at ($ (input.east)!0.5!(output) + (0, -1.5*\vsep) $) {White matter hyperintensity load};
-            \node[draw=black, rounded corners=0.1cm, font=\small] (rule5) at ($ (input.east)!0.5!(output) + (0, -2.5*\vsep) $) {Number of lacunar infarcts};
 
-            \foreach \j in {0,...,5} {
-                \draw[-stealth, draw=black, opacity=0.2, line width=2pt] (input.east) -- (rule\j.west);
-                \draw[-stealth, draw=black, opacity=0.2, line width=2pt] (rule\j.east) -- (output);
+                \begin{scope}[transparency group, opacity=0.75]
+                    \draw[-stealth, baba-light-black, line width=7pt] (input) to [in=180, out=0] (features);
+                    \draw[-stealth, baba-light-black, line width=7pt] (features) to [in=180, out=0] (output);
+                \end{scope}
+
+                \node[font=\tiny, text=baba-white] at ($ (input.east)!0.5!(features.west) $) {Feature extraction};
+                \node[font=\tiny, text=baba-white] at ($ (features.east)!0.5!(output.west) $) {Rule-based inference};
+            }
+
+            \only<2>{
+                \draw[] (input.east) -- ($ (input.east) + (2.5, 0) $);
+                \draw[] (output.west) -- ($ (output.west) + (-2.5, 0) $);
+                \cnn{-2.8}{0}{0.14}{0.21}{baba-green}{1}
             }
 
         \end{tikzpicture}
