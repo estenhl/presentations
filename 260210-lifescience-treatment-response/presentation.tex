@@ -8,6 +8,7 @@
 \usepackage{tikz}
 
 \usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{overlay-beamer-styles}
 \usetikzlibrary{positioning}
 
@@ -16,7 +17,7 @@
 \title{Supporting treatment decisions for patients with Alzheimer's disease using explainable artificial intelligence}
 \author{Esten H. Leonardsen}
 \date{10.02.26}
-\newcommand{\event}{Norway Life Science 2026}
+\newcommand{\event}{Norway Life Science}
 
 \newcommand{\stickman}[2][gray]{
     \node[circle,fill,minimum size=2.5mm,#1] (head) at #2 {};
@@ -27,89 +28,89 @@
 }
 
 \begin{document}
-    % \begin{frame}
-    %     \titlepage
-    % \end{frame}
+    \begin{frame}
+        \titlepage
+    \end{frame}
 
-    % \begin{frame}{New treatment options for Alzheimer's disease}
-    %     \centering
-    %     \begin{tikzpicture}
-    %         \node[draw=black] at (-7, -3.25) {};
-    %         \node[draw=black] at (7, 3.25) {};
+    \begin{frame}{New treatment options for Alzheimer's disease}
+        \centering
+        \begin{tikzpicture}
+            \node[] at (-7, -3.25) {};
+            \node[] at (7, 3.25) {};
 
-    %         \only<1>{
-    %             \node[] at (0, 0) {
-    %                 New medications
-    %             };
-    %         }
-    %         \only<2>{
-    %             \node[inner sep=0pt, draw=black] (lecanemab) at (-3.5, 0) {
-    %                 \includegraphics[height=4cm]{data/lecanemab.jpg}
-    %             };
-    %             \node[anchor=north, font=\tiny, align=flush center, text width=6.5cm] at (lecanemab.south) {
-    %                 Van Dyck, C. H., Swanson, C. J., Aisen, P., Bateman, R. J., Chen, C., Gee, M., ... \& Iwatsubo, T. (2023). Lecanemab in early Alzheimer’s disease. \textit{New England Journal of Medicine}, \textit{388}(1), 9-21.
-    %             };
-    %             \node[inner sep=0pt, draw=black] (donanemab) at (3.5, 0) {
-    %                 \includegraphics[height=4cm]{data/donanemab.png}
-    %             };
-    %             \node[anchor=north, font=\tiny, align=flush center, text width=6.5cm] at (donanemab.south) {
-    %                 Sims, J. R., Zimmer, J. A., Evans, C. D., Lu, M., Ardayfio, P., Sparks, J., ... \& Kaul, S. (2023). Donanemab in early symptomatic Alzheimer disease: the TRAILBLAZER-ALZ 2 randomized clinical trial. \textit{JAMA}, \textit{330}(6), 512-527.
-    %             };
-    %         }
-    %         \only<3-10>{
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6.2, 1.5)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.4, 1.8)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.4, 1.7)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6.1, -0.9)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6, 0.3)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.5, 0.6)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.6, -0.5)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.1, 0.1)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5, -1.0)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.8, 1.1)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.5, 0)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.4, -1.1)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.1, 0.7)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4, -0.4)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.6, 1.3)}
-    %             \stickman{(-3.5, 0.2)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.6, -1)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.1, 1.9)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-2.9, 0.8)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.05, -0.3)}
-    %             \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-2.7, -1)}
-    %         }
-    %         \only<4-10>{
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!65!gray}{alt=<4>{gray}{alt=<8->{baba-red!65!gray}{baba-red!40!gray}}}]{(6.2, -2.1)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!30!gray}{alt=<4>{gray}{alt=<8->{baba-red!30!gray}{baba-red!40!gray}}}]{(6.1, -1)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!70!gray}{alt=<4>{gray}{alt=<8->{baba-red!70!gray}{baba-red!40!gray}}}]{(5.6, -1.6)}
-    %             \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<8->{gray}{baba-red!40!gray}}}]{(5.5, -0.5)}
-    %             \stickman[alt=<9>{opacity=0.2, baba-green!40!gray}{alt=<4>{gray}{alt=<8->{baba-green!40!gray}{baba-red!40!gray}}}]{(5.2, -2.2)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!10!gray}{alt=<4>{gray}{alt=<8->{baba-green!10!gray}{baba-red!40!gray}}}]{(4.9, -1.1)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!55!gray}{alt=<4>{gray}{alt=<8->{baba-red!55!gray}{baba-red!40!gray}}}]{(4.4, -0.7)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!15!gray}{alt=<4>{gray}{alt=<8->{baba-green!15!gray}{baba-red!40!gray}}}]{(4.3, -1.9)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!75!gray}{alt=<4>{gray}{alt=<8->{baba-red!75!gray}{baba-red!40!gray}}}]{(3.7, -0.6)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red!65!gray}{alt=<4>{gray}{alt=<8->{baba-red!65!gray}{baba-red!40!gray}}}]{(3.6, -1.8)}
+            \only<1>{
+                \node[] at (0, 0) {
+                    \includegraphics[width=7.5cm]{data/ema.png}
+                };
+            }
+            \only<2>{
+                \node[inner sep=0pt, draw=black] (lecanemab) at (-3.5, 0) {
+                    \includegraphics[height=4cm]{data/lecanemab.jpg}
+                };
+                \node[anchor=north, font=\tiny, align=flush center, text width=6.5cm] at (lecanemab.south) {
+                    Van Dyck, C. H., Swanson, C. J., Aisen, P., Bateman, R. J., Chen, C., Gee, M., ... \& Iwatsubo, T. (2023). Lecanemab in early Alzheimer’s disease. \textit{New England Journal of Medicine}, \textit{388}(1), 9-21.
+                };
+                \node[inner sep=0pt, draw=black] (donanemab) at (3.5, 0) {
+                    \includegraphics[height=4cm]{data/donanemab.png}
+                };
+                \node[anchor=north, font=\tiny, align=flush center, text width=6.5cm] at (donanemab.south) {
+                    Sims, J. R., Zimmer, J. A., Evans, C. D., Lu, M., Ardayfio, P., Sparks, J., ... \& Kaul, S. (2023). Donanemab in early symptomatic Alzheimer disease: the TRAILBLAZER-ALZ 2 randomized clinical trial. \textit{JAMA}, \textit{330}(6), 512-527.
+                };
+            }
+            \only<3-10>{
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6.2, 1.5)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.4, 1.8)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.4, 1.7)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6.1, -0.9)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-6, 0.3)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.5, 0.6)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.6, -0.5)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5.1, 0.1)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-5, -1.0)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.8, 1.1)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.5, 0)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.4, -1.1)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4.1, 0.7)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-4, -0.4)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.6, 1.3)}
+                \stickman{(-3.5, 0.2)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.6, -1)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.1, 1.9)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-2.9, 0.8)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-3.05, -0.3)}
+                \stickman[alt=<9-10>{opacity=0.1}{}, gray]{(-2.7, -1)}
+            }
+            \only<4-10>{
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!65!gray}{alt=<4>{gray}{alt=<8->{baba-red!65!gray}{baba-red!40!gray}}}]{(6.2, -2.1)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!30!gray}{alt=<4>{gray}{alt=<8->{baba-red!30!gray}{baba-red!40!gray}}}]{(6.1, -1)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!70!gray}{alt=<4>{gray}{alt=<8->{baba-red!70!gray}{baba-red!40!gray}}}]{(5.6, -1.6)}
+                \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<8->{gray}{baba-red!40!gray}}}]{(5.5, -0.5)}
+                \stickman[alt=<9>{opacity=0.2, baba-green!40!gray}{alt=<4>{gray}{alt=<8->{baba-green!40!gray}{baba-red!40!gray}}}]{(5.2, -2.2)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!10!gray}{alt=<4>{gray}{alt=<8->{baba-green!10!gray}{baba-red!40!gray}}}]{(4.9, -1.1)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!55!gray}{alt=<4>{gray}{alt=<8->{baba-red!55!gray}{baba-red!40!gray}}}]{(4.4, -0.7)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!15!gray}{alt=<4>{gray}{alt=<8->{baba-green!15!gray}{baba-red!40!gray}}}]{(4.3, -1.9)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!75!gray}{alt=<4>{gray}{alt=<8->{baba-red!75!gray}{baba-red!40!gray}}}]{(3.7, -0.6)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red!65!gray}{alt=<4>{gray}{alt=<8->{baba-red!65!gray}{baba-red!40!gray}}}]{(3.6, -1.8)}
 
-    %             \draw[dashed, alt=<9-10>{black!20}{black}] (3.1, -3.3) -- (3.1, -0.1) -- (6.7, -0.1) -- (6.7, -3.3) -- cycle;
-    %             \node[anchor=south, rotate=90, alt=<9-10>{text=black!20}{text=black}] at (3.1, -1.65) {Control};
+                \draw[dashed, alt=<9-10>{black!20}{black}] (3.1, -3.3) -- (3.1, -0.1) -- (6.7, -0.1) -- (6.7, -3.3) -- cycle;
+                \node[anchor=south, rotate=90, alt=<9-10>{text=black!20}{text=black}] at (3.1, -1.65) {Control};
 
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!80!gray}{alt=<4>{gray}{alt=<6->{baba-green!80!gray}{baba-green!40!gray}}}]{(5.9, 1.9)}
-    %             \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(6.3, 2.8)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!65!gray}{alt=<4>{gray}{alt=<6->{baba-green!65!gray}{baba-green!40!gray}}}]{(5.3, 1.3)}
-    %             \stickman[alt=<9>{opacity=0.2, baba-red}{alt=<4>{gray}{alt=<6->{alt=<7->{baba-red}{baba-green!25!gray}}{baba-green!40!gray}}}]{(5.4, 2.4)}
-    %             \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(4.6, 1.8)}
-    %             \stickman[alt=<9>{opacity=0.2, baba-green!90!gray}{alt=<4>{gray}{alt=<6->{baba-green!90!gray}{baba-green!40!gray}}}]{(4.9, 2.8)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!15!gray}{alt=<4>{gray}{alt=<6->{baba-green!15!gray}{baba-green!40!gray}}}]{(4.1, 2.2)}
-    %             \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(4.2, 1.1)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-green!85!gray}{alt=<4>{gray}{alt=<6->{baba-green!85!gray}{baba-green!40!gray}}}]{(3.6, 2.5)}
-    %             \stickman[alt=<9-10>{opacity=0.2, baba-red}{alt=<4>{gray}{alt=<6->{alt=<7->{baba-red}{baba-green!25!gray}}{baba-green!40!gray}}}]{(3.5, 1.4)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!80!gray}{alt=<4>{gray}{alt=<6->{baba-green!80!gray}{baba-green!40!gray}}}]{(5.9, 1.9)}
+                \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(6.3, 2.8)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!65!gray}{alt=<4>{gray}{alt=<6->{baba-green!65!gray}{baba-green!40!gray}}}]{(5.3, 1.3)}
+                \stickman[alt=<9>{opacity=0.2, baba-red}{alt=<4>{gray}{alt=<6->{alt=<7->{baba-red}{baba-green!25!gray}}{baba-green!40!gray}}}]{(5.4, 2.4)}
+                \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(4.6, 1.8)}
+                \stickman[alt=<9>{opacity=0.2, baba-green!90!gray}{alt=<4>{gray}{alt=<6->{baba-green!90!gray}{baba-green!40!gray}}}]{(4.9, 2.8)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!15!gray}{alt=<4>{gray}{alt=<6->{baba-green!15!gray}{baba-green!40!gray}}}]{(4.1, 2.2)}
+                \stickman[alt=<9-10>{opacity=0.2, gray}{alt=<4>{gray}{alt=<6->{gray}{baba-green!40!gray}}}]{(4.2, 1.1)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-green!85!gray}{alt=<4>{gray}{alt=<6->{baba-green!85!gray}{baba-green!40!gray}}}]{(3.6, 2.5)}
+                \stickman[alt=<9-10>{opacity=0.2, baba-red}{alt=<4>{gray}{alt=<6->{alt=<7->{baba-red}{baba-green!25!gray}}{baba-green!40!gray}}}]{(3.5, 1.4)}
 
-    %             \draw[dashed, alt=<9-10>{black!20}{black}] (3.1, 0.1) -- (3.1, 3.3) -- (6.7, 3.3) -- (6.7, 0.1) -- cycle;
-    %             \node[anchor=south, rotate=90, alt=<9-10>{text=black!20}{text=black}] at (3.1, 1.65) {Treatment};
-    %         }
-    %     \end{tikzpicture}
-    % \end{frame}
+                \draw[dashed, alt=<9-10>{black!20}{black}] (3.1, 0.1) -- (3.1, 3.3) -- (6.7, 3.3) -- (6.7, 0.1) -- cycle;
+                \node[anchor=south, rotate=90, alt=<9-10>{text=black!20}{text=black}] at (3.1, 1.65) {Treatment};
+            }
+        \end{tikzpicture}
+    \end{frame}
 
     \begin{frame}{Treatment eligibility}
         \only<1>{
@@ -298,8 +299,8 @@
             \draw[#1, line width=7pt, #4] #2 to [in=#5, out=#6] #3;
         \end{scope}
     }
-    \newcommand{\cnnarrow}[3]{
-        \modelarrow{#1}{#2}{#3}{180}{0}
+    \newcommand{\cnnarrow}[4][-]{
+        \modelarrow[#1]{#2}{#3}{#4}{180}{0}
     }
 
     \newcommand{\cnn}[6]{
@@ -313,35 +314,144 @@
         \def\annotate{#6}
 
         \convlayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{\modelcolour}
-        \cnnarrow{(#1 + 1.04, #2)}{(#1+2.2, #2)}{black}
+        \cnnarrow{(#1 + 1.32, #2)}{(#1+2.2, #2)}{baba-light-black}
 
-        \convlayer{#1 + 1.44 + 0.4}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
-        \cnnarrow{(#1 + 2.59, #2)}{(#1+3.5, #2)}{black}
+        \convlayer{#1 + 2.03 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{\modelcolour}
+        \cnnarrow{(#1 + 3.28, #2)}{(#1+4, #2)}{baba-light-black}
 
-        \convlayer{#1 + 2.77 + 0.4}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
-        \cnnarrow{(#1 + 3.96, #2)}{(#1+5, #2)}{black}
+        \convlayer{#1 + 3.78 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{\modelcolour}
+        \cnnarrow{(#1 + 5.1, #2)}{(#1+6, #2)}{baba-light-black}
 
-        \convlayer{#1 + 3.93 + 0.4}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
+        \convlayer{#1 + 5.39 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{\modelcolour}
 
         \ifnum #6=1
-            \draw[thick, dashed] (#1 + 0.22, #2 + 1.43) --
-                                (#1 + 5.4, #2 + 1.43) --
-                                (#1 + 5.4, #2 - 1.42) --
-                                (#1 + 0.22, #2 - 1.42) -- cycle;
-            \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 2.675, #2 + 1.43) {
-                \textbf{Convolutional neural network}
+            \draw[thick, dashed] (#1 + 0.2, #2 + 1.95) --
+                                (#1 + 7.06, #2 + 1.95) --
+                                (#1 + 7.06, #2 - 1.95) --
+                                (#1 + 0.2, #2 - 1.95) -- cycle;
+            \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 3.63, #2 + 1.95) {
+                \textbf{Artificial neural network}
             };
         \fi
     }
 
+
+    \newcommand{\lrpchannel}[6]{
+        \def\channelx{#1}
+        \def\channely{#2}
+        \def\channelnodedepth{#3}
+        \def\channelnodesize{#4}
+        \def\channelnodecount{#5}
+        \def\includefront{#6}
+
+        \colorlet{bgcolour}{black!85}
+
+        \pgfmathsetmacro{\iterations}{#5-1}
+        \foreach \i in {0,...,\iterations} {
+            \pgfmathsetmacro{\hue}{int(random(-150, 100))}
+            \colorlet{fillcolour}{bgcolour}
+
+            \colorlet{lrpcolour}{red}
+            \pgfmathsetmacro{\coinflip}{int(random(0, 1))}
+
+            \ifnum\coinflip=1
+                \colorlet{lrpcolour}{blue}
+            \fi
+
+            \ifnum\hue>0
+                \colorlet{fillcolour}{lrpcolour!\hue!bgcolour}
+            \fi
+
+            \convside{#1}{#2+\i*-#4}{#3 cm}{#4 cm}{fillcolour}{n\i0}
+
+            \foreach \j in {0,...,\iterations} {
+                \pgfmathsetmacro{\innerhue}{int(random(-150, 100))}
+                \colorlet{innerfillcolour}{bgcolour}
+
+                \ifnum\innerhue>0
+                    \colorlet{innerfillcolour}{lrpcolour!\innerhue!bgcolour}
+                \fi
+
+                \ifnum\j=0
+                    \colorlet{innerfillcolour}{fillcolour}
+                \fi
+
+                \ifnum\includefront=1
+                    \convfront{($ (n00.north east) + (0.5*\j*#4, 0.5*\j*#4 - \i*#4) $)}{0.5*#4}{innerfillcolour}
+                \fi
+
+                \ifnum\i=0
+                    \convtop{($ (n\i0.north west) + (0.5*\j*#4, 0.5*\j*#4) $)}{#3}{0.5*#4}{innerfillcolour}
+                \fi
+            }
+        }
+    }
+
+    \newcommand{\lrplayer}[6]{
+        \def\layerx{#1}
+        \def\layery{#2}
+        \def\layernodedepth{#3}
+        \def\layernodesize{#4}
+        \def\layernodecount{#5}
+        \def\layerdepth{#6}
+
+        \pgfmathsetmacro{\layeriterations}{\layerdepth-1}
+        \foreach \i in {0,...,\layeriterations}{
+            \pgfmathsetmacro{\x}{\layerx + \i * \layernodedepth}
+            \pgfmathsetmacro{\islast}{\i == \layeriterations ? 1 : 0}
+            \lrpchannel{\x}{\layery}{\layernodedepth}{\layernodesize}{\layernodecount}{\islast}
+        }
+    }
+    \newcommand{\lrparrow}[4][-]{
+        \modelarrow[#1]{#2}{#3}{#4}{0}{180}
+    }
+    \newcommand{\lrp}[5]{
+        \pgfmathsetseed{42}
+
+        \def\xmin{#1}
+        \def\ymin{#2}
+        \def\nodedepth{#3}
+        \def\nodesize{#4}
+        \def\annotate{#5}
+
+        \lrplayer{#1 - 0.06 + 0.4}{#2 + 2.5 * #4}{#3}{#4}{12}{3}{black}
+        \cnnarrow{(#1 + 1.32, #2)}{(#1+2.2, #2)}{baba-light-black}
+
+        \lrplayer{#1 + 2.03 + 0.2}{#2 + 1.5 * #4}{#3}{#4}{8}{5}{black}
+        \cnnarrow{(#1 + 3.28, #2)}{(#1+4, #2)}{baba-light-black}
+
+        \lrplayer{#1 + 3.78 + 0.2}{#2 + 0.5 * #4}{#3}{#4}{4}{7}{black}
+        \cnnarrow{(#1 + 5.1, #2)}{(#1+6, #2)}{baba-light-black}
+
+        \lrplayer{#1 + 5.39 + 0.2}{#2 + 0}{#3}{#4}{2}{9}{black}
+
+        \ifnum #5=1
+            \draw[thick, dashed] (#1 + 0.2, #2 + 1.95) --
+                                (#1 + 7.06, #2 + 1.95) --
+                                (#1 + 7.06, #2 - 1.95) --
+                                (#1 + 0.2, #2 - 1.95) -- cycle;
+            \node[anchor=south, text depth=0, font=\footnotesize\selectfont] at (#1 + 3.63, #2 + 1.95) {
+                \textbf{Artificial neural network}
+            };
+        \fi
+    }
+
+
     \begin{frame}{Explainable artificial intelligence}
         \begin{tikzpicture}
-            \node[draw=black] at (-7, -3.25) {};
-            \node[draw=black] at (7, 3.25) {};
+            \node[] at (-7, -3.25) {};
+            \node[] at (7, 3.25) {};
 
-            \mriside{-5.9}{0}{1.5cm}{data/slice_110.png}
+            \only<1-2>{
+                \mriside{-5.9}{0}{1.5cm}{data/mri_sagittal.png}
+            }
+            \only<3>{
+                \mriside{-5.9}{0}{1.5cm}{data/combined_sagittal.png}
+            }
 
-            \node[anchor=east, align=left, font=\small] (output) at (7.1, 0) {Eligible for\\treatment?};
+            \only<1-3>{
+                \node[anchor=east, align=left, font=\small] (output) at (7.1, 0) {Treatment\\candidate?};
+            }
 
             \only<1>{
                 \renewcommand{\arraystretch}{1.2}
@@ -378,32 +488,49 @@
             }
 
             \only<2>{
-                \draw[] (input.east) -- ($ (input.east) + (2.5, 0) $);
-                \draw[] (output.west) -- ($ (output.west) + (-2.5, 0) $);
-                \cnn{-2.8}{0}{0.14}{0.21}{baba-green}{1}
+                \cnnarrow{(input.east)}{($ (input.east) + (3, 0) $)}{baba-light-black}
+                \cnn{-3.63}{0}{0.14}{0.21}{baba-green}{1}
+                \cnnarrow[-stealth]{($ (output.west) - (1.89, 0) $)}{(output.west)}{baba-light-black}
+            }
+            \only<3>{
+                \lrparrow[-stealth]{($ (input.east) + (3, 0) $)}{(input.east)}{baba-light-black}
+                \lrp{-3.63}{0}{0.14}{0.21}{1}
+                \lrparrow{(output.west)}{($ (output.west) - (1.89, 0) $)}{baba-light-black}
+            }
+            \only<4-5>{
+                \node[label={[text depth=0]above:Explainable AI}] at (-2.5, 0) {
+                    \includegraphics[width=0.27\textwidth]{data/dementia.png}
+                };
+                \node[anchor=south, font=\tiny, align=flush center, text width=13.5cm] at (0, -3.5) {
+                    Leonardsen, E. H., Persson, K., Grødem, E., Dinsdale, N., Schellhorn, T., Roe, J. M., ... \& Wang, Y. (2024). Constructing personalized characterizations of structural brain aberrations in patients with dementia using explainable artificial intelligence. NPJ digital medicine, 7(1), 110.
+                };
+            }
+            \only<5>{
+                \node[label={[text depth=0]above:Human researchers}] at (2.5, 0) {
+                    \includegraphics[width=0.27\textwidth]{data/ALE.png}
+                };
             }
 
         \end{tikzpicture}
     \end{frame}
 
     \begin{frame}{The future of Alzheimer's treatment}
-        \begin{tikzpicture}
-            \node[draw=black] at (-7, -3.25) {};
-            \node[draw=black] at (7, 3.25) {};
+        \only<1>{
+            \begin{tikzpicture}
+                \node[] at (-7, -3.25) {};
+                \node[] at (7, 3.25) {};
 
-            \only<1>{
                 \node[inner sep=3pt, draw=black, fill=white, anchor=north] (trials) at (0, 3.25) {
                     \includegraphics[width=6cm]{data/trials.jpg}
                 };
-                \node[anchor=north, font=\tiny, align=flush center, text width=6.2cm] at (trials.south) {
+                \node[anchor=south, font=\tiny, align=flush center, text width=13cm] at (0, -3.4) {
                 Cummings, J. L., Zhou, Y., Lee, G., Zhong, K., Fonseca, J., Leisgang‐Osse, A. M., \& Cheng, F. (2025). Alzheimer's disease drug development pipeline: 2025. Alzheimer's \& Dementia: Translational Research \& Clinical Interventions, 11(2), e70098.
                 };
-            }
-            \only<2>{
-                \node[] at (0, 0) {
-                    \includegraphics[width=10cm]{data/multiple_treatments.png}
-                };
-            }
-        \end{tikzpicture}
+            \end{tikzpicture}
+        }
+        \only<2>{
+            \centering
+            \includegraphics[width=10cm]{data/multiple_treatments.png}
+        }
     \end{frame}
 \end{document}
